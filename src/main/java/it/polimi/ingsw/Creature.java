@@ -5,5 +5,5 @@ public enum Creature {
     RED_DRAGONS,
     BLUE_UNICORNS,
     GREEN_FROGS,
-    PINK_FARIES
+    PINK_FAIRIES
 }
