@@ -21,5 +21,4 @@ public enum Name {
     }
 
     public int getCost(){ return cost; }
-    public int getCostPlusOne(){ return cost+10;}
 }
