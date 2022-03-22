@@ -6,7 +6,6 @@ public class Island extends StudentContainer {
     private int tower;
     private Color coloroftower;
     private int noEntry;
-    private Optional<Professor> professor;
 
     /**
      * This is the Constructor used for the first creation of the island and the following fusions.
@@ -21,17 +20,6 @@ public class Island extends StudentContainer {
 
     public Color getColorOfTower() {
         return coloroftower;
-    }
-
-    /**
-     *
-     * @return Optional<Professor> because the method could return null
-     */
-    public Optional<Professor> getProfessor() {
-        return professor;
-    }
-    public int getNoEntry(){
-        return noEntry;
     }
 
     /**
@@ -55,7 +43,5 @@ public class Island extends StudentContainer {
     }
     public void addNoEntry(){noEntry+=1;}
     public void removeNoEntry(){noEntry-=1;}
-    public void setProfessor(Optional<Professor> professor){
-        this.professor=professor;
-    }
+
 }

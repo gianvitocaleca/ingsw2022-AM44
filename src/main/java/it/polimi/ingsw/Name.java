@@ -19,4 +19,6 @@ public enum Name {
     private Name(int cost) {
         this.cost = cost;
     }
+
+    public int getCost(){ return cost; }
 }
