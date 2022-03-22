@@ -3,24 +3,27 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class StudentContainer {
-    /**
-     * Array of students for all the subclasses
-     */
     protected List<Student> students;
+    protected final int capacity;
 
-    public StudentContainer() {
-        this.students = new ArrayList<Student>();
+    public StudentContainer(int capacity){
+        students = new ArrayList<Student>();
+        this.capacity=capacity;
     }
 
-    public void addStudents(List<Student> new_students) {
-        this.students.addAll(new_students);
+    public int getCapacity(){ return capacity;}
+
+    public void addStudents(List<Student> newStudents){
+
+        for (Student s : newStudents) {
+            students.add(s);
+        }
+
     }
 
-    public Student removeStudent(Creature creature) {
-        return new Student();
-    }
-
-    public List<Student> getStudents() {
-        return students;
+    public  Student removeStudent(Creature creature){
+        Optional<Student> temp = students.stream().filter(s -> s.getCreature()==creature).findFirst();
+        students.remove(temp);
+        return temp.get();
     }
 }

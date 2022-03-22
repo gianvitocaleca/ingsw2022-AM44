@@ -3,14 +3,16 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class Student {
-    private Creature creature;
-    private Map<Creature, Integer> generated_students;
+    private final Creature creature;
 
-    public Student() {
-        this.generated_students = new HashMap<Creature, Integer>();
+    public Student(Creature creature){
+
+        this.creature=creature;
+
     }
 
-    public Student generateStudent() {
-        return new Student();
+    public Creature getCreature() {
+        return creature;
     }
+
 }

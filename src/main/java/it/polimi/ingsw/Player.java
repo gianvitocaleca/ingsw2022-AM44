@@ -7,7 +7,7 @@ public class Player {
     private final Color my_color;
     private final String wizard;
     private final Entrance entrance;
-    private final DiningRoom dining_room;
+    private final Dining_Room dining_room;
     private Assistant last_played_card;
     private int my_coins;
     private List<Assistant> assistant_deck;
@@ -17,7 +17,7 @@ public class Player {
     public Player(String username, Color my_color, Assistant last_played_card,
                   int my_coins, List<Assistant> assistant_deck,
                   List<Professor> professors, String wizard, int towers,
-                  Entrance entrance, DiningRoom dining_room) {
+                  Entrance entrance, Dining_Room dining_room) {
 
         this.username = username;
         this.my_color = my_color;
@@ -67,7 +67,7 @@ public class Player {
         return entrance;
     }
 
-    public DiningRoom getDining_room() {
+    public Dining_Room getDining_room() {
         return dining_room;
     }
 

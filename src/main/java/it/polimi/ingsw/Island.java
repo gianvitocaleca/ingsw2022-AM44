@@ -3,44 +3,59 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class Island extends StudentContainer {
-    private int towers;
-    private Color color_of_tower;
-    private boolean disabled;
+    private int tower;
+    private Color coloroftower;
+    private int noEntry;
     private Optional<Professor> professor;
 
-    public Island(List<Student> students, int num_of_towers, Color color_of_tower) {
-        super();
-        this.students.addAll(students);
-        this.towers = num_of_towers;
-        this.color_of_tower = color_of_tower;
-        this.disabled = false;
-    }
-
-    public int getNumOfTowers() {
-        return towers;
+    /**
+     * This is the Constructor used for the first creation of the island and the following fusions.
+     * @param noEntry is the number of no entry tiles put on the island
+     */
+    public Island(List<Student> students, int numberoftowers, Color coloroftower,int capacity, int noEntry){
+        super(capacity);
+        tower = numberoftowers;
+        this.noEntry = noEntry;
+        this.coloroftower=coloroftower;
     }
 
     public Color getColorOfTower() {
-        return color_of_tower;
+        return coloroftower;
     }
 
-    public void setColorOfTower(Color color_of_tower) {
-        this.color_of_tower = color_of_tower;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }
-
+    /**
+     *
+     * @return Optional<Professor> because the method could return null
+     */
     public Optional<Professor> getProfessor() {
         return professor;
     }
+    public int getNoEntry(){
+        return noEntry;
+    }
 
-    public void setProfessor(Optional<Professor> professor) {
-        this.professor = professor;
+    /**
+     *
+     * @return is the number of tower on the island,
+     * that is one on each island and more than one in case of islands' fusion
+     */
+    public int getTower() {
+        return tower;
+    }
+
+    /**
+     *
+     * @param color is the new tower's color in case of conquer
+     */
+    public void changeTower(Color color){
+        this.coloroftower=color;
+        if(tower == 0){
+            tower++;
+        }
+    }
+    public void addNoEntry(){noEntry+=1;}
+    public void removeNoEntry(){noEntry-=1;}
+    public void setProfessor(Optional<Professor> professor){
+        this.professor=professor;
     }
 }
