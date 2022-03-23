@@ -25,6 +25,7 @@ public class StudentTest {
         int sum = 0;
         for (Creature c : Creature.values()) {
             sum += bucket.getNumberOfCreature(c);
+            assertEquals(bucket.getNumberOfCreature(c),26);
         }
         System.out.println(sum);
         assertEquals(sum, 130);

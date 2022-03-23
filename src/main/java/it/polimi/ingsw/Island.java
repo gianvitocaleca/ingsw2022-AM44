@@ -43,5 +43,6 @@ public class Island extends StudentContainer {
     }
     public void addNoEntry(){noEntry+=1;}
     public void removeNoEntry(){noEntry-=1;}
+    public int getNoEntry(){return noEntry;}
 
 }
