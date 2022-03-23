@@ -18,18 +18,16 @@ public class Table {
     public void islandFusion(String position){
         int mn_curr_position = motherNature.getCurrentIsland();
         List<Student> newStudents = new ArrayList<Student>(addStudentsFromPosition(mn_curr_position));
-        if(position.equals("Left")){
-            if(mn_curr_position == 0){
-                newStudents.addAll(addStudentsFromPosition(islands.size() - 1));
-            }else{
-                newStudents.addAll(addStudentsFromPosition(mn_curr_position - 1));
-            }
+
+        if (position.equals("Left")) {
+            newStudents.addAll(mn_curr_position == 0 ?
+                    addStudentsFromPosition(islands.size() - 1) :
+                    addStudentsFromPosition(mn_curr_position - 1));
+
         } else if (position.equals("Right")) {
-            if (mn_curr_position == islands.size() - 1) {
-                newStudents.addAll(addStudentsFromPosition(0));
-            } else {
-                newStudents.addAll(addStudentsFromPosition(mn_curr_position + 1));
-            }
+            newStudents.addAll(mn_curr_position == islands.size() - 1 ?
+                    addStudentsFromPosition(0) :
+                    addStudentsFromPosition(mn_curr_position + 1));
         }
     }
 
