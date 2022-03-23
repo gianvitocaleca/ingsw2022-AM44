@@ -13,6 +13,7 @@ public class Island extends StudentContainer {
      */
     public Island(List<Student> students, int numberoftowers, Color coloroftower,int capacity, int noEntry){
         super(capacity);
+        this.students = students;
         tower = numberoftowers;
         this.noEntry = noEntry;
         this.coloroftower=coloroftower;
@@ -45,4 +46,9 @@ public class Island extends StudentContainer {
     public void removeNoEntry(){noEntry-=1;}
     public int getNoEntry(){return noEntry;}
 
+    @Override
+    public String toString() {
+
+        return "NoEntries: " + this.noEntry + " Color: " + this.coloroftower + " NumberOfTowers: " + this.tower + " " + this.capacity;
+    }
 }

@@ -21,9 +21,17 @@ public class StudentContainer {
 
     }
 
-    public  Student removeStudent(Creature creature){
+    public Student removeStudent(Creature creature){
         Optional<Student> temp = students.stream().filter(s -> s.getCreature()==creature).findFirst();
         students.remove(temp);
         return temp.get();
+    }
+
+    public Student getStudent(int i) {
+        return students.get(i);
+    }
+
+    public List<Student> getStudents(){
+        return students;
     }
 }

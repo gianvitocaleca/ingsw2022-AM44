@@ -6,13 +6,13 @@ import java.util.Random;
 
 public class StudentBucket {
     private final int max_students = 26;
-    private static Map<Creature,Integer> generated_students = createMap();
+    private Map<Creature,Integer> generated_students = createMap();
 
     /**
      *
      * this method initializes generated_students
      */
-    private static Map<Creature,Integer> createMap(){
+    private Map<Creature,Integer> createMap(){
         Map<Creature,Integer> newMap = new HashMap<>();
         for( Creature c : Creature.values()){
             newMap.put(c , 0);
