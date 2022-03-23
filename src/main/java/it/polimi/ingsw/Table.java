@@ -17,24 +17,23 @@ public class Table {
 
     public void islandFusion(String position){
         int mn_curr_position = motherNature.getCurrentIsland();
-        List<Student> newStudents = new ArrayList<Student>();
-        newStudents.addAll(islands.get(mn_curr_position).students);
+        List<Student> newStudents = new ArrayList<Student>(addStudentsFromPosition(mn_curr_position));
         if(position.equals("Left")){
             if(mn_curr_position == 0){
-                newStudents.addAll(islands.get(islands.size()-1).students);
-            }else if(mn_curr_position == islands.size()-1){
-                newStudents.addAll(islands.get(0).students);
+                newStudents.addAll(addStudentsFromPosition(islands.size() - 1));
             }else{
-                newStudents.addAll(islands.get(mn_curr_position-1).students);
+                newStudents.addAll(addStudentsFromPosition(mn_curr_position - 1));
             }
-        }else if(position.equals("Right")){
-            if(mn_curr_position == 0){
-                newStudents.addAll(islands.get(mn_curr_position+1).students);
-            }else if(mn_curr_position == islands.size()-1){
-                newStudents.addAll(islands.get(0).students);
-            }else{
-                newStudents.addAll(islands.get(mn_curr_position-1).students);
+        } else if (position.equals("Right")) {
+            if (mn_curr_position == islands.size() - 1) {
+                newStudents.addAll(addStudentsFromPosition(0));
+            } else {
+                newStudents.addAll(addStudentsFromPosition(mn_curr_position + 1));
             }
         }
+    }
+
+    private List<Student> addStudentsFromPosition(int pos) {
+        return islands.get(pos).students;
     }
 }
