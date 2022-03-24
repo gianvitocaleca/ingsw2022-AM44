@@ -5,26 +5,18 @@ import java.util.Map;
 import java.util.Random;
 
 public class StudentBucket {
-    private final int max_students = 26;
-    private Map<Creature,Integer> generated_students = createMap();
+    private static final int MAX_STUDENTS = 26;
+    private final Map<Creature,Integer> generatedStudents = createMap();
 
     /**
-     *
-     * this method initializes generated_students
+     * @param creature to ask for a specific Creature
+     * @return int of generated students of given creature
      */
-    private Map<Creature,Integer> createMap(){
-        Map<Creature,Integer> newMap = new HashMap<>();
-        for( Creature c : Creature.values()){
-            newMap.put(c , 0);
-        }
-        return newMap;
-    }
-    public int getNumberOfCreature(Creature creature){
-        return generated_students.get(creature);
+    public int getNumberOfGeneratedStudentsByCreature(Creature creature){
+        return generatedStudents.get(creature);
     }
     /**
-     *
-     * This method is used to create students with a random creature.
+     * This method is used to generate students giving them a random creature
      * @throws StudentsOutOfStockException when there are no more students to create
      */
     public Student generateStudent() throws StudentsOutOfStockException{
@@ -32,7 +24,7 @@ public class StudentBucket {
         Student s = null;
         Creature futureStudent;
         for(Creature c : Creature.values()){
-            if(generated_students.get(c)<max_students){
+            if(generatedStudents.get(c)< MAX_STUDENTS){
                 ok = true;
                 break;
             }
@@ -42,11 +34,22 @@ public class StudentBucket {
         }
         do {
             futureStudent = Creature.values()[new Random().nextInt(Creature.values().length)];
-            if (generated_students.get(futureStudent) < max_students) {
+            if (generatedStudents.get(futureStudent) < MAX_STUDENTS) {
                 s = new Student(futureStudent);
             }
         }while(s == null);
-        generated_students.put(futureStudent, generated_students.get(futureStudent)+1);
+        generatedStudents.put(futureStudent, generatedStudents.get(futureStudent)+1);
         return s;
+    }
+
+    /**
+     * This method initializes generated_students
+     */
+    private Map<Creature,Integer> createMap(){
+        Map<Creature,Integer> newMap = new HashMap<>();
+        for( Creature c : Creature.values()){
+            newMap.put(c , 0);
+        }
+        return newMap;
     }
 }
