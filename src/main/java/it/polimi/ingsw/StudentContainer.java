@@ -21,11 +21,12 @@ public abstract class StudentContainer {
     public void addStudents(List<Student> newStudents){
         students.addAll(newStudents);
     }
+    public abstract void addStudent(Student student);
 
     public Student removeStudent(Creature creature){
-        Optional<Student> temp = students.stream().filter(s -> s.getCreature()==creature).findFirst();
+        Student temp = students.stream().filter(s -> s.getCreature()==creature).findFirst().get();
         students.remove(temp);
-        return temp.get();
+        return temp;
     }
 
     public int getCapacity(){
