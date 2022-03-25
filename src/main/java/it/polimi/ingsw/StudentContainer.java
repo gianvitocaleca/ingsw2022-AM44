@@ -24,7 +24,7 @@ public abstract class StudentContainer {
     public abstract void addStudent(Student student);
 
     public Student removeStudent(Creature creature){
-        Student temp = students.stream().filter(s -> s.getCreature()==creature).findFirst().get();
+        Student temp = students.stream().filter(s -> s.getCreature()==creature).findFirst().orElse(null);
         students.remove(temp);
         return temp;
     }
