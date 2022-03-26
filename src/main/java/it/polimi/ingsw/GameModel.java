@@ -10,8 +10,6 @@ public class GameModel {
     private int num_of_players;
     private Character[][] characters;
     private Character played_character;
-    private ProfessorChecker professor_checker;
-    private InfluenceCalculator influence_calculator;
 
     public GameModel(boolean advanced_rules, List<String> name_of_players, int num_of_players) {
         this.advanced_rules = advanced_rules;

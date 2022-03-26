@@ -1,13 +1,13 @@
 package it.polimi.ingsw;
 
-public class Herbalist implements Character {
-    private int deactivator;
+public class MoverCharacter implements Character {
+
     private Name name;
 
-    public Herbalist(Name name) {
+    public MoverCharacter(Name name){
         this.name = name;
     }
-
+    @Override
     public void effect() {
 
     }

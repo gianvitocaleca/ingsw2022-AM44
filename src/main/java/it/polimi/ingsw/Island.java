@@ -36,9 +36,7 @@ public class Island extends StudentContainer {
         numberOfNoEntries -=1;
     }
 
-    public void addStudent(Student student){
-        getStudents().add(student);
-    }
+
 
     /**
      * @return the numberOfTowers on the island,

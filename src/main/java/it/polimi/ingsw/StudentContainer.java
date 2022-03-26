@@ -21,7 +21,9 @@ public abstract class StudentContainer {
     public void addStudents(List<Student> newStudents){
         students.addAll(newStudents);
     }
-    public abstract void addStudent(Student student);
+    public void addStudent(Student student){
+        getStudents().add(student);
+    }
 
     public Student removeStudent(Creature creature){
         Student temp = students.stream().filter(s -> s.getCreature()==creature).findFirst().orElse(null);
