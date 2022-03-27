@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.*;
 
-public class GameModel {
+public class GameModel implements Playable {
 
     private boolean advanced_rules;
     private List<Player> players;
@@ -53,6 +53,36 @@ public class GameModel {
     }
 
     public void modifyCostOfCharacter(Character character) {
+
+    }
+
+    @Override
+    public void addNoEntry(int indexOfIsland) {
+        
+    }
+
+    @Override
+    public void evaluateInfluence() {
+
+    }
+
+    @Override
+    public void setPostmanMovements(int numberOfSteps) {
+
+    }
+
+    @Override
+    public void thiefEffect(Creature creature) {
+
+    }
+
+    @Override
+    public void moveStudents(StudentContainer source, StudentContainer destination, Creature creature) {
+
+    }
+
+    @Override
+    public void setInfluenceCharacter(int typeOfInfluenceCharacter) {
 
     }
 }

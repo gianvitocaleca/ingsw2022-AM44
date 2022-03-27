@@ -5,7 +5,7 @@ import java.util.*;
 public class Player {
     private final String username;
     private final Color my_color;
-    private final String wizard;
+    private final Wizard wizard;
     private final Entrance entrance;
     private final Dining_Room dining_room;
     private Assistant last_played_card;
@@ -16,7 +16,7 @@ public class Player {
 
     public Player(String username, Color my_color, Assistant last_played_card,
                   int my_coins, List<Assistant> assistant_deck,
-                  List<Professor> professors, String wizard, int towers,
+                  List<Professor> professors, Wizard wizard, int towers,
                   Entrance entrance, Dining_Room dining_room) {
 
         this.username = username;
@@ -55,7 +55,7 @@ public class Player {
         return professors;
     }
 
-    public String getWizard() {
+    public Wizard getWizard() {
         return wizard;
     }
 

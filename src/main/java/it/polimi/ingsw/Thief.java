@@ -2,9 +2,10 @@ package it.polimi.ingsw;
 
 public class Thief implements Character {
     private final Name name;
+    private Playable model;
 
     public Thief(Name name) {
-        this.name=name;
+        this.name = name;
     }
 
     public void effect() {

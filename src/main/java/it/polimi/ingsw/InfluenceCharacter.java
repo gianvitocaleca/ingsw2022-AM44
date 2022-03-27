@@ -1,11 +1,12 @@
 package it.polimi.ingsw;
 
-public class InfluenceCharacter implements Character{
+public class InfluenceCharacter implements Character {
 
     private Name name;
+    private Playable model;
 
-    public InfluenceCharacter(Name name){
-        this.name=name;
+    public InfluenceCharacter(Name name) {
+        this.name = name;
     }
 
     @Override
