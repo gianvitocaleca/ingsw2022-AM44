@@ -5,8 +5,9 @@ public class Herbalist implements Character {
     private Name name;
     private Playable model;
 
-    public Herbalist(Name name) {
+    public Herbalist(Name name, Playable model) {
         this.name = name;
+        this.model = model;
     }
 
     public void effect() {

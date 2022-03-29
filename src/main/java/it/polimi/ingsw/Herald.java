@@ -5,8 +5,9 @@ public class Herald implements Character {
     private Name name;
     private Playable model;
 
-    public Herald(Name name) {
-        this.name = name;
+    public Herald(Name name, Playable model) {
+        this.name=name;
+        this.model=model;
     }
 
     public void effect() {

@@ -5,8 +5,9 @@ public class Postman implements Character {
     private Name name;
     private Playable model;
 
-    public Postman(Name name) {
+    public Postman(Name name, Playable model) {
         this.name = name;
+
     }
 
     public void effect() {
