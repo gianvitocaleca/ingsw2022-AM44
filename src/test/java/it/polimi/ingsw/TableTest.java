@@ -164,22 +164,6 @@ public class TableTest {
         }
     }
 
-    @Test
-    public void MotherNatureRandomValuesTest(){
-        List<Integer> values = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            values.add(0);
-        }
-        values.add(table.getMnPosition(),values.get(table.getMnPosition())+1);
-        for (int i = 0; i < 100; i++) {
-            table = new Table(new ArrayList<>(),new ArrayList<>(),0);
-            values.add(table.getMnPosition(),values.get(table.getMnPosition())+1);
-        }
 
-        for(int x=0; x<12; x++){
-            System.out.print(values.get(x)+" ");
-            assertTrue(values.get(x)!=0);
-        }
-    }
 
 }
