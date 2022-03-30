@@ -15,7 +15,7 @@ public class StudentTest {
     @Test
     @Timeout(value = 10)
     public void MaxCapacityBucket() {
-        StudentBucket bucket = new StudentBucket();
+        StudentBucket bucket = StudentBucket.getInstance();
         List<Student> temp = new ArrayList<>();
         while(true) {
             try {
