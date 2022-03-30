@@ -2,6 +2,10 @@ package it.polimi.ingsw;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 

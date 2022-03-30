@@ -1,6 +1,14 @@
 package it.polimi.ingsw;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.gameboard.Table;
+import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.*;
 import java.util.*;
 
@@ -21,7 +29,7 @@ public class TableTest {
             try{
                 newStudents= new ArrayList<>();
                 newStudents.add(bucket.generateStudent());
-                island.add(i, new Island(newStudents,1,Color.BLACK,130,0));
+                island.add(i, new Island(newStudents,1, Color.BLACK,130,0));
             }catch (StudentsOutOfStockException e){
                 System.out.println("No more students");
             }

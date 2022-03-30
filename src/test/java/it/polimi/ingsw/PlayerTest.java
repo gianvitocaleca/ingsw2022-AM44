@@ -2,14 +2,19 @@ package it.polimi.ingsw;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Value;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Assistant;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.Entrance;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
 class PlayerTest {
 
     @Test
     void getUsernameCorrectly() {
-        Player p1 = new Player("userName",Color.BLACK,1,Wizard.BLUE,8,new Entrance(7));
+        Player p1 = new Player("userName", Color.BLACK,1, Wizard.BLUE,8,new Entrance(7));
         assertEquals(p1.getUsername(),"userName");
     }
 

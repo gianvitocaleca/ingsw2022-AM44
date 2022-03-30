@@ -2,11 +2,10 @@ package it.polimi.ingsw;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.model.enums.Value;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AssistantTest {
 
