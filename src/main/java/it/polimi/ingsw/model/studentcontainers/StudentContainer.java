@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.studentcontainers;
 
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 
 import java.util.*;
 
@@ -33,6 +34,7 @@ public abstract class StudentContainer {
         students.remove(temp);
         return temp;
     }
+
 
     public int getCapacity(){
         return capacity;

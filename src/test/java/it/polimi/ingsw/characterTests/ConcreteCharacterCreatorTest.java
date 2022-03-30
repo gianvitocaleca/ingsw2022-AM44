@@ -1,12 +1,12 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.characterTests;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ProfessorTest {
+class ConcreteCharacterCreatorTest {
 
     @Test
-    void getCreature() {
+    void createCharacter() {
     }
 }

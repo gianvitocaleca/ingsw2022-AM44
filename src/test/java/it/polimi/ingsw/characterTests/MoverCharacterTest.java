@@ -1,16 +1,16 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.characterTests;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WizardTest {
+class MoverCharacterTest {
 
     @Test
-    void values() {
+    void effect() {
     }
 
     @Test
-    void valueOf() {
+    void getName() {
     }
 }

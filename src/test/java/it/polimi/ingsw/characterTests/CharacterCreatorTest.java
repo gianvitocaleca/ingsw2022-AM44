@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.characterTests;
 
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.Name;
