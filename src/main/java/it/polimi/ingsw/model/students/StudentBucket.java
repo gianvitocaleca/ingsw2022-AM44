@@ -3,26 +3,32 @@ package it.polimi.ingsw.model.students;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class StudentBucket {
+    private static StudentBucket instance;
     private static final int MAX_STUDENTS = 26;
-    private final Map<Creature,Integer> generatedStudents = createMap();
+    private static final Map<Creature,Integer> generatedStudents = createMap();
+
+    public static StudentBucket getInstance() {
+        if(instance == null) {
+            instance = new StudentBucket();
+        }
+        return instance;
+    }
 
     /**
      * @param creature to ask for a specific Creature
      * @return int of generated students of given creature
      */
-    public int getNumberOfGeneratedStudentsByCreature(Creature creature){
+    public static int getNumberOfGeneratedStudentsByCreature(Creature creature){
         return generatedStudents.get(creature);
     }
     /**
      * This method is used to generate students giving them a random creature
      * @throws StudentsOutOfStockException when there are no more students to create
      */
-    public Student generateStudent() throws StudentsOutOfStockException{
+    public static Student generateStudent() throws StudentsOutOfStockException{
         boolean ok = false;
         Student s = null;
         Creature futureStudent;
@@ -48,7 +54,7 @@ public class StudentBucket {
     /**
      * This method initializes generated_students
      */
-    private Map<Creature,Integer> createMap(){
+    private static Map<Creature,Integer> createMap(){
         Map<Creature,Integer> newMap = new HashMap<>();
         for( Creature c : Creature.values()){
             newMap.put(c , 0);

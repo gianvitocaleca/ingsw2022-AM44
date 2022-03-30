@@ -1,29 +1,50 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
 import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 
 import java.util.*;
 
 public class Table {
-    private final List<Island> islands;
-    private final List<Cloud> clouds;
+    private final List<Island> islands = new ArrayList<>();
+    private final List<Cloud> clouds = new ArrayList<>();
     private final MotherNature motherNature;
-    private int coinReserve;
+    private int coinReserve = 0;
 
     /**
      * The constructor makes a new table with provided parameters
-     * @param islands is the list of islands created by GameModel
-     * @param clouds is the list of clouds created by GameModel
-     * @param coinReserve is the value of the initial coinReserve
+     * @param numberOfPlayers is the numberOfPlayers that will play the game
+     * @param advancedRules is the boolean to set advancedRules
      */
-    public Table(List<Island> islands, List<Cloud> clouds, int coinReserve) {
-        this.islands = islands;
-        this.clouds = clouds;
+    public Table(int numberOfPlayers, boolean advancedRules) {
+
+        for(int i=0;i<12;i++){
+            List<Student> students = new ArrayList<>();
+            try {
+                students.add(StudentBucket.getInstance().generateStudent());
+            }catch (StudentsOutOfStockException ignored){
+                ignored.printStackTrace();
+            }
+            this.islands.add(new Island(students,0, Color.BLACK,130,0));
+        }
+
+        createClouds(numberOfPlayers);
         this.motherNature = new MotherNature();
-        this.coinReserve = coinReserve;
+        if(advancedRules){
+            this.coinReserve = 20-numberOfPlayers;
+        }
+
+    }
+
+    private void createClouds(int n){
+        for(int i=0;i<n;i++){
+            this.clouds.add(new Cloud(n+1));
+        }
     }
 
     /**
@@ -60,8 +81,12 @@ public class Table {
     public int getCoinReserve() {
         return coinReserve;
     }
-    public void setCoinReserve(int coinReserve) {
-        this.coinReserve = coinReserve;
+
+    public void addCoin() {
+        this.coinReserve++;
+    }
+    public void removeCoin() {
+        this.coinReserve--;
     }
 
     public List<Island> getIslands() {
