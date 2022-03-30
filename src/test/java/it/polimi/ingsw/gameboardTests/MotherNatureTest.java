@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.gameboardTests;
 
 import it.polimi.ingsw.model.gameboard.MotherNature;
 import org.junit.jupiter.api.BeforeEach;

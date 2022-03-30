@@ -1,20 +1,16 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.characterTests;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class NameTest {
+class PostmanTest {
 
     @Test
-    void getCost() {
+    void effect() {
     }
 
     @Test
-    void values() {
-    }
-
-    @Test
-    void valueOf() {
+    void getName() {
     }
 }

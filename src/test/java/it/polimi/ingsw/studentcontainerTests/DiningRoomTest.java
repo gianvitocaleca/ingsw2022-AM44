@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.studentcontainerTests;
 
 import it.polimi.ingsw.model.studentcontainers.DiningRoom;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,16 +1,16 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.enumTests;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CharacterTest {
+class CreatureTest {
 
     @Test
-    void effect() {
+    void values() {
     }
 
     @Test
-    void getName() {
+    void valueOf() {
     }
 }

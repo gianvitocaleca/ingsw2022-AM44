@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.studentcontainerTests;
 
 import org.junit.jupiter.api.Test;
 

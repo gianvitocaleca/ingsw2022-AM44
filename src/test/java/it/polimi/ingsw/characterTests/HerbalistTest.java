@@ -1,10 +1,10 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.characterTests;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HeraldTest {
+class HerbalistTest {
 
     @Test
     void effect() {
