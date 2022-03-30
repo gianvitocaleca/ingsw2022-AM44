@@ -1,50 +1,37 @@
 package it.polimi.ingsw;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
 class PlayerTest {
 
     @Test
-    void getUsername() {
+    void getUsernameCorrectly() {
+        Player p1 = new Player("userName",Color.BLACK,1,Wizard.BLUE,8,new Entrance(7));
+        assertEquals(p1.getUsername(),"userName");
     }
 
     @Test
-    void getMy_color() {
+    void getMyCorrectColor() {
+        Player p1 = new Player("userName",Color.BLACK,1,Wizard.BLUE,8,new Entrance(7));
+        assertEquals(p1.getMyColor(),Color.BLACK);
     }
 
     @Test
-    void getLast_played_card() {
+    void getLastPlayedCard() {
+        Player p1 = new Player("userName",Color.BLACK,1,Wizard.BLUE,8,new Entrance(7));
+        Assistant a = new Assistant(Value.CAT);
+        p1.setAssistantCard(a);
+        assertEquals(p1.getLastPlayedCard(),a);
+        Assistant b = new Assistant(Value.DOG);
+        assertFalse(p1.getLastPlayedCard().equals(b));
+        p1.setAssistantCard(b);
+        assertEquals(p1.getLastPlayedCard(),b);
     }
 
-    @Test
-    void getMy_coins() {
-    }
-
-    @Test
-    void getAssistant_deck() {
-    }
-
-    @Test
-    void getProfessors() {
-    }
-
-    @Test
-    void getWizard() {
-    }
-
-    @Test
-    void getTowers() {
-    }
-
-    @Test
-    void getEntrance() {
-    }
-
-    @Test
-    void getDining_room() {
-    }
+/*
 
     @Test
     void addCoin() {
@@ -69,4 +56,5 @@ class PlayerTest {
     @Test
     void removeProfessor() {
     }
+ */
 }

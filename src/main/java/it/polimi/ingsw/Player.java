@@ -3,56 +3,60 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class Player {
+
     private final String username;
-    private final Color my_color;
-    private final Wizard wizard;
     private final Entrance entrance;
-    private final DiningRoom dining_room;
-    private Assistant last_played_card;
-    private int my_coins;
-    private List<Assistant> assistant_deck;
-    private List<Professor> professors;
+    private final DiningRoom diningRoom;
+    private final int diningRoomCapacity = 9;
+    private final Color myColor;
+    private int myCoins;
+    private final Wizard wizard;
+    private final List<Assistant> lastPlayedCard;
+    private final List<Assistant> assistantDeck;
+    private final List<Professor> professors;
     private int towers;
 
-    public Player(String username, Color my_color, Assistant last_played_card,
-                  int my_coins, List<Assistant> assistant_deck,
-                  List<Professor> professors, Wizard wizard, int towers,
-                  Entrance entrance, DiningRoom dining_room) {
-
+    public Player(String username, Color myColor, int myCoins, Wizard wizard,int towers, Entrance entrance) {
         this.username = username;
-        this.my_color = my_color;
-        this.last_played_card = last_played_card;
-        this.my_coins = my_coins;
-        this.assistant_deck = assistant_deck;
-        this.professors = professors;
+        this.myColor = myColor;
+        this.myCoins = myCoins;
         this.wizard = wizard;
         this.towers = towers;
+        this.lastPlayedCard= new ArrayList<>();
+        assistantDeck = new ArrayList<>();
+        for(Value v : Value.values()){
+            assistantDeck.add(new Assistant(v));
+        }
+        professors = new ArrayList<>();
         this.entrance = entrance;
-        this.dining_room = dining_room;
+        this.diningRoom = new DiningRoom(diningRoomCapacity);
     }
 
     public String getUsername() {
         return username;
     }
 
-    public Color getMy_color() {
-        return my_color;
+    public Color getMyColor() {
+        return myColor;
     }
 
-    public Assistant getLast_played_card() {
-        return last_played_card;
+    public int getMyCoins() {
+        return myCoins;
     }
 
-    public int getMy_coins() {
-        return my_coins;
+    public Assistant getLastPlayedCard() {
+
+        return lastPlayedCard.get(lastPlayedCard.size()-1);
     }
 
-    public List<Assistant> getAssistant_deck() {
-        return assistant_deck;
+    public List<Assistant> getAssistantDeck() {
+        List<Assistant> tempList = new ArrayList<>(assistantDeck);
+        return tempList;
     }
 
     public List<Professor> getProfessors() {
-        return professors;
+        List<Professor> tempProf = new ArrayList<>(professors);
+        return tempProf;
     }
 
     public Wizard getWizard() {
@@ -67,24 +71,29 @@ public class Player {
         return entrance;
     }
 
-    public DiningRoom getDining_room() {
-        return dining_room;
+    public DiningRoom getDiningRoom() {
+        return diningRoom;
     }
 
     public void addCoin() {
-        this.my_coins++;
+        this.myCoins++;
     }
 
     public void removeCoin(int character_cost) {
-        my_coins = my_coins - character_cost;
+        myCoins = myCoins - character_cost;
     }
 
     public void setAssistantCard(Assistant assistant) {
-        last_played_card = assistant;
+        assistantDeck.remove(assistant);
+        lastPlayedCard.add(assistant);
     }
 
-    public void modifyTower(int num_of_towers) {
+    public void returnTowers(int num_of_towers) {
         towers = towers + num_of_towers;
+    }
+
+    public void placeTowers(int placedTowers){
+        towers -= placedTowers;
     }
 
     public void addProfessor(Professor professor) {
