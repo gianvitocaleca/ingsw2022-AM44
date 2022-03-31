@@ -19,84 +19,85 @@ public class GameModel implements Playable {
     private int numberOfPlayers;
     private List<Character> characters;
     private Character playedCharacter;
-    public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards){
+
+    public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
-        players = createListOfPlayers(advancedRules,usernames,colors,wizards);
-        this.numberOfPlayers=numberOfPlayers;
+        players = createListOfPlayers(advancedRules, usernames, colors, wizards);
+        this.numberOfPlayers = numberOfPlayers;
         //Il primo a giocare la carta assistente a inizio partita sarà il primo che ha fatto log in e di conseguenza il player in posizione zero
-        currPlayer=0;
-        this.table= new Table(numberOfPlayers,advancedRules);
+        currPlayer = 0;
+        this.table = new Table(numberOfPlayers, advancedRules);
         //mancano i character
     }
 
-    private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards){
+    private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
         List<Player> newPlayers = new ArrayList<>();
-        if(!advancedRules){
+        if (!advancedRules) {
             //istanzia il GameModel per le regole da principianti
-            if(numberOfPlayers==2) {
-                for (int i = 0; i<usernames.size(); i++) {
+            if (numberOfPlayers == 2) {
+                for (int i = 0; i < usernames.size(); i++) {
                     Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createTwoPlayer(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                    newPlayers.add(createTwoPlayer(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
                 }
-            }else{
-                for (int i = 0; i<usernames.size(); i++) {
+            } else {
+                for (int i = 0; i < usernames.size(); i++) {
                     Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createThreePlayer(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                    newPlayers.add(createThreePlayer(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
                 }
             }
-        }else{
+        } else {
             //istanzio le regole per giocatori esperti
-            if(numberOfPlayers==2) {
-                for (int i = 0; i<usernames.size(); i++) {
+            if (numberOfPlayers == 2) {
+                for (int i = 0; i < usernames.size(); i++) {
                     Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createTwoPlayerAdvanced(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                    newPlayers.add(createTwoPlayerAdvanced(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
                 }
-            }else{
-                for (int i = 0; i<usernames.size(); i++) {
+            } else {
+                for (int i = 0; i < usernames.size(); i++) {
                     Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createThreePlayerAdvanced(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                    newPlayers.add(createThreePlayerAdvanced(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
                 }
             }
         }
         return newPlayers;
     }
 
-    private Entrance createEntrance(int numberOfPlayers){
-        if(numberOfPlayers == 2){
+    private Entrance createEntrance(int numberOfPlayers) {
+        if (numberOfPlayers == 2) {
             return new Entrance(7);
         }
         //in case of 3 players
         return new Entrance(9);
     }
 
-    private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard){
-        return new Player(myUsername,myColor,0,myWizard, 8,myEntrance);
+    private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 0, myWizard, 8, myEntrance);
     }
 
-    private Player createThreePlayer(Entrance myEntrance,String myUsername,Color myColor, Wizard myWizard){
-        return new Player(myUsername,myColor,0,myWizard,6,myEntrance);
+    private Player createThreePlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 0, myWizard, 6, myEntrance);
     }
 
-    private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard){
-        return new Player(myUsername,myColor,1,myWizard, 8,myEntrance);
+    private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 1, myWizard, 8, myEntrance);
     }
 
-    private Player createThreePlayerAdvanced(Entrance myEntrance,String myUsername,Color myColor, Wizard myWizard){
-        return new Player(myUsername,myColor,1,myWizard,6,myEntrance);
+    private Player createThreePlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 1, myWizard, 6, myEntrance);
     }
 
-    public void fillClouds(){
+    public void fillClouds() {
         StudentBucket sb = StudentBucket.getInstance();
         List<Student> newStudentsOnCloud;
-        for(Cloud c : table.getClouds()){
-            newStudentsOnCloud=new ArrayList<>();
-            for(int i=0; i<c.getCapacity(); i++){
+        for (Cloud c : table.getClouds()) {
+            newStudentsOnCloud = new ArrayList<>();
+            for (int i = 0; i < c.getCapacity(); i++) {
                 try {
                     newStudentsOnCloud.add(sb.generateStudent());
-                }catch(StudentsOutOfStockException ex){
-                    if(checkEndGame()){
+                } catch (StudentsOutOfStockException ex) {
+                    if (checkEndGame()) {
                         findWinner();
-                    }else{
+                    } else {
                         ex.printStackTrace();
                     }
                 }
@@ -105,12 +106,13 @@ public class GameModel implements Playable {
         }
     }
 
-    public void playAssistant(int indexOfAssistant){
+    public void playAssistant(int indexOfAssistant) {
         players.get(currPlayer).setAssistantCard(players.get(currPlayer).getAssistantDeck().get(indexOfAssistant));
     }
 
-    public Table getTable(){ return table;}
-
+    public Table getTable() {
+        return table;
+    }
 
     public void establishRoundOrder() {
 
@@ -128,8 +130,23 @@ public class GameModel implements Playable {
         return false;
     }
 
+    /**
+     * Winning conditions based on number of towers and of professors.
+     *
+     * @return is the player that has won the game.
+     */
+
     public Player findWinner() {
-        return null;
+        Player ans = players.get(0);
+        for (Player p : players) {
+            if (p.getTowers() < ans.getTowers()) {
+                ans = p;
+            } else if (p.getTowers() == ans.getTowers() &&
+                    p.getProfessors().size() > ans.getProfessors().size()) {
+                ans = p;
+            }
+        }
+        return ans;
     }
 
     public void checkTower() {
@@ -146,7 +163,7 @@ public class GameModel implements Playable {
 
     @Override
     public void addNoEntry(int indexOfIsland) {
-        
+
     }
 
     @Override
