@@ -1,34 +1,116 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.gameboard.Table;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.model.enums.*;
+import it.polimi.ingsw.model.exceptions.*;
+import it.polimi.ingsw.model.gameboard.*;
+import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.studentcontainers.*;
+import it.polimi.ingsw.model.students.*;
 
 import java.util.*;
 
 public class GameModel implements Playable {
 
-    private boolean advanced_rules;
     private List<Player> players;
+    private int currPlayer;
     private Table table;
-    private int num_of_players;
-    private Character[][] characters;
-    private Character played_character;
-
-    public GameModel(boolean advanced_rules, List<String> name_of_players, int num_of_players) {
-        this.advanced_rules = advanced_rules;
-        this.num_of_players = num_of_players;
+    private int numberOfPlayers;
+    private List<Character> characters;
+    private Character playedCharacter;
+    public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards){
+        //aggiungere un giocatore alla volta per il problema del colore e del mago?
+        players = createListOfPlayers(advancedRules,usernames,colors,wizards);
+        this.numberOfPlayers=numberOfPlayers;
+        //Il primo a giocare la carta assistente a inizio partita sarà il primo che ha fatto log in e di conseguenza il player in posizione zero
+        currPlayer=0;
+        this.table= new Table(numberOfPlayers,advancedRules);
+        //mancano i character
     }
 
-    public void fillClouds() {
-
+    private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards){
+        List<Player> newPlayers = new ArrayList<>();
+        if(!advancedRules){
+            //istanzia il GameModel per le regole da principianti
+            if(numberOfPlayers==2) {
+                for (int i = 0; i<usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createTwoPlayer(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                }
+            }else{
+                for (int i = 0; i<usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createThreePlayer(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                }
+            }
+        }else{
+            //istanzio le regole per giocatori esperti
+            if(numberOfPlayers==2) {
+                for (int i = 0; i<usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createTwoPlayerAdvanced(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                }
+            }else{
+                for (int i = 0; i<usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createThreePlayerAdvanced(entrance,usernames.get(i),colors.get(i),wizards.get(i)));
+                }
+            }
+        }
+        return newPlayers;
     }
 
-    public void playAssistant() {
-
+    private Entrance createEntrance(int numberOfPlayers){
+        if(numberOfPlayers == 2){
+            return new Entrance(7);
+        }
+        //in case of 3 players
+        return new Entrance(9);
     }
+
+    private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard){
+        return new Player(myUsername,myColor,0,myWizard, 8,myEntrance);
+    }
+
+    private Player createThreePlayer(Entrance myEntrance,String myUsername,Color myColor, Wizard myWizard){
+        return new Player(myUsername,myColor,0,myWizard,6,myEntrance);
+    }
+
+    private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard){
+        return new Player(myUsername,myColor,1,myWizard, 8,myEntrance);
+    }
+
+    private Player createThreePlayerAdvanced(Entrance myEntrance,String myUsername,Color myColor, Wizard myWizard){
+        return new Player(myUsername,myColor,1,myWizard,6,myEntrance);
+    }
+
+    public void fillClouds(){
+        StudentBucket sb = StudentBucket.getInstance();
+        List<Student> newStudentsOnCloud;
+        for(Cloud c : table.getClouds()){
+            newStudentsOnCloud=new ArrayList<>();
+            for(int i=0; i<c.getCapacity(); i++){
+                try {
+                    newStudentsOnCloud.add(sb.generateStudent());
+                }catch(StudentsOutOfStockException ex){
+                    if(checkEndGame()){
+                        findWinner();
+                    }else{
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            c.addStudents(newStudentsOnCloud);
+        }
+    }
+
+    public void playAssistant(int indexOfAssistant){
+        players.get(currPlayer).setAssistantCard(players.get(currPlayer).getAssistantDeck().get(indexOfAssistant));
+    }
+
+    public Table getTable(){ return table;}
+
 
     public void establishRoundOrder() {
 
@@ -90,5 +172,25 @@ public class GameModel implements Playable {
     @Override
     public void setInfluenceCharacter(int typeOfInfluenceCharacter) {
 
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public int getCurrPlayer() {
+        return currPlayer;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    public List<Character> getCharacters() {
+        return characters;
+    }
+
+    public Character getPlayedCharacter() {
+        return playedCharacter;
     }
 }

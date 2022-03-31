@@ -10,6 +10,9 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.studentcontainers.Entrance;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class PlayerTest {
 
     @Test

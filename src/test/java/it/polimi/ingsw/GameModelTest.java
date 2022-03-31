@@ -1,17 +1,43 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.studentcontainers.Cloud;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameModelTest {
-
-    @Test
-    void fillClouds() {
+    GameModel gm;
+    @BeforeEach
+    public void createGameModel(){
+        gm = new GameModel(false,
+                new ArrayList<String>(Arrays.asList("Paolo","Gianvito","Sabrina")),
+                3,
+                new ArrayList<Color>(Arrays.asList(Color.values())),
+                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW,Wizard.PINK,Wizard.BLUE)));
     }
 
     @Test
-    void playAssistant() {
+    void fillCloudsCorrectly() {
+        gm.fillClouds();
+        for(Cloud c : gm.getTable().getClouds()){
+            assertEquals(c.getStudents().size(),c.getCapacity());
+        }
+    }
+
+    @Test
+    void playEveryAssistant() {
+        for(int i=0; i<10; i++){
+            gm.playAssistant(0);
+            assertEquals(gm.getPlayers().get(gm.getCurrPlayer()).getAssistantDeck().size(),9-i);
+            assertEquals(gm.getPlayers().get(gm.getCurrPlayer()).getLastPlayedCards().size(), 1+i);
+        }
     }
 
     @Test

@@ -56,6 +56,11 @@ public class Player {
         return lastPlayedCard.get(lastPlayedCard.size()-1);
     }
 
+    public List<Assistant> getLastPlayedCards() {
+        List<Assistant> tempList = new ArrayList<>(lastPlayedCard);
+        return tempList;
+    }
+
     public List<Assistant> getAssistantDeck() {
         List<Assistant> tempList = new ArrayList<>(assistantDeck);
         return tempList;
