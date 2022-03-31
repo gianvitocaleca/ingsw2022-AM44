@@ -119,7 +119,11 @@ public class GameModel implements Playable {
     }
 
     public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
-
+        List<Student> newStudents = new ArrayList<>();
+        for(Creature c : creatures){
+            newStudents.add(source.removeStudent(c));
+        }
+        destination.addStudents(newStudents);
     }
 
     public boolean moveMotherNature(int jumps) {
@@ -153,9 +157,41 @@ public class GameModel implements Playable {
 
     }
 
-    public void checkNeighbourIslands() {
+    public void checkNeighborIsland() {
+        boolean left = false, right = false;
+        Island currentIsland=table.getCurrentIsland();
+        Island nextIsland=table.getNextIsland();
+        Island prevIsland=table.getPrevIsland();
 
+        if(prevIsland.getNumberOfTowers()>0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())){
+            left=true;
+        }
+        if(nextIsland.getNumberOfTowers()>0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())){
+            right=true;
+        }
+
+        if(right&&left){
+            try{
+                table.islandFusion("Both");
+            }catch (GroupsOfIslandsException e){
+                checkEndGame();
+            }
+
+        }else if(right){
+            try{
+                table.islandFusion("Right");
+            }catch (GroupsOfIslandsException e){
+                checkEndGame();
+            }
+        }else if(left){
+            try{
+                table.islandFusion("Left");
+            }catch (GroupsOfIslandsException e){
+                checkEndGame();
+            }
+        }
     }
+
 
     public void modifyCostOfCharacter(Character character) {
 
