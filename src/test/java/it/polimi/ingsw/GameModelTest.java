@@ -83,6 +83,29 @@ class GameModelTest {
 
     @Test
     void moveStudents() {
+        gm.fillClouds();
+        Cloud zero = gm.getTable().getClouds().get(0);
+        Cloud one = gm.getTable().getClouds().get(1);
+
+        int finalsize = zero.getStudents().size()+one.getStudents().size();
+
+        List<Creature> creaturesList = new ArrayList<>();
+        List<Student> studentsList = new ArrayList<>();
+
+        for(Student s : zero.getStudents() ){
+                creaturesList.add(s.getCreature());
+                studentsList.add(s);
+        }
+        for(Student s : one.getStudents()){
+            studentsList.add(s);
+        }
+
+        gm.moveStudents(zero,one,creaturesList);
+
+
+        assertEquals(zero.getStudents().size(),0);
+        assertEquals(one.getStudents().size(),finalsize);
+        assertTrue(one.getStudents().containsAll(studentsList));
     }
 
     @Test

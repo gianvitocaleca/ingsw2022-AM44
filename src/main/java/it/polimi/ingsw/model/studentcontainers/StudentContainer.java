@@ -26,7 +26,7 @@ public abstract class StudentContainer {
         students.addAll(newStudents);
     }
     public void addStudent(Student student){
-        getStudents().add(student);
+        students.add(student);
     }
 
     public Student removeStudent(Creature creature){
