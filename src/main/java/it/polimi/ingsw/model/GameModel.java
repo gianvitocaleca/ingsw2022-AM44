@@ -120,7 +120,7 @@ public class GameModel implements Playable {
 
     public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         List<Student> newStudents = new ArrayList<>();
-        for(Creature c : creatures){
+        for (Creature c : creatures) {
             newStudents.add(source.removeStudent(c));
         }
         destination.addStudents(newStudents);
@@ -153,40 +153,77 @@ public class GameModel implements Playable {
         return ans;
     }
 
+    /**
+     * Moves the professors to the correct players
+     * Creates the professors if not present
+     */
+
+    private void checkProfessor() {
+        for (Creature c : Creature.values()) {
+            Optional<Player> hasprofessor = Optional.empty();
+            Player hasmorestudents = players.get(0);
+            for (Player p : players) {
+                if (p.getProfessors().size() > 0) {
+                    for (Professor prof : p.getProfessors()) {
+                        if (prof.getCreature().equals(c)) {
+                            hasprofessor = Optional.of(p);
+                            break;
+                        }
+                    }
+                }
+                if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
+                        hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                    hasmorestudents = p;
+                }
+            }
+            if (hasprofessor.isPresent()) {
+                if (!hasprofessor.get().equals(hasmorestudents)) {
+                    if (hasprofessor.get().getDiningRoom().getNumberOfStudentsByCreature(c) <
+                            hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                        hasmorestudents.addProfessor(hasprofessor.get().removeProfessor(c));
+                    }
+                }
+
+            } else {
+                hasmorestudents.addProfessor(new Professor(c));
+            }
+        }
+    }
+
     public void checkTower() {
 
     }
 
     public void checkNeighborIsland() {
         boolean left = false, right = false;
-        Island currentIsland=table.getCurrentIsland();
-        Island nextIsland=table.getNextIsland();
-        Island prevIsland=table.getPrevIsland();
+        Island currentIsland = table.getCurrentIsland();
+        Island nextIsland = table.getNextIsland();
+        Island prevIsland = table.getPrevIsland();
 
-        if(prevIsland.getNumberOfTowers()>0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())){
-            left=true;
+        if (prevIsland.getNumberOfTowers() > 0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
+            left = true;
         }
-        if(nextIsland.getNumberOfTowers()>0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())){
-            right=true;
+        if (nextIsland.getNumberOfTowers() > 0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
+            right = true;
         }
 
-        if(right&&left){
-            try{
+        if (right && left) {
+            try {
                 table.islandFusion("Both");
-            }catch (GroupsOfIslandsException e){
+            } catch (GroupsOfIslandsException e) {
                 checkEndGame();
             }
 
-        }else if(right){
-            try{
+        } else if (right) {
+            try {
                 table.islandFusion("Right");
-            }catch (GroupsOfIslandsException e){
+            } catch (GroupsOfIslandsException e) {
                 checkEndGame();
             }
-        }else if(left){
-            try{
+        } else if (left) {
+            try {
                 table.islandFusion("Left");
-            }catch (GroupsOfIslandsException e){
+            } catch (GroupsOfIslandsException e) {
                 checkEndGame();
             }
         }
@@ -202,8 +239,66 @@ public class GameModel implements Playable {
 
     }
 
+    /**
+     * Evaluates the influence on the current island
+     * If island has NoEntry does nothing and removes one NoEntry
+     */
+
     @Override
     public void evaluateInfluence() {
+        Island ci = table.getCurrentIsland();
+        if (ci.getNumberOfNoEntries() == 0) {
+            Optional<Player> hasmoreinfluece = Optional.empty();
+            int influence = 0;
+            for (Player p : players) {
+                int sum = 0;
+                //if player has professor add the relative influence
+                if (p.getProfessors().size() > 0) {
+                    for (Professor prof : p.getProfessors()) {
+                        sum += ci.getNumberOfStudentsByCreature(prof.getCreature());
+                    }
+                }
+                //if player has towers on the island add the relative influence
+                if (ci.getNumberOfTowers() > 0 &&
+                        p.getMyColor().equals(ci.getColorOfTowers())) {
+                    sum += ci.getNumberOfTowers();
+                }
+                //if player has more influence update
+                if (sum > influence) {
+                    hasmoreinfluece = Optional.of(p);
+                    influence = sum;
+                }
+            }
+            //if the player who has more influence has changed
+            if (!hasmoreinfluece.get().getMyColor().equals(ci.getColorOfTowers())) {
+                //swap towers
+                if (ci.getNumberOfTowers() > 0) {
+                    for (Player p : players) {
+                        //removes towers from the player who has influence
+                        if (p.getMyColor().equals(hasmoreinfluece.get().getMyColor())) {
+                            p.removeTowers(ci.getNumberOfTowers());
+                        }
+                        //adds towers to the player who had towers on the island
+                        if (p.getMyColor().equals(ci.getColorOfTowers())) {
+                            p.addTowers(ci.getNumberOfTowers());
+                        }
+                    }
+                } else {
+                    //removes one tower from the player that has conquered the island
+                    for (Player p : players) {
+                        if (p.getMyColor().equals(hasmoreinfluece.get().getMyColor())) {
+                            p.removeTowers(1);
+                        }
+                    }
+                }
+                //change the color of the towers on the island
+                ci.setColorOfTowers(hasmoreinfluece.get().getMyColor());
+                //check the neighbor islands
+                checkNeighborIsland();
+            }
+        } else {
+            ci.removeNoEntry();
+        }
 
     }
 

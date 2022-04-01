@@ -1,9 +1,12 @@
 package it.polimi.ingsw.model.studentcontainers;
 
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.students.Student;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Island extends StudentContainer {
     private int numberOfTowers;
@@ -12,9 +15,10 @@ public class Island extends StudentContainer {
 
     /**
      * This is the Constructor used for the first creation of the island and the following fusions.
+     *
      * @param noEntries is the number of no entry tiles put on the island
      */
-    public Island(List<Student> students, int numberOfTowers, Color colorOfTowers, int capacity, int noEntries){
+    public Island(List<Student> students, int numberOfTowers, Color colorOfTowers, int capacity, int noEntries) {
         super(capacity);
         addStudents(students);
         this.numberOfTowers = numberOfTowers;
@@ -22,24 +26,13 @@ public class Island extends StudentContainer {
         this.colorOfTowers = colorOfTowers;
     }
 
-    /**
-     * This method changes the Tower's color and in case of first conquer sets numberOfTowers at 1
-     * The color is BLACK by default, but the island is not considered in possess of any player until numberOfTowers is 0
-     * @param color is the new Tower's color in case of conquer
-     */
-    public void setColorOfTowers(Color color){
-        this.colorOfTowers = color;
-        if(numberOfTowers == 0) numberOfTowers++;
+    public void addNoEntry() {
+        numberOfNoEntries += 1;
     }
 
-    public void addNoEntry(){
-        numberOfNoEntries +=1;
+    public void removeNoEntry() {
+        numberOfNoEntries -= 1;
     }
-    public void removeNoEntry(){
-        numberOfNoEntries -=1;
-    }
-
-
 
     /**
      * @return the numberOfTowers on the island,
@@ -53,7 +46,18 @@ public class Island extends StudentContainer {
         return colorOfTowers;
     }
 
-    public int getNumberOfNoEntries(){
+    /**
+     * This method changes the Tower's color and in case of first conquer sets numberOfTowers at 1
+     * The color is BLACK by default, but the island is not considered in possess of any player until numberOfTowers is 0
+     *
+     * @param color is the new Tower's color in case of conquer
+     */
+    public void setColorOfTowers(Color color) {
+        this.colorOfTowers = color;
+        if (numberOfTowers == 0) numberOfTowers++;
+    }
+
+    public int getNumberOfNoEntries() {
         return numberOfNoEntries;
     }
 
@@ -61,5 +65,15 @@ public class Island extends StudentContainer {
     public String toString() {
         return "NoEntries: " + this.numberOfNoEntries + " Color: " + this.colorOfTowers +
                 " NumberOfTowers: " + this.numberOfTowers + " " + this.getCapacity();
+    }
+
+    public int getNumberOfStudentsByCreature(Creature creature) {
+        int sum = 0;
+        for (Student s : getStudents()) {
+            if (s.getCreature().equals(creature)) {
+                sum++;
+            }
+        }
+        return sum;
     }
 }

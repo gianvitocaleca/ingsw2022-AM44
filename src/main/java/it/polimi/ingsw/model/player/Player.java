@@ -92,7 +92,7 @@ public class Player {
     }
 
     public void removeCoin(int character_cost) {
-        myCoins = myCoins - character_cost;
+        myCoins -= character_cost;
     }
 
     public void setAssistantCard(Assistant assistant) {
@@ -113,7 +113,7 @@ public class Player {
     }
 
     public Professor removeProfessor(Creature creature) {
-        return new Professor(creature);
+        return professors.stream().filter(p -> p.getCreature().equals(creature)).findFirst().get();
     }
 
 }
