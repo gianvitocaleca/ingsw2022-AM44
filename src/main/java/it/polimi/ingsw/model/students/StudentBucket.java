@@ -51,6 +51,17 @@ public class StudentBucket {
         return s;
     }
 
+    public static void retrieveStudent(Creature creature){
+        generatedStudents.put(creature,generatedStudents.get(creature)-1);
+    }
+
+
+    public static void resetMap(){
+        for(Creature c : Creature.values()){
+            generatedStudents.put(c,0);
+        }
+    }
+
     /**
      * This method initializes generated_students
      */

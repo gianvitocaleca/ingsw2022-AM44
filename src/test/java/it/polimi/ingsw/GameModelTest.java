@@ -6,8 +6,10 @@ import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
+import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameModelTest {
     GameModel gm;
+
+    @AfterEach
+    public void resetBucket(){
+        StudentBucket.resetMap();
+    }
 
     @BeforeEach
     public void createGameModel() {
@@ -59,6 +66,19 @@ class GameModelTest {
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue()<gm.getPlayers().get(1).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue()<gm.getPlayers().get(2).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue()<gm.getPlayers().get(2).getLastPlayedCard().getValue());
+    }
+
+    @Test
+    public void LastFusionEndgameTest(){
+        while(true){
+            try{
+                gm.getTable().islandFusion("Both");
+            }
+            catch (GroupsOfIslandsException e){
+                break;
+            }
+        }
+        assertTrue(gm.checkEndGame());
     }
 
     @Test
