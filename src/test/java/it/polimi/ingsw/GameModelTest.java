@@ -2,8 +2,12 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.enums.*;
+import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -45,7 +49,16 @@ class GameModelTest {
     }
 
     @Test
-    void establishRoundOrder() {
+    void establishRoundOrderCorrectly() {
+        for(int i=0; i<gm.getNumberOfPlayers(); i++){
+            gm.setCurrPlayer(i);
+            gm.playAssistant(i);
+        }
+        gm.establishRoundOrder();
+        gm.getPlayers().stream().forEach(System.out::println);
+        assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue()<gm.getPlayers().get(1).getLastPlayedCard().getValue());
+        assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue()<gm.getPlayers().get(2).getLastPlayedCard().getValue());
+        assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue()<gm.getPlayers().get(2).getLastPlayedCard().getValue());
     }
 
     @Test
@@ -57,8 +70,37 @@ class GameModelTest {
     }
 
     @Test
-    void checkEndGame() {
+    void checkEndGameTowersFinished() {
+        for(Player p: gm.getPlayers()){
+            assertEquals(p.getTowers(),6);
+            p.removeTowers(6);
+            assertEquals(p.getTowers(),0);
+            assertTrue(gm.checkEndGame());
+        }
     }
+
+    @Test
+    void checkEndGameEveryAssistantsPlayed(){
+        for (int i = 0; i < 10; i++) {
+            gm.playAssistant(0);
+        }
+        assertTrue(gm.checkEndGame());
+    }
+
+    @Test
+    void checkEndGameStudentsOutOfStock(){
+        StudentBucket bucket = StudentBucket.getInstance();
+        List<Student> temp = new ArrayList<>();
+        while(true) {
+            try {
+                temp.add(bucket.generateStudent());
+            } catch (StudentsOutOfStockException ex) {
+                break;
+            }
+        }
+        assertTrue(gm.checkEndGame());
+    }
+
 
     @Test
     void findWinner() {

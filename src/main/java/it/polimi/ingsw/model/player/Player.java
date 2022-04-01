@@ -116,4 +116,9 @@ public class Player {
         return professors.stream().filter(p -> p.getCreature().equals(creature)).findFirst().get();
     }
 
+    @Override
+    public String toString(){
+        return "value of last played card is "+getLastPlayedCard().getValue();
+    }
+
 }

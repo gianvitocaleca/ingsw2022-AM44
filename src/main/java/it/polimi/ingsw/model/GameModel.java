@@ -114,8 +114,15 @@ public class GameModel implements Playable {
         return table;
     }
 
-    public void establishRoundOrder() {
-
+    /**
+     * put in order players according to the assistant card played by each player.
+     */
+    public void establishRoundOrder(){
+        Collections.sort(players, (p1,p2) -> {
+            if(p1.getLastPlayedCard().getValue()<p2.getLastPlayedCard().getValue()) return -1;
+            else if(p1.getLastPlayedCard().getValue()>p2.getLastPlayedCard().getValue()) return 1;
+            else return 0;
+        } );
     }
 
     public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
@@ -131,7 +138,26 @@ public class GameModel implements Playable {
     }
 
     public boolean checkEndGame() {
-        return false;
+        boolean gameEnded = false;
+        for(Player p: players){
+            if(p.getTowers()==0){
+                gameEnded=true;
+            }else if(p.getAssistantDeck().size()==0){
+                gameEnded = true;
+            }
+        }
+        if(table.getIslands().size()==3){
+            gameEnded = true;
+        }
+        StudentBucket sb = StudentBucket.getInstance();
+        try{
+            Student s = sb.generateStudent();
+        }catch(StudentsOutOfStockException ex){
+            gameEnded = true;
+        }
+
+
+        return gameEnded;
     }
 
     /**
@@ -340,5 +366,13 @@ public class GameModel implements Playable {
 
     public Character getPlayedCharacter() {
         return playedCharacter;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void setCurrPlayer(int currPlayer) {
+        this.currPlayer = currPlayer;
     }
 }
