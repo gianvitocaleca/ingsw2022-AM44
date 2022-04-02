@@ -15,8 +15,8 @@ public class GameModel implements Playable {
 
     private List<Player> players;
     private int currPlayer;
-    private Table table;
-    private int numberOfPlayers;
+    private final Table table;
+    private final int numberOfPlayers;
     private List<Character> characters;
     private Character playedCharacter;
 
@@ -134,6 +134,12 @@ public class GameModel implements Playable {
     }
 
     public boolean moveMotherNature(int jumps) {
+        if(jumps<((table.getIslands().size()-1)-table.getMnPosition())){
+            table.getMotherNature().setCurrentIsland(jumps+table.getMnPosition());
+        }else{
+            int mnFuturePos = jumps-(table.getIslands().size()-1- table.getMnPosition());
+            table.getMotherNature().setCurrentIsland(mnFuturePos-1);
+        }
         return true;
     }
 

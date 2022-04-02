@@ -105,6 +105,10 @@ public class Table {
         return motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
     }
 
+    public MotherNature getMotherNature() {
+        return motherNature;
+    }
+
     private int getNextIslandPosition(){
         return motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
     }
@@ -113,7 +117,7 @@ public class Table {
         return clouds;
     }
 
-    private int getMnPosition(){
+    public int getMnPosition(){
         return motherNature.getCurrentIsland();
     }
 
