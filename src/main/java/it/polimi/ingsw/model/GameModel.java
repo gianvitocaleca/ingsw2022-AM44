@@ -18,7 +18,12 @@ public class GameModel implements Playable {
     private Table table;
     private int numberOfPlayers;
     private List<Character> characters;
-    private Character playedCharacter;
+    private Name playedCharacter;
+
+    public void playCharacter(int indexOfCharacter){
+        playedCharacter=characters.get(indexOfCharacter).getName();
+        characters.get(indexOfCharacter).effect();
+    }
 
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
@@ -364,7 +369,7 @@ public class GameModel implements Playable {
         return characters;
     }
 
-    public Character getPlayedCharacter() {
+    public Name getPlayedCharacter() {
         return playedCharacter;
     }
 
