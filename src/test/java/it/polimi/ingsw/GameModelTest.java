@@ -110,6 +110,15 @@ class GameModelTest {
 
     @Test
     void moveMotherNature() {
+        int jumps = 10;
+        int originalMnPos = gm.getTable().getMnPosition();
+        if(jumps<((gm.getTable().getIslands().size()-1)-gm.getTable().getMnPosition())){
+            gm.moveMotherNature(jumps);
+            assertTrue(gm.getTable().getMnPosition()==originalMnPos+jumps);
+        }else{
+            gm.moveMotherNature(jumps);
+            assertTrue(gm.getTable().getMnPosition()==jumps-(gm.getTable().getIslands().size()-2- gm.getTable().getMnPosition()));
+        }
     }
 
     @Test
