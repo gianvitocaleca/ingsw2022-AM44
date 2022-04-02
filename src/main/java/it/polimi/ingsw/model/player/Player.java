@@ -91,8 +91,9 @@ public class Player {
         this.myCoins++;
     }
 
-    public void removeCoin(int character_cost) {
+    public int removeCoin(int character_cost) {
         myCoins -= character_cost;
+        return myCoins;
     }
 
     public void setAssistantCard(Assistant assistant) {

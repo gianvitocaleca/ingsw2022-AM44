@@ -77,8 +77,8 @@ public class Table {
         return coinReserve;
     }
 
-    public void addCoin() {
-        this.coinReserve++;
+    public void addCoins(int coins) {
+        this.coinReserve += coins;
     }
 
     public void removeCoin() {

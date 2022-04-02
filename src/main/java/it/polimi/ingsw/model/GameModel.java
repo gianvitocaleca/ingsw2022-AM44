@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
@@ -14,24 +13,22 @@ import java.util.*;
 public class GameModel implements Playable {
 
     private List<Player> players;
-    private int currPlayer;
+    private int currentPlayerIndex;
     private final Table table;
     private final int numberOfPlayers;
     private List<Character> characters;
     private Name playedCharacter;
+    private InfluenceEvaluator evaluator;
 
-    public void playCharacter(int indexOfCharacter){
-        playedCharacter=characters.get(indexOfCharacter).getName();
-        characters.get(indexOfCharacter).effect();
-    }
 
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
         players = createListOfPlayers(advancedRules, usernames, colors, wizards);
         this.numberOfPlayers = numberOfPlayers;
         //Il primo a giocare la carta assistente a inizio partita sarà il primo che ha fatto log in e di conseguenza il player in posizione zero
-        currPlayer = 0;
+        currentPlayerIndex = 0;
         this.table = new Table(numberOfPlayers, advancedRules);
+        this.evaluator = new StandardEvaluator();
         //mancano i character
     }
 
@@ -112,7 +109,22 @@ public class GameModel implements Playable {
     }
 
     public void playAssistant(int indexOfAssistant) {
-        players.get(currPlayer).setAssistantCard(players.get(currPlayer).getAssistantDeck().get(indexOfAssistant));
+        players.get(currentPlayerIndex).setAssistantCard(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant));
+    }
+
+    public void playCharacter(int indexOfCharacter){
+        Player currentPlayer = players.get(currentPlayerIndex);
+        Character currentCharacter = characters.get(indexOfCharacter);
+        //pay for the character
+        int removedCoins = currentPlayer.removeCoin(currentCharacter.getCost());
+        //first time: a coin will be put in character's updatedCost and the others will be returned to Table
+        if(!(currentCharacter.hasCoin())){
+            removedCoins--;
+        }
+        table.addCoins(removedCoins);
+        //play character
+        playedCharacter=currentCharacter.getName();
+        currentCharacter.effect();
     }
 
     public Table getTable() {
@@ -267,10 +279,6 @@ public class GameModel implements Playable {
     }
 
 
-    public void modifyCostOfCharacter(Character character) {
-
-    }
-
     @Override
     public void addNoEntry(int indexOfIsland) {
 
@@ -283,60 +291,7 @@ public class GameModel implements Playable {
 
     @Override
     public void evaluateInfluence() {
-        Island ci = table.getCurrentIsland();
-        if (ci.getNumberOfNoEntries() == 0) {
-            Optional<Player> hasmoreinfluece = Optional.empty();
-            int influence = 0;
-            for (Player p : players) {
-                int sum = 0;
-                //if player has professor add the relative influence
-                if (p.getProfessors().size() > 0) {
-                    for (Professor prof : p.getProfessors()) {
-                        sum += ci.getNumberOfStudentsByCreature(prof.getCreature());
-                    }
-                }
-                //if player has towers on the island add the relative influence
-                if (ci.getNumberOfTowers() > 0 &&
-                        p.getMyColor().equals(ci.getColorOfTowers())) {
-                    sum += ci.getNumberOfTowers();
-                }
-                //if player has more influence update
-                if (sum > influence) {
-                    hasmoreinfluece = Optional.of(p);
-                    influence = sum;
-                }
-            }
-            //if the player who has more influence has changed
-            if (!hasmoreinfluece.get().getMyColor().equals(ci.getColorOfTowers())) {
-                //swap towers
-                if (ci.getNumberOfTowers() > 0) {
-                    for (Player p : players) {
-                        //removes towers from the player who has influence
-                        if (p.getMyColor().equals(hasmoreinfluece.get().getMyColor())) {
-                            p.removeTowers(ci.getNumberOfTowers());
-                        }
-                        //adds towers to the player who had towers on the island
-                        if (p.getMyColor().equals(ci.getColorOfTowers())) {
-                            p.addTowers(ci.getNumberOfTowers());
-                        }
-                    }
-                } else {
-                    //removes one tower from the player that has conquered the island
-                    for (Player p : players) {
-                        if (p.getMyColor().equals(hasmoreinfluece.get().getMyColor())) {
-                            p.removeTowers(1);
-                        }
-                    }
-                }
-                //change the color of the towers on the island
-                ci.setColorOfTowers(hasmoreinfluece.get().getMyColor());
-                //check the neighbor islands
-                checkNeighborIsland();
-            }
-        } else {
-            ci.removeNoEntry();
-        }
-
+        evaluator.evaluateInfluence(this);
     }
 
     @Override
@@ -355,16 +310,16 @@ public class GameModel implements Playable {
     }
 
     @Override
-    public void setInfluenceCharacter(int typeOfInfluenceCharacter) {
-
+    public void setInfluenceEvaluator(InfluenceEvaluator evaluator) {
+        this.evaluator=evaluator;
     }
 
     public List<Player> getPlayers() {
         return players;
     }
 
-    public int getCurrPlayer() {
-        return currPlayer;
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
     }
 
     public int getNumberOfPlayers() {
@@ -383,7 +338,7 @@ public class GameModel implements Playable {
         this.players = players;
     }
 
-    public void setCurrPlayer(int currPlayer) {
-        this.currPlayer = currPlayer;
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
     }
 }

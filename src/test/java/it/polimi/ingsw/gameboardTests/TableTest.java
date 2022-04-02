@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.*;
 
 
@@ -18,6 +19,11 @@ public class TableTest {
         table = new Table(2,true);
     }
 
+    @AfterEach
+    public void resetBucket(){
+        StudentBucket.resetMap();
+    }
+
     @Test
     public void getCoinReserveCorrectlyTest(){
         assertEquals(table.getCoinReserve(),18);
@@ -25,7 +31,7 @@ public class TableTest {
         assertEquals(table.getCoinReserve(),17);
         table = new Table(3,false);
         assertEquals(table.getCoinReserve(),0);
-        table.addCoin();
+        table.addCoins(1);
         table.removeCoin();
         assertEquals(table.getCoinReserve(),0);
     }

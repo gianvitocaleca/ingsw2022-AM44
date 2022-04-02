@@ -6,12 +6,11 @@ import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
-import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.model.characters.Character;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -50,15 +49,15 @@ class GameModelTest {
     void playEveryAssistant() {
         for (int i = 0; i < 10; i++) {
             gm.playAssistant(0);
-            assertEquals(gm.getPlayers().get(gm.getCurrPlayer()).getAssistantDeck().size(), 9 - i);
-            assertEquals(gm.getPlayers().get(gm.getCurrPlayer()).getLastPlayedCards().size(), 1 + i);
+            assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
+            assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
         }
     }
 
     @Test
     void establishRoundOrderCorrectly() {
         for(int i=0; i<gm.getNumberOfPlayers(); i++){
-            gm.setCurrPlayer(i);
+            gm.setCurrentPlayerIndex(i);
             gm.playAssistant(i);
         }
         gm.establishRoundOrder();
@@ -82,12 +81,12 @@ class GameModelTest {
     }
 
     @Test
-    void moveStudents() {
+    void moveStudentsTest() {
         gm.fillClouds();
         Cloud zero = gm.getTable().getClouds().get(0);
         Cloud one = gm.getTable().getClouds().get(1);
 
-        int finalsize = zero.getStudents().size()+one.getStudents().size();
+        int finalSize = zero.getStudents().size()+one.getStudents().size();
 
         List<Creature> creaturesList = new ArrayList<>();
         List<Student> studentsList = new ArrayList<>();
@@ -104,7 +103,7 @@ class GameModelTest {
 
 
         assertEquals(zero.getStudents().size(),0);
-        assertEquals(one.getStudents().size(),finalsize);
+        assertEquals(one.getStudents().size(),finalSize);
         assertTrue(one.getStudents().containsAll(studentsList));
     }
 
@@ -185,7 +184,41 @@ class GameModelTest {
     }
 
     @Test
-    void checkNeighbourIslands() {
+    void checkNeighbourIslandTest() {
+        int oldSize = gm.getTable().getIslands().size();
+        gm.getTable().getCurrentIsland().setColorOfTowers(Color.GREY);
+        gm.getTable().getNextIsland().setColorOfTowers(Color.GREY);
+        gm.checkNeighborIsland();
+        assertEquals(oldSize-1,gm.getTable().getIslands().size());
+    }
+
+    @Test
+    void playCharacterTest(){
+
+        gm = new GameModel(true,
+                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                3,
+                new ArrayList<Color>(Arrays.asList(Color.values())),
+                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+        //now table has 17 coins
+        gm.setCurrentPlayerIndex(1);
+        Character firstCharacter = gm.getCharacters().get(0);
+        Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
+
+        for(int i = 1; i < firstCharacter.getCost(); i++){
+            currentPlayer.addCoin();
+            gm.getTable().removeCoin();
+        }
+        //now currentPlayer has exactly firstCharacter cost coins, table has 17 - (firstCharacter cost - 1) coins
+
+        //currentPlayer plays character(0), now he should have 0 coins, character(0) should have 1 coin in updatedCost,
+        //table should have 17 coins again
+        gm.playCharacter(0);
+        assertTrue(currentPlayer.getMyCoins()==0);
+        assertTrue(firstCharacter.hasCoin());
+        assertTrue(gm.getTable().getCoinReserve()==17);
+
+
     }
 
     @Test
