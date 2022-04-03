@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.gameboard.*;
@@ -12,10 +13,10 @@ import java.util.*;
 
 public class GameModel implements Playable {
 
-    private List<Player> players;
-    private int currentPlayerIndex;
     private final Table table;
     private final int numberOfPlayers;
+    private List<Player> players;
+    private int currentPlayerIndex;
     private List<Character> characters;
     private Name playedCharacter;
     private InfluenceEvaluator evaluator;
@@ -29,7 +30,23 @@ public class GameModel implements Playable {
         currentPlayerIndex = 0;
         this.table = new Table(numberOfPlayers, advancedRules);
         this.evaluator = new StandardEvaluator();
-        //mancano i character
+        characters = createListOfCharacters();
+    }
+
+    /**
+     * Creates three random characters for the game
+     *
+     * @return is the list of characters
+     */
+
+    private List<Character> createListOfCharacters() {
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        List<Character> chars = new ArrayList<Character>();
+        List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
+        for (int i = 0; i < 3; i++) {
+            chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
+        }
+        return chars;
     }
 
     private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
@@ -112,18 +129,17 @@ public class GameModel implements Playable {
         players.get(currentPlayerIndex).setAssistantCard(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant));
     }
 
-    public void playCharacter(int indexOfCharacter){
+    public void playCharacter(int indexOfCharacter) {
         Player currentPlayer = players.get(currentPlayerIndex);
         Character currentCharacter = characters.get(indexOfCharacter);
-        //pay for the character
-        int removedCoins = currentPlayer.removeCoin(currentCharacter.getCost());
-        //first time: a coin will be put in character's updatedCost and the others will be returned to Table
-        if(!(currentCharacter.hasCoin())){
-            removedCoins--;
-        }
+        //get character cost (it already handles the updated cost)
+        int removedCoins = currentCharacter.getCost();
+        //player pays for the character
+        currentPlayer.removeCoin(removedCoins);
+        //table gets the coins from the player
         table.addCoins(removedCoins);
         //play character
-        playedCharacter=currentCharacter.getName();
+        playedCharacter = currentCharacter.getName();
         currentCharacter.effect();
     }
 
@@ -134,12 +150,12 @@ public class GameModel implements Playable {
     /**
      * put in order players according to the assistant card played by each player.
      */
-    public void establishRoundOrder(){
-        Collections.sort(players, (p1,p2) -> {
-            if(p1.getLastPlayedCard().getValue()<p2.getLastPlayedCard().getValue()) return -1;
-            else if(p1.getLastPlayedCard().getValue()>p2.getLastPlayedCard().getValue()) return 1;
+    public void establishRoundOrder() {
+        Collections.sort(players, (p1, p2) -> {
+            if (p1.getLastPlayedCard().getValue() < p2.getLastPlayedCard().getValue()) return -1;
+            else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
             else return 0;
-        } );
+        });
     }
 
     public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
@@ -151,31 +167,31 @@ public class GameModel implements Playable {
     }
 
     public boolean moveMotherNature(int jumps) {
-        if(jumps<((table.getIslands().size()-1)-table.getMnPosition())){
-            table.getMotherNature().setCurrentIsland(jumps+table.getMnPosition());
-        }else{
-            int mnFuturePos = jumps-(table.getIslands().size()-1- table.getMnPosition());
-            table.getMotherNature().setCurrentIsland(mnFuturePos-1);
+        if (jumps < ((table.getIslands().size() - 1) - table.getMnPosition())) {
+            table.getMotherNature().setCurrentIsland(jumps + table.getMnPosition());
+        } else {
+            int mnFuturePos = jumps - (table.getIslands().size() - 1 - table.getMnPosition());
+            table.getMotherNature().setCurrentIsland(mnFuturePos - 1);
         }
         return true;
     }
 
     public boolean checkEndGame() {
         boolean gameEnded = false;
-        for(Player p: players){
-            if(p.getTowers()==0){
-                gameEnded=true;
-            }else if(p.getAssistantDeck().size()==0){
+        for (Player p : players) {
+            if (p.getTowers() == 0) {
+                gameEnded = true;
+            } else if (p.getAssistantDeck().size() == 0) {
                 gameEnded = true;
             }
         }
-        if(table.getIslands().size()==3){
+        if (table.getIslands().size() == 3) {
             gameEnded = true;
         }
         StudentBucket sb = StudentBucket.getInstance();
-        try{
+        try {
             Student s = sb.generateStudent();
-        }catch(StudentsOutOfStockException ex){
+        } catch (StudentsOutOfStockException ex) {
             gameEnded = true;
         }
 
@@ -311,15 +327,23 @@ public class GameModel implements Playable {
 
     @Override
     public void setInfluenceEvaluator(InfluenceEvaluator evaluator) {
-        this.evaluator=evaluator;
+        this.evaluator = evaluator;
     }
 
     public List<Player> getPlayers() {
         return players;
     }
 
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
     }
 
     public int getNumberOfPlayers() {
@@ -332,13 +356,5 @@ public class GameModel implements Playable {
 
     public Name getPlayedCharacter() {
         return playedCharacter;
-    }
-
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
-    public void setCurrentPlayerIndex(int currentPlayerIndex) {
-        this.currentPlayerIndex = currentPlayerIndex;
     }
 }

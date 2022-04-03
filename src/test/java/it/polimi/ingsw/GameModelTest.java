@@ -24,7 +24,7 @@ class GameModelTest {
     GameModel gm;
 
     @AfterEach
-    public void resetBucket(){
+    public void resetBucket() {
         StudentBucket.resetMap();
     }
 
@@ -56,24 +56,23 @@ class GameModelTest {
 
     @Test
     void establishRoundOrderCorrectly() {
-        for(int i=0; i<gm.getNumberOfPlayers(); i++){
+        for (int i = 0; i < gm.getNumberOfPlayers(); i++) {
             gm.setCurrentPlayerIndex(i);
             gm.playAssistant(i);
         }
         gm.establishRoundOrder();
         gm.getPlayers().stream().forEach(System.out::println);
-        assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue()<gm.getPlayers().get(1).getLastPlayedCard().getValue());
-        assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue()<gm.getPlayers().get(2).getLastPlayedCard().getValue());
-        assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue()<gm.getPlayers().get(2).getLastPlayedCard().getValue());
+        assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(1).getLastPlayedCard().getValue());
+        assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
+        assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
     }
 
     @Test
-    public void LastFusionEndgameTest(){
-        while(true){
-            try{
+    public void LastFusionEndgameTest() {
+        while (true) {
+            try {
                 gm.getTable().islandFusion("Both");
-            }
-            catch (GroupsOfIslandsException e){
+            } catch (GroupsOfIslandsException e) {
                 break;
             }
         }
@@ -86,24 +85,24 @@ class GameModelTest {
         Cloud zero = gm.getTable().getClouds().get(0);
         Cloud one = gm.getTable().getClouds().get(1);
 
-        int finalSize = zero.getStudents().size()+one.getStudents().size();
+        int finalSize = zero.getStudents().size() + one.getStudents().size();
 
         List<Creature> creaturesList = new ArrayList<>();
         List<Student> studentsList = new ArrayList<>();
 
-        for(Student s : zero.getStudents() ){
-                creaturesList.add(s.getCreature());
-                studentsList.add(s);
+        for (Student s : zero.getStudents()) {
+            creaturesList.add(s.getCreature());
+            studentsList.add(s);
         }
-        for(Student s : one.getStudents()){
+        for (Student s : one.getStudents()) {
             studentsList.add(s);
         }
 
-        gm.moveStudents(zero,one,creaturesList);
+        gm.moveStudents(zero, one, creaturesList);
 
 
-        assertEquals(zero.getStudents().size(),0);
-        assertEquals(one.getStudents().size(),finalSize);
+        assertEquals(zero.getStudents().size(), 0);
+        assertEquals(one.getStudents().size(), finalSize);
         assertTrue(one.getStudents().containsAll(studentsList));
     }
 
@@ -111,27 +110,27 @@ class GameModelTest {
     void moveMotherNature() {
         int jumps = 10;
         int originalMnPos = gm.getTable().getMnPosition();
-        if(jumps<((gm.getTable().getIslands().size()-1)-gm.getTable().getMnPosition())){
+        if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
             gm.moveMotherNature(jumps);
-            assertTrue(gm.getTable().getMnPosition()==originalMnPos+jumps);
-        }else{
+            assertTrue(gm.getTable().getMnPosition() == originalMnPos + jumps);
+        } else {
             gm.moveMotherNature(jumps);
-            assertTrue(gm.getTable().getMnPosition()==jumps-(gm.getTable().getIslands().size()-2- gm.getTable().getMnPosition()));
+            assertTrue(gm.getTable().getMnPosition() == jumps - (gm.getTable().getIslands().size() - 2 - gm.getTable().getMnPosition()));
         }
     }
 
     @Test
     void checkEndGameTowersFinished() {
-        for(Player p: gm.getPlayers()){
-            assertEquals(p.getTowers(),6);
+        for (Player p : gm.getPlayers()) {
+            assertEquals(p.getTowers(), 6);
             p.removeTowers(6);
-            assertEquals(p.getTowers(),0);
+            assertEquals(p.getTowers(), 0);
             assertTrue(gm.checkEndGame());
         }
     }
 
     @Test
-    void checkEndGameEveryAssistantsPlayed(){
+    void checkEndGameEveryAssistantsPlayed() {
         for (int i = 0; i < 10; i++) {
             gm.playAssistant(0);
         }
@@ -139,10 +138,10 @@ class GameModelTest {
     }
 
     @Test
-    void checkEndGameStudentsOutOfStock(){
+    void checkEndGameStudentsOutOfStock() {
         StudentBucket bucket = StudentBucket.getInstance();
         List<Student> temp = new ArrayList<>();
-        while(true) {
+        while (true) {
             try {
                 temp.add(bucket.generateStudent());
             } catch (StudentsOutOfStockException ex) {
@@ -189,11 +188,11 @@ class GameModelTest {
         gm.getTable().getCurrentIsland().setColorOfTowers(Color.GREY);
         gm.getTable().getNextIsland().setColorOfTowers(Color.GREY);
         gm.checkNeighborIsland();
-        assertEquals(oldSize-1,gm.getTable().getIslands().size());
+        assertEquals(oldSize - 1, gm.getTable().getIslands().size());
     }
 
     @Test
-    void playCharacterTest(){
+    void playCharacterTest() {
 
         gm = new GameModel(true,
                 new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
@@ -205,18 +204,18 @@ class GameModelTest {
         Character firstCharacter = gm.getCharacters().get(0);
         Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
 
-        for(int i = 1; i < firstCharacter.getCost(); i++){
+        for (int i = 1; i < firstCharacter.getCost(); i++) {
             currentPlayer.addCoin();
             gm.getTable().removeCoin();
         }
-        //now currentPlayer has exactly firstCharacter cost coins, table has 17 - (firstCharacter cost - 1) coins
+        //now currentPlayer has exactly firstCharacter cost coins, table has 18 - (firstCharacter cost) coins
 
         //currentPlayer plays character(0), now he should have 0 coins, character(0) should have 1 coin in updatedCost,
         //table should have 17 coins again
         gm.playCharacter(0);
-        assertTrue(currentPlayer.getMyCoins()==0);
+        assertTrue(currentPlayer.getMyCoins() == 0);
         assertTrue(firstCharacter.hasCoin());
-        assertTrue(gm.getTable().getCoinReserve()==17);
+        assertTrue(gm.getTable().getCoinReserve() == 18);
 
 
     }

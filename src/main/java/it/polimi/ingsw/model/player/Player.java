@@ -91,9 +91,8 @@ public class Player {
         this.myCoins++;
     }
 
-    public int removeCoin(int character_cost) {
+    public void removeCoin(int character_cost) {
         myCoins -= character_cost;
-        return myCoins;
     }
 
     public void setAssistantCard(Assistant assistant) {
@@ -118,8 +117,8 @@ public class Player {
     }
 
     @Override
-    public String toString(){
-        return "value of last played card is "+getLastPlayedCard().getValue();
+    public String toString() {
+        return "value of last played card is " + getLastPlayedCard().getValue();
     }
 
 }
