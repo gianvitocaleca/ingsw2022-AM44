@@ -6,11 +6,4 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterTest {
 
-    @Test
-    void effect() {
-    }
-
-    @Test
-    void getName() {
-    }
 }

@@ -6,11 +6,4 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HerbalistTest {
 
-    @Test
-    void effect() {
-    }
-
-    @Test
-    void getName() {
-    }
 }
