@@ -1,22 +1,24 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.Playable;
 
-public class MoverCharacter implements Character {
+public class Farmer implements Character{
 
     private Name name;
     private Playable model;
     private int updatedCost=0;
 
-    public MoverCharacter(Name name, Playable model){
+    public Farmer(Name name, Playable model) {
         this.name = name;
         this.model = model;
     }
+
+
     @Override
     public void effect() {
         updatedCost = 1;
-
+        model.setFarmer();
     }
 
     @Override
@@ -38,6 +40,4 @@ public class MoverCharacter implements Character {
     public void setCharactersParameters(CharactersParameters parameters) {
 
     }
-
-
 }

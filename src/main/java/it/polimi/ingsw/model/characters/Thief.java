@@ -36,4 +36,9 @@ public class Thief implements Character {
     public boolean hasCoin() {
         return (updatedCost==1);
     }
+
+    @Override
+    public void setCharactersParameters(CharactersParameters parameters) {
+
+    }
 }

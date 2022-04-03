@@ -7,7 +7,7 @@ public class InfluenceCharacter implements Character {
 
     private Name name;
     private Playable model;
-    private InfluenceEvaluator evaluator;
+    private InfluenceEvaluator evaluator = new StandardEvaluator();
     private int updatedCost=0;
 
     public InfluenceCharacter(Name name, Playable model) {
@@ -30,6 +30,9 @@ public class InfluenceCharacter implements Character {
     public void effect() {
         updatedCost = 1;
         model.setInfluenceEvaluator(evaluator);
+        if(name.equals(Name.FARMER)){
+            model.setFarmer();
+        }
     }
 
     @Override
@@ -45,5 +48,10 @@ public class InfluenceCharacter implements Character {
     @Override
     public boolean hasCoin() {
         return (updatedCost==1);
+    }
+
+    @Override
+    public void setCharactersParameters(CharactersParameters parameters) {
+
     }
 }

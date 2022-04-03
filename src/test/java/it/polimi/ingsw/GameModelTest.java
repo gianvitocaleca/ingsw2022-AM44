@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.students.StudentBucket;
 import it.polimi.ingsw.model.characters.Character;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -191,7 +192,7 @@ class GameModelTest {
     /**
      * This test verifies the correct behaviour of the method findWinner.
      */
-    @Test
+    @RepeatedTest(10)
     void findWinner() {
         List<Professor> professors = new ArrayList<Professor>();
 

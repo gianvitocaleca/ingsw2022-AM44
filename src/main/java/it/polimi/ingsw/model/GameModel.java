@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
+import it.polimi.ingsw.model.characters.Postman;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.gameboard.*;
@@ -11,7 +13,7 @@ import it.polimi.ingsw.model.students.*;
 
 import java.util.*;
 
-public class GameModel implements Playable {
+public class GameModel extends Observable implements Playable, Observer {
 
     private final Table table;
     private final int numberOfPlayers;
@@ -20,6 +22,29 @@ public class GameModel implements Playable {
     private List<Character> characters;
     private Name playedCharacter;
     private InfluenceEvaluator evaluator;
+    private int postmanMovements;
+    private boolean isFarmer;
+
+    public void setCharacterTestForMVC(){
+        characters.remove(0);
+        characters.set(0,new Postman(Name.MAGICPOSTMAN,this));
+    }
+
+    @Override
+    public void askForRequest() {
+        setChanged();
+        notifyObservers(playedCharacter);
+    }
+
+    @Override
+    public void setFarmer() {
+        isFarmer=true;
+    }
+
+    public void setCharacterParameters(CharactersParameters answer){
+        Character toSet = characters.stream().filter(c->c.getName().equals(playedCharacter)).findFirst().get();
+        toSet.setCharactersParameters(answer);
+    }
 
 
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
@@ -31,6 +56,12 @@ public class GameModel implements Playable {
         this.table = new Table(numberOfPlayers, advancedRules);
         this.evaluator = new StandardEvaluator();
         characters = createListOfCharacters();
+        postmanMovements=0;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 
     /**
@@ -167,6 +198,7 @@ public class GameModel implements Playable {
     }
 
     public boolean moveMotherNature(int jumps) {
+        jumps+=postmanMovements;
         if (jumps < ((table.getIslands().size() - 1) - table.getMnPosition())) {
             table.getMotherNature().setCurrentIsland(jumps + table.getMnPosition());
         } else {
@@ -312,7 +344,7 @@ public class GameModel implements Playable {
 
     @Override
     public void setPostmanMovements(int numberOfSteps) {
-        //should call moveMotherNature(assistant steps + numberOfSteps)?
+        postmanMovements = numberOfSteps;
     }
 
     @Override
@@ -329,6 +361,7 @@ public class GameModel implements Playable {
     public void setInfluenceEvaluator(InfluenceEvaluator evaluator) {
         this.evaluator = evaluator;
     }
+
 
     public List<Player> getPlayers() {
         return players;
@@ -357,4 +390,6 @@ public class GameModel implements Playable {
     public Name getPlayedCharacter() {
         return playedCharacter;
     }
+
+
 }

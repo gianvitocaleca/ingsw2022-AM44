@@ -11,4 +11,6 @@ public interface Character {
     int getCost();
 
     boolean hasCoin();
+
+    void setCharactersParameters(CharactersParameters parameters);
 }

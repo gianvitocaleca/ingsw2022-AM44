@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
@@ -10,5 +11,7 @@ public interface Playable {
     public void thiefEffect(Creature creature);
     public void moveStudents(StudentContainer source, StudentContainer destination, Creature creature);
     public void setInfluenceEvaluator(InfluenceEvaluator evaluator);
+    void askForRequest();
+    void setFarmer();
 
 }
