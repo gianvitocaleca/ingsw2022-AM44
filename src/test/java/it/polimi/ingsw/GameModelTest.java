@@ -22,12 +22,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameModelTest {
     GameModel gm;
-
+    /**
+     *This reset the singleton StudentBucket after each test of this class
+     * */
     @AfterEach
     public void resetBucket() {
         StudentBucket.resetMap();
     }
 
+    /**
+     * This create a new GameModel instance to use in every test
+     */
     @BeforeEach
     public void createGameModel() {
         StudentBucket.resetMap();
@@ -38,6 +43,9 @@ class GameModelTest {
                 new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
     }
 
+    /**
+     * This test verifies that clouds are filled in the correct way
+     */
     @Test
     void fillCloudsCorrectly() {
         gm.fillClouds();
@@ -46,6 +54,9 @@ class GameModelTest {
         }
     }
 
+    /**
+     * This test verfies the correct behavoiur of assistantDeck and lastPlayedCard when every assistant is played.
+     */
     @Test
     void playEveryAssistant() {
         for (int i = 0; i < 10; i++) {
@@ -55,6 +66,10 @@ class GameModelTest {
         }
     }
 
+    /**
+     * This test verifies that the arraylist of players is orderd in the correct way
+     * after each player played the assistant card.
+     */
     @Test
     void establishRoundOrderCorrectly() {
         for (int i = 0; i < gm.getNumberOfPlayers(); i++) {
@@ -68,6 +83,10 @@ class GameModelTest {
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
     }
 
+    /**
+     * This test verifies one of the condition of game ended:
+     * on the table there are only three islands left.
+     */
     @Test
     public void LastFusionEndgameTest() {
         while (true) {
@@ -80,6 +99,9 @@ class GameModelTest {
         assertTrue(gm.checkEndGame());
     }
 
+    /**
+     * This test verifies the correct behavoiur of the method moveStudents.
+     */
     @Test
     void moveStudentsTest() {
         gm.fillClouds();
@@ -107,6 +129,9 @@ class GameModelTest {
         assertTrue(one.getStudents().containsAll(studentsList));
     }
 
+    /**
+     * This test verifies that mother nature has the right position after a certain number of steps.
+     */
     @Test
     void moveMotherNature() {
         int jumps = 10;
@@ -120,6 +145,10 @@ class GameModelTest {
         }
     }
 
+    /**
+     * This test verifies the condition of gae ended:
+     * a player has no tower left.
+     */
     @Test
     void checkEndGameTowersFinished() {
         for (Player p : gm.getPlayers()) {
@@ -130,6 +159,10 @@ class GameModelTest {
         }
     }
 
+    /**
+     * This test verifies the condition of game ended:
+     * every player has played all the assistant cards.
+     */
     @Test
     void checkEndGameEveryAssistantsPlayed() {
         for (int i = 0; i < 10; i++) {
@@ -138,6 +171,9 @@ class GameModelTest {
         assertTrue(gm.checkEndGame());
     }
 
+    /**
+     * This test verifies the condition of game ended that all the students have been generated.
+     */
     @Test
     void checkEndGameStudentsOutOfStock() {
         StudentBucket bucket = StudentBucket.getInstance();
@@ -152,7 +188,9 @@ class GameModelTest {
         assertTrue(gm.checkEndGame());
     }
 
-
+    /**
+     * This test verifies the correct behaviour of the method findWinner.
+     */
     @Test
     void findWinner() {
         List<Professor> professors = new ArrayList<Professor>();
@@ -179,10 +217,9 @@ class GameModelTest {
         }
     }
 
-    @Test
-    void checkTower() {
-    }
-
+    /**
+     * This test verifies the correct behaviour of the method checkNeighbourIsland.
+     */
     @Test
     void checkNeighbourIslandTest() {
         int oldSize = gm.getTable().getIslands().size();
@@ -192,6 +229,9 @@ class GameModelTest {
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
     }
 
+    /**
+     * This test verifies that the coins in the game are always 20, after a character has been played.
+     */
     @Test
     void playCharacterTest() {
 
@@ -219,33 +259,5 @@ class GameModelTest {
         assertTrue(gm.getTable().getCoinReserve() == 18);
 
 
-    }
-
-    @Test
-    void modifyCostOfCharacter() {
-    }
-
-    @Test
-    void addNoEntry() {
-    }
-
-    @Test
-    void evaluateInfluence() {
-    }
-
-    @Test
-    void setPostmanMovements() {
-    }
-
-    @Test
-    void thiefEffect() {
-    }
-
-    @Test
-    void testMoveStudents() {
-    }
-
-    @Test
-    void setInfluenceCharacter() {
     }
 }
