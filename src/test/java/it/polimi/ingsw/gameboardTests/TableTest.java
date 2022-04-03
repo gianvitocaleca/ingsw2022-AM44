@@ -24,6 +24,9 @@ public class TableTest {
         StudentBucket.resetMap();
     }
 
+    /**
+     * This tests the correct initialization of Tables with both standard and advanced rules
+     */
     @Test
     public void getCoinReserveCorrectlyTest(){
         assertEquals(table.getCoinReserve(),18);
@@ -36,6 +39,9 @@ public class TableTest {
         assertEquals(table.getCoinReserve(),0);
     }
 
+    /**
+     * This tests that with table initialization, the number of clouds is coherent with the number of players
+     */
     @Test
     public void correctNumberOfCloudsTest(){
         assertEquals(table.getClouds().size(),2);
@@ -43,6 +49,9 @@ public class TableTest {
         assertEquals(table.getClouds().size(),3);
     }
 
+    /**
+     * This tests that the fusion with the right positioned island is correctly made
+     */
     @Test
     public void RightFusionTest(){
         Island currIsland = table.getCurrentIsland();
@@ -71,6 +80,10 @@ public class TableTest {
             assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
             assertEquals(table.getIslands().size(),originalSize-1);
     }
+
+    /**
+     * This tests that the fusion with the left positioned island is correctly made
+     */
     @Test
     public void LeftFusionTest(){
         Island currIsland = table.getCurrentIsland();
@@ -99,6 +112,9 @@ public class TableTest {
         assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
         assertEquals(table.getIslands().size(),originalSize-1);
     }
+    /**
+     * This tests that the fusion with both left and right positioned islands is correctly made
+     */
     @Test
     public void BothFusionTest(){
         Island currIsland = table.getCurrentIsland();
@@ -137,6 +153,10 @@ public class TableTest {
         assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
         assertEquals(table.getIslands().size(),originalSize-2);
     }
+
+    /**
+     * This tests that when there are only 3 islands left the method islandFusion throws a GroupOfIslandsException
+     */
     @Test
     public void LastFusionTest(){
         System.out.println("Last Fusion Test:");

@@ -16,6 +16,9 @@ class AssistantTest {
         name = Value.values()[new Random().nextInt(Value.values().length)];
     }
 
+    /**
+     * This tests that the assistants values initialization is correctly made
+     */
     @Test
     void getValue() {
         for (Value val : Value.values()) {
@@ -25,6 +28,9 @@ class AssistantTest {
         }
     }
 
+    /**
+     * This tests that the assistants movements initialization is correctly made
+     */
     @Test
     void getMovements() {
         for (Value val : Value.values()) {
