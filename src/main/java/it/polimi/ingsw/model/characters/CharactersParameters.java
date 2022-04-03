@@ -12,6 +12,8 @@ public class CharactersParameters {
     private int providedMnMovements;
     private StudentContainer providedDestination;
 
+    //manca il costruttore
+
     public List<Creature> getProvidedCreature() {
         return providedCreature;
     }

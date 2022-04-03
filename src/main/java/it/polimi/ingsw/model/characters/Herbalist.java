@@ -12,10 +12,13 @@ public class Herbalist implements Character {
     public Herbalist(Name name, Playable model) {
         this.name = name;
         this.model = model;
+        deactivator = 4;
     }
 
     public void effect() {
         updatedCost = 1;
+        deactivator--;
+
     }
 
     @Override

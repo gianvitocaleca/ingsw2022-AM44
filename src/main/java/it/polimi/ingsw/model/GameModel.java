@@ -297,7 +297,7 @@ public class GameModel implements Playable {
 
     @Override
     public void addNoEntry(int indexOfIsland) {
-
+        table.getIslands().get(indexOfIsland).addNoEntry();
     }
 
     /**
