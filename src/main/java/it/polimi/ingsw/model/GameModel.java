@@ -312,7 +312,7 @@ public class GameModel implements Playable {
 
     @Override
     public void setPostmanMovements(int numberOfSteps) {
-
+        //should call moveMotherNature(assistant steps + numberOfSteps)?
     }
 
     @Override

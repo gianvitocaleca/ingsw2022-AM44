@@ -30,6 +30,7 @@ class GameModelTest {
 
     @BeforeEach
     public void createGameModel() {
+        StudentBucket.resetMap();
         gm = new GameModel(false,
                 new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,

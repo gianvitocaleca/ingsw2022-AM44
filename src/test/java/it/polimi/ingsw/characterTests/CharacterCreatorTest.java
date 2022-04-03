@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.enums.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
+import java.util.*;
 
 class CharacterCreatorTest {
     public Name name;
@@ -13,11 +13,12 @@ class CharacterCreatorTest {
 
     @BeforeEach
     public void Initialize() {
-        name = Name.values()[new Random().nextInt(Name.values().length)];
+        List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
+        name = names.get(new Random().nextInt(names.size()));
     }
 
     @Test
-    void createCharacter(Name name) {
+    void createCharacter() {
 
     }
 }
