@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.enums.Name;
 
 public interface Character {
 
-    void effect();
+    void effect(CharactersParameters answer);
 
     Name getName();
 
@@ -12,5 +12,5 @@ public interface Character {
 
     boolean hasCoin();
 
-    void setCharactersParameters(CharactersParameters parameters);
+    void setUpdatedCost();
 }

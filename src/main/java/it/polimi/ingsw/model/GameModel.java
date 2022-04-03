@@ -20,7 +20,7 @@ public class GameModel extends Observable implements Playable, Observer {
     private List<Player> players;
     private int currentPlayerIndex;
     private List<Character> characters;
-    private Name playedCharacter;
+    private int playedCharacter = -1;
     private InfluenceEvaluator evaluator;
     private int postmanMovements;
     private boolean isFarmer;
@@ -30,10 +30,10 @@ public class GameModel extends Observable implements Playable, Observer {
         characters.set(0,new Postman(Name.MAGICPOSTMAN,this));
     }
 
-    @Override
-    public void askForRequest() {
+
+    private void askForRequest() {
         setChanged();
-        notifyObservers(playedCharacter);
+        notifyObservers(characters.get(playedCharacter).getName());
     }
 
     @Override
@@ -41,9 +41,8 @@ public class GameModel extends Observable implements Playable, Observer {
         isFarmer=true;
     }
 
-    public void setCharacterParameters(CharactersParameters answer){
-        Character toSet = characters.stream().filter(c->c.getName().equals(playedCharacter)).findFirst().get();
-        toSet.setCharactersParameters(answer);
+    public void effect(CharactersParameters answer){
+        characters.get(playedCharacter).effect(answer);
     }
 
 
@@ -161,17 +160,19 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     public void playCharacter(int indexOfCharacter) {
+
         Player currentPlayer = players.get(currentPlayerIndex);
         Character currentCharacter = characters.get(indexOfCharacter);
         //get character cost (it already handles the updated cost)
         int removedCoins = currentCharacter.getCost();
         //player pays for the character
         currentPlayer.removeCoin(removedCoins);
+        currentCharacter.setUpdatedCost();
         //table gets the coins from the player
         table.addCoins(removedCoins);
         //play character
-        playedCharacter = currentCharacter.getName();
-        currentCharacter.effect();
+        playedCharacter = indexOfCharacter;
+        askForRequest();
     }
 
     public Table getTable() {
@@ -387,7 +388,7 @@ public class GameModel extends Observable implements Playable, Observer {
         return characters;
     }
 
-    public Name getPlayedCharacter() {
+    public int getPlayedCharacter() {
         return playedCharacter;
     }
 

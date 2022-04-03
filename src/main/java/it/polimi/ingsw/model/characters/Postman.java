@@ -15,9 +15,9 @@ public class Postman implements Character {
 
     }
 
-    public void effect() {
-        updatedCost = 1;
-        model.askForRequest();
+    public void effect(CharactersParameters answer) {
+
+        model.setPostmanMovements(answer.getProvidedMnMovements());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Postman implements Character {
     }
 
     @Override
-    public void setCharactersParameters(CharactersParameters parameters) {
-        model.setPostmanMovements(parameters.getProvidedMnMovements());
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
 }

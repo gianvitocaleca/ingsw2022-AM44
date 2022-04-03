@@ -27,8 +27,7 @@ public class InfluenceCharacter implements Character {
     }
 
     @Override
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
         model.setInfluenceEvaluator(evaluator);
         if(name.equals(Name.FARMER)){
             model.setFarmer();
@@ -51,7 +50,8 @@ public class InfluenceCharacter implements Character {
     }
 
     @Override
-    public void setCharactersParameters(CharactersParameters parameters) {
-
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
+
 }

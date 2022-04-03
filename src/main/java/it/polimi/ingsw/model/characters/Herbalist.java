@@ -15,8 +15,7 @@ public class Herbalist implements Character {
         deactivator = 4;
     }
 
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
         deactivator--;
 
     }
@@ -37,7 +36,7 @@ public class Herbalist implements Character {
     }
 
     @Override
-    public void setCharactersParameters(CharactersParameters parameters) {
-
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
 }

@@ -36,7 +36,7 @@ public class Controller extends Observable implements Observer {
         }
 
         if((o instanceof View) && (arg instanceof CharactersParameters)){
-            model.setCharacterParameters((CharactersParameters) arg);
+            model.effect((CharactersParameters) arg);
         }
     }
 }

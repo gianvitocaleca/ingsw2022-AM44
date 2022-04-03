@@ -10,7 +10,6 @@ public interface Playable {
     void thiefEffect(Creature creature);
     void moveStudents(StudentContainer source, StudentContainer destination, Creature creature);
     void setInfluenceEvaluator(InfluenceEvaluator evaluator);
-    void askForRequest();
     void setFarmer();
 
 }

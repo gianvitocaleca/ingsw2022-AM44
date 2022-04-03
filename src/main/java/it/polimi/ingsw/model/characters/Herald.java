@@ -14,8 +14,7 @@ public class Herald implements Character {
         this.model=model;
     }
 
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
 
     }
 
@@ -35,7 +34,7 @@ public class Herald implements Character {
     }
 
     @Override
-    public void setCharactersParameters(CharactersParameters parameters) {
-
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
 }

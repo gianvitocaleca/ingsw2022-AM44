@@ -14,8 +14,8 @@ public class MoverCharacter implements Character {
         this.model = model;
     }
     @Override
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
+
 
     }
 
@@ -35,9 +35,7 @@ public class MoverCharacter implements Character {
     }
 
     @Override
-    public void setCharactersParameters(CharactersParameters parameters) {
-
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
-
-
 }

@@ -15,8 +15,7 @@ public class Thief implements Character {
     }
 
     @Override
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
         //Thief will ask the controller for a creature to remove from the Dining Rooms
         model.thiefEffect(Creature.BLUE_UNICORNS); //PLACEHOLDER CREATURE
     }
@@ -38,7 +37,7 @@ public class Thief implements Character {
     }
 
     @Override
-    public void setCharactersParameters(CharactersParameters parameters) {
-
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
@@ -192,7 +193,7 @@ class GameModelTest {
     /**
      * This test verifies the correct behaviour of the method findWinner.
      */
-    @RepeatedTest(10)
+    @RepeatedTest(100)
     void findWinner() {
         List<Professor> professors = new ArrayList<Professor>();
 
