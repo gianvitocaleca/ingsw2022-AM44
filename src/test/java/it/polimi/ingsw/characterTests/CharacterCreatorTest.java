@@ -11,14 +11,13 @@ class CharacterCreatorTest {
     public Name name;
     public Character character;
 
+    /**
+     * Creates a random character
+     */
+
     @BeforeEach
-    public void Initialize() {
+    public void InitializeCharacter() {
         List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
         name = names.get(new Random().nextInt(names.size()));
-    }
-
-    @Test
-    void createCharacter() {
-
     }
 }

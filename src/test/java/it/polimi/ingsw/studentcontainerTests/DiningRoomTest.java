@@ -8,17 +8,13 @@ class DiningRoomTest {
     private final int Max_cap = 50;
     public DiningRoom dr;
 
+    /**
+     * Creates a new dining room
+     */
+
     @BeforeEach
-    public void Initialize() {
+    public void InitializeDiningRoom() {
         dr = new DiningRoom(Max_cap);
-
     }
 
-    @Test
-    void addStudents() {
-    }
-
-    @Test
-    void removeStudent() {
-    }
 }

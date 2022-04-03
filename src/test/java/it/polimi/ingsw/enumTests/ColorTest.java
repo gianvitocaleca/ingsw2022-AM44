@@ -6,11 +6,4 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ColorTest {
 
-    @Test
-    void values() {
-    }
-
-    @Test
-    void valueOf() {
-    }
 }
