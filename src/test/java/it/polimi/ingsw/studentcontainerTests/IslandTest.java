@@ -18,8 +18,12 @@ public class IslandTest {
     StudentBucket sb;
     Island island;
 
+    /**
+     * Creates a new Island with a random number of students, which are randomly generated.
+     */
+
     @BeforeEach
-    void initialize() {
+    void initializeIsland() {
         List<Student> students = new ArrayList<Student>();
         sb = StudentBucket.getInstance();
         for (int i = 0; i < new Random().nextInt(130); i++) {
@@ -32,33 +36,9 @@ public class IslandTest {
         island = new Island(students, 0, Color.BLACK, 130, 0);
     }
 
-    @Test
-    void setColorOfTowers() {
-    }
-
-    @Test
-    void addNoEntry() {
-    }
-
-    @Test
-    void removeNoEntry() {
-    }
-
-    @Test
-    void getNumberOfTowers() {
-    }
-
-    @Test
-    void getColorOfTowers() {
-    }
-
-    @Test
-    void getNumberOfNoEntries() {
-    }
-
-    @Test
-    void testToString() {
-    }
+    /**
+     * Checks the number of students by creatures on the island.
+     */
 
     @Test
     void getNumberOfStudentsByCreature() {
