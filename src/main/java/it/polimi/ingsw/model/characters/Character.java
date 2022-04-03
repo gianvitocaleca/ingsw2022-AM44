@@ -7,4 +7,8 @@ public interface Character {
     void effect();
 
     Name getName();
+
+    int getCost();
+
+    boolean hasCoin();
 }

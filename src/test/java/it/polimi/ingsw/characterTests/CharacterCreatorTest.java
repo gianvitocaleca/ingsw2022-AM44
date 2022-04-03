@@ -5,19 +5,19 @@ import it.polimi.ingsw.model.enums.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
+import java.util.*;
 
 class CharacterCreatorTest {
     public Name name;
     public Character character;
 
+    /**
+     * Creates a random character
+     */
+
     @BeforeEach
-    public void Initialize() {
-        name = Name.values()[new Random().nextInt(Name.values().length)];
-    }
-
-    @Test
-    void createCharacter(Name name) {
-
+    public void InitializeCharacter() {
+        List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
+        name = names.get(new Random().nextInt(names.size()));
     }
 }

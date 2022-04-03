@@ -7,18 +7,32 @@ public class Herbalist implements Character {
     private int deactivator;
     private Name name;
     private Playable model;
+    private int updatedCost=0;
 
     public Herbalist(Name name, Playable model) {
         this.name = name;
         this.model = model;
+        deactivator = 4;
     }
 
     public void effect() {
+        updatedCost = 1;
+        deactivator--;
 
     }
 
     @Override
     public Name getName() {
         return this.name;
+    }
+
+    @Override
+    public int getCost() {
+        return name.getCost()+updatedCost;
+    }
+
+    @Override
+    public boolean hasCoin() {
+        return (updatedCost==1);
     }
 }

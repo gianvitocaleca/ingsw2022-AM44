@@ -8,5 +8,6 @@ class ProfessorTest {
 
     @Test
     void getCreature() {
+
     }
 }

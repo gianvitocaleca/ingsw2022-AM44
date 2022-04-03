@@ -7,6 +7,7 @@ public class MoverCharacter implements Character {
 
     private Name name;
     private Playable model;
+    private int updatedCost=0;
 
     public MoverCharacter(Name name, Playable model){
         this.name = name;
@@ -14,6 +15,7 @@ public class MoverCharacter implements Character {
     }
     @Override
     public void effect() {
+        updatedCost = 1;
 
     }
 
@@ -21,4 +23,16 @@ public class MoverCharacter implements Character {
     public Name getName() {
         return this.name;
     }
+
+    @Override
+    public int getCost() {
+        return name.getCost()+updatedCost;
+    }
+
+    @Override
+    public boolean hasCoin() {
+        return (updatedCost==1);
+    }
+
+
 }

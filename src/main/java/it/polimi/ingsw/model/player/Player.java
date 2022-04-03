@@ -16,22 +16,22 @@ public class Player {
     private final DiningRoom diningRoom;
     private final int diningRoomCapacity = 9;
     private final Color myColor;
-    private int myCoins;
     private final Wizard wizard;
     private final List<Assistant> lastPlayedCard;
     private final List<Assistant> assistantDeck;
     private final List<Professor> professors;
+    private int myCoins;
     private int towers;
 
-    public Player(String username, Color myColor, int myCoins, Wizard wizard,int towers, Entrance entrance) {
+    public Player(String username, Color myColor, int myCoins, Wizard wizard, int towers, Entrance entrance) {
         this.username = username;
         this.myColor = myColor;
         this.myCoins = myCoins;
         this.wizard = wizard;
         this.towers = towers;
-        this.lastPlayedCard= new ArrayList<>();
+        this.lastPlayedCard = new ArrayList<>();
         assistantDeck = new ArrayList<>();
-        for(Value v : Value.values()){
+        for (Value v : Value.values()) {
             assistantDeck.add(new Assistant(v));
         }
         professors = new ArrayList<>();
@@ -53,7 +53,12 @@ public class Player {
 
     public Assistant getLastPlayedCard() {
 
-        return lastPlayedCard.get(lastPlayedCard.size()-1);
+        return lastPlayedCard.get(lastPlayedCard.size() - 1);
+    }
+
+    public List<Assistant> getLastPlayedCards() {
+        List<Assistant> tempList = new ArrayList<>(lastPlayedCard);
+        return tempList;
     }
 
     public List<Assistant> getAssistantDeck() {
@@ -87,7 +92,7 @@ public class Player {
     }
 
     public void removeCoin(int character_cost) {
-        myCoins = myCoins - character_cost;
+        myCoins -= character_cost;
     }
 
     public void setAssistantCard(Assistant assistant) {
@@ -95,11 +100,11 @@ public class Player {
         lastPlayedCard.add(assistant);
     }
 
-    public void returnTowers(int num_of_towers) {
-        towers = towers + num_of_towers;
+    public void addTowers(int num_of_towers) {
+        towers += num_of_towers;
     }
 
-    public void placeTowers(int placedTowers){
+    public void removeTowers(int placedTowers) {
         towers -= placedTowers;
     }
 
@@ -108,7 +113,12 @@ public class Player {
     }
 
     public Professor removeProfessor(Creature creature) {
-        return new Professor(creature);
+        return professors.stream().filter(p -> p.getCreature().equals(creature)).findFirst().get();
+    }
+
+    @Override
+    public String toString() {
+        return "value of last played card is " + getLastPlayedCard().getValue();
     }
 
 }

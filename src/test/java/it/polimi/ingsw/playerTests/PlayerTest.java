@@ -10,20 +10,32 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.studentcontainers.Entrance;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class PlayerTest {
 
+    /**
+     * This tests that the created player has the provided username
+     */
     @Test
     void getUsernameCorrectly() {
         Player p1 = new Player("userName", Color.BLACK,1, Wizard.BLUE,8,new Entrance(7));
         assertEquals(p1.getUsername(),"userName");
     }
 
+    /**
+     * This tests that the created player has the provided color
+     */
     @Test
     void getMyCorrectColor() {
         Player p1 = new Player("userName",Color.BLACK,1,Wizard.BLUE,8,new Entrance(7));
         assertEquals(p1.getMyColor(),Color.BLACK);
     }
 
+    /**
+     * This tests that when an assistant card is played, the lastPlayedCard parameter is correctly set
+     */
     @Test
     void getLastPlayedCard() {
         Player p1 = new Player("userName",Color.BLACK,1,Wizard.BLUE,8,new Entrance(7));
@@ -36,30 +48,5 @@ class PlayerTest {
         assertEquals(p1.getLastPlayedCard(),b);
     }
 
-/*
 
-    @Test
-    void addCoin() {
-    }
-
-    @Test
-    void removeCoin() {
-    }
-
-    @Test
-    void setAssistantCard() {
-    }
-
-    @Test
-    void modifyTower() {
-    }
-
-    @Test
-    void addProfessor() {
-    }
-
-    @Test
-    void removeProfessor() {
-    }
- */
 }

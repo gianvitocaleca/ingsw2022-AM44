@@ -54,24 +54,19 @@ public class Table {
      * @throws GroupsOfIslandsException when there are 3 groups (islands) left (the game ends)
      */
     public void islandFusion(String position) throws GroupsOfIslandsException{
-        int p;
 
         switch (position) {
             case "Left":
-                p = motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
-                aggregator(p);
+                aggregator(getPrevIslandPosition());
                 break;
             case "Right":
-                p = motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
-                aggregator(p);
+                aggregator(getNextIslandPosition());
                 break;
             case "Both":
                 if (islands.size() > 4) {
-                    p = motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
-                    aggregator(p);
+                    aggregator(getPrevIslandPosition());
                 }
-                p = motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
-                aggregator(p);
+                aggregator(getNextIslandPosition());
                 break;
         }
 
@@ -82,15 +77,40 @@ public class Table {
         return coinReserve;
     }
 
-    public void addCoin() {
-        this.coinReserve++;
+    public void addCoins(int coins) {
+        this.coinReserve += coins;
     }
+
     public void removeCoin() {
         this.coinReserve--;
     }
 
     public List<Island> getIslands() {
         return islands;
+    }
+
+    public Island getCurrentIsland(){
+        return islands.get(getMnPosition());
+    }
+
+    public Island getNextIsland(){
+        return islands.get(getNextIslandPosition());
+    }
+
+    public Island getPrevIsland(){
+        return islands.get(getPrevIslandPosition());
+    }
+
+    private int getPrevIslandPosition(){
+        return motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
+    }
+
+    public MotherNature getMotherNature() {
+        return motherNature;
+    }
+
+    private int getNextIslandPosition(){
+        return motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
     }
 
     public List<Cloud> getClouds() {
@@ -102,31 +122,31 @@ public class Table {
     }
 
     private void aggregator(int p){
-        int mn_curr_position = motherNature.getCurrentIsland();
-        List<Student> newStudents = new ArrayList<>(islands.get(mn_curr_position).getStudents());
+        int mnCurrPosition = motherNature.getCurrentIsland();
+        List<Student> newStudents = new ArrayList<>(getCurrentIsland().getStudents());
         newStudents.addAll(islands.get(p).getStudents());
 
         Island newIsland = new Island(newStudents,
-                islands.get(mn_curr_position).getNumberOfTowers()+islands.get(p).getNumberOfTowers(),
-                islands.get(mn_curr_position).getColorOfTowers(),
-                islands.get(mn_curr_position).getCapacity(),
-                islands.get(mn_curr_position).getNumberOfNoEntries()+islands.get(p).getNumberOfNoEntries());
+                getCurrentIsland().getNumberOfTowers()+islands.get(p).getNumberOfTowers(),
+                getCurrentIsland().getColorOfTowers(),
+                getCurrentIsland().getCapacity(),
+                getCurrentIsland().getNumberOfNoEntries()+islands.get(p).getNumberOfNoEntries());
 
-        if(mn_curr_position==0 && p==islands.size()-1){
+        if(mnCurrPosition==0 && p==islands.size()-1){
             islands.add(0,newIsland);
             islands.remove(1);
             islands.remove(islands.size()-1);
 
-        }else if(mn_curr_position<p){
-            islands.add(mn_curr_position,newIsland);
-            islands.remove(mn_curr_position+1); //shifts to the left
-            islands.remove(mn_curr_position+1);
+        }else if(mnCurrPosition<p){
+            islands.add(mnCurrPosition,newIsland);
+            islands.remove(mnCurrPosition+1); //shifts to the left
+            islands.remove(mnCurrPosition+1);
 
-        }else if(mn_curr_position==islands.size()-1 && p==0){
-            islands.add(mn_curr_position,newIsland);
+        }else if(mnCurrPosition==islands.size()-1 && p==0){
+            islands.add(mnCurrPosition,newIsland);
             islands.remove(islands.size()-1);
             islands.remove(0);
-            motherNature.setCurrentIsland(mn_curr_position-1);
+            motherNature.setCurrentIsland(mnCurrPosition-1);
         }
         else{
             islands.add(p,newIsland);
@@ -134,7 +154,5 @@ public class Table {
             islands.remove(p+1);
             motherNature.setCurrentIsland(p);
         }
-
-
     }
 }

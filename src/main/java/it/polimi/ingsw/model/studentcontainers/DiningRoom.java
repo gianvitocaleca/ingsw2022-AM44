@@ -35,4 +35,8 @@ public class DiningRoom extends StudentContainer {
     public Student removeStudent(Creature creature) {
         return diners.get(creature).remove(diners.get(creature).size() - 1);
     }
+
+    public int getNumberOfStudentsByCreature(Creature creature) {
+        return diners.get(creature).size();
+    }
 }

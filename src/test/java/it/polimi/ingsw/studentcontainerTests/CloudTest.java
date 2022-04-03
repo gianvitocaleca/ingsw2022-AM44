@@ -13,12 +13,20 @@ class CloudTest {
     public int capacity;
     public Cloud cloud;
 
+    /**
+     * Creates a new cloud with random capacity within Max_cap
+     */
+
     @BeforeEach
-    public void Initialize() {
+    public void InitializeCloud() {
         capacity = new Random().nextInt(Max_cap);
         cloud = new Cloud(capacity);
     }
 
+    /**
+     * The Island's capacity should equal the return value of getCapacity
+     */
+    
     @Test
     public void getCapacity() {
         assertEquals(capacity, cloud.getCapacity());
