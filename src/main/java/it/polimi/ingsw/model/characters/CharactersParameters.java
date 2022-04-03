@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.model.students.Student;
 
 import java.util.List;
 
@@ -12,38 +13,26 @@ public class CharactersParameters {
     private int providedMnMovements;
     private StudentContainer providedDestination;
 
-    //manca il costruttore
+    public CharactersParameters(List<Creature> providedCreature, int providedIslandIndex, int providedMnMovements, StudentContainer providedDestination){
+        this.providedCreature=providedCreature;
+        this.providedIslandIndex=providedIslandIndex;
+        this.providedMnMovements=providedMnMovements;
+        this.providedDestination=providedDestination;
+    }
 
     public List<Creature> getProvidedCreature() {
         return providedCreature;
-    }
-
-    public void setProvidedCreature(List<Creature> providedCreature) {
-        this.providedCreature = providedCreature;
     }
 
     public int getProvidedIslandIndex() {
         return providedIslandIndex;
     }
 
-    public void setProvidedIslandIndex(int providedIslandIndex) {
-        this.providedIslandIndex = providedIslandIndex;
-    }
-
     public int getProvidedMnMovements() {
         return providedMnMovements;
-    }
-
-    public void setProvidedMnMovements(int providedMnMovements) {
-        this.providedMnMovements = providedMnMovements;
     }
 
     public StudentContainer getProvidedDestination() {
         return providedDestination;
     }
-
-    public void setProvidedDestination(StudentContainer providedDestination) {
-        this.providedDestination = providedDestination;
-    }
-
 }
