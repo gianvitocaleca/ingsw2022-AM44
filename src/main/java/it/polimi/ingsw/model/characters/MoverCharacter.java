@@ -1,22 +1,50 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.Playable;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 
-public class MoverCharacter implements Character {
+import java.util.List;
+
+public class MoverCharacter extends StudentContainer implements Character {
 
     private Name name;
     private Playable model;
-    private int updatedCost=0;
+    private int updatedCost = 0;
 
-    public MoverCharacter(Name name, Playable model){
+    public MoverCharacter(Name name, Playable model, int capacity) {
+        super(capacity);
         this.name = name;
         this.model = model;
+        StudentBucket sb = StudentBucket.getInstance();
+        for (int i = 0; i < getCapacity(); i++) {
+            try {
+                addStudent(sb.generateStudent());
+            } catch (StudentsOutOfStockException ignore) {
+                //this should not happen, there are enough student at the beginning of the game
+            }
+        }
     }
+
     @Override
-    public void effect(CharactersParameters answer) {
+    public void effect(CharactersParameters answer) throws StudentsOutOfStockException {
+        switch (name) {
+            case JOKER -> model.jokerEffect(this, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures());
+            case MINSTREL -> model.minstrelEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures());
+            case PRINCESS -> {
+                model.princessEffect(this, answer.getProvidedSourceCreatures());
+                this.addStudent(StudentBucket.generateStudent());
+            }
+            case MONK -> {
+                model.moveStudents(this, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
+                this.addStudent(StudentBucket.generateStudent());
+            }
 
-
+        }
     }
 
     @Override
@@ -26,16 +54,31 @@ public class MoverCharacter implements Character {
 
     @Override
     public int getCost() {
-        return name.getCost()+updatedCost;
+        return name.getCost() + updatedCost;
     }
 
     @Override
     public boolean hasCoin() {
-        return (updatedCost==1);
+        return (updatedCost == 1);
     }
 
     @Override
     public void setUpdatedCost() {
-        updatedCost=1;
+        updatedCost = 1;
+    }
+
+    @Override
+    public List<Student> getStudents() {
+        return super.getStudents();
+    }
+
+    @Override
+    public Student removeStudent(Creature creature) {
+        return super.removeStudent(creature);
+    }
+
+    @Override
+    public void addStudents(List<Student> newStudents) {
+        super.addStudents(newStudents);
     }
 }

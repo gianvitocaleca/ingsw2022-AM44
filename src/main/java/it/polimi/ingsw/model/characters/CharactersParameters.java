@@ -2,26 +2,27 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.model.students.Student;
 
 import java.util.List;
 
 public class CharactersParameters {
 
-    private List<Creature> providedCreature;
+    private List<Creature> providedSourceCreatures;
     private int providedIslandIndex;
     private int providedMnMovements;
     private StudentContainer providedDestination;
+    private List<Creature> providedDestinationCreatures;
 
-    public CharactersParameters(List<Creature> providedCreature, int providedIslandIndex, int providedMnMovements, StudentContainer providedDestination){
-        this.providedCreature=providedCreature;
-        this.providedIslandIndex=providedIslandIndex;
-        this.providedMnMovements=providedMnMovements;
-        this.providedDestination=providedDestination;
+    public CharactersParameters(List<Creature> providedSourceCreatures, int providedIslandIndex, int providedMnMovements, StudentContainer providedDestination, List<Creature> providedDestinationCreatures) {
+        this.providedSourceCreatures = providedSourceCreatures;
+        this.providedIslandIndex = providedIslandIndex;
+        this.providedMnMovements = providedMnMovements;
+        this.providedDestination = providedDestination;
+        this.providedDestinationCreatures = providedDestinationCreatures;
     }
 
-    public List<Creature> getProvidedCreature() {
-        return providedCreature;
+    public List<Creature> getProvidedSourceCreatures() {
+        return providedSourceCreatures;
     }
 
     public int getProvidedIslandIndex() {
@@ -34,5 +35,9 @@ public class CharactersParameters {
 
     public StudentContainer getProvidedDestination() {
         return providedDestination;
+    }
+
+    public List<Creature> getProvidedDestinationCreatures() {
+        return providedDestinationCreatures;
     }
 }
