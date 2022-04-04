@@ -17,7 +17,7 @@ public class Herbalist implements Character {
 
     public void effect(CharactersParameters answer) {
         deactivator--;
-
+        model.addNoEntry(answer.getProvidedIslandIndex());
     }
 
     @Override

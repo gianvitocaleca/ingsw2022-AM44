@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
+import it.polimi.ingsw.model.characters.Herbalist;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
@@ -261,5 +262,21 @@ class GameModelTest {
         assertTrue(gm.getTable().getCoinReserve() == 18);
 
 
+    }
+
+    /**
+     * This test verifies that herbalist's effect has the correct behaviour
+     */
+    @Test
+    void herbalistEffectTest(){
+        int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
+        System.out.println("L'indice dell'isola è: "+islandIndex);
+        CharactersParameters herbalist = new CharactersParameters(new ArrayList<Creature>(),islandIndex,0,new Cloud(12));
+        //set Herbalist Character in characters to test her effect.
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0,new Herbalist(Name.HERBALIST,gm));
+        gm.playCharacter(0);
+        gm.effect(herbalist);
+        assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(),1);
     }
 }
