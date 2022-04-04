@@ -370,6 +370,10 @@ public class GameModel extends Observable implements Playable, Observer {
             }
         }
     }
+    @Override
+    public void setHeraldIsland(int indexIsland) {
+        table.getMotherNature().setCurrentIsland(indexIsland);
+    }
 
     @Override
     public void moveStudents(StudentContainer source, StudentContainer destination, Creature creature) {

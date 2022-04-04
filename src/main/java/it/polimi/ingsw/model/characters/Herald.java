@@ -15,7 +15,8 @@ public class Herald implements Character {
     }
 
     public void effect(CharactersParameters answer) {
-
+        model.setHeraldIsland(answer.getProvidedIslandIndex());
+        model.evaluateInfluence();
     }
 
     @Override

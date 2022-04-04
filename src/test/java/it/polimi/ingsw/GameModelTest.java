@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
+import it.polimi.ingsw.model.characters.Herald;
 import it.polimi.ingsw.model.characters.Herbalist;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
@@ -321,5 +322,41 @@ class GameModelTest {
             }
         }
 
+    }
+
+    /**
+     * This test verifies that herald has the correct behaviour.
+     */
+    @Test
+    void heraldEffectTest(){
+        int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
+        CharactersParameters herald = new CharactersParameters(new ArrayList<Creature>(),islandIndex,0,new Cloud(12));
+        List<Professor> profes = new ArrayList<>();
+        for(Creature c : Creature.values()){
+            profes.add(new Professor(c));
+        }
+        for( int i=0; i<gm.getPlayers().size(); i++){
+            gm.getPlayers().get(i).addProfessor(profes.get(i));
+        }
+        gm.getPlayers().get(0).addProfessor(profes.get(3));
+        gm.getPlayers().get(0).addProfessor(profes.get(4));
+        //set Herald Character in characters to test her effect.
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0,new Herald(Name.HERALD,gm));
+        gm.playCharacter(0);
+        gm.effect(herald);
+        for(Creature c : Creature.values()){
+            if(gm.getTable().getIslands().get(islandIndex).getNumberOfStudentsByCreature(c)==1){
+                for(Player p : gm.getPlayers()){
+                    for(Professor prof : p.getProfessors()){
+                        if(prof.getCreature().equals(c)){
+                            //player that has influence on the island
+                            assertEquals(gm.getTable().getIslands().get(islandIndex).getColorOfTowers(), p.getMyColor());
+
+                        }
+                    }
+                }
+            }
+        }
     }
 }
