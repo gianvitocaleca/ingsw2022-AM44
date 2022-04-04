@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
 import it.polimi.ingsw.model.characters.Postman;
 import it.polimi.ingsw.model.enums.*;
+import it.polimi.ingsw.model.evaluators.InfluenceEvaluator;
+import it.polimi.ingsw.model.evaluators.StandardEvaluator;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.gameboard.*;
 import it.polimi.ingsw.model.player.*;
@@ -25,6 +27,7 @@ public class GameModel extends Observable implements Playable, Observer {
     private int postmanMovements;
     private boolean isFarmer;
 
+    //Constructor
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
         players = createListOfPlayers(advancedRules, usernames, colors, wizards);
@@ -38,14 +41,71 @@ public class GameModel extends Observable implements Playable, Observer {
         playedCharacter = -1;
     }
 
+
+
+    //DA RIMUOVERE
+
     public void setCharacterTestForMVC() {
         characters.remove(0);
         characters.set(0, new Postman(Name.MAGICPOSTMAN, this));
     }
 
-    private void askForRequest() {
-        setChanged();
-        notifyObservers(characters.get(playedCharacter).getName());
+
+
+    // region PLAYABLE OVERRIDE METHODS
+    @Override
+    public void addNoEntry(int indexOfIsland) {
+        table.getIslands().get(indexOfIsland).addNoEntry();
+    }
+
+    /**
+     * Evaluates the influence on the current island
+     * If island has NoEntry does nothing and removes one NoEntry
+     */
+    @Override
+    public void evaluateInfluence() {
+        evaluator.evaluateInfluence(this);
+    }
+
+    /**
+     * Sets the number of steps for the postman character
+     * @param numberOfSteps is chosen by the player
+     */
+    @Override
+    public void setPostmanMovements(int numberOfSteps) {
+        postmanMovements = numberOfSteps;
+    }
+
+    /**
+     * Removes 3 students from all the player's dining room
+     * If less than 3 students are present, remove all
+     * @param creature is the type of student to be removed
+     */
+    @Override
+    public void thiefEffect(Creature creature) {
+        StudentBucket sb = StudentBucket.getInstance();
+        for (Player p : players) {
+            for (int i = 0; i < 3 && p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0; i++) {
+                //removes the student from the dining room
+                Student removedStudent = p.getDiningRoom().removeStudent(creature);
+                //gives the student back to the bucket
+                sb.putBackCreature(removedStudent.getCreature());
+            }
+        }
+    }
+
+    @Override
+    public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
+        List<Student> newStudents = new ArrayList<>();
+        for (Creature c : creatures) {
+            newStudents.add(source.removeStudent(c));
+        }
+        destination.addStudents(newStudents);
+    }
+
+    @Override
+    public void setInfluenceEvaluator(InfluenceEvaluator evaluator) {
+        this.evaluator = evaluator;
     }
 
     @Override
@@ -53,86 +113,16 @@ public class GameModel extends Observable implements Playable, Observer {
         isFarmer = true;
     }
 
-    public void effect(CharactersParameters answer) {
-        characters.get(playedCharacter).effect(answer);
-    }
-
     @Override
-    public void update(Observable o, Object arg) {
-
+    public void setHeraldIsland(int indexIsland) {
+        table.getMotherNature().setCurrentIsland(indexIsland);
     }
 
-    /**
-     * Creates three random characters for the game
-     *
-     * @return is the list of characters
-     */
+    //endregion
 
-    private List<Character> createListOfCharacters() {
-        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
-        List<Character> chars = new ArrayList<Character>();
-        List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
-        for (int i = 0; i < 3; i++) {
-            chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
-        }
-        return chars;
-    }
+    //region PUBLIC METHODS
 
-    private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
-        List<Player> newPlayers = new ArrayList<>();
-        if (!advancedRules) {
-            //istanzia il GameModel per le regole da principianti
-            if (numberOfPlayers == 2) {
-                for (int i = 0; i < usernames.size(); i++) {
-                    Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createTwoPlayer(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
-                }
-            } else {
-                for (int i = 0; i < usernames.size(); i++) {
-                    Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createThreePlayer(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
-                }
-            }
-        } else {
-            //istanzio le regole per giocatori esperti
-            if (numberOfPlayers == 2) {
-                for (int i = 0; i < usernames.size(); i++) {
-                    Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createTwoPlayerAdvanced(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
-                }
-            } else {
-                for (int i = 0; i < usernames.size(); i++) {
-                    Entrance entrance = createEntrance(numberOfPlayers);
-                    newPlayers.add(createThreePlayerAdvanced(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
-                }
-            }
-        }
-        return newPlayers;
-    }
-
-    private Entrance createEntrance(int numberOfPlayers) {
-        if (numberOfPlayers == 2) {
-            return new Entrance(7);
-        }
-        //in case of 3 players
-        return new Entrance(9);
-    }
-
-    private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 0, myWizard, 8, myEntrance);
-    }
-
-    private Player createThreePlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 0, myWizard, 6, myEntrance);
-    }
-
-    private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 1, myWizard, 8, myEntrance);
-    }
-
-    private Player createThreePlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 1, myWizard, 6, myEntrance);
-    }
+    //region PLANNING PHASE
 
     public void fillClouds() {
         StudentBucket sb = StudentBucket.getInstance();
@@ -158,26 +148,9 @@ public class GameModel extends Observable implements Playable, Observer {
         players.get(currentPlayerIndex).setAssistantCard(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant));
     }
 
-    public void playCharacter(int indexOfCharacter) {
+    //endregion
 
-        Player currentPlayer = players.get(currentPlayerIndex);
-        Character currentCharacter = characters.get(indexOfCharacter);
-        //get character cost (it already handles the updated cost)
-        int removedCoins = currentCharacter.getCost();
-        //player pays for the character
-        currentPlayer.removeCoin(removedCoins);
-        currentCharacter.setUpdatedCost();
-        //table gets the coins from the player
-        table.addCoins(removedCoins);
-        //play character
-        playedCharacter = indexOfCharacter;
-        askForRequest();
-    }
-
-    public Table getTable() {
-        return table;
-    }
-
+    //region ACTION PHASE
     /**
      * put in order players according to the assistant card played by each player.
      */
@@ -189,13 +162,7 @@ public class GameModel extends Observable implements Playable, Observer {
         });
     }
 
-    public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
-        List<Student> newStudents = new ArrayList<>();
-        for (Creature c : creatures) {
-            newStudents.add(source.removeStudent(c));
-        }
-        destination.addStudents(newStudents);
-    }
+    //MOVE STUDENTS
 
     public boolean moveMotherNature(int jumps) {
         jumps += postmanMovements;
@@ -206,89 +173,6 @@ public class GameModel extends Observable implements Playable, Observer {
             table.getMotherNature().setCurrentIsland(mnFuturePos - 1);
         }
         return true;
-    }
-
-    public boolean checkEndGame() {
-        boolean gameEnded = false;
-        for (Player p : players) {
-            if (p.getTowers() == 0) {
-                gameEnded = true;
-            } else if (p.getAssistantDeck().size() == 0) {
-                gameEnded = true;
-            }
-        }
-        if (table.getIslands().size() == 3) {
-            gameEnded = true;
-        }
-        StudentBucket sb = StudentBucket.getInstance();
-        try {
-            Student s = sb.generateStudent();
-        } catch (StudentsOutOfStockException ex) {
-            gameEnded = true;
-        }
-
-
-        return gameEnded;
-    }
-
-    /**
-     * Winning conditions based on number of towers and of professors.
-     *
-     * @return is the player that has won the game.
-     */
-
-    public Player findWinner() {
-        Player ans = players.get(0);
-        for (Player p : players) {
-            if (p.getTowers() < ans.getTowers()) {
-                ans = p;
-            } else if (p.getTowers() == ans.getTowers() &&
-                    p.getProfessors().size() > ans.getProfessors().size()) {
-                ans = p;
-            }
-        }
-        return ans;
-    }
-
-    /**
-     * Moves the professors to the correct players
-     * Creates the professors if not present
-     */
-
-    private void checkProfessor() {
-        for (Creature c : Creature.values()) {
-            Optional<Player> hasprofessor = Optional.empty();
-            Player hasmorestudents = players.get(0);
-            for (Player p : players) {
-                if (p.getProfessors().size() > 0) {
-                    for (Professor prof : p.getProfessors()) {
-                        if (prof.getCreature().equals(c)) {
-                            hasprofessor = Optional.of(p);
-                            break;
-                        }
-                    }
-                }
-                if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
-                        hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
-                    hasmorestudents = p;
-                }
-            }
-            if (hasprofessor.isPresent()) {
-                if (!hasprofessor.get().equals(hasmorestudents)) {
-                    if (hasprofessor.get().getDiningRoom().getNumberOfStudentsByCreature(c) <
-                            hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
-                        hasmorestudents.addProfessor(hasprofessor.get().removeProfessor(c));
-                    }
-                }
-
-            } else {
-                hasmorestudents.addProfessor(new Professor(c));
-            }
-        }
-    }
-
-    public void checkTower() {
-
     }
 
     public void checkNeighborIsland() {
@@ -326,80 +210,79 @@ public class GameModel extends Observable implements Playable, Observer {
         }
     }
 
+    public void playCharacter(int indexOfCharacter) {
 
-    @Override
-    public void addNoEntry(int indexOfIsland) {
-        table.getIslands().get(indexOfIsland).addNoEntry();
+        Player currentPlayer = players.get(currentPlayerIndex);
+        Character currentCharacter = characters.get(indexOfCharacter);
+        //get character cost (it already handles the updated cost)
+        int removedCoins = currentCharacter.getCost();
+        //player pays for the character
+        currentPlayer.removeCoin(removedCoins);
+        currentCharacter.setUpdatedCost();
+        //table gets the coins from the player
+        table.addCoins(removedCoins);
+        //play character
+        playedCharacter = indexOfCharacter;
+        askForRequest();
     }
 
-    /**
-     * Evaluates the influence on the current island
-     * If island has NoEntry does nothing and removes one NoEntry
-     */
-
-    @Override
-    public void evaluateInfluence() {
-        evaluator.evaluateInfluence(this);
-    }
-
-    /**
-     * Sets the number of steps for the postman character
-     *
-     * @param numberOfSteps is chosen by the player
-     */
-    @Override
-    public void setPostmanMovements(int numberOfSteps) {
-        postmanMovements = numberOfSteps;
-    }
-
-    /**
-     * Removes 3 students from all the player's dining room
-     * If less than 3 students are present, remove all
-     *
-     * @param creature is the type of student to be removed
-     */
-    @Override
-    public void thiefEffect(Creature creature) {
-        StudentBucket sb = StudentBucket.getInstance();
+    public boolean checkEndGame() {
+        boolean gameEnded = false;
         for (Player p : players) {
-            for (int i = 0; i < 3 && p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0; i++) {
-                //removes the student from the dining room
-                Student removedStudent = p.getDiningRoom().removeStudent(creature);
-                //gives the student back to the bucket
-                sb.putBackCreature(removedStudent.getCreature());
+            if (p.getTowers() == 0) {
+                gameEnded = true;
+            } else if (p.getAssistantDeck().size() == 0) {
+                gameEnded = true;
             }
         }
-    }
-    @Override
-    public void setHeraldIsland(int indexIsland) {
-        table.getMotherNature().setCurrentIsland(indexIsland);
-    }
+        if (table.getIslands().size() == 3) {
+            gameEnded = true;
+        }
+        StudentBucket sb = StudentBucket.getInstance();
+        try {
+            Student s = sb.generateStudent();
+        } catch (StudentsOutOfStockException ex) {
+            gameEnded = true;
+        }
 
-    @Override
-    public void moveStudents(StudentContainer source, StudentContainer destination, Creature creature) {
 
-    }
-
-    @Override
-    public void setInfluenceEvaluator(InfluenceEvaluator evaluator) {
-        this.evaluator = evaluator;
+        return gameEnded;
     }
 
+    /**
+     * Winning conditions based on number of towers and of professors.
+     *
+     * @return is the player that has won the game.
+     */
+    public Player findWinner() {
+        Player ans = players.get(0);
+        for (Player p : players) {
+            if (p.getTowers() < ans.getTowers()) {
+                ans = p;
+            } else if (p.getTowers() == ans.getTowers() &&
+                    p.getProfessors().size() > ans.getProfessors().size()) {
+                ans = p;
+            }
+        }
+        return ans;
+    }
+
+    public void checkTower() {
+
+    }
+    //endregion
+
+    //region getters
+    public Table getTable() {
+        return table;
+    }
 
     public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
-    }
-
-    public void setCurrentPlayerIndex(int currentPlayerIndex) {
-        this.currentPlayerIndex = currentPlayerIndex;
     }
 
     public int getNumberOfPlayers() {
@@ -414,5 +297,184 @@ public class GameModel extends Observable implements Playable, Observer {
         return playedCharacter;
     }
 
+    //endregion
 
+    //region setters
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
+    }
+
+    //endregion
+
+    //endregion
+
+    //region PRIVATE METHODS
+    //region Constructor
+    private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
+        List<Player> newPlayers = new ArrayList<>();
+        if (!advancedRules) {
+            //istanzia il GameModel per le regole da principianti
+            if (numberOfPlayers == 2) {
+                for (int i = 0; i < usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createTwoPlayer(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
+                }
+            } else {
+                for (int i = 0; i < usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createThreePlayer(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
+                }
+            }
+        } else {
+            //istanzio le regole per giocatori esperti
+            if (numberOfPlayers == 2) {
+                for (int i = 0; i < usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createTwoPlayerAdvanced(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
+                }
+            } else {
+                for (int i = 0; i < usernames.size(); i++) {
+                    Entrance entrance = createEntrance(numberOfPlayers);
+                    newPlayers.add(createThreePlayerAdvanced(entrance, usernames.get(i), colors.get(i), wizards.get(i)));
+                }
+            }
+        }
+        return newPlayers;
+    }
+    /**
+     * Creates three random characters for the game
+     * @return is the list of characters
+     */
+    private List<Character> createListOfCharacters() {
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        List<Character> chars = new ArrayList<Character>();
+        List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
+        for (int i = 0; i < 3; i++) {
+            chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
+        }
+        return chars;
+    }
+
+    //region createListOfPlayers
+    private Entrance createEntrance(int numberOfPlayers) {
+        if (numberOfPlayers == 2) {
+            return new Entrance(7);
+        }
+        //in case of 3 players
+        return new Entrance(9);
+    }
+
+    private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 0, myWizard, 8, myEntrance);
+    }
+
+    private Player createThreePlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 0, myWizard, 6, myEntrance);
+    }
+
+    private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 1, myWizard, 8, myEntrance);
+    }
+
+    private Player createThreePlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
+        return new Player(myUsername, myColor, 1, myWizard, 6, myEntrance);
+    }
+    //endregion
+
+    //endregion
+
+    /**
+     * Moves the professors to the correct players
+     * Creates the professors if not present
+     */
+    private void checkProfessor() {
+        for (Creature c : Creature.values()) {
+            Optional<Player> hasprofessor = Optional.empty();
+            Player hasmorestudents = players.get(0);
+            for (Player p : players) {
+                if (p.getProfessors().size() > 0) {
+                    for (Professor prof : p.getProfessors()) {
+                        if (prof.getCreature().equals(c)) {
+                            hasprofessor = Optional.of(p);
+                            break;
+                        }
+                    }
+                }
+                if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
+                        hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                    hasmorestudents = p;
+                }
+            }
+            if (hasprofessor.isPresent()) {
+                if (!hasprofessor.get().equals(hasmorestudents)) {
+                    if (hasprofessor.get().getDiningRoom().getNumberOfStudentsByCreature(c) <
+                            hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                        hasmorestudents.addProfessor(hasprofessor.get().removeProfessor(c));
+                    }
+                }
+
+            } else {
+                hasmorestudents.addProfessor(new Professor(c));
+            }
+        }
+    }
+
+    //endregion
+
+
+
+
+
+
+    //work in progress
+
+    public void conquerIsland(Optional<Player> hasMoreInfluence) {
+
+        Island currentIsland = table.getCurrentIsland();
+
+        if (!hasMoreInfluence.get().getMyColor().equals(currentIsland.getColorOfTowers())) {
+            //swap towers
+            if (currentIsland.getNumberOfTowers() > 0) {
+                for (Player p : players) {
+                    //Remove towers from the player who has influence
+                    if (p.getMyColor().equals(hasMoreInfluence.get().getMyColor())) {
+                        p.removeTowers(currentIsland.getNumberOfTowers());
+                    }
+                    //Add towers to the player who had towers on the island
+                    if (p.getMyColor().equals(currentIsland.getColorOfTowers())) {
+                        p.addTowers(currentIsland.getNumberOfTowers());
+                    }
+                }
+            } else {
+                //removes one tower from the player that has conquered the island
+                for (Player p : players) {
+                    if (p.getMyColor().equals(hasMoreInfluence.get().getMyColor())) {
+                        p.removeTowers(1);
+                    }
+                }
+            }
+            //change the color of the towers on the island
+            currentIsland.setColorOfTowers(hasMoreInfluence.get().getMyColor());
+            //check the neighbor islands
+            checkNeighborIsland();
+        }
+    }
+
+    private void askForRequest() {
+        setChanged();
+        notifyObservers(characters.get(playedCharacter).getName());
+    }
+
+    public void effect(CharactersParameters answer) {
+        characters.get(playedCharacter).effect(answer);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
+    }
 }

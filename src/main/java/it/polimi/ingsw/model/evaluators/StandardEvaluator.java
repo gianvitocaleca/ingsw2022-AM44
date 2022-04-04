@@ -1,5 +1,7 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.evaluators;
 
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.Professor;
@@ -38,35 +40,12 @@ public class StandardEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            if (!hasmoreinfluece.get().getMyColor().equals(ci.getColorOfTowers())) {
-                //swap towers
-                if (ci.getNumberOfTowers() > 0) {
-                    for (Player p : players) {
-                        //removes towers from the player who has influence
-                        if (p.getMyColor().equals(hasmoreinfluece.get().getMyColor())) {
-                            p.removeTowers(ci.getNumberOfTowers());
-                        }
-                        //adds towers to the player who had towers on the island
-                        if (p.getMyColor().equals(ci.getColorOfTowers())) {
-                            p.addTowers(ci.getNumberOfTowers());
-                        }
-                    }
-                } else {
-                    //removes one tower from the player that has conquered the island
-                    for (Player p : players) {
-                        if (p.getMyColor().equals(hasmoreinfluece.get().getMyColor())) {
-                            p.removeTowers(1);
-                        }
-                    }
-                }
-                //change the color of the towers on the island
-                ci.setColorOfTowers(hasmoreinfluece.get().getMyColor());
-                //check the neighbor islands
-                model.checkNeighborIsland();
-            }
+            model.conquerIsland(hasmoreinfluece);
         } else {
             ci.removeNoEntry();
         }
 
     }
+
+
 }

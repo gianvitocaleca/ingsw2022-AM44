@@ -2,32 +2,33 @@ package it.polimi.ingsw.model.characters;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.evaluators.*;
 
-public class InfluenceCharacter implements Character {
+public class BehaviorCharacter implements Character {
 
     private Name name;
     private Playable model;
     private InfluenceEvaluator evaluator = new StandardEvaluator();
     private int updatedCost=0;
 
-    public InfluenceCharacter(Name name, Playable model) {
+    public BehaviorCharacter(Name name, Playable model) {
         this.name = name;
         this.model = model;
-        setEvaluator();
     }
 
-    private void setEvaluator(){
+    private void setEvaluator(CharactersParameters answer){
         if(name.equals(Name.CENTAUR)){
             evaluator = new CentaurEvaluator();
         }else if(name.equals(Name.KNIGHT)){
             evaluator = new KnightEvaluator();
         }else if(name.equals(Name.FUNGARO)){
-            evaluator = new FungaroEvaluator();
+            evaluator = new FungaroEvaluator(answer.getProvidedCreature().get(0));
         }
     }
 
     @Override
     public void effect(CharactersParameters answer) {
+        setEvaluator(answer);
         model.setInfluenceEvaluator(evaluator);
         if(name.equals(Name.FARMER)){
             model.setFarmer();
