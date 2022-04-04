@@ -1,9 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.CharactersParameters;
-import it.polimi.ingsw.model.characters.Herald;
-import it.polimi.ingsw.model.characters.Herbalist;
+import it.polimi.ingsw.model.characters.*;
+import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
@@ -11,7 +10,6 @@ import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
-import it.polimi.ingsw.model.characters.Character;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -433,6 +431,10 @@ class GameModelTest {
 
         resetEvaluateInfluence();
 
+        Character centaur = new BehaviorCharacter(Name.CENTAUR,gm);
+        centaur.effect(new CharactersParameters(
+                new ArrayList<Creature>(),0,0,new Cloud(10)));
+
         try{
             int i=10;
             do{
@@ -487,6 +489,152 @@ class GameModelTest {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
         }
         else if(pinkCounter > yellowCounter+redCounter && greenCounter+blueCounter< pinkCounter){
+            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
+        }
+    }
+
+    @Test
+    void knightEvaluatorTest(){
+        int yellowCounter=0,redCounter=0,blueCounter=0,greenCounter=0,pinkCounter=0;
+
+        resetEvaluateInfluence();
+
+        Character knight = new BehaviorCharacter(Name.KNIGHT,gm);
+        knight.effect(new CharactersParameters(
+                new ArrayList<Creature>(),0,0,new Cloud(10)));
+
+        try{
+            int i=10;
+            do{
+                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                i--;
+            }while(i>0);
+
+        }catch(StudentsOutOfStockException ignored){
+
+        }
+
+        gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
+
+        List<Student> toCount;
+
+        for(Creature x : Creature.values()){
+            toCount = gm.getTable().getIslands().get(0).getStudents().stream()
+                    .filter(c -> c.getCreature().equals(x)).collect(Collectors.toList());
+            if(x.equals(Creature.YELLOW_GNOMES)){
+                yellowCounter=toCount.size();
+            }
+            if(x.equals(Creature.RED_DRAGONS)){
+                redCounter=toCount.size();
+            }
+            if(x.equals(Creature.GREEN_FROGS)){
+                greenCounter=toCount.size();
+            }
+            if(x.equals(Creature.BLUE_UNICORNS)){
+                blueCounter=toCount.size();
+            }
+            if(x.equals(Creature.PINK_FAIRIES)){
+                pinkCounter=toCount.size();
+            }
+        }
+
+        gm.getPlayers().get(0).addProfessor(new Professor(Creature.YELLOW_GNOMES));
+        gm.getPlayers().get(0).addProfessor(new Professor(Creature.RED_DRAGONS));
+
+        gm.getPlayers().get(1).addProfessor(new Professor(Creature.GREEN_FROGS));
+        gm.getPlayers().get(1).addProfessor(new Professor(Creature.BLUE_UNICORNS));
+
+        gm.getPlayers().get(2).addProfessor(new Professor(Creature.PINK_FAIRIES));
+
+        gm.getTable().getMotherNature().setCurrentIsland(0);
+
+        gm.evaluateInfluence();
+
+        if(yellowCounter+redCounter+2 > greenCounter+blueCounter && yellowCounter+redCounter+2 > pinkCounter){
+            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
+        }
+        else if(greenCounter+blueCounter > yellowCounter+redCounter+2 && greenCounter+blueCounter> pinkCounter){
+            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
+        }
+        else if(pinkCounter > yellowCounter+redCounter+2 && greenCounter+blueCounter< pinkCounter){
+            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
+        }
+    }
+
+    @Test
+    void fungaroEvaluatorTest(){
+        int yellowCounter=0,redCounter=0,blueCounter=0,greenCounter=0,pinkCounter=0;
+
+        resetEvaluateInfluence();
+
+        Character fungaro = new BehaviorCharacter(Name.FUNGARO,gm);
+        List<Creature> gnomes = new ArrayList<>();
+        gnomes.add(Creature.YELLOW_GNOMES);
+
+        fungaro.effect(new CharactersParameters(
+                gnomes,0,0,new Cloud(10)));
+
+        try{
+            int i=10;
+            do{
+                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                i--;
+            }while(i>0);
+
+        }catch(StudentsOutOfStockException ignored){
+
+        }
+
+        gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
+
+        List<Student> toCount;
+
+        for(Creature x : Creature.values()){
+            toCount = gm.getTable().getIslands().get(0).getStudents().stream()
+                    .filter(c -> c.getCreature().equals(x)).collect(Collectors.toList());
+            if(x.equals(Creature.YELLOW_GNOMES)){
+                yellowCounter=toCount.size();
+            }
+            if(x.equals(Creature.RED_DRAGONS)){
+                redCounter=toCount.size();
+            }
+            if(x.equals(Creature.GREEN_FROGS)){
+                greenCounter=toCount.size();
+            }
+            if(x.equals(Creature.BLUE_UNICORNS)){
+                blueCounter=toCount.size();
+            }
+            if(x.equals(Creature.PINK_FAIRIES)){
+                pinkCounter=toCount.size();
+            }
+        }
+
+        gm.getPlayers().get(0).addProfessor(new Professor(Creature.YELLOW_GNOMES));
+        gm.getPlayers().get(0).addProfessor(new Professor(Creature.RED_DRAGONS));
+
+        gm.getPlayers().get(1).addProfessor(new Professor(Creature.GREEN_FROGS));
+        gm.getPlayers().get(1).addProfessor(new Professor(Creature.BLUE_UNICORNS));
+
+        gm.getPlayers().get(2).addProfessor(new Professor(Creature.PINK_FAIRIES));
+
+        gm.getTable().getMotherNature().setCurrentIsland(0);
+
+        gm.evaluateInfluence();
+
+        //dovrebbe vincere con giallo ma non vince
+        if(yellowCounter+redCounter > greenCounter+blueCounter && yellowCounter+redCounter > pinkCounter){
+            if(redCounter<greenCounter+blueCounter && redCounter<pinkCounter){
+                assertFalse(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
+            }
+        }
+
+        if(redCounter > greenCounter+blueCounter && redCounter > pinkCounter){
+            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
+        }
+        else if(greenCounter+blueCounter > redCounter && greenCounter+blueCounter> pinkCounter){
+            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
+        }
+        else if(pinkCounter > redCounter && greenCounter+blueCounter< pinkCounter){
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
         }
     }

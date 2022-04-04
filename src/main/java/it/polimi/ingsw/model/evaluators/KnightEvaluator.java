@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.evaluators;
 
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.Professor;
@@ -18,7 +17,7 @@ public class KnightEvaluator implements InfluenceEvaluator {
 
         Island ci = table.getCurrentIsland();
         if (ci.getNumberOfNoEntries() == 0) {
-            Optional<Player> hasmoreinfluece = Optional.empty();
+            Optional<Player> hasMoreInfluence = Optional.empty();
             int influence = 0;
             for (Player p : players) {
                 int sum = 0;
@@ -39,12 +38,12 @@ public class KnightEvaluator implements InfluenceEvaluator {
                 }
                 //if player has more influence update
                 if (sum > influence) {
-                    hasmoreinfluece = Optional.of(p);
+                    hasMoreInfluence = Optional.of(p);
                     influence = sum;
                 }
             }
             //if the player who has more influence has changed
-            model.conquerIsland(hasmoreinfluece);
+            model.conquerIsland(hasMoreInfluence);
         } else {
             ci.removeNoEntry();
         }
