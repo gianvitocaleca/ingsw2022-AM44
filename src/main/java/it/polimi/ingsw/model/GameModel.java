@@ -20,31 +20,10 @@ public class GameModel extends Observable implements Playable, Observer {
     private List<Player> players;
     private int currentPlayerIndex;
     private List<Character> characters;
-    private int playedCharacter = -1;
+    private int playedCharacter;
     private InfluenceEvaluator evaluator;
     private int postmanMovements;
     private boolean isFarmer;
-
-    public void setCharacterTestForMVC(){
-        characters.remove(0);
-        characters.set(0,new Postman(Name.MAGICPOSTMAN,this));
-    }
-
-
-    private void askForRequest() {
-        setChanged();
-        notifyObservers(characters.get(playedCharacter).getName());
-    }
-
-    @Override
-    public void setFarmer() {
-        isFarmer=true;
-    }
-
-    public void effect(CharactersParameters answer){
-        characters.get(playedCharacter).effect(answer);
-    }
-
 
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
@@ -55,7 +34,27 @@ public class GameModel extends Observable implements Playable, Observer {
         this.table = new Table(numberOfPlayers, advancedRules);
         this.evaluator = new StandardEvaluator();
         characters = createListOfCharacters();
-        postmanMovements=0;
+        postmanMovements = 0;
+        playedCharacter = -1;
+    }
+
+    public void setCharacterTestForMVC() {
+        characters.remove(0);
+        characters.set(0, new Postman(Name.MAGICPOSTMAN, this));
+    }
+
+    private void askForRequest() {
+        setChanged();
+        notifyObservers(characters.get(playedCharacter).getName());
+    }
+
+    @Override
+    public void setFarmer() {
+        isFarmer = true;
+    }
+
+    public void effect(CharactersParameters answer) {
+        characters.get(playedCharacter).effect(answer);
     }
 
     @Override
@@ -199,7 +198,7 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     public boolean moveMotherNature(int jumps) {
-        jumps+=postmanMovements;
+        jumps += postmanMovements;
         if (jumps < ((table.getIslands().size() - 1) - table.getMnPosition())) {
             table.getMotherNature().setCurrentIsland(jumps + table.getMnPosition());
         } else {
@@ -343,14 +342,33 @@ public class GameModel extends Observable implements Playable, Observer {
         evaluator.evaluateInfluence(this);
     }
 
+    /**
+     * Sets the number of steps for the postman character
+     *
+     * @param numberOfSteps is chosen by the player
+     */
     @Override
     public void setPostmanMovements(int numberOfSteps) {
         postmanMovements = numberOfSteps;
     }
 
+    /**
+     * Removes 3 students from all the player's dining room
+     * If less than 3 students are present, remove all
+     *
+     * @param creature is the type of student to be removed
+     */
     @Override
     public void thiefEffect(Creature creature) {
-
+        StudentBucket sb = StudentBucket.getInstance();
+        for (Player p : players) {
+            for (int i = 0; i < 3 && p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0; i++) {
+                //removes the student from the dining room
+                Student removedStudent = p.getDiningRoom().removeStudent(creature);
+                //gives the student back to the bucket
+                sb.putBackCreature(removedStudent.getCreature());
+            }
+        }
     }
 
     @Override

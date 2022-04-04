@@ -25,9 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameModelTest {
     GameModel gm;
+
     /**
-     *This reset the singleton StudentBucket after each test of this class
-     * */
+     * This reset the singleton StudentBucket after each test of this class
+     */
     @AfterEach
     public void resetBucket() {
         StudentBucket.resetMap();
@@ -192,9 +193,10 @@ class GameModelTest {
     }
 
     /**
-     * This test verifies the correct behaviour of the method findWinner.
+     * Simulates winning conditions by removing towers from the dashboard of the players
+     * Also gives professors to the players
      */
-    @RepeatedTest(100)
+    @Test
     void findWinner() {
         List<Professor> professors = new ArrayList<Professor>();
 
@@ -203,11 +205,13 @@ class GameModelTest {
         }
         for (Player p : gm.getPlayers()) {
             p.removeTowers(new Random().nextInt(p.getTowers()));
-            for (int i = 0; i <= new Random().nextInt(professors.size()); i++) {
-                p.addProfessor(professors.get(new Random().nextInt(professors.size())));
-            }
-
         }
+        //fixed distribution of professor in order to avoid winning condition issue
+        gm.getPlayers().get(0).addProfessor(professors.get(0));
+        gm.getPlayers().get(0).addProfessor(professors.get(1));
+        gm.getPlayers().get(1).addProfessor(professors.get(2));
+        gm.getPlayers().get(1).addProfessor(professors.get(3));
+        gm.getPlayers().get(1).addProfessor(professors.get(4));
 
         Player ans = gm.findWinner();
         for (Player p : gm.getPlayers()) {
@@ -255,7 +259,7 @@ class GameModelTest {
         //now currentPlayer has exactly firstCharacter cost coins, table has 18 - (firstCharacter cost) coins
 
         //currentPlayer plays character(0), now he should have 0 coins, character(0) should have 1 coin in updatedCost,
-        //table should have 17 coins again
+        //table should have 18 coins
         gm.playCharacter(0);
         assertTrue(currentPlayer.getMyCoins() == 0);
         assertTrue(firstCharacter.hasCoin());
@@ -268,15 +272,54 @@ class GameModelTest {
      * This test verifies that herbalist's effect has the correct behaviour
      */
     @Test
-    void herbalistEffectTest(){
+    void herbalistEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        System.out.println("L'indice dell'isola è: "+islandIndex);
-        CharactersParameters herbalist = new CharactersParameters(new ArrayList<Creature>(),islandIndex,0,new Cloud(12));
+        System.out.println("L'indice dell'isola è: " + islandIndex);
+        CharactersParameters herbalist = new CharactersParameters(new ArrayList<Creature>(), islandIndex, 0, new Cloud(12));
         //set Herbalist Character in characters to test her effect.
         gm.getCharacters().remove(0);
-        gm.getCharacters().add(0,new Herbalist(Name.HERBALIST,gm));
+        gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));
         gm.playCharacter(0);
         gm.effect(herbalist);
-        assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(),1);
+        assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(), 1);
+    }
+
+    /**
+     * Removes the students from the dining room of the players
+     * Checks if the student bucket correctly updated
+     */
+    @Test
+    void thiefEffectTest() {
+        StudentBucket sb = StudentBucket.getInstance();
+        int[][] oldStudentsByPlayer = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
+        ArrayList<Creature> cret = new ArrayList<>(Arrays.asList(Creature.values()));
+        for (int j = 0; j < gm.getPlayers().size(); j++) {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    gm.getPlayers().get(j).getDiningRoom().addStudent(sb.generateStudent());
+                } catch (StudentsOutOfStockException ignore) {
+                }
+            }
+            //saves number of students generated randomly by player and creature
+            for (int k = 0; k < cret.size(); k++) {
+                oldStudentsByPlayer[j][k] = gm.getPlayers().get(j).getDiningRoom().getNumberOfStudentsByCreature(cret.get(k));
+            }
+
+        }
+        gm.thiefEffect(Creature.BLUE_UNICORNS);
+        for (int i = 0; i < gm.getPlayers().size(); i++) {
+            for (int j = 0; j < cret.size(); j++) {
+                if (!cret.get(j).equals(Creature.BLUE_UNICORNS)) {
+                    assertEquals(oldStudentsByPlayer[i][j],
+                            gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
+                } else if (oldStudentsByPlayer[i][j] < 3) {
+                    assertEquals(0, gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
+                } else {
+                    assertEquals(oldStudentsByPlayer[i][j] - 3, gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
+                }
+
+            }
+        }
+
     }
 }
