@@ -1,22 +1,23 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.Playable;
 
-public class Herald implements Character {
+public class Farmer implements Character{
 
     private Name name;
     private Playable model;
     private int updatedCost=0;
 
-    public Herald(Name name, Playable model) {
-        this.name=name;
-        this.model=model;
+    public Farmer(Name name, Playable model) {
+        this.name = name;
+        this.model = model;
     }
 
+
+    @Override
     public void effect(CharactersParameters answer) {
-        model.setHeraldIsland(answer.getProvidedIslandIndex());
-        model.evaluateInfluence();
+        model.setFarmer();
     }
 
     @Override
@@ -38,4 +39,5 @@ public class Herald implements Character {
     public void setUpdatedCost() {
         updatedCost=1;
     }
+
 }

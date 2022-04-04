@@ -15,10 +15,9 @@ public class Herbalist implements Character {
         deactivator = 4;
     }
 
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
         deactivator--;
-
+        model.addNoEntry(answer.getProvidedIslandIndex());
     }
 
     @Override
@@ -34,5 +33,10 @@ public class Herbalist implements Character {
     @Override
     public boolean hasCoin() {
         return (updatedCost==1);
+    }
+
+    @Override
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
 }

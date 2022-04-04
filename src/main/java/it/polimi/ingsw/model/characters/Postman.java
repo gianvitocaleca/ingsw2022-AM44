@@ -11,12 +11,13 @@ public class Postman implements Character {
 
     public Postman(Name name, Playable model) {
         this.name = name;
+        this.model = model;
 
     }
 
-    public void effect() {
-        updatedCost = 1;
+    public void effect(CharactersParameters answer) {
 
+        model.setPostmanMovements(answer.getProvidedMnMovements());
     }
 
     @Override
@@ -32,5 +33,10 @@ public class Postman implements Character {
     @Override
     public boolean hasCoin() {
         return (updatedCost==1);
+    }
+
+    @Override
+    public void setUpdatedCost() {
+        updatedCost=1;
     }
 }
