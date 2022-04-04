@@ -11,6 +11,8 @@ import it.polimi.ingsw.model.students.StudentBucket;
 import java.util.*;
 
 public class Table {
+    final int NUMBER_OF_ISLANDS = 12;
+
     private final List<Island> islands = new ArrayList<>();
     private final List<Cloud> clouds = new ArrayList<>();
     private final MotherNature motherNature;
@@ -23,7 +25,7 @@ public class Table {
      */
     public Table(int numberOfPlayers, boolean advancedRules) {
 
-        for(int i=0;i<12;i++){
+        for(int i=0;i<NUMBER_OF_ISLANDS;i++){
             List<Student> students = new ArrayList<>();
             try {
                 students.add(StudentBucket.getInstance().generateStudent());
