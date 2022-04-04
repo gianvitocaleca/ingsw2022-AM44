@@ -10,8 +10,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MotherNatureTest {
+    final int NUMBER_OF_ISLANDS = 12;
+    final int NUMBER_OF_MN_CREATIONS = 100;
 
     MotherNature mn ;
+
 
     @BeforeEach
     public void createMn(){
@@ -25,16 +28,16 @@ class MotherNatureTest {
     @Test
     public void MotherNatureRandomValuesTest(){
         List<Integer> values = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
             values.add(0);
         }
         values.add(mn.getCurrentIsland(),values.get(mn.getCurrentIsland())+1);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < NUMBER_OF_MN_CREATIONS; i++) {
             mn = new MotherNature();
             values.add(mn.getCurrentIsland(),values.get(mn.getCurrentIsland())+1);
         }
 
-        for(int x=0; x<12; x++){
+        for(int x=0; x<NUMBER_OF_ISLANDS; x++){
             System.out.print(values.get(x)+" ");
             assertTrue(values.get(x)!=0);
         }
