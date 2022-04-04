@@ -11,5 +11,5 @@ public interface Playable {
     void moveStudents(StudentContainer source, StudentContainer destination, Creature creature);
     void setInfluenceEvaluator(InfluenceEvaluator evaluator);
     void setFarmer();
-
+    void setHeraldIsland(int indexIsland);
 }

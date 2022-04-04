@@ -352,6 +352,10 @@ public class GameModel extends Observable implements Playable, Observer {
     public void thiefEffect(Creature creature) {
 
     }
+    @Override
+    public void setHeraldIsland(int indexIsland) {
+        table.getMotherNature().setCurrentIsland(indexIsland);
+    }
 
     @Override
     public void moveStudents(StudentContainer source, StudentContainer destination, Creature creature) {
