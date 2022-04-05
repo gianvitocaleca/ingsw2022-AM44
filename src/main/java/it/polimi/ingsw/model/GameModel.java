@@ -116,8 +116,8 @@ public class GameModel extends Observable implements Playable, Observer {
 
     /**
      * Moves the students from the source to the destination
-     *  @param source
-     * @param destination
+     *  @param source is the source of the moving
+     * @param destination is the destination of the moving
      * @param creatures   are the creatures of the students
      * @return true if moveStudents was executed correctly
      */
