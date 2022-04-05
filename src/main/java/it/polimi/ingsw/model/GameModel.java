@@ -316,6 +316,7 @@ public class GameModel extends Observable implements Playable, Observer {
             gameEnded = true;
         }
 
+        //NOTIFY *********************
 
         return gameEnded;
     }
@@ -539,12 +540,7 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     public void effect(CharactersParameters answer) {
-        try {
-            characters.get(playedCharacter).effect(answer);
-        } catch (StudentsOutOfStockException e) {
-            checkEndGame();
-            findWinner();
-        }
+        characters.get(playedCharacter).effect(answer);
 
     }
 

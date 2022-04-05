@@ -28,4 +28,6 @@ public interface Playable {
     void setFarmer();
 
     void setHeraldIsland(int indexIsland);
+
+    boolean checkEndGame();
 }

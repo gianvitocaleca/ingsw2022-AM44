@@ -31,17 +31,26 @@ public class MoverCharacter extends StudentContainer implements Character {
     }
 
     @Override
-    public void effect(CharactersParameters answer) throws StudentsOutOfStockException {
+    public void effect(CharactersParameters answer) {
         switch (name) {
             case JOKER -> model.jokerEffect(this, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures());
             case MINSTREL -> model.minstrelEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures());
             case PRINCESS -> {
                 model.princessEffect(this, answer.getProvidedSourceCreatures());
-                this.addStudent(StudentBucket.generateStudent());
+                try {
+                    this.addStudent(StudentBucket.generateStudent());
+                }catch (StudentsOutOfStockException e){
+                    model.checkEndGame();
+                }
+
             }
             case MONK -> {
                 model.moveStudents(this, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
-                this.addStudent(StudentBucket.generateStudent());
+                try {
+                    this.addStudent(StudentBucket.generateStudent());
+                }catch (StudentsOutOfStockException e){
+                    model.checkEndGame();
+                }
             }
 
         }

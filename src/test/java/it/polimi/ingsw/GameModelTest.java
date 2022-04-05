@@ -434,11 +434,8 @@ class GameModelTest {
         resetEvaluateInfluence();
 
         Character centaur = new BehaviorCharacter(Name.CENTAUR, gm);
-        try {
-            centaur.effect(new CharactersParameters(
-                    new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
-        } catch (StudentsOutOfStockException ignore) {
-        }
+        centaur.effect(new CharactersParameters(
+                new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
 
         try {
             int i = 10;
@@ -503,11 +500,8 @@ class GameModelTest {
         resetEvaluateInfluence();
 
         Character knight = new BehaviorCharacter(Name.KNIGHT, gm);
-        try {
-            knight.effect(new CharactersParameters(
-                    new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
-        } catch (StudentsOutOfStockException ignore) {
-        }
+        knight.effect(new CharactersParameters(
+                new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
 
         try {
             int i = 10;
@@ -575,11 +569,8 @@ class GameModelTest {
         List<Creature> gnomes = new ArrayList<>();
         gnomes.add(Creature.YELLOW_GNOMES);
 
-        try {
-            fungaro.effect(new CharactersParameters(
-                    gnomes, 0, 0, new Cloud(10), new ArrayList<>()));
-        } catch (StudentsOutOfStockException ignore) {
-        }
+        fungaro.effect(new CharactersParameters(
+                gnomes, 0, 0, new Cloud(10), new ArrayList<>()));
 
         try {
             int i = 10;
