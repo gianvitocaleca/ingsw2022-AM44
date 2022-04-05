@@ -312,6 +312,7 @@ public class GameModel extends Observable implements Playable, Observer {
         StudentBucket sb = StudentBucket.getInstance();
         try {
             Student s = sb.generateStudent();
+            //DOBBIAMO RESTITUIRE LO STUDENTE
         } catch (StudentsOutOfStockException ex) {
             gameEnded = true;
         }
