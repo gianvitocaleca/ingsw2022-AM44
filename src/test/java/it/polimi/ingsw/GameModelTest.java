@@ -12,7 +12,6 @@ import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -41,10 +40,10 @@ class GameModelTest {
     public void createGameModel() {
         StudentBucket.resetMap();
         gm = new GameModel(false,
-                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
-                new ArrayList<Color>(Arrays.asList(Color.values())),
-                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Color.values())),
+                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
     }
 
     /**
@@ -63,7 +62,7 @@ class GameModelTest {
      */
     @Test
     void playEveryAssistant() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < Value.values().length; i++) {
             gm.playAssistant(0);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
@@ -169,7 +168,7 @@ class GameModelTest {
      */
     @Test
     void checkEndGameEveryAssistantsPlayed() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < Value.values().length; i++) {
             gm.playAssistant(0);
         }
         assertTrue(gm.checkEndGame());
@@ -198,7 +197,7 @@ class GameModelTest {
      */
     @Test
     void findWinner() {
-        List<Professor> professors = new ArrayList<Professor>();
+        List<Professor> professors = new ArrayList<>();
 
         for (Creature c : Creature.values()) {
             professors.add(new Professor(c));
@@ -243,10 +242,10 @@ class GameModelTest {
     void playCharacterTest() {
 
         gm = new GameModel(true,
-                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
-                new ArrayList<Color>(Arrays.asList(Color.values())),
-                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Color.values())),
+                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
         //now table has 17 coins
         gm.setCurrentPlayerIndex(1);
         Character firstCharacter = gm.getCharacters().get(0);
@@ -275,7 +274,7 @@ class GameModelTest {
     void herbalistEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
         System.out.println("L'indice dell'isola è: " + islandIndex);
-        CharactersParameters herbalist = new CharactersParameters(new ArrayList<Creature>(), islandIndex, 0, new Cloud(12));
+        CharactersParameters herbalist = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
         //set Herbalist Character in characters to test her effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));
@@ -306,7 +305,13 @@ class GameModelTest {
             }
 
         }
-        gm.thiefEffect(Creature.BLUE_UNICORNS);
+        List<Creature> uni = new ArrayList<>();
+        uni.add(Creature.BLUE_UNICORNS);
+        CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
+        gm.playCharacter(0);
+        gm.effect(thief);
         for (int i = 0; i < gm.getPlayers().size(); i++) {
             for (int j = 0; j < cret.size(); j++) {
                 if (!cret.get(j).equals(Creature.BLUE_UNICORNS)) {
@@ -327,28 +332,28 @@ class GameModelTest {
      * This test verifies that herald has the correct behaviour.
      */
     @Test
-    void heraldEffectTest(){
+    void heraldEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        CharactersParameters herald = new CharactersParameters(new ArrayList<Creature>(),islandIndex,0,new Cloud(12));
+        CharactersParameters herald = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
         List<Professor> profes = new ArrayList<>();
-        for(Creature c : Creature.values()){
+        for (Creature c : Creature.values()) {
             profes.add(new Professor(c));
         }
-        for( int i=0; i<gm.getPlayers().size(); i++){
+        for (int i = 0; i < gm.getPlayers().size(); i++) {
             gm.getPlayers().get(i).addProfessor(profes.get(i));
         }
         gm.getPlayers().get(0).addProfessor(profes.get(3));
         gm.getPlayers().get(0).addProfessor(profes.get(4));
         //set Herald Character in characters to test her effect.
         gm.getCharacters().remove(0);
-        gm.getCharacters().add(0,new Herald(Name.HERALD,gm));
+        gm.getCharacters().add(0, new Herald(Name.HERALD, gm));
         gm.playCharacter(0);
         gm.effect(herald);
-        for(Creature c : Creature.values()){
-            if(gm.getTable().getIslands().get(islandIndex).getNumberOfStudentsByCreature(c)==1){
-                for(Player p : gm.getPlayers()){
-                    for(Professor prof : p.getProfessors()){
-                        if(prof.getCreature().equals(c)){
+        for (Creature c : Creature.values()) {
+            if (gm.getTable().getIslands().get(islandIndex).getNumberOfStudentsByCreature(c) == 1) {
+                for (Player p : gm.getPlayers()) {
+                    for (Professor prof : p.getProfessors()) {
+                        if (prof.getCreature().equals(c)) {
                             //player that has influence on the island
                             assertEquals(gm.getTable().getIslands().get(islandIndex).getColorOfTowers(), p.getMyColor());
 
@@ -360,42 +365,42 @@ class GameModelTest {
     }
 
     @Test
-    void standardEvaluatorTest(){
-        int yellowCounter=0,redCounter=0,blueCounter=0,greenCounter=0,pinkCounter=0;
+    void standardEvaluatorTest() {
+        int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
 
         resetEvaluateInfluence();
 
-        try{
-            int i=10;
+        try {
+            int i = 10;
 
-            do{
-            gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
-            i--;
-            }while(i>0);
+            do {
+                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                i--;
+            } while (i > 0);
 
-        }catch(StudentsOutOfStockException ignored){
+        } catch (StudentsOutOfStockException ignored) {
 
         }
 
         List<Student> toCount;
 
-        for(Creature x : Creature.values()){
+        for (Creature x : Creature.values()) {
             toCount = gm.getTable().getIslands().get(0).getStudents().stream()
                     .filter(c -> c.getCreature().equals(x)).collect(Collectors.toList());
-            if(x.equals(Creature.YELLOW_GNOMES)){
-                yellowCounter=toCount.size();
+            if (x.equals(Creature.YELLOW_GNOMES)) {
+                yellowCounter = toCount.size();
             }
-            if(x.equals(Creature.RED_DRAGONS)){
-                redCounter=toCount.size();
+            if (x.equals(Creature.RED_DRAGONS)) {
+                redCounter = toCount.size();
             }
-            if(x.equals(Creature.GREEN_FROGS)){
-                greenCounter=toCount.size();
+            if (x.equals(Creature.GREEN_FROGS)) {
+                greenCounter = toCount.size();
             }
-            if(x.equals(Creature.BLUE_UNICORNS)){
-                blueCounter=toCount.size();
+            if (x.equals(Creature.BLUE_UNICORNS)) {
+                blueCounter = toCount.size();
             }
-            if(x.equals(Creature.PINK_FAIRIES)){
-                pinkCounter=toCount.size();
+            if (x.equals(Creature.PINK_FAIRIES)) {
+                pinkCounter = toCount.size();
             }
         }
 
@@ -411,38 +416,35 @@ class GameModelTest {
 
         gm.evaluateInfluence();
 
-        if(yellowCounter+redCounter > greenCounter+blueCounter && yellowCounter+redCounter> pinkCounter){
+        if (yellowCounter + redCounter > greenCounter + blueCounter && yellowCounter + redCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
-        }
-        else if(greenCounter+blueCounter > yellowCounter+redCounter && greenCounter+blueCounter> pinkCounter){
+        } else if (greenCounter + blueCounter > yellowCounter + redCounter && greenCounter + blueCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
-        }
-        else if(pinkCounter > yellowCounter+redCounter && greenCounter+blueCounter< pinkCounter){
+        } else if (pinkCounter > yellowCounter + redCounter && greenCounter + blueCounter < pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
         }
-
 
 
     }
 
     @Test
-    void centaurEvaluatorTest(){
-        int yellowCounter=0,redCounter=0,blueCounter=0,greenCounter=0,pinkCounter=0;
+    void centaurEvaluatorTest() {
+        int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
 
         resetEvaluateInfluence();
 
-        Character centaur = new BehaviorCharacter(Name.CENTAUR,gm);
+        Character centaur = new BehaviorCharacter(Name.CENTAUR, gm);
         centaur.effect(new CharactersParameters(
-                new ArrayList<Creature>(),0,0,new Cloud(10)));
+                new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
 
-        try{
-            int i=10;
-            do{
+        try {
+            int i = 10;
+            do {
                 gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
                 i--;
-            }while(i>0);
+            } while (i > 0);
 
-        }catch(StudentsOutOfStockException ignored){
+        } catch (StudentsOutOfStockException ignored) {
 
         }
 
@@ -450,23 +452,23 @@ class GameModelTest {
 
         List<Student> toCount;
 
-        for(Creature x : Creature.values()){
+        for (Creature x : Creature.values()) {
             toCount = gm.getTable().getIslands().get(0).getStudents().stream()
                     .filter(c -> c.getCreature().equals(x)).collect(Collectors.toList());
-            if(x.equals(Creature.YELLOW_GNOMES)){
-                yellowCounter=toCount.size();
+            if (x.equals(Creature.YELLOW_GNOMES)) {
+                yellowCounter = toCount.size();
             }
-            if(x.equals(Creature.RED_DRAGONS)){
-                redCounter=toCount.size();
+            if (x.equals(Creature.RED_DRAGONS)) {
+                redCounter = toCount.size();
             }
-            if(x.equals(Creature.GREEN_FROGS)){
-                greenCounter=toCount.size();
+            if (x.equals(Creature.GREEN_FROGS)) {
+                greenCounter = toCount.size();
             }
-            if(x.equals(Creature.BLUE_UNICORNS)){
-                blueCounter=toCount.size();
+            if (x.equals(Creature.BLUE_UNICORNS)) {
+                blueCounter = toCount.size();
             }
-            if(x.equals(Creature.PINK_FAIRIES)){
-                pinkCounter=toCount.size();
+            if (x.equals(Creature.PINK_FAIRIES)) {
+                pinkCounter = toCount.size();
             }
         }
 
@@ -482,35 +484,33 @@ class GameModelTest {
 
         gm.evaluateInfluence();
 
-        if(yellowCounter+redCounter > greenCounter+blueCounter && yellowCounter+redCounter> pinkCounter){
+        if (yellowCounter + redCounter > greenCounter + blueCounter && yellowCounter + redCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
-        }
-        else if(greenCounter+blueCounter > yellowCounter+redCounter && greenCounter+blueCounter> pinkCounter){
+        } else if (greenCounter + blueCounter > yellowCounter + redCounter && greenCounter + blueCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
-        }
-        else if(pinkCounter > yellowCounter+redCounter && greenCounter+blueCounter< pinkCounter){
+        } else if (pinkCounter > yellowCounter + redCounter && greenCounter + blueCounter < pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
         }
     }
 
     @Test
-    void knightEvaluatorTest(){
-        int yellowCounter=0,redCounter=0,blueCounter=0,greenCounter=0,pinkCounter=0;
+    void knightEvaluatorTest() {
+        int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
 
         resetEvaluateInfluence();
 
-        Character knight = new BehaviorCharacter(Name.KNIGHT,gm);
+        Character knight = new BehaviorCharacter(Name.KNIGHT, gm);
         knight.effect(new CharactersParameters(
-                new ArrayList<Creature>(),0,0,new Cloud(10)));
+                new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
 
-        try{
-            int i=10;
-            do{
+        try {
+            int i = 10;
+            do {
                 gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
                 i--;
-            }while(i>0);
+            } while (i > 0);
 
-        }catch(StudentsOutOfStockException ignored){
+        } catch (StudentsOutOfStockException ignored) {
 
         }
 
@@ -518,23 +518,23 @@ class GameModelTest {
 
         List<Student> toCount;
 
-        for(Creature x : Creature.values()){
+        for (Creature x : Creature.values()) {
             toCount = gm.getTable().getIslands().get(0).getStudents().stream()
                     .filter(c -> c.getCreature().equals(x)).collect(Collectors.toList());
-            if(x.equals(Creature.YELLOW_GNOMES)){
-                yellowCounter=toCount.size();
+            if (x.equals(Creature.YELLOW_GNOMES)) {
+                yellowCounter = toCount.size();
             }
-            if(x.equals(Creature.RED_DRAGONS)){
-                redCounter=toCount.size();
+            if (x.equals(Creature.RED_DRAGONS)) {
+                redCounter = toCount.size();
             }
-            if(x.equals(Creature.GREEN_FROGS)){
-                greenCounter=toCount.size();
+            if (x.equals(Creature.GREEN_FROGS)) {
+                greenCounter = toCount.size();
             }
-            if(x.equals(Creature.BLUE_UNICORNS)){
-                blueCounter=toCount.size();
+            if (x.equals(Creature.BLUE_UNICORNS)) {
+                blueCounter = toCount.size();
             }
-            if(x.equals(Creature.PINK_FAIRIES)){
-                pinkCounter=toCount.size();
+            if (x.equals(Creature.PINK_FAIRIES)) {
+                pinkCounter = toCount.size();
             }
         }
 
@@ -550,38 +550,36 @@ class GameModelTest {
 
         gm.evaluateInfluence();
 
-        if(yellowCounter+redCounter+2 > greenCounter+blueCounter && yellowCounter+redCounter+2 > pinkCounter){
+        if (yellowCounter + redCounter + 2 > greenCounter + blueCounter && yellowCounter + redCounter + 2 > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
-        }
-        else if(greenCounter+blueCounter > yellowCounter+redCounter+2 && greenCounter+blueCounter> pinkCounter){
+        } else if (greenCounter + blueCounter > yellowCounter + redCounter + 2 && greenCounter + blueCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
-        }
-        else if(pinkCounter > yellowCounter+redCounter+2 && greenCounter+blueCounter< pinkCounter){
+        } else if (pinkCounter > yellowCounter + redCounter + 2 && greenCounter + blueCounter < pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
         }
     }
 
     @Test
-    void fungaroEvaluatorTest(){
-        int yellowCounter=0,redCounter=0,blueCounter=0,greenCounter=0,pinkCounter=0;
+    void fungaroEvaluatorTest() {
+        int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
 
         resetEvaluateInfluence();
 
-        Character fungaro = new BehaviorCharacter(Name.FUNGARO,gm);
+        Character fungaro = new BehaviorCharacter(Name.FUNGARO, gm);
         List<Creature> gnomes = new ArrayList<>();
         gnomes.add(Creature.YELLOW_GNOMES);
 
         fungaro.effect(new CharactersParameters(
-                gnomes,0,0,new Cloud(10)));
+                gnomes, 0, 0, new Cloud(10), new ArrayList<>()));
 
-        try{
-            int i=10;
-            do{
+        try {
+            int i = 10;
+            do {
                 gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
                 i--;
-            }while(i>0);
+            } while (i > 0);
 
-        }catch(StudentsOutOfStockException ignored){
+        } catch (StudentsOutOfStockException ignored) {
 
         }
 
@@ -589,23 +587,23 @@ class GameModelTest {
 
         List<Student> toCount;
 
-        for(Creature x : Creature.values()){
+        for (Creature x : Creature.values()) {
             toCount = gm.getTable().getIslands().get(0).getStudents().stream()
                     .filter(c -> c.getCreature().equals(x)).collect(Collectors.toList());
-            if(x.equals(Creature.YELLOW_GNOMES)){
-                yellowCounter=toCount.size();
+            if (x.equals(Creature.YELLOW_GNOMES)) {
+                yellowCounter = toCount.size();
             }
-            if(x.equals(Creature.RED_DRAGONS)){
-                redCounter=toCount.size();
+            if (x.equals(Creature.RED_DRAGONS)) {
+                redCounter = toCount.size();
             }
-            if(x.equals(Creature.GREEN_FROGS)){
-                greenCounter=toCount.size();
+            if (x.equals(Creature.GREEN_FROGS)) {
+                greenCounter = toCount.size();
             }
-            if(x.equals(Creature.BLUE_UNICORNS)){
-                blueCounter=toCount.size();
+            if (x.equals(Creature.BLUE_UNICORNS)) {
+                blueCounter = toCount.size();
             }
-            if(x.equals(Creature.PINK_FAIRIES)){
-                pinkCounter=toCount.size();
+            if (x.equals(Creature.PINK_FAIRIES)) {
+                pinkCounter = toCount.size();
             }
         }
 
@@ -622,28 +620,84 @@ class GameModelTest {
         gm.evaluateInfluence();
 
         //dovrebbe vincere con giallo ma non vince
-        if(yellowCounter+redCounter > greenCounter+blueCounter && yellowCounter+redCounter > pinkCounter){
-            if(redCounter<greenCounter+blueCounter && redCounter<pinkCounter){
+        if (yellowCounter + redCounter > greenCounter + blueCounter && yellowCounter + redCounter > pinkCounter) {
+            if (redCounter < greenCounter + blueCounter && redCounter < pinkCounter) {
                 assertFalse(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
             }
         }
 
-        if(redCounter > greenCounter+blueCounter && redCounter > pinkCounter){
+        if (redCounter > greenCounter + blueCounter && redCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
-        }
-        else if(greenCounter+blueCounter > redCounter && greenCounter+blueCounter> pinkCounter){
+        } else if (greenCounter + blueCounter > redCounter && greenCounter + blueCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
-        }
-        else if(pinkCounter > redCounter && greenCounter+blueCounter< pinkCounter){
+        } else if (pinkCounter > redCounter && greenCounter + blueCounter < pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
         }
     }
 
-    void resetEvaluateInfluence(){
+    void resetEvaluateInfluence() {
         gm = new GameModel(true,
-                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
-                new ArrayList<Color>(Arrays.asList(Color.values())),
-                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Color.values())),
+                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+    }
+
+    /**
+     * Swaps students from Joker character and player entrance
+     */
+    @Test
+    void JokerTest() {
+        //create the MoverCharacter
+        MoverCharacter joker = new MoverCharacter(Name.JOKER, gm, 6);
+        //put the character in first position
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0, joker);
+        //play the first character
+        gm.playCharacter(0);
+
+
+        //necessary students and creatures from the character and the entrance
+        List<Student> studentsInJoker = joker.getStudents();
+        List<Creature> oldJokerCreatures = new ArrayList<>();
+        for (Student s : studentsInJoker) {
+            oldJokerCreatures.add(s.getCreature());
+        }
+        //populate the current player entrance with random students
+        for (int i = 0; i < studentsInJoker.size(); i++) {
+            try {
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(StudentBucket.generateStudent());
+            } catch (StudentsOutOfStockException ignore) {
+            }
+        }
+        List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
+        List<Creature> oldEntranceCreatures = new ArrayList<>();
+        for (Student s : studentsInEntrance) {
+            oldEntranceCreatures.add(s.getCreature());
+        }
+
+        //creates the parameters for the character effect
+        CharactersParameters jokerParameters = new CharactersParameters(oldJokerCreatures,
+                0, 0, null, oldEntranceCreatures);
+        //play character effect
+        gm.effect(jokerParameters);
+        //the number of students should be the same as before
+        assertEquals(joker.getStudents().size(), 6);
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size(), 6);
+
+        //get the new creatures in the character and the entrance
+        List<Creature> newJokerCreatures = new ArrayList<>();
+        for (Student s : joker.getStudents()) {
+            newJokerCreatures.add(s.getCreature());
+        }
+        List<Creature> newEntranceCreatures = new ArrayList<>();
+        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents()) {
+            newEntranceCreatures.add(s.getCreature());
+        }
+
+        //the creatures should be swapped
+        assertEquals(oldJokerCreatures, newEntranceCreatures);
+        assertEquals(oldEntranceCreatures, newJokerCreatures);
+
     }
 }

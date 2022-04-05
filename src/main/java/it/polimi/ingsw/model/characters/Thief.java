@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.Playable;
 
@@ -17,7 +16,7 @@ public class Thief implements Character {
     @Override
     public void effect(CharactersParameters answer) {
         //Thief will ask the controller for a creature to remove from the Dining Rooms
-        model.thiefEffect(answer.getProvidedCreature().get(0));
+        model.thiefEffect(answer.getProvidedSourceCreatures().get(0));
     }
 
 

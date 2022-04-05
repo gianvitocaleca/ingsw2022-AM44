@@ -42,14 +42,12 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
 
-
     //DA RIMUOVERE
 
     public void setCharacterTestForMVC() {
         characters.remove(0);
         characters.set(0, new Postman(Name.MAGICPOSTMAN, this));
     }
-
 
 
     // region PLAYABLE OVERRIDE METHODS
@@ -69,6 +67,7 @@ public class GameModel extends Observable implements Playable, Observer {
 
     /**
      * Sets the number of steps for the postman character
+     *
      * @param numberOfSteps is chosen by the player
      */
     @Override
@@ -79,6 +78,7 @@ public class GameModel extends Observable implements Playable, Observer {
     /**
      * Removes 3 students from all the player's dining room
      * If less than 3 students are present, remove all
+     *
      * @param creature is the type of student to be removed
      */
     @Override
@@ -94,6 +94,24 @@ public class GameModel extends Observable implements Playable, Observer {
         }
     }
 
+    /**
+     * Moves a student from the character to the dining room of current player
+     *
+     * @param source          is the Princess student container
+     * @param sourceCreatures is the creature of the student
+     */
+    @Override
+    public void princessEffect(StudentContainer source, List<Creature> sourceCreatures) {
+        moveStudents(source, getPlayers().get(currentPlayerIndex).getDiningRoom(), sourceCreatures);
+    }
+
+    /**
+     * Moves the students from the source to the destination
+     *
+     * @param source
+     * @param destination
+     * @param creatures   are the creatures of the students
+     */
     @Override
     public void moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         List<Student> newStudents = new ArrayList<>();
@@ -115,7 +133,10 @@ public class GameModel extends Observable implements Playable, Observer {
 
     @Override
     public void setHeraldIsland(int indexIsland) {
+        int originalMnPosition = table.getMnPosition();
         table.getMotherNature().setCurrentIsland(indexIsland);
+        evaluateInfluence();
+        table.getMotherNature().setCurrentIsland(originalMnPosition);
     }
 
     //endregion
@@ -151,6 +172,7 @@ public class GameModel extends Observable implements Playable, Observer {
     //endregion
 
     //region ACTION PHASE
+
     /**
      * put in order players according to the assistant card played by each player.
      */
@@ -163,6 +185,55 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     //MOVE STUDENTS
+
+    /**
+     * Swaps the students between joker card and player entrance
+     *
+     * @param source              first studentContainer
+     * @param sourceCreature      are the creatures that will be removed from the source and added to the destination
+     * @param destinationCreature are the creatures that will be removed from the destination and added to the source
+     */
+    @Override
+    public void jokerEffect(StudentContainer source, List<Creature> sourceCreature, List<Creature> destinationCreature) {
+        swapStudents(source, players.get(currentPlayerIndex).getEntrance(), sourceCreature, destinationCreature);
+    }
+
+    /**
+     * Swaps the students from the entrance to the dining room of current player
+     *
+     * @param entranceCreatures
+     * @param diningRoomCreatures
+     */
+    @Override
+    public void minstrelEffect(List<Creature> entranceCreatures, List<Creature> diningRoomCreatures) {
+        swapStudents(players.get(currentPlayerIndex).getEntrance(),
+                players.get(currentPlayerIndex).getDiningRoom(),
+                entranceCreatures, diningRoomCreatures);
+    }
+
+    /**
+     * This method is used by Joker and Minstrel characters to swap the students
+     *
+     * @param source
+     * @param destination
+     * @param sourceCreature
+     * @param destinationCreature
+     */
+    private void swapStudents(StudentContainer source, StudentContainer destination, List<Creature> sourceCreature, List<Creature> destinationCreature) {
+        List<Student> studentsFromSource = new ArrayList<>();
+        List<Student> studentsFromDestination = new ArrayList<>();
+        //gets all the students from the source
+        for (Creature c : sourceCreature) {
+            studentsFromSource.add(source.removeStudent(c));
+        }
+        //gets all the students form the destination
+        for (Creature c : destinationCreature) {
+            studentsFromDestination.add(destination.removeStudent(c));
+        }
+        //swaps the students
+        source.addStudents(studentsFromDestination);
+        destination.addStudents(studentsFromSource);
+    }
 
     public boolean moveMotherNature(int jumps) {
         jumps += postmanMovements;
@@ -241,10 +312,12 @@ public class GameModel extends Observable implements Playable, Observer {
         StudentBucket sb = StudentBucket.getInstance();
         try {
             Student s = sb.generateStudent();
+            //DOBBIAMO RESTITUIRE LO STUDENTE
         } catch (StudentsOutOfStockException ex) {
             gameEnded = true;
         }
 
+        //NOTIFY *********************
 
         return gameEnded;
     }
@@ -281,13 +354,24 @@ public class GameModel extends Observable implements Playable, Observer {
         return players;
     }
 
+    //region setters
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
     }
 
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
+
+    //endregion
 
     public List<Character> getCharacters() {
         return characters;
@@ -295,17 +379,6 @@ public class GameModel extends Observable implements Playable, Observer {
 
     public int getPlayedCharacter() {
         return playedCharacter;
-    }
-
-    //endregion
-
-    //region setters
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
-    public void setCurrentPlayerIndex(int currentPlayerIndex) {
-        this.currentPlayerIndex = currentPlayerIndex;
     }
 
     //endregion
@@ -345,8 +418,10 @@ public class GameModel extends Observable implements Playable, Observer {
         }
         return newPlayers;
     }
+
     /**
      * Creates three random characters for the game
+     *
      * @return is the list of characters
      */
     private List<Character> createListOfCharacters() {
@@ -426,10 +501,6 @@ public class GameModel extends Observable implements Playable, Observer {
     //endregion
 
 
-
-
-
-
     //work in progress
 
     public void conquerIsland(Optional<Player> hasMoreInfluence) {
@@ -471,6 +542,7 @@ public class GameModel extends Observable implements Playable, Observer {
 
     public void effect(CharactersParameters answer) {
         characters.get(playedCharacter).effect(answer);
+
     }
 
     @Override
