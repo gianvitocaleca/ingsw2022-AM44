@@ -43,7 +43,9 @@ public class KnightEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            model.conquerIsland(hasMoreInfluence);
+            if(hasMoreInfluence.isPresent()){
+                model.conquerIsland(hasMoreInfluence.get());
+            }
         } else {
             ci.removeNoEntry();
         }

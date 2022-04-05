@@ -232,7 +232,7 @@ class GameModelTest {
         int oldSize = gm.getTable().getIslands().size();
         gm.getTable().getCurrentIsland().setColorOfTowers(Color.GREY);
         gm.getTable().getNextIsland().setColorOfTowers(Color.GREY);
-        gm.checkNeighborIsland();
+        gm.moveMotherNature(0);
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
     }
 
@@ -279,6 +279,9 @@ class GameModelTest {
         //set Herbalist Character in characters to test her effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
         gm.playCharacter(0);
         gm.effect(herbalist);
         assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(), 1);
@@ -311,7 +314,12 @@ class GameModelTest {
         CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
-        gm.playCharacter(0);
+
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+
+        assertTrue(gm.playCharacter(0));
         gm.effect(thief);
         for (int i = 0; i < gm.getPlayers().size(); i++) {
             for (int j = 0; j < cret.size(); j++) {
@@ -348,6 +356,9 @@ class GameModelTest {
         //set Herald Character in characters to test her effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herald(Name.HERALD, gm));
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
         gm.playCharacter(0);
         gm.effect(herald);
         for (Creature c : Creature.values()) {
@@ -656,6 +667,9 @@ class GameModelTest {
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, joker);
         //play the first character
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
         gm.playCharacter(0);
 
 

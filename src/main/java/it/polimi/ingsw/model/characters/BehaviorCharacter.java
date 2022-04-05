@@ -27,12 +27,23 @@ public class BehaviorCharacter implements Character {
     }
 
     @Override
-    public void effect(CharactersParameters answer) {
+    public boolean canBePlayed(int playerCoins) {
+        if(playerCoins>=getCost()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean effect(CharactersParameters answer) {
         setEvaluator(answer);
         model.setInfluenceEvaluator(evaluator);
         if (name.equals(Name.FARMER)) {
             model.setFarmer();
         }
+        return true;
     }
 
     @Override

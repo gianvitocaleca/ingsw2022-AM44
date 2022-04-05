@@ -48,7 +48,10 @@ public class FungaroEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            model.conquerIsland(hasmoreinfluece);
+            if(hasmoreinfluece.isPresent()){
+                model.conquerIsland(hasmoreinfluece.get());
+            }
+
         } else {
             ci.removeNoEntry();
         }

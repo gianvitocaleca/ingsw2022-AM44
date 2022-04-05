@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.students.StudentBucket;
 import it.polimi.ingsw.view.View;
 
 import java.util.*;
