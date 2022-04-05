@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -583,7 +584,7 @@ class GameModelTest {
 
         }
 
-        gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
+       // gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
 
         List<Student> toCount;
 
@@ -630,6 +631,7 @@ class GameModelTest {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
         } else if (greenCounter + blueCounter > redCounter && greenCounter + blueCounter > pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
+
         } else if (pinkCounter > redCounter && greenCounter + blueCounter < pinkCounter) {
             assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
         }

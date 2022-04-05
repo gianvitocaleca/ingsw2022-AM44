@@ -17,6 +17,12 @@ import java.util.*;
 
 public class GameModel extends Observable implements Playable, Observer {
 
+    public static final int NUMBER_OF_CHARACTERS = 3;
+    public static final int THREE_PLAYERS_CAPACITY = 9;
+    public static final int TWO_PLAYERS_CAPACITY = 7;
+    public static final int TWO_PLAYERS_NUMBEROFTOWERS = 8;
+    public static final int THREE_PLAYERS_NUMBEROFTOWERS = 6;
+    public static final int ADVANCED_RULES_STARTINGCOINS = 1;
     private final Table table;
     private final int numberOfPlayers;
     private List<Player> players;
@@ -428,7 +434,7 @@ public class GameModel extends Observable implements Playable, Observer {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
         List<Character> chars = new ArrayList<Character>();
         List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
             chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
         return chars;
@@ -437,26 +443,26 @@ public class GameModel extends Observable implements Playable, Observer {
     //region createListOfPlayers
     private Entrance createEntrance(int numberOfPlayers) {
         if (numberOfPlayers == 2) {
-            return new Entrance(7);
+            return new Entrance(TWO_PLAYERS_CAPACITY);
         }
         //in case of 3 players
-        return new Entrance(9);
+        return new Entrance(THREE_PLAYERS_CAPACITY);
     }
 
     private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 0, myWizard, 8, myEntrance);
+        return new Player(myUsername, myColor, 0, myWizard, TWO_PLAYERS_NUMBEROFTOWERS, myEntrance);
     }
 
     private Player createThreePlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 0, myWizard, 6, myEntrance);
+        return new Player(myUsername, myColor, 0, myWizard, THREE_PLAYERS_NUMBEROFTOWERS, myEntrance);
     }
 
     private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 1, myWizard, 8, myEntrance);
+        return new Player(myUsername, myColor, ADVANCED_RULES_STARTINGCOINS, myWizard, TWO_PLAYERS_NUMBEROFTOWERS, myEntrance);
     }
 
     private Player createThreePlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 1, myWizard, 6, myEntrance);
+        return new Player(myUsername, myColor, ADVANCED_RULES_STARTINGCOINS, myWizard, THREE_PLAYERS_NUMBEROFTOWERS, myEntrance);
     }
     //endregion
 
