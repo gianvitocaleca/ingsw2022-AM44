@@ -8,13 +8,10 @@ import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
-import it.polimi.ingsw.model.studentcontainers.Entrance;
-import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -43,10 +40,10 @@ class GameModelTest {
     public void createGameModel() {
         StudentBucket.resetMap();
         gm = new GameModel(false,
-                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
-                new ArrayList<Color>(Arrays.asList(Color.values())),
-                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Color.values())),
+                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
     }
 
     /**
@@ -65,7 +62,7 @@ class GameModelTest {
      */
     @Test
     void playEveryAssistant() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < Value.values().length; i++) {
             gm.playAssistant(0);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
@@ -171,7 +168,7 @@ class GameModelTest {
      */
     @Test
     void checkEndGameEveryAssistantsPlayed() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < Value.values().length; i++) {
             gm.playAssistant(0);
         }
         assertTrue(gm.checkEndGame());
@@ -200,7 +197,7 @@ class GameModelTest {
      */
     @Test
     void findWinner() {
-        List<Professor> professors = new ArrayList<Professor>();
+        List<Professor> professors = new ArrayList<>();
 
         for (Creature c : Creature.values()) {
             professors.add(new Professor(c));
@@ -245,10 +242,10 @@ class GameModelTest {
     void playCharacterTest() {
 
         gm = new GameModel(true,
-                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
-                new ArrayList<Color>(Arrays.asList(Color.values())),
-                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Color.values())),
+                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
         //now table has 17 coins
         gm.setCurrentPlayerIndex(1);
         Character firstCharacter = gm.getCharacters().get(0);
@@ -277,7 +274,7 @@ class GameModelTest {
     void herbalistEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
         System.out.println("L'indice dell'isola è: " + islandIndex);
-        CharactersParameters herbalist = new CharactersParameters(new ArrayList<Creature>(), islandIndex, 0, new Cloud(12), new ArrayList<Creature>());
+        CharactersParameters herbalist = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
         //set Herbalist Character in characters to test her effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));
@@ -308,9 +305,9 @@ class GameModelTest {
             }
 
         }
-        List<Creature> uni = new ArrayList<Creature>();
+        List<Creature> uni = new ArrayList<>();
         uni.add(Creature.BLUE_UNICORNS);
-        CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<Creature>());
+        CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
         gm.playCharacter(0);
@@ -337,7 +334,7 @@ class GameModelTest {
     @Test
     void heraldEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        CharactersParameters herald = new CharactersParameters(new ArrayList<Creature>(), islandIndex, 0, new Cloud(12), new ArrayList<Creature>());
+        CharactersParameters herald = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
         List<Professor> profes = new ArrayList<>();
         for (Creature c : Creature.values()) {
             profes.add(new Professor(c));
@@ -439,7 +436,7 @@ class GameModelTest {
         Character centaur = new BehaviorCharacter(Name.CENTAUR, gm);
         try {
             centaur.effect(new CharactersParameters(
-                    new ArrayList<Creature>(), 0, 0, new Cloud(10), new ArrayList<Creature>()));
+                    new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
         } catch (StudentsOutOfStockException ignore) {
         }
 
@@ -508,7 +505,7 @@ class GameModelTest {
         Character knight = new BehaviorCharacter(Name.KNIGHT, gm);
         try {
             knight.effect(new CharactersParameters(
-                    new ArrayList<Creature>(), 0, 0, new Cloud(10), new ArrayList<Creature>()));
+                    new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
         } catch (StudentsOutOfStockException ignore) {
         }
 
@@ -580,7 +577,7 @@ class GameModelTest {
 
         try {
             fungaro.effect(new CharactersParameters(
-                    gnomes, 0, 0, new Cloud(10), new ArrayList<Creature>()));
+                    gnomes, 0, 0, new Cloud(10), new ArrayList<>()));
         } catch (StudentsOutOfStockException ignore) {
         }
 
@@ -649,10 +646,10 @@ class GameModelTest {
 
     void resetEvaluateInfluence() {
         gm = new GameModel(true,
-                new ArrayList<String>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
-                new ArrayList<Color>(Arrays.asList(Color.values())),
-                new ArrayList<Wizard>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Color.values())),
+                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
     }
 
     /**
@@ -671,7 +668,7 @@ class GameModelTest {
 
         //necessary students and creatures from the character and the entrance
         List<Student> studentsInJoker = joker.getStudents();
-        List<Creature> oldJokerCreatures = new ArrayList<Creature>();
+        List<Creature> oldJokerCreatures = new ArrayList<>();
         for (Student s : studentsInJoker) {
             oldJokerCreatures.add(s.getCreature());
         }
@@ -683,7 +680,7 @@ class GameModelTest {
             }
         }
         List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
-        List<Creature> oldEntranceCreatures = new ArrayList<Creature>();
+        List<Creature> oldEntranceCreatures = new ArrayList<>();
         for (Student s : studentsInEntrance) {
             oldEntranceCreatures.add(s.getCreature());
         }
@@ -698,11 +695,11 @@ class GameModelTest {
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size(), 6);
 
         //get the new creatures in the character and the entrance
-        List<Creature> newJokerCreatures = new ArrayList<Creature>();
+        List<Creature> newJokerCreatures = new ArrayList<>();
         for (Student s : joker.getStudents()) {
             newJokerCreatures.add(s.getCreature());
         }
-        List<Creature> newEntranceCreatures = new ArrayList<Creature>();
+        List<Creature> newEntranceCreatures = new ArrayList<>();
         for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents()) {
             newEntranceCreatures.add(s.getCreature());
         }

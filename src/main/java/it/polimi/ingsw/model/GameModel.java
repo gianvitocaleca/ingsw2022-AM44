@@ -133,7 +133,10 @@ public class GameModel extends Observable implements Playable, Observer {
 
     @Override
     public void setHeraldIsland(int indexIsland) {
+        int originalMnPosition = table.getMnPosition();
         table.getMotherNature().setCurrentIsland(indexIsland);
+        evaluateInfluence();
+        table.getMotherNature().setCurrentIsland(originalMnPosition);
     }
 
     //endregion
