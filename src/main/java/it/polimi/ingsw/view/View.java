@@ -60,7 +60,7 @@ public class View extends Observable implements Observer {
         try {
             return scanner.nextInt();
         } catch (InputMismatchException e) {
-            System.out.println("Cagata provided");
+            System.out.println("Wrong value provided");
             return 1;
         }
 
