@@ -65,7 +65,7 @@ public class TableTest {
         }
 
 
-        for(int i=0;i<11;i++){
+        for(int i=0;i<table.getIslands().size();i++){
             System.out.println("Index: "+ i + " ");
             for(Student c: table.getIslands().get(i).getStudents()){
                 System.out.print(c.getCreature()+" ");
@@ -96,7 +96,7 @@ public class TableTest {
             System.out.println("No more island to get fused");
         }
 
-        for(int i=0;i<11;i++){
+        for(int i=0;i<table.getIslands().size();i++){
             System.out.println("Index: "+ i + " ");
             for(Student c: table.getIslands().get(i).getStudents()){
                 System.out.print(c.getCreature()+" ");
@@ -128,7 +128,7 @@ public class TableTest {
             System.out.println("No more island to get fused");
         }
 
-        for(int i=0;i<10;i++){
+        for(int i=0;i<table.getIslands().size();i++){
             System.out.println("Index: "+ i + " ");
             for(Student c: table.getIslands().get(i).getStudents()){
                 System.out.print(c.getCreature()+" ");

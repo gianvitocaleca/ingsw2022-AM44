@@ -11,6 +11,9 @@ import it.polimi.ingsw.model.students.StudentBucket;
 import java.util.*;
 
 public class Table {
+    public static final int TOTAL_COINS_ADVANCED_RULES = 20;
+    public static final int MAX_GENERATED_STUDENTS = 130;
+    public static final int MIN_NUMBER_OF_ISLANDS = 3;
     final int NUMBER_OF_ISLANDS = 12;
 
     private final List<Island> islands = new ArrayList<>();
@@ -32,13 +35,13 @@ public class Table {
             }catch (StudentsOutOfStockException ignored){
                 ignored.printStackTrace();
             }
-            this.islands.add(new Island(students,0, Color.BLACK,130,0));
+            this.islands.add(new Island(students,0, Color.BLACK, MAX_GENERATED_STUDENTS,0));
         }
 
         createClouds(numberOfPlayers);
         this.motherNature = new MotherNature();
         if(advancedRules){
-            this.coinReserve = 20-numberOfPlayers;
+            this.coinReserve = TOTAL_COINS_ADVANCED_RULES -numberOfPlayers;
         }
 
     }
@@ -65,14 +68,14 @@ public class Table {
                 aggregator(getNextIslandPosition());
                 break;
             case "Both":
-                if (islands.size() > 4) {
+                if (islands.size() > MIN_NUMBER_OF_ISLANDS+1) {
                     aggregator(getPrevIslandPosition());
                 }
                 aggregator(getNextIslandPosition());
                 break;
         }
 
-        if(islands.size()==3) throw new GroupsOfIslandsException();
+        if(islands.size()== MIN_NUMBER_OF_ISLANDS) throw new GroupsOfIslandsException();
     }
 
     public int getCoinReserve() {

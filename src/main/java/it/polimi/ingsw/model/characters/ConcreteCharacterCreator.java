@@ -5,9 +5,9 @@ import it.polimi.ingsw.model.enums.Name;
 
 public class ConcreteCharacterCreator implements CharacterCreator {
 
-    public ConcreteCharacterCreator() {
-
-    }
+    public static final int JOKER_CAPACITY = 6;
+    public static final int MINSTREL_CAPACITY = 0;
+    public static final int MOVER_CAPACITY = 4;
 
     /**
      * Factory for characters
@@ -25,9 +25,9 @@ public class ConcreteCharacterCreator implements CharacterCreator {
         else if (name.equals(Name.KNIGHT) || name.equals(Name.CENTAUR) || name.equals(Name.FUNGARO))
             return new BehaviorCharacter(name, model);
         else if (name.equals(Name.FARMER)) return new Farmer(name, model);
-        else if (name.equals(Name.JOKER)) return new MoverCharacter(name, model, 6);
-        else if (name.equals(Name.MINSTREL)) return new MoverCharacter(name, model, 0);
-        else if (name.equals(Name.MONK) || name.equals(Name.PRINCESS)) return new MoverCharacter(name, model, 4);
+        else if (name.equals(Name.JOKER)) return new MoverCharacter(name, model, JOKER_CAPACITY);
+        else if (name.equals(Name.MINSTREL)) return new MoverCharacter(name, model, MINSTREL_CAPACITY);
+        else if (name.equals(Name.MONK) || name.equals(Name.PRINCESS)) return new MoverCharacter(name, model, MOVER_CAPACITY);
         else return null;
     }
 }
