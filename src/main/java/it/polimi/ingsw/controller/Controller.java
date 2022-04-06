@@ -36,7 +36,10 @@ public class Controller extends Observable implements Observer {
         }
 
         if((o instanceof View) && (arg instanceof CharactersParameters)){
-            model.effect((CharactersParameters) arg);
+            if(!(model.effect((CharactersParameters) arg))){
+                setChanged();
+                notifyObservers(model.getCharacters().get(model.getPlayedCharacter()).getName());
+            }
         }
     }
 }

@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.enums.Name;
 
 public interface Character {
 
-    void effect(CharactersParameters answer);
+    boolean canBePlayed(int playerCoins);
+
+    boolean effect(CharactersParameters answer);
 
     Name getName();
 

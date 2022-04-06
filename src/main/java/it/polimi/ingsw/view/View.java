@@ -77,7 +77,7 @@ public class View extends Observable implements Observer {
         }
     }
 
-
+    //JOKER DEVE ESSERE GESTITO USANDO IL BOOLEAN SWAP DELLA ENUM NAME, LA PARTE DI LOGICA DEL GIOCO SAREBBE MEGLIO SPOSTARLA NEL CONTROLLER
     @Override
     public void update(Observable o, Object arg) {
         if ((o instanceof Controller) && (arg instanceof Name)) {

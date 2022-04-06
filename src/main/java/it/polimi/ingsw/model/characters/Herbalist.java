@@ -15,9 +15,21 @@ public class Herbalist implements Character {
         deactivator = 4;
     }
 
-    public void effect(CharactersParameters answer) {
-        deactivator--;
-        model.addNoEntry(answer.getProvidedIslandIndex());
+    @Override
+    public boolean canBePlayed(int playerCoins) {
+        if(playerCoins>=getCost()&&deactivator>0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean effect(CharactersParameters answer) {
+            deactivator--;
+            model.addNoEntry(answer.getProvidedIslandIndex());
+
+            return true;
     }
 
     @Override

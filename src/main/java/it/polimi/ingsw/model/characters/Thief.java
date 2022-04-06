@@ -14,9 +14,21 @@ public class Thief implements Character {
     }
 
     @Override
-    public void effect(CharactersParameters answer) {
+    public boolean canBePlayed(int playerCoins) {
+        if(playerCoins>=getCost()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean effect(CharactersParameters answer) {
         //Thief will ask the controller for a creature to remove from the Dining Rooms
         model.thiefEffect(answer.getProvidedSourceCreatures().get(0));
+
+        return true;
     }
 
 

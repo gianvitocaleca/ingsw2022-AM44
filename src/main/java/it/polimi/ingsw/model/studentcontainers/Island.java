@@ -26,8 +26,9 @@ public class Island extends StudentContainer {
         this.colorOfTowers = colorOfTowers;
     }
 
-    public void addNoEntry() {
+    public boolean addNoEntry() {
         numberOfNoEntries += 1;
+        return true;
     }
 
     public void removeNoEntry() {

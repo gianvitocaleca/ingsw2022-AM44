@@ -14,8 +14,21 @@ public class Herald implements Character {
         this.model=model;
     }
 
-    public void effect(CharactersParameters answer) {
-        model.setHeraldIsland(answer.getProvidedIslandIndex());
+    @Override
+    public boolean canBePlayed(int playerCoins) {
+        if(playerCoins>=getCost()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean effect(CharactersParameters answer) {
+        if(!(model.setHeraldIsland(answer.getProvidedIslandIndex()))){
+            return false;
+        }
+        return true;
     }
 
     @Override

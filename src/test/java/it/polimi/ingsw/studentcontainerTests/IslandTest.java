@@ -24,6 +24,7 @@ public class IslandTest {
 
     @BeforeEach
     void initializeIsland() {
+        StudentBucket.resetMap();
         List<Student> students = new ArrayList<Student>();
         sb = StudentBucket.getInstance();
         for (int i = 0; i < new Random().nextInt(130); i++) {
@@ -31,6 +32,7 @@ public class IslandTest {
                 students.add(StudentBucket.generateStudent());
             } catch (StudentsOutOfStockException ignored) {
                 System.out.println("Studenti finiti");
+                break;
             }
         }
         island = new Island(students, 0, Color.BLACK, 130, 0);

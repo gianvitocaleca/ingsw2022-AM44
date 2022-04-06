@@ -4,8 +4,7 @@ import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,5 +30,10 @@ public class StudentBucketTest {
         }
         assertEquals(sum, 130);
         assertEquals(temp.size(),130);
+    }
+
+    @BeforeEach
+    public void resetBucket() {
+        StudentBucket.resetMap();
     }
 }

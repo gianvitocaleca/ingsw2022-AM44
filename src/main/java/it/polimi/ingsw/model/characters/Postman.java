@@ -15,9 +15,22 @@ public class Postman implements Character {
 
     }
 
-    public void effect(CharactersParameters answer) {
+    @Override
+    public boolean canBePlayed(int playerCoins) {
+        if(playerCoins>=getCost()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
+    public boolean effect(CharactersParameters answer) {
+        if(answer.getProvidedMnMovements()>2){
+            return false;
+        }
         model.setPostmanMovements(answer.getProvidedMnMovements());
+        return true;
     }
 
     @Override

@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MoverCharacter extends StudentContainer implements Character {
 
@@ -31,16 +32,44 @@ public class MoverCharacter extends StudentContainer implements Character {
     }
 
     @Override
-    public void effect(CharactersParameters answer) {
+    public boolean canBePlayed(int playerCoins) {
+        if(playerCoins>=getCost()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean effect(CharactersParameters answer) {
+        List<Creature> creatures = getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
+
+
         switch (name) {
             case JOKER:
-                model.jokerEffect(this, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures());
-                break;
+
+                if(!(model.jokerEffect(this, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures()))){
+                    return false;
+                }
+                return true;
+
             case MINSTREL:
-                model.minstrelEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures());
-                break;
+                if(!model.minstrelEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures())){
+                    return false;
+                }
+                return true;
+
             case PRINCESS:
-                model.princessEffect(this, answer.getProvidedSourceCreatures());
+
+                //check if provided creature is present in princess' attribute students
+
+                if(creatures.containsAll(answer.getProvidedSourceCreatures())){
+                    model.princessEffect(this, answer.getProvidedSourceCreatures());
+                }else{
+                    return false;
+                }
+
                 try {
                     this.addStudent(StudentBucket.generateStudent());
                 } catch (StudentsOutOfStockException e) {
@@ -48,14 +77,22 @@ public class MoverCharacter extends StudentContainer implements Character {
                 }
                 break;
             case MONK:
-                model.moveStudents(this, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
-                try {
-                    this.addStudent(StudentBucket.generateStudent());
-                } catch (StudentsOutOfStockException e) {
-                    model.checkEndGame();
+
+                if(creatures.containsAll(answer.getProvidedSourceCreatures())){
+                    model.moveStudents(this, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
+
+                    try {
+                        this.addStudent(StudentBucket.generateStudent());
+                    } catch (StudentsOutOfStockException e) {
+                        model.checkEndGame();
+                    }
+
+                    return true;
                 }
-                break;
+                return false;
         }
+
+        return false;
     }
 
     @Override
