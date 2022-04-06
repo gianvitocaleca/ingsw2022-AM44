@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameModelTest {
+public class GameModelTest {
     GameModel gm;
 
     /**
@@ -51,7 +51,7 @@ class GameModelTest {
      * This test verifies that clouds are filled in the correct way
      */
     @Test
-    void fillCloudsCorrectly() {
+    public void fillCloudsCorrectly() {
         gm.fillClouds();
         for (Cloud c : gm.getTable().getClouds()) {
             assertEquals(c.getStudents().size(), c.getCapacity());
@@ -595,7 +595,7 @@ class GameModelTest {
 
         }
 
-       // gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
+        // gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
 
         List<Student> toCount;
 

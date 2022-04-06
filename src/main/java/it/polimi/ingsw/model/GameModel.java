@@ -91,12 +91,12 @@ public class GameModel extends Observable implements Playable, Observer {
         StudentBucket sb = StudentBucket.getInstance();
         for (Player p : players) {
             for (int i = 0; i < Name.THIEF.getMaxMoves() && p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0; i++) {
-                if(p.getDiningRoom().getNumberOfStudentsByCreature(creature)>0){
+                if (p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0) {
                     //removes the student from the dining room
                     Student removedStudent = p.getDiningRoom().removeStudent(creature);
                     //gives the student back to the bucket
                     sb.putBackCreature(removedStudent.getCreature());
-                } else{
+                } else {
                     break;
                 }
             }
@@ -116,7 +116,8 @@ public class GameModel extends Observable implements Playable, Observer {
 
     /**
      * Moves the students from the source to the destination
-     *  @param source is the source of the moving
+     *
+     * @param source      is the source of the moving
      * @param destination is the destination of the moving
      * @param creatures   are the creatures of the students
      * @return true if moveStudents was executed correctly
@@ -125,7 +126,7 @@ public class GameModel extends Observable implements Playable, Observer {
     public boolean moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         List<Student> newStudents = new ArrayList<>();
         List<Creature> sourceCreatures = source.getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
-        if(sourceCreatures.containsAll(creatures)){
+        if (sourceCreatures.containsAll(creatures)) {
             for (Creature c : creatures) {
                 newStudents.add(source.removeStudent(c));
             }
@@ -147,7 +148,7 @@ public class GameModel extends Observable implements Playable, Observer {
 
     @Override
     public boolean setHeraldIsland(int indexIsland) {
-        if(indexIsland<table.getIslands().size()){
+        if (indexIsland < table.getIslands().size()) {
             int originalMnPosition = table.getMnPosition();
             table.getMotherNature().setCurrentIsland(indexIsland);
             evaluateInfluence();
@@ -184,17 +185,17 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     public boolean playAssistant(int indexOfAssistant) {
-        if(indexOfAssistant<0||indexOfAssistant>players.get(currentPlayerIndex).getAssistantDeck().size()){
+        if (indexOfAssistant < 0 || indexOfAssistant > players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
         List<Assistant> playedAssistants = new ArrayList<Assistant>();
 
-        if(!(currentPlayerIndex==0)){
-            for(int i=currentPlayerIndex-1;i>0;i--){
+        if (!(currentPlayerIndex == 0)) {
+            for (int i = currentPlayerIndex - 1; i > 0; i--) {
                 playedAssistants.add(players.get(i).getLastPlayedCard());
             }
 
-            if(playedAssistants.contains(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant))){
+            if (playedAssistants.contains(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant))) {
                 return false;
             }
         }
@@ -223,7 +224,8 @@ public class GameModel extends Observable implements Playable, Observer {
 
     /**
      * Swaps the students between joker card and player entrance
-     *  @param source              first studentContainer
+     *
+     * @param source                       first studentContainer
      * @param providedSourceCreatures      are the creatures that will be removed from the source and added to the destination
      * @param providedDestinationCreatures are the creatures that will be removed from the destination and added to the source
      * @return true if effect is correctly executed
@@ -234,7 +236,7 @@ public class GameModel extends Observable implements Playable, Observer {
         List<Creature> sourceCreatures = source.getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
 
-        if(sourceCreatures.containsAll(providedSourceCreatures)&&destCreatures.containsAll(providedDestinationCreatures)){
+        if (sourceCreatures.containsAll(providedSourceCreatures) && destCreatures.containsAll(providedDestinationCreatures)) {
             swapStudents(source, players.get(currentPlayerIndex).getEntrance(), providedSourceCreatures, providedDestinationCreatures);
             return true;
         }
@@ -243,7 +245,8 @@ public class GameModel extends Observable implements Playable, Observer {
 
     /**
      * Swaps the students from the entrance to the dining room of current player
-     *  @param providedEntranceCreatures
+     *
+     * @param providedEntranceCreatures
      * @param providedDiningRoomCreatures
      * @return
      */
@@ -253,7 +256,7 @@ public class GameModel extends Observable implements Playable, Observer {
         List<Creature> entranceCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
 
-        if(entranceCreatures.containsAll(providedEntranceCreatures)&&destCreatures.containsAll(destCreatures)){
+        if (entranceCreatures.containsAll(providedEntranceCreatures) && destCreatures.containsAll(destCreatures)) {
             swapStudents(players.get(currentPlayerIndex).getEntrance(),
                     players.get(currentPlayerIndex).getDiningRoom(),
                     providedEntranceCreatures, providedDiningRoomCreatures);
@@ -286,14 +289,17 @@ public class GameModel extends Observable implements Playable, Observer {
         destination.addStudents(studentsFromSource);
     }
 
+    /**
+     * sums the selected postman movements to the number of jumps
+     * mnFuturePos uses the module function to establish the correct future position of MotherNature
+     *
+     * @param jumps number of steps that MotherNature has to do
+     */
+
     public void moveMotherNature(int jumps) {
         jumps += postmanMovements;
-        if (jumps < ((table.getIslands().size() - 1) - table.getMnPosition())) {
-            table.getMotherNature().setCurrentIsland(jumps + table.getMnPosition());
-        } else {
-            int mnFuturePos = jumps - (table.getIslands().size() - 1 - table.getMnPosition());
-            table.getMotherNature().setCurrentIsland(mnFuturePos - 1);
-        }
+        int mnFuturePos = (table.getMnPosition() + jumps) % (table.getIslands().size());
+        table.getMotherNature().setCurrentIsland(mnFuturePos);
         checkNeighborIsland();
     }
 
@@ -334,14 +340,14 @@ public class GameModel extends Observable implements Playable, Observer {
 
     public boolean playCharacter(int indexOfCharacter) {
 
-        if(indexOfCharacter<0||indexOfCharacter>2){
+        if (indexOfCharacter < 0 || indexOfCharacter > 2) {
             return false;
         }
 
         Player currentPlayer = players.get(currentPlayerIndex);
         Character currentCharacter = characters.get(indexOfCharacter);
 
-        if(currentCharacter.canBePlayed(currentPlayer.getMyCoins())){
+        if (currentCharacter.canBePlayed(currentPlayer.getMyCoins())) {
             //get character cost (it already handles the updated cost)
             int removedCoins = currentCharacter.getCost();
             //player pays for the character
@@ -599,7 +605,7 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     public boolean effect(CharactersParameters answer) {
-        if(!(characters.get(playedCharacter).effect(answer))){
+        if (!(characters.get(playedCharacter).effect(answer))) {
             return false;
         }
         return true;
