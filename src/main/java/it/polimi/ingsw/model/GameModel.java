@@ -31,9 +31,11 @@ public class GameModel extends Observable implements Playable, Observer {
     private InfluenceEvaluator evaluator;
     private int postmanMovements;
     private boolean isFarmer;
+    private boolean advancedRules;
 
     //Constructor
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
+        this.advancedRules = advancedRules;
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
         players = createListOfPlayers(advancedRules, usernames, colors, wizards);
         this.numberOfPlayers = numberOfPlayers;

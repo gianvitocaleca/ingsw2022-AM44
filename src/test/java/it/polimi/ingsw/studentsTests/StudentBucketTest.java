@@ -12,11 +12,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StudentBucketTest {
+
+    private int maxStudentCap = 130;
+
     @Test
     public void MaxCapacityBucket() {
         StudentBucket bucket = StudentBucket.getInstance();
         List<Student> temp = new ArrayList<>();
-        while(true) {
+        while (true) {
             try {
                 temp.add(bucket.generateStudent());
             } catch (StudentsOutOfStockException ex) {
@@ -26,10 +29,10 @@ public class StudentBucketTest {
         int sum = 0;
         for (Creature c : Creature.values()) {
             sum += bucket.getNumberOfGeneratedStudentsByCreature(c);
-            assertEquals(bucket.getNumberOfGeneratedStudentsByCreature(c),26);
+            assertEquals(bucket.getNumberOfGeneratedStudentsByCreature(c), 26);
         }
-        assertEquals(sum, 130);
-        assertEquals(temp.size(),130);
+        assertEquals(maxStudentCap, sum);
+        assertEquals(maxStudentCap, temp.size());
     }
 
     @BeforeEach
