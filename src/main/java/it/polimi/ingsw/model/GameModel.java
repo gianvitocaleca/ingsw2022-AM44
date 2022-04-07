@@ -133,9 +133,21 @@ public class GameModel extends Observable implements Playable, Observer {
                 newStudents.add(source.removeStudent(c));
             }
             destination.addStudents(newStudents);
+            coinGiver(players.get(currentPlayerIndex));
             return true;
         }
         return false;
+    }
+
+    private void coinGiver(Player currPlayer) {
+        for (Creature c : Creature.values()) {
+            if (table.getCoinReserve() > 0) {
+                if (currPlayer.checkCoinGiver(c)) {
+                    table.removeCoin();
+                }
+            }
+        }
+
     }
 
     @Override

@@ -7,12 +7,6 @@ import java.util.*;
 
 public class DiningRoom extends StudentContainer {
     private Map<Creature, ArrayList<Student>> diners = createMap();
-    private boolean[][] givenCoins = {
-            {false, false, false},
-            {false, false, false},
-            {false, false, false},
-            {false, false, false},
-            {false, false, false}};
 
     public DiningRoom(int capacity) {
         super(capacity);
@@ -35,6 +29,11 @@ public class DiningRoom extends StudentContainer {
         for (Student st : newStudents) {
             diners.get(st.getCreature()).add(st);
         }
+    }
+
+    @Override
+    public void addStudent(Student student) {
+        diners.get(student.getCreature()).add(student);
     }
 
     @Override
