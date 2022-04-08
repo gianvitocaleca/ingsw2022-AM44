@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enums.Value;
 import it.polimi.ingsw.model.enums.Wizard;
 import it.polimi.ingsw.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.model.studentcontainers.Entrance;
+import it.polimi.ingsw.model.students.Student;
 
 import java.util.*;
 
@@ -22,6 +23,7 @@ public class Player {
     private final List<Professor> professors;
     private int myCoins;
     private int towers;
+    private Map<Creature, ArrayList<Boolean>> givenCoins = createMap();
 
     public Player(String username, Color myColor, int myCoins, Wizard wizard, int towers, Entrance entrance) {
         this.username = username;
@@ -121,4 +123,25 @@ public class Player {
         return "value of last played card is " + getLastPlayedCard().getValue();
     }
 
+    private Map<Creature, ArrayList<Boolean>> createMap() {
+        Map<Creature, ArrayList<Boolean>> newMap = new HashMap<>();
+        for (Creature c : Creature.values()) {
+            newMap.put(c, new ArrayList<Boolean>());
+        }
+        return newMap;
+    }
+
+    public Map<Creature, ArrayList<Boolean>> getGivenCoins() {
+        return givenCoins;
+    }
+
+    public boolean checkCoinGiver(Creature creature) {
+        int response = diningRoom.getNumberOfStudentsByCreature(creature);
+        if (response / 3 > givenCoins.get(creature).size()) {
+            addCoin();
+            givenCoins.get(creature).add(true);
+            return true;
+        }
+        return false;
+    }
 }

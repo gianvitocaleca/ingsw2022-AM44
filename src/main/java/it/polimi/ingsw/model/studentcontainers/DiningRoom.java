@@ -32,6 +32,11 @@ public class DiningRoom extends StudentContainer {
     }
 
     @Override
+    public void addStudent(Student student) {
+        diners.get(student.getCreature()).add(student);
+    }
+
+    @Override
     public Student removeStudent(Creature creature) {
         return diners.get(creature).remove(diners.get(creature).size() - 1);
     }

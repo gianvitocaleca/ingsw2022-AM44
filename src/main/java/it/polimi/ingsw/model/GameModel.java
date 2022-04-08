@@ -31,9 +31,11 @@ public class GameModel extends Observable implements Playable, Observer {
     private InfluenceEvaluator evaluator;
     private int postmanMovements;
     private boolean isFarmer;
+    private boolean advancedRules;
 
     //Constructor
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
+        this.advancedRules = advancedRules;
         //aggiungere un giocatore alla volta per il problema del colore e del mago?
         players = createListOfPlayers(advancedRules, usernames, colors, wizards);
         this.numberOfPlayers = numberOfPlayers;
@@ -131,9 +133,21 @@ public class GameModel extends Observable implements Playable, Observer {
                 newStudents.add(source.removeStudent(c));
             }
             destination.addStudents(newStudents);
+            coinGiver(players.get(currentPlayerIndex));
             return true;
         }
         return false;
+    }
+
+    private void coinGiver(Player currPlayer) {
+        for (Creature c : Creature.values()) {
+            if (table.getCoinReserve() > 0) {
+                if (currPlayer.checkCoinGiver(c)) {
+                    table.removeCoin();
+                }
+            }
+        }
+
     }
 
     @Override

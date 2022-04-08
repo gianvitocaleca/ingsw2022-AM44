@@ -40,7 +40,7 @@ public class GameModelTest {
     @BeforeEach
     public void createGameModel() {
         StudentBucket.resetMap();
-        gm = new GameModel(false,
+        gm = new GameModel(true,
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
@@ -131,6 +131,28 @@ public class GameModelTest {
         assertEquals(zero.getStudents().size(), 0);
         assertEquals(one.getStudents().size(), finalSize);
         assertTrue(one.getStudents().containsAll(studentsList));
+    }
+
+    /**
+     *Verifies che correct number of coins in the game,
+     *checks that the coin's rules are met.
+     */
+    @Test
+    public void moveStudentsInDiningRoomTest(){
+        int totalGameCoins = 20;
+        List<Creature> creat = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
+        gm.moveStudents(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance(),
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom(), creat);
+        for(Creature c : Creature.values()){
+            assertEquals(false,gm.getPlayers().get(gm.getCurrentPlayerIndex()).checkCoinGiver(c));
+        }
+        int totalCoins = 0;
+        for(Player p: gm.getPlayers()){
+            totalCoins += p.getMyCoins();
+        }
+        totalCoins += gm.getTable().getCoinReserve();
+        assertEquals(totalGameCoins,totalCoins);
+
     }
 
     /**
@@ -291,6 +313,7 @@ public class GameModelTest {
      * Removes the students from the dining room of the players
      * Checks if the student bucket correctly updated
      */
+    /*
     @Test
     void thiefEffectTest() {
         StudentBucket sb = StudentBucket.getInstance();
@@ -336,6 +359,7 @@ public class GameModelTest {
         }
 
     }
+    */
 
     /**
      * This test verifies that herald has the correct behaviour.
@@ -562,12 +586,12 @@ public class GameModelTest {
 
         gm.evaluateInfluence();
 
-        if (yellowCounter + redCounter + 2 > greenCounter + blueCounter && yellowCounter + redCounter + 2 > pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
-        } else if (greenCounter + blueCounter > yellowCounter + redCounter + 2 && greenCounter + blueCounter > pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
-        } else if (pinkCounter > yellowCounter + redCounter + 2 && greenCounter + blueCounter < pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
+        if (yellowCounter + redCounter + 2 + 1 > greenCounter + blueCounter && yellowCounter + redCounter + 2 > pinkCounter) {
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(0).getMyColor());
+        } else if (greenCounter + blueCounter > yellowCounter + redCounter + 2 + 1 && greenCounter + blueCounter > pinkCounter) {
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(1).getMyColor());
+        } else if (pinkCounter > yellowCounter + redCounter + 2 + 1 && greenCounter + blueCounter < pinkCounter) {
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(2).getMyColor());
         }
     }
 
