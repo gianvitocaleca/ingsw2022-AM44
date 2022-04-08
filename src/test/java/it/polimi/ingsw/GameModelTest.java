@@ -529,7 +529,7 @@ public class GameModelTest {
         }
     }
 
-    @RepeatedTest(1000)
+    @Test
     void knightEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
 
