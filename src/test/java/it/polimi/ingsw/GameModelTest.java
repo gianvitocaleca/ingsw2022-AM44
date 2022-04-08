@@ -529,7 +529,7 @@ public class GameModelTest {
         }
     }
 
-    @Test
+    @RepeatedTest(1000)
     void knightEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
 
@@ -586,12 +586,12 @@ public class GameModelTest {
 
         gm.evaluateInfluence();
 
-        if (yellowCounter + redCounter + 2 > greenCounter + blueCounter && yellowCounter + redCounter + 2 > pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
-        } else if (greenCounter + blueCounter > yellowCounter + redCounter + 2 && greenCounter + blueCounter > pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
-        } else if (pinkCounter > yellowCounter + redCounter + 2 && greenCounter + blueCounter < pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
+        if (yellowCounter + redCounter + 2 + 1 > greenCounter + blueCounter && yellowCounter + redCounter + 2 > pinkCounter) {
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(0).getMyColor());
+        } else if (greenCounter + blueCounter > yellowCounter + redCounter + 2 + 1 && greenCounter + blueCounter > pinkCounter) {
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(1).getMyColor());
+        } else if (pinkCounter > yellowCounter + redCounter + 2 + 1 && greenCounter + blueCounter < pinkCounter) {
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(2).getMyColor());
         }
     }
 
