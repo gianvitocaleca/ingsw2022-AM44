@@ -15,10 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -134,24 +131,24 @@ public class GameModelTest {
     }
 
     /**
-     *Verifies che correct number of coins in the game,
-     *checks that the coin's rules are met.
+     * Verifies che correct number of coins in the game,
+     * checks that the coin's rules are met.
      */
     @Test
-    public void moveStudentsInDiningRoomTest(){
+    public void moveStudentsInDiningRoomTest() {
         int totalGameCoins = 20;
         List<Creature> creat = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         gm.moveStudents(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom(), creat);
-        for(Creature c : Creature.values()){
-            assertEquals(false,gm.getPlayers().get(gm.getCurrentPlayerIndex()).checkCoinGiver(c));
+        for (Creature c : Creature.values()) {
+            assertEquals(false, gm.getPlayers().get(gm.getCurrentPlayerIndex()).checkCoinGiver(c));
         }
         int totalCoins = 0;
-        for(Player p: gm.getPlayers()){
+        for (Player p : gm.getPlayers()) {
             totalCoins += p.getMyCoins();
         }
         totalCoins += gm.getTable().getCoinReserve();
-        assertEquals(totalGameCoins,totalCoins);
+        assertEquals(totalGameCoins, totalCoins);
 
     }
 
@@ -313,7 +310,7 @@ public class GameModelTest {
      * Removes the students from the dining room of the players
      * Checks if the student bucket correctly updated
      */
-    /*
+
     @Test
     void thiefEffectTest() {
         StudentBucket sb = StudentBucket.getInstance();
@@ -343,7 +340,7 @@ public class GameModelTest {
         gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
 
         assertTrue(gm.playCharacter(0));
-        gm.effect(thief);
+        assertTrue(gm.effect(thief));
         for (int i = 0; i < gm.getPlayers().size(); i++) {
             for (int j = 0; j < cret.size(); j++) {
                 if (!cret.get(j).equals(Creature.BLUE_UNICORNS)) {
@@ -359,7 +356,7 @@ public class GameModelTest {
         }
 
     }
-    */
+
 
     /**
      * This test verifies that herald has the correct behaviour.

@@ -91,16 +91,14 @@ public class GameModel extends Observable implements Playable, Observer {
     @Override
     public void thiefEffect(Creature creature) {
         StudentBucket sb = StudentBucket.getInstance();
+        int numberOfStudentsToRemove = 3;
         for (Player p : players) {
-            for (int i = 0; i < Name.THIEF.getMaxMoves() && p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0; i++) {
-                if (p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0) {
-                    //removes the student from the dining room
-                    Student removedStudent = p.getDiningRoom().removeStudent(creature);
-                    //gives the student back to the bucket
-                    sb.putBackCreature(removedStudent.getCreature());
-                } else {
-                    break;
-                }
+            int minNumberToRemove = Math.min(numberOfStudentsToRemove, p.getDiningRoom().getNumberOfStudentsByCreature(creature));
+            for (int i = 0; i < minNumberToRemove; i++) {
+                //removes the student from the dining room
+                Student removedStudent = p.getDiningRoom().removeStudent(creature);
+                //gives the student back to the bucket
+                sb.putBackCreature(removedStudent.getCreature());
             }
         }
     }
