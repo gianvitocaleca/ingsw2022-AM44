@@ -41,6 +41,15 @@ public class DiningRoom extends StudentContainer {
         return diners.get(creature).remove(diners.get(creature).size() - 1);
     }
 
+    @Override
+    public List<Student> getStudents() {
+        List<Student> ans = new ArrayList<>();
+        for (Creature c : Creature.values()) {
+            ans.addAll(diners.get(c));
+        }
+        return ans;
+    }
+
     public int getNumberOfStudentsByCreature(Creature creature) {
         return diners.get(creature).size();
     }

@@ -11,32 +11,24 @@ import it.polimi.ingsw.model.students.StudentBucket;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MoverCharacter extends StudentContainer implements Character {
+public class MoverCharacter implements Character {
 
     private Name name;
     private Playable model;
     private int updatedCost = 0;
+    private StudentContainer container;
 
-    public MoverCharacter(Name name, Playable model, int capacity) {
-        super(capacity);
+    public MoverCharacter(Name name, Playable model, StudentContainer container) {
         this.name = name;
         this.model = model;
-        StudentBucket sb = StudentBucket.getInstance();
-        for (int i = 0; i < getCapacity(); i++) {
-            try {
-                addStudent(sb.generateStudent());
-            } catch (StudentsOutOfStockException ignore) {
-                //this should not happen, there are enough student at the beginning of the game
-            }
-        }
+        this.container = container;
     }
 
     @Override
     public boolean canBePlayed(int playerCoins) {
-        if(playerCoins>=getCost()){
+        if (playerCoins >= getCost()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -49,13 +41,7 @@ public class MoverCharacter extends StudentContainer implements Character {
         switch (name) {
             case JOKER:
 
-                if(!(model.jokerEffect(this, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures()))){
-                    return false;
-                }
-                return true;
-
-            case MINSTREL:
-                if(!model.minstrelEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures())){
+                if (!(model.jokerEffect(container, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures()))) {
                     return false;
                 }
                 return true;
@@ -64,25 +50,25 @@ public class MoverCharacter extends StudentContainer implements Character {
 
                 //check if provided creature is present in princess' attribute students
 
-                if(creatures.containsAll(answer.getProvidedSourceCreatures())){
-                    model.princessEffect(this, answer.getProvidedSourceCreatures());
-                }else{
+                if (creatures.containsAll(answer.getProvidedSourceCreatures())) {
+                    model.princessEffect(container, answer.getProvidedSourceCreatures());
+                } else {
                     return false;
                 }
 
                 try {
-                    this.addStudent(StudentBucket.generateStudent());
+                    container.addStudent(StudentBucket.generateStudent());
                 } catch (StudentsOutOfStockException e) {
                     model.checkEndGame();
                 }
                 break;
             case MONK:
 
-                if(creatures.containsAll(answer.getProvidedSourceCreatures())){
-                    model.moveStudents(this, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
+                if (creatures.containsAll(answer.getProvidedSourceCreatures())) {
+                    model.moveStudents(container, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
 
                     try {
-                        this.addStudent(StudentBucket.generateStudent());
+                        container.addStudent(StudentBucket.generateStudent());
                     } catch (StudentsOutOfStockException e) {
                         model.checkEndGame();
                     }
@@ -115,18 +101,15 @@ public class MoverCharacter extends StudentContainer implements Character {
         updatedCost = 1;
     }
 
-    @Override
     public List<Student> getStudents() {
-        return super.getStudents();
+        return container.getStudents();
     }
 
-    @Override
     public Student removeStudent(Creature creature) {
-        return super.removeStudent(creature);
+        return container.removeStudent(creature);
     }
 
-    @Override
     public void addStudents(List<Student> newStudents) {
-        super.addStudents(newStudents);
+        container.addStudents(newStudents);
     }
 }

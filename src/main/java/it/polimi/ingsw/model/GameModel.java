@@ -46,6 +46,7 @@ public class GameModel extends Observable implements Playable, Observer {
         characters = createListOfCharacters();
         postmanMovements = 0;
         playedCharacter = -1;
+        populateMoverCharacter();
     }
 
 
@@ -93,6 +94,7 @@ public class GameModel extends Observable implements Playable, Observer {
         StudentBucket sb = StudentBucket.getInstance();
         int numberOfStudentsToRemove = 3;
         for (Player p : players) {
+            //removes 3 or all the students of that creature
             int minNumberToRemove = Math.min(numberOfStudentsToRemove, p.getDiningRoom().getNumberOfStudentsByCreature(creature));
             for (int i = 0; i < minNumberToRemove; i++) {
                 //removes the student from the dining room
@@ -299,6 +301,34 @@ public class GameModel extends Observable implements Playable, Observer {
         //swaps the students
         source.addStudents(studentsFromDestination);
         destination.addStudents(studentsFromSource);
+    }
+
+    /**
+     * Populates the student containers for Monk and Princess
+     */
+
+    public void populateMoverCharacter() {
+        List<Name> charNames = characters.stream().map(Character::getName).toList();
+        List<StudentContainer> movers = new ArrayList<StudentContainer>();
+        if (charNames.contains(Name.MONK)) {
+            movers.add(table.getMonk());
+        }
+        if (charNames.contains(Name.PRINCESS)) {
+            movers.add(table.getPrincess());
+        }
+        if (charNames.contains(Name.JOKER)) {
+            movers.add(table.getJoker());
+        }
+        for (StudentContainer sc : movers) {
+            for (int i = 0; i < sc.getCapacity(); i++) {
+                try {
+                    sc.addStudent(StudentBucket.generateStudent());
+                } catch (StudentsOutOfStockException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     /**

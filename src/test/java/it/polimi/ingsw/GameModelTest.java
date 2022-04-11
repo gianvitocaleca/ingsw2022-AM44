@@ -12,7 +12,6 @@ import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -310,7 +309,6 @@ public class GameModelTest {
      * Removes the students from the dining room of the players
      * Checks if the student bucket correctly updated
      */
-
     @Test
     void thiefEffectTest() {
         StudentBucket sb = StudentBucket.getInstance();
@@ -357,6 +355,19 @@ public class GameModelTest {
 
     }
 
+
+    @Test
+    void princessEffectTest() {
+        //creates the character
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        Character princess = ccc.createCharacter(Name.PRINCESS, gm);
+        //put the character in first position
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0, princess);
+        //give coins to player
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+    }
 
     /**
      * This test verifies that herald has the correct behaviour.
@@ -584,11 +595,11 @@ public class GameModelTest {
         gm.evaluateInfluence();
 
         if (yellowCounter + redCounter + 2 + 1 > greenCounter + blueCounter && yellowCounter + redCounter + 2 > pinkCounter) {
-            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(0).getMyColor());
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(0).getMyColor());
         } else if (greenCounter + blueCounter > yellowCounter + redCounter + 2 + 1 && greenCounter + blueCounter > pinkCounter) {
-            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(1).getMyColor());
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(1).getMyColor());
         } else if (pinkCounter > yellowCounter + redCounter + 2 + 1 && greenCounter + blueCounter < pinkCounter) {
-            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(),gm.getPlayers().get(2).getMyColor());
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(2).getMyColor());
         }
     }
 
@@ -678,15 +689,17 @@ public class GameModelTest {
     }
 
     /**
-     * Swaps students from Joker character and player entrance
+     * Swaps students between Joker character and player entrance
      */
     @Test
     void JokerTest() {
+        int maxStudentsInJoker = 6;
         //create the MoverCharacter
-        MoverCharacter joker = new MoverCharacter(Name.JOKER, gm, 6);
+        MoverCharacter joker = new MoverCharacter(Name.JOKER, gm, gm.getTable().getJoker());
         //put the character in first position
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, joker);
+        gm.populateMoverCharacter();
         //play the first character
         gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
         gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
@@ -719,8 +732,8 @@ public class GameModelTest {
         //play character effect
         gm.effect(jokerParameters);
         //the number of students should be the same as before
-        assertEquals(joker.getStudents().size(), 6);
-        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size(), 6);
+        assertEquals(maxStudentsInJoker, joker.getStudents().size());
+        assertEquals(maxStudentsInJoker, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
 
         //get the new creatures in the character and the entrance
         List<Creature> newJokerCreatures = new ArrayList<>();
@@ -733,8 +746,78 @@ public class GameModelTest {
         }
 
         //the creatures should be swapped
-        assertEquals(oldJokerCreatures, newEntranceCreatures);
-        assertEquals(oldEntranceCreatures, newJokerCreatures);
+        assertTrue(oldJokerCreatures.containsAll(newEntranceCreatures));
+        assertTrue(oldEntranceCreatures.containsAll(newJokerCreatures));
+    }
+
+    /**
+     * Swaps students between current player entrance and dining room
+     */
+    @Test
+    void minstrelTest() {
+        //create the Character
+        Minstrel minstrel = new Minstrel(Name.MINSTREL, gm);
+        //put the character in first position
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0, minstrel);
+        //play the first character
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.playCharacter(0);
+
+        int maxNumberOfStudentsToSwap = 2;
+        //populate the current player entrance with random students
+        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
+            try {
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(StudentBucket.generateStudent());
+            } catch (StudentsOutOfStockException ignore) {
+            }
+        }
+        //populate the current player dining room with random students
+        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
+            try {
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().addStudent(StudentBucket.generateStudent());
+            } catch (StudentsOutOfStockException ignore) {
+            }
+        }
+
+        //old students in entrance
+        List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
+        List<Creature> oldEntranceCreatures = new ArrayList<>();
+        for (Student s : studentsInEntrance) {
+            oldEntranceCreatures.add(s.getCreature());
+        }
+
+        //old students in dining room
+        List<Student> studentsInDiningRoom = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents();
+        List<Creature> oldDiningRoomCreatures = new ArrayList<>();
+        for (Student s : studentsInDiningRoom) {
+            oldDiningRoomCreatures.add(s.getCreature());
+        }
+
+        //creates the parameters for the character effect
+        CharactersParameters minstrelParameters = new CharactersParameters(oldEntranceCreatures,
+                0, 0, null, oldDiningRoomCreatures);
+        //play character effect
+        gm.effect(minstrelParameters);
+
+        //the number of students should be the same as before
+        assertEquals(maxNumberOfStudentsToSwap, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents().size());
+        assertEquals(maxNumberOfStudentsToSwap, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
+
+        //get the new creatures in the dining room and the entrance
+        List<Creature> newDiningRoomCreatures = new ArrayList<>();
+        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents()) {
+            newDiningRoomCreatures.add(s.getCreature());
+        }
+        List<Creature> newEntranceCreatures = new ArrayList<>();
+        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents()) {
+            newEntranceCreatures.add(s.getCreature());
+        }
+
+        //the creatures should be swapped
+        assertTrue(newEntranceCreatures.containsAll(oldDiningRoomCreatures));
+        assertTrue(newDiningRoomCreatures.containsAll(oldEntranceCreatures));
+
 
     }
 }
