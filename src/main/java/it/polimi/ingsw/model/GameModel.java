@@ -14,7 +14,7 @@ import it.polimi.ingsw.model.students.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameModel extends Observable implements Playable, Observer, Cloneable {
+public class GameModel extends Observable implements Playable, Observer {
 
     public static final int NUMBER_OF_CHARACTERS = 3;
     public static final int THREE_PLAYERS_CAPACITY = 9;
@@ -47,23 +47,6 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
         postmanMovements = 0;
         playedCharacter = -1;
         populateMoverCharacter();
-    }
-
-    private GameModel(GameModel model){
-        this.advancedRules = model.advancedRules;
-        this.numberOfPlayers = model.numberOfPlayers;
-        this.playedCharacter = model.playedCharacter;
-        this.table = model.table.clone();
-        this.players = new ArrayList<>(model.players);
-        this.characters = new ArrayList<>(model.characters);
-    }
-
-
-    //DA RIMUOVERE
-
-    public void setCharacterTestForMVC() {
-        characters.remove(0);
-        characters.set(0, new Postman(Name.MAGICPOSTMAN, this));
     }
 
 
@@ -350,7 +333,7 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     public void moveMotherNature(int jumps) {
         jumps += postmanMovements;
         int mnFuturePos = (table.getMnPosition() + jumps) % (table.getIslands().size());
-        table.getMotherNature().setCurrentIsland(mnFuturePos);
+        table.setMotherNaturePosition(mnFuturePos);
         checkNeighborIsland();
     }
 
@@ -440,6 +423,36 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
         return gameEnded;
     }
 
+    @Override
+    public StudentContainer getStudentContainer(Name name) {
+        switch(name){
+            case JOKER:
+                return table.getJoker();
+
+            case MONK:
+                return table.getMonk();
+
+            case PRINCESS:
+                return table.getPrincess();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean setStudentContainer(StudentContainer container, Name name) {
+        switch(name){
+            case JOKER:
+                return table.setJoker(container);
+
+            case MONK:
+                return table.setMonk(container);
+
+            case PRINCESS:
+                return table.setPrincess(container);
+        }
+        return false;
+    }
+
     /**
      * Winning conditions based on number of towers and of professors.
      *
@@ -462,11 +475,29 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
 
     //region getters
     public Table getTable() {
-        return table;
+        Table temp = new Table(numberOfPlayers,advancedRules);
+        temp.setMotherNature(table.getMotherNature());
+        temp.setClouds(table.getClouds());
+        temp.setCoinReserve(table.getCoinReserve());
+        temp.setIslands(table.getIslands());
+        temp.setMonk(table.getMonk());
+        temp.setJoker(table.getJoker());
+        temp.setPrincess(table.getPrincess());
+        return temp;
     }
 
     public List<Player> getPlayers() {
-        return players;
+        List<Player> temp = new ArrayList<>();
+        for(Player p: players){
+            Player temPlayer = new Player(p.getUsername(),p.getMyColor(),p.getMyCoins(),p.getWizard(),p.getTowers(),p.getEntrance());
+            temPlayer.setAssistantDeck(p.getAssistantDeck());
+            temPlayer.setDiningRoom(p.getDiningRoom());
+            temPlayer.setLastPlayedCards(p.getLastPlayedCards());
+            temPlayer.setGivenCoins(p.getGivenCoins());
+            temPlayer.setProfessors(p.getProfessors());
+            temp.add(temPlayer);
+        }
+        return temp;
     }
 
     //region setters
@@ -489,8 +520,15 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     //endregion
 
     public List<Character> getCharacters() {
-        return characters;
+        List<Character> temp = new ArrayList<>();
+        CharacterCreator cC = new ConcreteCharacterCreator();
+        for(Character c : characters){
+            temp.add(cC.createCharacter(c.getName(),null));
+        }
+        return temp;
     }
+
+
 
     public int getPlayedCharacter() {
         return playedCharacter;
@@ -660,11 +698,6 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
             return false;
         }
         return true;
-    }
-
-    @Override
-    public GameModel clone() {
-        return new GameModel(this);
     }
 
     @Override

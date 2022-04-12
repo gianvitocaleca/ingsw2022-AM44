@@ -37,7 +37,6 @@ public class MoverCharacter implements Character {
     public boolean effect(CharactersParameters answer) {
         List<Creature> creatures = getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
 
-
         switch (name) {
             case JOKER:
 

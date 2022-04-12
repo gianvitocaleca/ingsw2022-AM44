@@ -9,6 +9,10 @@ public class Assistant {
         name=input;
     }
 
+    public Value getName(){
+        return name;
+    }
+
     public int getValue(){
         return name.getValue();
     }

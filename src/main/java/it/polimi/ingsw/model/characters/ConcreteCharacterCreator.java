@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.characters;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.Playable;
 import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
 public class ConcreteCharacterCreator implements CharacterCreator {
 
@@ -18,17 +19,17 @@ public class ConcreteCharacterCreator implements CharacterCreator {
      */
 
     @Override
-    public Character createCharacter(Name name, GameModel model) {
+    public Character createCharacter(Name name, Playable model) {
         if (name.equals(Name.HERALD)) return new Herald(name, model);
         else if (name.equals(Name.MAGICPOSTMAN)) return new Postman(name, model);
         else if (name.equals(Name.HERBALIST)) return new Herbalist(name, model);
         else if (name.equals(Name.THIEF)) return new Thief(name, model);
         else if (name.equals(Name.KNIGHT) || name.equals(Name.CENTAUR) || name.equals(Name.FUNGARO) ||
                 name.equals(Name.FARMER)) return new BehaviorCharacter(name, model);
-        else if (name.equals(Name.JOKER)) return new MoverCharacter(name, model, model.getTable().getJoker());
+        else if (name.equals(Name.JOKER)) return new MoverCharacter(name, model);
         else if (name.equals(Name.MINSTREL)) return new Minstrel(name, model);
-        else if (name.equals(Name.MONK)) return new MoverCharacter(name, model, model.getTable().getMonk());
-        else if (name.equals(Name.PRINCESS)) return new MoverCharacter(name, model, model.getTable().getPrincess());
+        else if (name.equals(Name.MONK)) return new MoverCharacter(name, model);
+        else if (name.equals(Name.PRINCESS)) return new MoverCharacter(name, model);
         else return null;
     }
 }

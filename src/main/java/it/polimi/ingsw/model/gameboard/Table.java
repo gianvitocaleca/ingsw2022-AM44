@@ -22,13 +22,11 @@ public class Table {
     private List<Island> islands = new ArrayList<>();
     private List<Cloud> clouds = new ArrayList<>();
     private MotherNature motherNature;
-    private final StudentContainer monk = new Monk(MOVER_CAPACITY);
-    private final StudentContainer princess = new Princess(MOVER_CAPACITY);
-    private final StudentContainer joker = new Joker(JOKER_CAPACITY);
+    private StudentContainer monk = new Monk(MOVER_CAPACITY);
+    private StudentContainer princess = new Princess(MOVER_CAPACITY);
+    private StudentContainer joker = new Joker(JOKER_CAPACITY);
 
     private int coinReserve = 0;
-    private int numberOfPlayers;
-    private boolean advancedRules;
 
     /**
      * The constructor makes a new table with provided parameters
@@ -37,9 +35,6 @@ public class Table {
      * @param advancedRules   is the boolean to set advancedRules
      */
     public Table(int numberOfPlayers, boolean advancedRules) {
-
-        this.numberOfPlayers = numberOfPlayers;
-        this.advancedRules = advancedRules;
 
         for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
             List<Student> students = new ArrayList<>();
@@ -57,17 +52,6 @@ public class Table {
             this.coinReserve = TOTAL_COINS_ADVANCED_RULES - numberOfPlayers;
         }
 
-    }
-
-    @Override
-    public Table clone(){
-        Table table = new Table(this.numberOfPlayers,this.advancedRules);
-        table.islands=new ArrayList<>(this.islands);
-        table.clouds = new ArrayList<>(this.clouds);
-        table.motherNature = new MotherNature();
-        table.motherNature.setCurrentIsland(this.motherNature.getCurrentIsland());
-        table.coinReserve = this.coinReserve;
-        return table;
     }
 
     private void createClouds(int n) {
@@ -116,35 +100,55 @@ public class Table {
     }
 
     public List<Island> getIslands() {
-        return islands;
+        List<Island> temp = new ArrayList<>();
+        for(Island i : islands){
+            temp.add(new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries()));
+        }
+        return temp;
     }
 
+
+
     public Island getCurrentIsland() {
-        return islands.get(getMnPosition());
+        Island i = islands.get(getMnPosition());
+        Island temp = new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries());
+        return temp;
     }
 
     public Island getNextIsland() {
-        return islands.get(getNextIslandPosition());
+        Island i = islands.get(getNextIslandPosition());
+        Island temp = new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries());
+        return temp;
     }
 
     public Island getPrevIsland() {
-        return islands.get(getPrevIslandPosition());
+        Island i = islands.get(getPrevIslandPosition());
+        Island temp = new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries());
+        return temp;
     }
 
     private int getPrevIslandPosition() {
         return motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
     }
 
-    public MotherNature getMotherNature() {
-        return motherNature;
-    }
-
     private int getNextIslandPosition() {
         return motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
     }
 
+    public MotherNature getMotherNature() {
+        MotherNature temp = new MotherNature();
+        temp.setCurrentIsland(motherNature.getCurrentIsland());
+        return temp;
+    }
+
     public List<Cloud> getClouds() {
-        return clouds;
+        List<Cloud> temp = new ArrayList<>();
+        for(Cloud c: clouds){
+            Cloud tC = new Cloud(c.getCapacity());
+            tC.addStudents(c.getStudents());
+            temp.add(tC);
+        }
+        return temp;
     }
 
     public int getMnPosition() {
@@ -186,14 +190,56 @@ public class Table {
     }
 
     public StudentContainer getMonk() {
-        return monk;
+        StudentContainer temp = new Monk(monk.getCapacity());
+        temp.addStudents(monk.getStudents());
+        return temp;
+    }
+
+    public boolean setMonk(StudentContainer monk){
+        this.monk = monk;
+        return true;
     }
 
     public StudentContainer getPrincess() {
-        return princess;
+        StudentContainer temp = new Princess(princess.getCapacity());
+        temp.addStudents(princess.getStudents());
+        return temp;
+    }
+
+    public boolean setPrincess(StudentContainer princess){
+        this.princess = princess;
+        return true;
     }
 
     public StudentContainer getJoker() {
-        return joker;
+        StudentContainer temp = new Joker(joker.getCapacity());
+        temp.addStudents(joker.getStudents());
+        return temp;
+    }
+
+    public boolean setJoker(StudentContainer joker) {
+        this.joker = joker;
+        return true;
+    }
+
+    public boolean setMotherNaturePosition(int index){
+        motherNature.setCurrentIsland(index);
+        return true;
+    }
+
+    public void setIslands(List<Island> islands) {
+        this.islands = islands;
+    }
+
+    public void setClouds(List<Cloud> clouds) {
+        this.clouds = clouds;
+    }
+
+    public void setMotherNature(MotherNature motherNature) {
+        this.motherNature = motherNature;
+    }
+
+    public void setCoinReserve(int coinReserve) {
+        this.coinReserve = coinReserve;
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
@@ -30,4 +31,8 @@ public interface Playable {
     boolean setHeraldIsland(int indexIsland);
 
     boolean checkEndGame();
+
+    StudentContainer getStudentContainer(Name name);
+
+    boolean setStudentContainer(StudentContainer container, Name name);
 }

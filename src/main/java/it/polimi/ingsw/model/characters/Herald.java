@@ -24,6 +24,7 @@ public class Herald implements Character {
         }
     }
 
+    @Override
     public boolean effect(CharactersParameters answer) {
         if(!(model.setHeraldIsland(answer.getProvidedIslandIndex()))){
             return false;
