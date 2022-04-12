@@ -13,7 +13,8 @@
 | Socket           | 🔴 |
 | GUI              | 🔴 |
 | CLI              | 🔴 |
+| Advanced Characters   | 🟢 |
+| 4 players games  | 🔴 |
 | Multiple games   | 🔴 |
 | Persistence      | 🔴 |
-| Advanced Gods    | 🔴 |
-| Undo             | 🔴 |
+| Disconnections resilience             | 🔴 |
