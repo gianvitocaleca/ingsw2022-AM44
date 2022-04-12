@@ -198,7 +198,7 @@ public class GameModel extends Observable implements Playable, Observer {
         }
     }
 
-    public boolean playAssistant(int indexOfAssistant) {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException {
         if (indexOfAssistant < 0 || indexOfAssistant > players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
@@ -210,7 +210,7 @@ public class GameModel extends Observable implements Playable, Observer {
             }
 
             if (playedAssistants.contains(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant))) {
-                return false;
+                throw new AssistantAlreadyPlayedException();
             }
         }
 
