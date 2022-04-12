@@ -19,14 +19,16 @@ public class Table {
     final int NUMBER_OF_ISLANDS = 12;
 
 
-    private final List<Island> islands = new ArrayList<>();
-    private final List<Cloud> clouds = new ArrayList<>();
-    private final MotherNature motherNature;
+    private List<Island> islands = new ArrayList<>();
+    private List<Cloud> clouds = new ArrayList<>();
+    private MotherNature motherNature;
     private final StudentContainer monk = new Monk(MOVER_CAPACITY);
     private final StudentContainer princess = new Princess(MOVER_CAPACITY);
     private final StudentContainer joker = new Joker(JOKER_CAPACITY);
 
     private int coinReserve = 0;
+    private int numberOfPlayers;
+    private boolean advancedRules;
 
     /**
      * The constructor makes a new table with provided parameters
@@ -35,6 +37,9 @@ public class Table {
      * @param advancedRules   is the boolean to set advancedRules
      */
     public Table(int numberOfPlayers, boolean advancedRules) {
+
+        this.numberOfPlayers = numberOfPlayers;
+        this.advancedRules = advancedRules;
 
         for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
             List<Student> students = new ArrayList<>();
@@ -52,6 +57,17 @@ public class Table {
             this.coinReserve = TOTAL_COINS_ADVANCED_RULES - numberOfPlayers;
         }
 
+    }
+
+    @Override
+    public Table clone(){
+        Table table = new Table(this.numberOfPlayers,this.advancedRules);
+        table.islands=new ArrayList<>(this.islands);
+        table.clouds = new ArrayList<>(this.clouds);
+        table.motherNature = new MotherNature();
+        table.motherNature.setCurrentIsland(this.motherNature.getCurrentIsland());
+        table.coinReserve = this.coinReserve;
+        return table;
     }
 
     private void createClouds(int n) {

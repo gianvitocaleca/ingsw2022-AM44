@@ -14,7 +14,7 @@ import it.polimi.ingsw.model.students.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameModel extends Observable implements Playable, Observer {
+public class GameModel extends Observable implements Playable, Observer, Cloneable {
 
     public static final int NUMBER_OF_CHARACTERS = 3;
     public static final int THREE_PLAYERS_CAPACITY = 9;
@@ -47,6 +47,15 @@ public class GameModel extends Observable implements Playable, Observer {
         postmanMovements = 0;
         playedCharacter = -1;
         populateMoverCharacter();
+    }
+
+    private GameModel(GameModel model){
+        this.advancedRules = model.advancedRules;
+        this.numberOfPlayers = model.numberOfPlayers;
+        this.playedCharacter = model.playedCharacter;
+        this.table = model.table.clone();
+        this.players = new ArrayList<>(model.players);
+        this.characters = new ArrayList<>(model.characters);
     }
 
 
@@ -651,6 +660,11 @@ public class GameModel extends Observable implements Playable, Observer {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public GameModel clone() {
+        return new GameModel(this);
     }
 
     @Override
