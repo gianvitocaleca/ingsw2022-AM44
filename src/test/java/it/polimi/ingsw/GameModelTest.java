@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
+import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
@@ -16,7 +17,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,7 +68,7 @@ public class GameModelTest {
         for (int i = 0; i < Value.values().length; i++) {
             try {
                 gm.playAssistant(0);
-            }catch(AssistantAlreadyPlayedException e){
+            } catch (AssistantAlreadyPlayedException e) {
                 e.printStackTrace();
             }
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
@@ -78,12 +81,12 @@ public class GameModelTest {
      * The method should not change AssistantDeck and lastPlayedCard
      */
     @Test
-    void playNotExistentAssistant(){
-        for(int i = 0; i<gm.getPlayers().size(); i++){
+    void playNotExistentAssistant() {
+        for (int i = 0; i < gm.getPlayers().size(); i++) {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException e){
+            } catch (AssistantAlreadyPlayedException e) {
                 e.printStackTrace();
             }
         }
@@ -91,10 +94,10 @@ public class GameModelTest {
         Assistant lastPlayed = gm.getPlayers().get(0).getLastPlayedCard();
         try {
             assertFalse(gm.playAssistant(123));
-        }catch(AssistantAlreadyPlayedException e){
+        } catch (AssistantAlreadyPlayedException e) {
             e.printStackTrace();
         }
-        assertEquals(lastPlayed,gm.getPlayers().get(0).getLastPlayedCard());
+        assertEquals(lastPlayed, gm.getPlayers().get(0).getLastPlayedCard());
     }
 
     /**
@@ -102,20 +105,20 @@ public class GameModelTest {
      * the others cannot play that card and in that case the methos throws an exception.
      */
     @Test
-    void playAssistantAlreadyPlayed(){
-        for(int i = 0; i<gm.getPlayers().size(); i++){
+    void playAssistantAlreadyPlayed() {
+        for (int i = 0; i < gm.getPlayers().size(); i++) {
             gm.setCurrentPlayerIndex(i);
-            if(gm.getCurrentPlayerIndex()==0){
-                try{
+            if (gm.getCurrentPlayerIndex() == 0) {
+                try {
                     assertTrue(gm.playAssistant(0));
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1);
-                }catch(AssistantAlreadyPlayedException ex){
+                } catch (AssistantAlreadyPlayedException ex) {
                 }
-            }else{
-                try{
+            } else {
+                try {
                     gm.playAssistant(0);
-                }catch(AssistantAlreadyPlayedException ex){
+                } catch (AssistantAlreadyPlayedException ex) {
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 10);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
                 }
@@ -133,7 +136,7 @@ public class GameModelTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException e){
+            } catch (AssistantAlreadyPlayedException e) {
                 e.printStackTrace();
             }
         }
@@ -251,7 +254,7 @@ public class GameModelTest {
         for (int i = 0; i < Value.values().length; i++) {
             try {
                 gm.playAssistant(0);
-            }catch(AssistantAlreadyPlayedException e){
+            } catch (AssistantAlreadyPlayedException e) {
                 e.printStackTrace();
             }
         }
@@ -760,17 +763,34 @@ public class GameModelTest {
     void JokerTest() {
         int maxStudentsInJoker = 6;
         //create the MoverCharacter
-        MoverCharacter joker = new MoverCharacter(Name.JOKER, gm, gm.getTable().getJoker());
-        //put the character in first position
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, joker);
-        gm.populateMoverCharacter();
-        //play the first character
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
+        MoverCharacter joker;
+        int charToBePlayed = -1;
+        //if there is already a joker use that one
+        List<Character> chars = gm.getCharacters();
+        for (int i = 0; i < chars.size(); i++) {
+            if (chars.get(i).getName().equals(Name.JOKER)) {
+                charToBePlayed = i;
+            }
+        }
+        //create the new joker if necessary
+        if (charToBePlayed == -1) {
+            //put the character in first position
+            joker = new MoverCharacter(Name.JOKER, gm, gm.getTable().getJoker());
+            gm.getCharacters().remove(0);
+            gm.getCharacters().add(0, joker);
+            gm.populateMoverCharacter();
+            charToBePlayed = 0;
+        } else {
+            //get the reference to the one already present
+            joker = (MoverCharacter) gm.getCharacters().get(charToBePlayed);
+        }
 
+        //give the necessary coins to the player
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        //play the joker character
+        gm.playCharacter(charToBePlayed);
 
         //necessary students and creatures from the character and the entrance
         List<Student> studentsInJoker = joker.getStudents();
