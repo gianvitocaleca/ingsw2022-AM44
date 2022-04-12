@@ -22,7 +22,7 @@ public class GameModel extends Observable implements Playable, Observer {
     public static final int TWO_PLAYERS_NUMBEROFTOWERS = 8;
     public static final int THREE_PLAYERS_NUMBEROFTOWERS = 6;
     public static final int ADVANCED_RULES_STARTINGCOINS = 1;
-    private final Table table;
+    private Table table;
     private final int numberOfPlayers;
     private List<Player> players;
     private int currentPlayerIndex;
@@ -83,7 +83,7 @@ public class GameModel extends Observable implements Playable, Observer {
      */
     @Override
     public void thiefEffect(Creature creature) {
-        StudentBucket sb = StudentBucket.getInstance();
+        StudentBucket sb = table.getBucket();
         int numberOfStudentsToRemove = 3;
         for (Player p : players) {
             //removes 3 or all the students of that creature
@@ -95,6 +95,7 @@ public class GameModel extends Observable implements Playable, Observer {
                 sb.putBackCreature(removedStudent.getCreature());
             }
         }
+        table.setBucket(sb);
     }
 
     /**
@@ -170,23 +171,11 @@ public class GameModel extends Observable implements Playable, Observer {
 
     //region PLANNING PHASE
 
-    public void fillClouds() {
-        StudentBucket sb = StudentBucket.getInstance();
-        List<Student> newStudentsOnCloud;
-        for (Cloud c : table.getClouds()) {
-            newStudentsOnCloud = new ArrayList<>();
-            for (int i = 0; i < c.getCapacity(); i++) {
-                try {
-                    newStudentsOnCloud.add(sb.generateStudent());
-                } catch (StudentsOutOfStockException ex) {
-                    if (checkEndGame()) {
-                        findWinner();
-                    } else {
-                        ex.printStackTrace();
-                    }
-                }
+    public void fillClouds(){
+        if(!(table.fillClouds())){
+            if (checkEndGame()) {
+                findWinner();
             }
-            c.addStudents(newStudentsOnCloud);
         }
     }
 
@@ -206,7 +195,7 @@ public class GameModel extends Observable implements Playable, Observer {
             }
         }
 
-        players.get(currentPlayerIndex).setAssistantCard(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant));
+        players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
 
         return true;
     }
@@ -302,6 +291,8 @@ public class GameModel extends Observable implements Playable, Observer {
     public void populateMoverCharacter() {
         List<Name> charNames = characters.stream().map(Character::getName).toList();
         List<StudentContainer> movers = new ArrayList<StudentContainer>();
+        StudentBucket bucket = table.getBucket();
+
         if (charNames.contains(Name.MONK)) {
             movers.add(table.getMonk());
         }
@@ -314,13 +305,13 @@ public class GameModel extends Observable implements Playable, Observer {
         for (StudentContainer sc : movers) {
             for (int i = 0; i < sc.getCapacity(); i++) {
                 try {
-                    sc.addStudent(StudentBucket.generateStudent());
+                    sc.addStudent(bucket.generateStudent());
                 } catch (StudentsOutOfStockException e) {
                     e.printStackTrace();
                 }
             }
         }
-
+        table.setBucket(bucket);
     }
 
     /**
@@ -398,6 +389,10 @@ public class GameModel extends Observable implements Playable, Observer {
         return false;
     }
 
+    public void setTable(Table table){
+        this.table = table;
+    }
+
     public boolean checkEndGame() {
         boolean gameEnded = false;
         for (Player p : players) {
@@ -410,10 +405,9 @@ public class GameModel extends Observable implements Playable, Observer {
         if (table.getIslands().size() == 3) {
             gameEnded = true;
         }
-        StudentBucket sb = StudentBucket.getInstance();
+        StudentBucket sb = table.getBucket();
         try {
             Student s = sb.generateStudent();
-            //DOBBIAMO RESTITUIRE LO STUDENTE
         } catch (StudentsOutOfStockException ex) {
             gameEnded = true;
         }
@@ -421,6 +415,17 @@ public class GameModel extends Observable implements Playable, Observer {
         //NOTIFY *********************
 
         return gameEnded;
+    }
+
+    @Override
+    public int getDeactivators() {
+        return table.getDeactivators();
+    }
+
+    @Override
+    public boolean setDeactivators(int deactivators) {
+        table.setDeactivators(deactivators);
+        return true;
     }
 
     @Override
@@ -436,6 +441,16 @@ public class GameModel extends Observable implements Playable, Observer {
                 return table.getPrincess();
         }
         return null;
+    }
+
+    @Override
+    public StudentBucket getBucket() {
+        return table.getBucket();
+    }
+
+    @Override
+    public void setBucket(StudentBucket bucket) {
+        table.setBucket(bucket);
     }
 
     @Override
@@ -520,14 +535,32 @@ public class GameModel extends Observable implements Playable, Observer {
     //endregion
 
     public List<Character> getCharacters() {
-        List<Character> temp = new ArrayList<>();
-        CharacterCreator cC = new ConcreteCharacterCreator();
-        for(Character c : characters){
-            temp.add(cC.createCharacter(c.getName(),null));
-        }
-        return temp;
+        return characters;
     }
 
+    public CharacterInformation getCharactersInformation(int indexOfCharacter){
+
+        Name charactersname = characters.get(indexOfCharacter).getName();
+
+        List<Creature> moverContent;
+        if(charactersname.equals(Name.MONK)){
+            moverContent = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
+        }
+        else if(charactersname.equals(Name.JOKER)){
+            moverContent = table.getJoker().getStudents().stream().map(s -> s.getCreature()).toList();
+        }
+        else if(charactersname.equals(Name.PRINCESS)){
+            moverContent = table.getPrincess().getStudents().stream().map(s -> s.getCreature()).toList();
+        }
+        else{
+            moverContent = new ArrayList<>();
+        }
+
+        CharacterInformation info = new CharacterInformation(
+                charactersname,characters.get(indexOfCharacter).hasCoin(), table.getDeactivators(),indexOfCharacter,moverContent );
+
+        return info;
+    }
 
 
     public int getPlayedCharacter() {

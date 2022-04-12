@@ -123,9 +123,9 @@ public class Player {
         myCoins -= character_cost;
     }
 
-    public void setAssistantCard(Assistant assistant) {
-        assistantDeck.remove(assistant);
-        lastPlayedCard.add(assistant);
+    public void setAssistantCard(int indexofassistant) {
+
+        lastPlayedCard.add(assistantDeck.remove(indexofassistant));
     }
 
     public void addTowers(int num_of_towers) {

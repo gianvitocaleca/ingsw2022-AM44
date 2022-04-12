@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.studentcontainers.*;
@@ -22,6 +23,23 @@ public class Table {
     private List<Island> islands = new ArrayList<>();
     private List<Cloud> clouds = new ArrayList<>();
     private MotherNature motherNature;
+
+    public StudentBucket getBucket() {
+        StudentBucket temp = new StudentBucket();
+        temp.setMap(bucket.getMap());
+        return temp;
+    }
+
+    public void setBucket(StudentBucket bucket){
+        this.bucket=bucket;
+    }
+
+    private StudentBucket bucket;
+
+
+    private int deactivators=0;
+
+
     private StudentContainer monk = new Monk(MOVER_CAPACITY);
     private StudentContainer princess = new Princess(MOVER_CAPACITY);
     private StudentContainer joker = new Joker(JOKER_CAPACITY);
@@ -36,10 +54,12 @@ public class Table {
      */
     public Table(int numberOfPlayers, boolean advancedRules) {
 
+        bucket = new StudentBucket();
+
         for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
             List<Student> students = new ArrayList<>();
             try {
-                students.add(StudentBucket.getInstance().generateStudent());
+                students.add(bucket.generateStudent());
             } catch (StudentsOutOfStockException ignored) {
                 ignored.printStackTrace();
             }
@@ -53,6 +73,36 @@ public class Table {
         }
 
     }
+
+    public boolean fillClouds() {
+        List<Student> newStudentsOnCloud;
+        List<Cloud> newClouds = getClouds();
+
+        for (Cloud c : newClouds) {
+            newStudentsOnCloud = new ArrayList<>();
+            for (int i = 0; i < c.getCapacity(); i++) {
+                try {
+                    newStudentsOnCloud.add(bucket.generateStudent());
+                } catch (StudentsOutOfStockException ex) {
+                    return false;
+                }
+            }
+            c.addStudents(newStudentsOnCloud);
+        }
+
+        setClouds(newClouds);
+        return true;
+    }
+
+    public boolean setDeactivators(int deactivators){
+        this.deactivators = deactivators;
+        return true;
+    }
+
+    public int getDeactivators(){
+        return deactivators;
+    }
+
 
     private void createClouds(int n) {
         for (int i = 0; i < n; i++) {

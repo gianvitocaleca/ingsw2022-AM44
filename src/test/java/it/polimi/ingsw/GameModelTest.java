@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
 import it.polimi.ingsw.model.students.Student;
@@ -24,20 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameModelTest {
     GameModel gm;
 
-    /**
-     * This reset the singleton StudentBucket after each test of this class
-     */
-    @AfterEach
-    public void resetBucket() {
-        StudentBucket.resetMap();
-    }
 
     /**
      * This create a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {
-        StudentBucket.resetMap();
         gm = new GameModel(true,
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
@@ -53,73 +46,6 @@ public class GameModelTest {
         gm.fillClouds();
         for (Cloud c : gm.getTable().getClouds()) {
             assertEquals(c.getStudents().size(), c.getCapacity());
-        }
-    }
-
-    /**
-     * This test verfies the correct behaviour of assistantDeck and lastPlayedCard when every assistant is played.
-     * assistantDeck should reduce its length by one, lastPlayedCard should increase its length by one.
-     */
-    @Test
-    void playEveryAssistant() {
-        for (int i = 0; i < Value.values().length; i++) {
-            try {
-                gm.playAssistant(0);
-            }catch(AssistantAlreadyPlayedException e){
-                e.printStackTrace();
-            }
-            assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
-            assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
-        }
-    }
-
-    /**
-     * Verifies the method playAssistant return false when a player gives a wrong index.
-     * The method should not change AssistantDeck and lastPlayedCard
-     */
-    @Test
-    void playNotExistentAssistant(){
-        for(int i = 0; i<gm.getPlayers().size(); i++){
-            gm.setCurrentPlayerIndex(i);
-            try {
-                gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException e){
-                e.printStackTrace();
-            }
-        }
-        gm.setCurrentPlayerIndex(0);
-        Assistant lastPlayed = gm.getPlayers().get(0).getLastPlayedCard();
-        try {
-            assertFalse(gm.playAssistant(123));
-        }catch(AssistantAlreadyPlayedException e){
-            e.printStackTrace();
-        }
-        assertEquals(lastPlayed,gm.getPlayers().get(0).getLastPlayedCard());
-    }
-
-    /**
-     * Verifies that the method allows the first player to play the AssistantCard he prefers,
-     * the others cannot play that card and in that case the methos throws an exception.
-     */
-    @Test
-    void playAssistantAlreadyPlayed(){
-        for(int i = 0; i<gm.getPlayers().size(); i++){
-            gm.setCurrentPlayerIndex(i);
-            if(gm.getCurrentPlayerIndex()==0){
-                try{
-                    assertTrue(gm.playAssistant(0));
-                    assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9);
-                    assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1);
-                }catch(AssistantAlreadyPlayedException ex){
-                }
-            }else{
-                try{
-                    gm.playAssistant(0);
-                }catch(AssistantAlreadyPlayedException ex){
-                    assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 10);
-                    assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
-                }
-            }
         }
     }
 
@@ -151,9 +77,12 @@ public class GameModelTest {
     @Test
     public void LastFusionEndgameTest() {
         while (true) {
+            Table oldTable = gm.getTable();
             try {
-                gm.getTable().islandFusion("Both");
+                oldTable.islandFusion("Both");
+                gm.setTable(oldTable);
             } catch (GroupsOfIslandsException e) {
+                gm.setTable(oldTable);
                 break;
             }
         }
@@ -187,7 +116,16 @@ public class GameModelTest {
 
         assertEquals(zero.getStudents().size(), 0);
         assertEquals(one.getStudents().size(), finalSize);
-        assertTrue(one.getStudents().containsAll(studentsList));
+        for(Student s : one.getStudents()){
+            //controlla che tutti i fra fraeggino
+            for(Student t : studentsList){
+                if(t.getCreature().equals(s.getCreature())){
+                    studentsList.remove(t);
+                    break;
+                }
+            }
+        }
+        assertEquals(studentsList.size(),0);
     }
 
     /**
@@ -263,7 +201,7 @@ public class GameModelTest {
      */
     @Test
     void checkEndGameStudentsOutOfStock() {
-        StudentBucket bucket = StudentBucket.getInstance();
+        StudentBucket bucket = gm.getBucket();
         List<Student> temp = new ArrayList<>();
         while (true) {
             try {
@@ -376,7 +314,7 @@ public class GameModelTest {
      */
     @Test
     void thiefEffectTest() {
-        StudentBucket sb = StudentBucket.getInstance();
+        StudentBucket sb = gm.getBucket();
         int[][] oldStudentsByPlayer = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
         ArrayList<Creature> cret = new ArrayList<>(Arrays.asList(Creature.values()));
         for (int j = 0; j < gm.getPlayers().size(); j++) {
@@ -476,6 +414,7 @@ public class GameModelTest {
     @Test
     void standardEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
+        StudentBucket bucket = gm.getBucket();
 
         resetEvaluateInfluence();
 
@@ -483,13 +422,15 @@ public class GameModelTest {
             int i = 10;
 
             do {
-                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                gm.getTable().getIslands().get(0).addStudent(bucket.generateStudent());
                 i--;
             } while (i > 0);
 
         } catch (StudentsOutOfStockException ignored) {
 
         }
+
+        gm.setBucket(bucket);
 
         List<Student> toCount;
 
@@ -539,6 +480,7 @@ public class GameModelTest {
     @Test
     void centaurEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
+        StudentBucket bucket = gm.getBucket();
 
         resetEvaluateInfluence();
 
@@ -549,7 +491,7 @@ public class GameModelTest {
         try {
             int i = 10;
             do {
-                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                gm.getTable().getIslands().get(0).addStudent(bucket.generateStudent());
                 i--;
             } while (i > 0);
 
@@ -559,6 +501,7 @@ public class GameModelTest {
 
         gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
 
+        gm.setBucket(bucket);
         List<Student> toCount;
 
         for (Creature x : Creature.values()) {
@@ -605,6 +548,7 @@ public class GameModelTest {
     @Test
     void knightEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
+        StudentBucket bucket = gm.getBucket();
 
         resetEvaluateInfluence();
 
@@ -615,7 +559,7 @@ public class GameModelTest {
         try {
             int i = 10;
             do {
-                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                gm.getTable().getIslands().get(0).addStudent(bucket.generateStudent());
                 i--;
             } while (i > 0);
 
@@ -624,7 +568,7 @@ public class GameModelTest {
         }
 
         gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
-
+        gm.setBucket(bucket);
         List<Student> toCount;
 
         for (Creature x : Creature.values()) {
@@ -671,6 +615,7 @@ public class GameModelTest {
     @Test
     void fungaroEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
+        StudentBucket bucket = gm.getBucket();
 
         resetEvaluateInfluence();
 
@@ -684,7 +629,7 @@ public class GameModelTest {
         try {
             int i = 10;
             do {
-                gm.getTable().getIslands().get(0).addStudent(StudentBucket.generateStudent());
+                gm.getTable().getIslands().get(0).addStudent(bucket.generateStudent());
                 i--;
             } while (i > 0);
 
@@ -693,7 +638,7 @@ public class GameModelTest {
         }
 
         // gm.getTable().getIslands().get(0).setColorOfTowers(Color.BLACK);
-
+        gm.setBucket(bucket);
         List<Student> toCount;
 
         for (Creature x : Creature.values()) {
@@ -761,6 +706,8 @@ public class GameModelTest {
         int maxStudentsInJoker = 6;
         //create the MoverCharacter
         MoverCharacter joker = new MoverCharacter(Name.JOKER, gm, gm.getTable().getJoker());
+        StudentBucket bucket = gm.getBucket();
+
         //put the character in first position
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, joker);
@@ -781,10 +728,12 @@ public class GameModelTest {
         //populate the current player entrance with random students
         for (int i = 0; i < studentsInJoker.size(); i++) {
             try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(StudentBucket.generateStudent());
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(bucket.generateStudent());
             } catch (StudentsOutOfStockException ignore) {
             }
         }
+        gm.setBucket(bucket);
+
         List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
         List<Creature> oldEntranceCreatures = new ArrayList<>();
         for (Student s : studentsInEntrance) {
@@ -822,6 +771,7 @@ public class GameModelTest {
     void minstrelTest() {
         //create the Character
         Minstrel minstrel = new Minstrel(Name.MINSTREL, gm);
+        StudentBucket bucket = gm.getBucket();
         //put the character in first position
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, minstrel);
@@ -833,18 +783,18 @@ public class GameModelTest {
         //populate the current player entrance with random students
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
             try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(StudentBucket.generateStudent());
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(bucket.generateStudent());
             } catch (StudentsOutOfStockException ignore) {
             }
         }
         //populate the current player dining room with random students
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
             try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().addStudent(StudentBucket.generateStudent());
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().addStudent(bucket.generateStudent());
             } catch (StudentsOutOfStockException ignore) {
             }
         }
-
+        gm.setBucket(bucket);
         //old students in entrance
         List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
         List<Creature> oldEntranceCreatures = new ArrayList<>();

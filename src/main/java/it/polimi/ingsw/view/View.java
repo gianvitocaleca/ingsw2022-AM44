@@ -22,8 +22,7 @@ public class View extends Observable implements Observer {
         System.out.println("Ciao, sono la view");
         scanner.next();
 
-
-        model.setCharacterTestForMVC();
+        
 
 
         model.playCharacter(0);

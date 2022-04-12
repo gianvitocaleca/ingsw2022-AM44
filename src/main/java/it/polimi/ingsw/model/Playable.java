@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.model.students.StudentBucket;
 
 import java.util.List;
 
@@ -32,7 +33,15 @@ public interface Playable {
 
     boolean checkEndGame();
 
+    public int getDeactivators();
+
+    public boolean setDeactivators(int deactivators);
+
+
     StudentContainer getStudentContainer(Name name);
+
+    StudentBucket getBucket();
+    void setBucket(StudentBucket bucket);
 
     boolean setStudentContainer(StudentContainer container, Name name);
 }

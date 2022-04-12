@@ -11,7 +11,7 @@ public class ModelView extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(o instanceof GameModel){
-            modelCopy = ((GameModel) o).clone();
+            // modelCopy = ((GameModel) o).clone();
             setChanged();
             notifyObservers();
         }

@@ -1,14 +1,11 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.Playable;
 import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
 public class ConcreteCharacterCreator implements CharacterCreator {
 
     public static final int JOKER_CAPACITY = 6;
-    public static final int MINSTREL_CAPACITY = 0;
     public static final int MOVER_CAPACITY = 4;
 
     /**
@@ -26,10 +23,10 @@ public class ConcreteCharacterCreator implements CharacterCreator {
         else if (name.equals(Name.THIEF)) return new Thief(name, model);
         else if (name.equals(Name.KNIGHT) || name.equals(Name.CENTAUR) || name.equals(Name.FUNGARO) ||
                 name.equals(Name.FARMER)) return new BehaviorCharacter(name, model);
-        else if (name.equals(Name.JOKER)) return new MoverCharacter(name, model);
+        else if (name.equals(Name.JOKER)) return new MoverCharacter(name, model,model.getStudentContainer(Name.JOKER));
         else if (name.equals(Name.MINSTREL)) return new Minstrel(name, model);
-        else if (name.equals(Name.MONK)) return new MoverCharacter(name, model);
-        else if (name.equals(Name.PRINCESS)) return new MoverCharacter(name, model);
+        else if (name.equals(Name.MONK)) return new MoverCharacter(name, model, model.getStudentContainer(Name.MONK));
+        else if (name.equals(Name.PRINCESS)) return new MoverCharacter(name, model, model.getStudentContainer(Name.PRINCESS));
         else return null;
     }
 }

@@ -19,10 +19,6 @@ public class TableTest {
         table = new Table(2,true);
     }
 
-    @AfterEach
-    public void resetBucket(){
-        StudentBucket.resetMap();
-    }
 
     /**
      * This tests the correct initialization of Tables with both standard and advanced rules

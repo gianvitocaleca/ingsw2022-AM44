@@ -39,8 +39,11 @@ class PlayerTest {
     /**
      * This tests that when an assistant card is played, the lastPlayedCard parameter is correctly set
      */
+
+    /*
     @Test
     void getLastPlayedCard() {
+
         Player p1 = new Player("userName", Color.BLACK, 1, Wizard.BLUE, 8, new Entrance(7));
         Assistant a = new Assistant(Value.CAT);
         p1.setAssistantCard(a);
@@ -49,7 +52,7 @@ class PlayerTest {
         assertFalse(p1.getLastPlayedCard().equals(b));
         p1.setAssistantCard(b);
         assertEquals(p1.getLastPlayedCard(), b);
-    }
+    } */
 
     /**
      * Verifies the rules to add coins to the player

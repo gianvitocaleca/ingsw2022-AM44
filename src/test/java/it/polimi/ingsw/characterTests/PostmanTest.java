@@ -24,7 +24,6 @@ public class PostmanTest {
 
     @BeforeEach
     public void createGameModel() {
-        StudentBucket.resetMap();
         gm = new GameModel(true,
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,

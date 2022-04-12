@@ -8,21 +8,18 @@ import java.util.*;
 public class StudentBucket {
     private static final int MAX_STUDENTS = 26;
 
-    private static final Map<Creature, Integer> generatedStudents = createMap();
-    private static StudentBucket instance;
+    private Map<Creature, Integer> generatedStudents;
 
-    public static StudentBucket getInstance() {
-        if (instance == null) {
-            instance = new StudentBucket();
-        }
-        return instance;
+    public StudentBucket(){
+        generatedStudents = createMap();
     }
+
 
     /**
      * @param creature to ask for a specific Creature
      * @return int of generated students of given creature
      */
-    public static int getNumberOfGeneratedStudentsByCreature(Creature creature) {
+    public int getNumberOfGeneratedStudentsByCreature(Creature creature) {
         return generatedStudents.get(creature);
     }
 
@@ -31,7 +28,7 @@ public class StudentBucket {
      *
      * @throws StudentsOutOfStockException when there are no more students to create
      */
-    public static Student generateStudent() throws StudentsOutOfStockException {
+    public Student generateStudent() throws StudentsOutOfStockException {
         boolean ok = false;
         Student s = null;
         Creature futureStudent;
@@ -55,7 +52,7 @@ public class StudentBucket {
     }
 
 
-    public static void resetMap() {
+    public void resetMap() {
         for (Creature c : Creature.values()) {
             generatedStudents.put(c, 0);
         }
@@ -64,12 +61,24 @@ public class StudentBucket {
     /**
      * This method initializes generated_students
      */
-    private static Map<Creature, Integer> createMap() {
+    private Map<Creature, Integer> createMap() {
         Map<Creature, Integer> newMap = new HashMap<>();
         for (Creature c : Creature.values()) {
             newMap.put(c, 0);
         }
         return newMap;
+    }
+
+    public void setMap(Map map){
+        this.generatedStudents=map;
+    }
+
+    public Map getMap(){
+        Map<Creature, Integer> temp = new HashMap<>();
+        for(Creature c: Creature.values()){
+            temp.put(c,generatedStudents.get(c));
+        }
+        return temp;
     }
 
     /**

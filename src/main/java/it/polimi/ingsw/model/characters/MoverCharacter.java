@@ -36,6 +36,7 @@ public class MoverCharacter implements Character {
     @Override
     public boolean effect(CharactersParameters answer) {
         List<Creature> creatures = getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
+        StudentBucket bucket = model.getBucket();
 
         switch (name) {
             case JOKER:
@@ -51,14 +52,15 @@ public class MoverCharacter implements Character {
 
                 if (creatures.containsAll(answer.getProvidedSourceCreatures())) {
                     model.princessEffect(container, answer.getProvidedSourceCreatures());
+
+                    try {
+                        container.addStudent(bucket.generateStudent());
+                    } catch (StudentsOutOfStockException e) {
+                        model.checkEndGame();
+                    }
+
                 } else {
                     return false;
-                }
-
-                try {
-                    container.addStudent(StudentBucket.generateStudent());
-                } catch (StudentsOutOfStockException e) {
-                    model.checkEndGame();
                 }
                 break;
             case MONK:
@@ -67,17 +69,19 @@ public class MoverCharacter implements Character {
                     model.moveStudents(container, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
 
                     try {
-                        container.addStudent(StudentBucket.generateStudent());
+                        container.addStudent(bucket.generateStudent());
                     } catch (StudentsOutOfStockException e) {
                         model.checkEndGame();
                     }
 
-                    return true;
+                } else {
+                    return false;
                 }
-                return false;
-        }
+                break;
 
-        return false;
+        }
+        model.setBucket(bucket);
+        return true;
     }
 
     @Override
