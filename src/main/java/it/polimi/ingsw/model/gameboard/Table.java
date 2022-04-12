@@ -94,6 +94,51 @@ public class Table {
         return true;
     }
 
+    public boolean moveMotherNature(int jumps) {
+        int mnFuturePos = (motherNature.getCurrentIsland() + jumps) % (islands.size());
+        setMotherNaturePosition(mnFuturePos);
+        if(!checkNeighborIsland()){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkNeighborIsland() {
+        boolean left = false, right = false;
+        Island currentIsland = getCurrentIsland();
+        Island nextIsland = getNextIsland();
+        Island prevIsland = getPrevIsland();
+
+        if (prevIsland.getNumberOfTowers() > 0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
+            left = true;
+        }
+        if (nextIsland.getNumberOfTowers() > 0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
+            right = true;
+        }
+
+        if (right && left) {
+            try {
+                islandFusion("Both");
+            } catch (GroupsOfIslandsException e) {
+                return false;
+            }
+
+        } else if (right) {
+            try {
+                islandFusion("Right");
+            } catch (GroupsOfIslandsException e) {
+                return false;
+            }
+        } else if (left) {
+            try {
+                islandFusion("Left");
+            } catch (GroupsOfIslandsException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean setDeactivators(int deactivators){
         this.deactivators = deactivators;
         return true;
@@ -291,5 +336,18 @@ public class Table {
 
     public void setCoinReserve(int coinReserve) {
         this.coinReserve = coinReserve;
+    }
+
+    public void setCurrentIsland(Island island){
+        islands.remove(getMnPosition());
+        islands.add(getMnPosition(),island);
+    }
+    public void setNextIsland(Island island){
+        islands.remove(getNextIslandPosition());
+        islands.add(getNextIslandPosition(),island);
+    }
+    public void setPrevIsland(Island island){
+        islands.remove(getPrevIslandPosition());
+        islands.add(getPrevIslandPosition(),island);
     }
 }

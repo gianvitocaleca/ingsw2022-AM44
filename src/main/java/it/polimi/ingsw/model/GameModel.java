@@ -322,46 +322,12 @@ public class GameModel extends Observable implements Playable, Observer {
      */
 
     public void moveMotherNature(int jumps) {
-        jumps += postmanMovements;
-        int mnFuturePos = (table.getMnPosition() + jumps) % (table.getIslands().size());
-        table.setMotherNaturePosition(mnFuturePos);
-        checkNeighborIsland();
-    }
-
-    private void checkNeighborIsland() {
-        boolean left = false, right = false;
-        Island currentIsland = table.getCurrentIsland();
-        Island nextIsland = table.getNextIsland();
-        Island prevIsland = table.getPrevIsland();
-
-        if (prevIsland.getNumberOfTowers() > 0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
-            left = true;
-        }
-        if (nextIsland.getNumberOfTowers() > 0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
-            right = true;
-        }
-
-        if (right && left) {
-            try {
-                table.islandFusion("Both");
-            } catch (GroupsOfIslandsException e) {
-                checkEndGame();
-            }
-
-        } else if (right) {
-            try {
-                table.islandFusion("Right");
-            } catch (GroupsOfIslandsException e) {
-                checkEndGame();
-            }
-        } else if (left) {
-            try {
-                table.islandFusion("Left");
-            } catch (GroupsOfIslandsException e) {
-                checkEndGame();
-            }
+        int j = jumps + postmanMovements;
+        if(!(table.moveMotherNature(j))){
+            checkEndGame();
         }
     }
+
 
     public boolean playCharacter(int indexOfCharacter) {
 
@@ -514,7 +480,6 @@ public class GameModel extends Observable implements Playable, Observer {
         }
         return temp;
     }
-
     //region setters
     public void setPlayers(List<Player> players) {
         this.players = players;
@@ -717,7 +682,9 @@ public class GameModel extends Observable implements Playable, Observer {
             //change the color of the towers on the island
             currentIsland.setColorOfTowers(hasMoreInfluence.getMyColor());
             //check the neighbor islands
-            checkNeighborIsland();
+            if(!table.checkNeighborIsland()){
+                checkEndGame();
+            }
         }
     }
 

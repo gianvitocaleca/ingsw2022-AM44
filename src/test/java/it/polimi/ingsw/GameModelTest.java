@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
+import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.AfterEach;
@@ -172,12 +173,15 @@ public class GameModelTest {
      */
     @Test
     void checkEndGameTowersFinished() {
+        List<Player> playerToSet = new ArrayList<>();
         for (Player p : gm.getPlayers()) {
             assertEquals(p.getTowers(), 6);
             p.removeTowers(6);
             assertEquals(p.getTowers(), 0);
-            assertTrue(gm.checkEndGame());
+            playerToSet.add(p);
         }
+        gm.setPlayers(playerToSet);
+        assertTrue(gm.checkEndGame());
     }
 
     /**
@@ -207,6 +211,7 @@ public class GameModelTest {
             try {
                 temp.add(bucket.generateStudent());
             } catch (StudentsOutOfStockException ex) {
+                gm.setBucket(bucket);
                 break;
             }
         }
@@ -220,23 +225,24 @@ public class GameModelTest {
     @Test
     void findWinner() {
         List<Professor> professors = new ArrayList<>();
-
+        List<Player> tempPlayer = gm.getPlayers();
         for (Creature c : Creature.values()) {
             professors.add(new Professor(c));
         }
-        for (Player p : gm.getPlayers()) {
+        for (Player p : tempPlayer) {
             p.removeTowers(new Random().nextInt(p.getTowers()));
         }
         //fixed distribution of professor in order to avoid winning condition issue
-        gm.getPlayers().get(0).addProfessor(professors.get(0));
-        gm.getPlayers().get(0).addProfessor(professors.get(1));
-        gm.getPlayers().get(1).addProfessor(professors.get(2));
-        gm.getPlayers().get(1).addProfessor(professors.get(3));
-        gm.getPlayers().get(1).addProfessor(professors.get(4));
+        tempPlayer.get(0).addProfessor(professors.get(0));
+        tempPlayer.get(0).addProfessor(professors.get(1));
+        tempPlayer.get(1).addProfessor(professors.get(2));
+        tempPlayer.get(1).addProfessor(professors.get(3));
+        tempPlayer.get(1).addProfessor(professors.get(4));
+        gm.setPlayers(tempPlayer);
 
         Player ans = gm.findWinner();
         for (Player p : gm.getPlayers()) {
-            if (!ans.equals(p)) {
+            if (!ans.getUsername().equals(p.getUsername())) {
                 assertTrue(ans.getTowers() < p.getTowers() ||
                         (ans.getTowers() == p.getTowers() &&
                                 ans.getProfessors().size() >
@@ -251,8 +257,15 @@ public class GameModelTest {
     @Test
     void checkNeighbourIslandTest() {
         int oldSize = gm.getTable().getIslands().size();
-        gm.getTable().getCurrentIsland().setColorOfTowers(Color.GREY);
-        gm.getTable().getNextIsland().setColorOfTowers(Color.GREY);
+        Table tempTable = gm.getTable();
+        Island newIsland = tempTable.getCurrentIsland();
+        newIsland.setColorOfTowers(Color.GREY);
+        tempTable.setCurrentIsland(newIsland);
+        newIsland = tempTable.getNextIsland();
+        newIsland.setColorOfTowers(Color.GREY);
+        tempTable.setNextIsland(newIsland);
+        tempTable.setIslands(tempTable.getIslands());
+        gm.setTable(tempTable);
         gm.moveMotherNature(0);
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
     }
