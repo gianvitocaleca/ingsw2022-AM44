@@ -14,7 +14,7 @@ import it.polimi.ingsw.model.students.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameModel extends Observable implements Playable, Observer {
+public class GameModel extends Observable implements Playable, Observer, Cloneable {
 
     public static final int NUMBER_OF_CHARACTERS = 3;
     public static final int THREE_PLAYERS_CAPACITY = 9;
@@ -46,6 +46,16 @@ public class GameModel extends Observable implements Playable, Observer {
         characters = createListOfCharacters();
         postmanMovements = 0;
         playedCharacter = -1;
+        populateMoverCharacter();
+    }
+
+    private GameModel(GameModel model){
+        this.advancedRules = model.advancedRules;
+        this.numberOfPlayers = model.numberOfPlayers;
+        this.playedCharacter = model.playedCharacter;
+        this.table = model.table.clone();
+        this.players = new ArrayList<>(model.players);
+        this.characters = new ArrayList<>(model.characters);
     }
 
 
@@ -91,16 +101,15 @@ public class GameModel extends Observable implements Playable, Observer {
     @Override
     public void thiefEffect(Creature creature) {
         StudentBucket sb = StudentBucket.getInstance();
+        int numberOfStudentsToRemove = 3;
         for (Player p : players) {
-            for (int i = 0; i < Name.THIEF.getMaxMoves() && p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0; i++) {
-                if (p.getDiningRoom().getNumberOfStudentsByCreature(creature) > 0) {
-                    //removes the student from the dining room
-                    Student removedStudent = p.getDiningRoom().removeStudent(creature);
-                    //gives the student back to the bucket
-                    sb.putBackCreature(removedStudent.getCreature());
-                } else {
-                    break;
-                }
+            //removes 3 or all the students of that creature
+            int minNumberToRemove = Math.min(numberOfStudentsToRemove, p.getDiningRoom().getNumberOfStudentsByCreature(creature));
+            for (int i = 0; i < minNumberToRemove; i++) {
+                //removes the student from the dining room
+                Student removedStudent = p.getDiningRoom().removeStudent(creature);
+                //gives the student back to the bucket
+                sb.putBackCreature(removedStudent.getCreature());
             }
         }
     }
@@ -198,7 +207,7 @@ public class GameModel extends Observable implements Playable, Observer {
         }
     }
 
-    public boolean playAssistant(int indexOfAssistant) {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException {
         if (indexOfAssistant < 0 || indexOfAssistant > players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
@@ -210,7 +219,7 @@ public class GameModel extends Observable implements Playable, Observer {
             }
 
             if (playedAssistants.contains(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant))) {
-                return false;
+                throw new AssistantAlreadyPlayedException();
             }
         }
 
@@ -301,6 +310,34 @@ public class GameModel extends Observable implements Playable, Observer {
         //swaps the students
         source.addStudents(studentsFromDestination);
         destination.addStudents(studentsFromSource);
+    }
+
+    /**
+     * Populates the student containers for Monk and Princess
+     */
+
+    public void populateMoverCharacter() {
+        List<Name> charNames = characters.stream().map(Character::getName).toList();
+        List<StudentContainer> movers = new ArrayList<StudentContainer>();
+        if (charNames.contains(Name.MONK)) {
+            movers.add(table.getMonk());
+        }
+        if (charNames.contains(Name.PRINCESS)) {
+            movers.add(table.getPrincess());
+        }
+        if (charNames.contains(Name.JOKER)) {
+            movers.add(table.getJoker());
+        }
+        for (StudentContainer sc : movers) {
+            for (int i = 0; i < sc.getCapacity(); i++) {
+                try {
+                    sc.addStudent(StudentBucket.generateStudent());
+                } catch (StudentsOutOfStockException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     /**
@@ -623,6 +660,11 @@ public class GameModel extends Observable implements Playable, Observer {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public GameModel clone() {
+        return new GameModel(this);
     }
 
     @Override

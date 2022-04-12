@@ -7,6 +7,7 @@ import java.util.*;
 
 public class StudentBucket {
     private static final int MAX_STUDENTS = 26;
+
     private static final Map<Creature, Integer> generatedStudents = createMap();
     private static StudentBucket instance;
 
