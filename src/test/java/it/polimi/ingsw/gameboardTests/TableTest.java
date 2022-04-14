@@ -9,6 +9,8 @@ import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.*;
 
+import java.util.List;
+
 
 public class TableTest {
 
@@ -70,7 +72,17 @@ public class TableTest {
             System.out.println(table.getIslands().get(i));
         }
             currIsland.getStudents().addAll(nextIsland.getStudents());
-            assertEquals(table.getCurrentIsland().getStudents(),currIsland.getStudents());
+            List<Student> check = currIsland.getStudents();
+
+            for(Student s: table.getCurrentIsland().getStudents()){
+                for(Student t: check){
+                    if(t.getCreature().equals(s.getCreature())){
+                        check.remove(t);
+                        break;
+                    }
+                }
+            }
+            assertEquals(check.size(),0);
             assertEquals(table.getCurrentIsland().getNumberOfTowers(), currIsland.getNumberOfTowers()+nextIsland.getNumberOfTowers());
             assertEquals(table.getCurrentIsland().getNumberOfNoEntries(), currIsland.getNumberOfNoEntries()+nextIsland.getNumberOfNoEntries());
             assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
@@ -102,7 +114,17 @@ public class TableTest {
         }
 
         currIsland.getStudents().addAll(prevIsland.getStudents());
-        assertEquals(table.getCurrentIsland().getStudents(),currIsland.getStudents());
+        List<Student> check = currIsland.getStudents();
+
+        for(Student s: table.getCurrentIsland().getStudents()){
+            for(Student t: check){
+                if(t.getCreature().equals(s.getCreature())){
+                    check.remove(t);
+                    break;
+                }
+            }
+        }
+        assertEquals(check.size(),0);
         assertEquals(table.getCurrentIsland().getNumberOfTowers(), currIsland.getNumberOfTowers()+prevIsland.getNumberOfTowers());
         assertEquals(table.getCurrentIsland().getNumberOfNoEntries(), currIsland.getNumberOfNoEntries()+prevIsland.getNumberOfNoEntries());
         assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
@@ -132,18 +154,21 @@ public class TableTest {
             System.out.println();
             System.out.println(table.getIslands().get(i));
         }
-
-        currIsland.getStudents().addAll(prevIsland.getStudents());
-        currIsland.getStudents().addAll(nextIsland.getStudents());
+        List<Student> check = currIsland.getStudents();
+        check.addAll(prevIsland.getStudents());
+        check.addAll(nextIsland.getStudents());
 
         for(Student c: currIsland.getStudents()){
             System.out.print(c.getCreature()+" ");
         }
 
 
-        assertEquals(table.getCurrentIsland().getStudents().get(0),currIsland.getStudents().get(0));
-        assertEquals(table.getCurrentIsland().getStudents().get(1),currIsland.getStudents().get(1));
-        assertEquals(table.getCurrentIsland().getStudents().get(2),currIsland.getStudents().get(2));
+        assertEquals(table.getCurrentIsland().getStudents().get(0).getCreature(),
+                check.get(0).getCreature());
+        assertEquals(table.getCurrentIsland().getStudents().get(1).getCreature(),
+                check.get(1).getCreature());
+        assertEquals(table.getCurrentIsland().getStudents().get(2).getCreature()
+                ,check.get(2).getCreature());
         assertEquals(table.getCurrentIsland().getNumberOfTowers(), currIsland.getNumberOfTowers()+nextIsland.getNumberOfTowers()+prevIsland.getNumberOfTowers());
         assertEquals(table.getCurrentIsland().getNumberOfNoEntries(), currIsland.getNumberOfNoEntries()+nextIsland.getNumberOfNoEntries()+prevIsland.getNumberOfNoEntries());
         assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
@@ -157,22 +182,8 @@ public class TableTest {
     public void LastFusionTest(){
         System.out.println("Last Fusion Test:");
         while(true){
-            Island currIsland = table.getCurrentIsland();
-            Island nextIsland = table.getNextIsland();
-            Island prevIsland = table.getPrevIsland();
-            int originalSize = table.getIslands().size();
             try{
                 table.islandFusion("Both");
-                currIsland.getStudents().addAll(prevIsland.getStudents());
-                currIsland.getStudents().addAll(nextIsland.getStudents());
-
-                assertEquals(table.getCurrentIsland().getStudents().get(0),currIsland.getStudents().get(0));
-                assertEquals(table.getCurrentIsland().getStudents().get(1),currIsland.getStudents().get(1));
-                assertEquals(table.getCurrentIsland().getStudents().get(2),currIsland.getStudents().get(2));
-                assertEquals(table.getCurrentIsland().getNumberOfTowers(), currIsland.getNumberOfTowers()+nextIsland.getNumberOfTowers()+prevIsland.getNumberOfTowers());
-                assertEquals(table.getCurrentIsland().getNumberOfNoEntries(), currIsland.getNumberOfNoEntries()+nextIsland.getNumberOfNoEntries()+prevIsland.getNumberOfNoEntries());
-                assertEquals(table.getCurrentIsland().getColorOfTowers(), currIsland.getColorOfTowers());
-                assertEquals(table.getIslands().size(),originalSize-2);
             }
             catch (GroupsOfIslandsException e){
                 System.out.println("Last fusion made");

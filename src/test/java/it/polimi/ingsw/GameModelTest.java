@@ -283,146 +283,39 @@ public class GameModelTest {
                 new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
         //now table has 17 coins
         gm.setCurrentPlayerIndex(1);
+
+        List<Player> players = gm.getPlayers();
         Character firstCharacter = gm.getCharacters().get(0);
-        Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
 
         for (int i = 1; i < firstCharacter.getCost(); i++) {
-            currentPlayer.addCoin();
-            gm.getTable().removeCoin();
+            players.get(gm.getCurrentPlayerIndex()).addCoin();
+            Table temp = gm.getTable();
+            temp.removeCoin();
+            gm.setTable(temp);
         }
+        gm.setPlayers(players);
         //now currentPlayer has exactly firstCharacter cost coins, table has 18 - (firstCharacter cost) coins
 
         //currentPlayer plays character(0), now he should have 0 coins, character(0) should have 1 coin in updatedCost,
         //table should have 18 coins
         gm.playCharacter(0);
+        Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
         assertTrue(currentPlayer.getMyCoins() == 0);
+        firstCharacter = gm.getCharacters().get(0);
         assertTrue(firstCharacter.hasCoin());
         assertTrue(gm.getTable().getCoinReserve() == 18);
 
 
     }
 
-    /**
-     * This test verifies that herbalist's effect has the correct behaviour
-     */
-    @Test
-    void herbalistEffectTest() {
-        int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        System.out.println("L'indice dell'isola è: " + islandIndex);
-        CharactersParameters herbalist = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
-        //set Herbalist Character in characters to test her effect.
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
-        gm.effect(herbalist);
-        assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(), 1);
-    }
-
-    /**
-     * Removes the students from the dining room of the players
-     * Checks if the student bucket correctly updated
-     */
-    @Test
-    void thiefEffectTest() {
-        StudentBucket sb = gm.getBucket();
-        int[][] oldStudentsByPlayer = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
-        ArrayList<Creature> cret = new ArrayList<>(Arrays.asList(Creature.values()));
-        for (int j = 0; j < gm.getPlayers().size(); j++) {
-            for (int i = 0; i < 10; i++) {
-                try {
-                    gm.getPlayers().get(j).getDiningRoom().addStudent(sb.generateStudent());
-                } catch (StudentsOutOfStockException ignore) {
-                }
-            }
-            //saves number of students generated randomly by player and creature
-            for (int k = 0; k < cret.size(); k++) {
-                oldStudentsByPlayer[j][k] = gm.getPlayers().get(j).getDiningRoom().getNumberOfStudentsByCreature(cret.get(k));
-            }
-
-        }
-        List<Creature> uni = new ArrayList<>();
-        uni.add(Creature.BLUE_UNICORNS);
-        CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
-
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-
-        assertTrue(gm.playCharacter(0));
-        assertTrue(gm.effect(thief));
-        for (int i = 0; i < gm.getPlayers().size(); i++) {
-            for (int j = 0; j < cret.size(); j++) {
-                if (!cret.get(j).equals(Creature.BLUE_UNICORNS)) {
-                    assertEquals(oldStudentsByPlayer[i][j],
-                            gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
-                } else if (oldStudentsByPlayer[i][j] < 3) {
-                    assertEquals(0, gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
-                } else {
-                    assertEquals(oldStudentsByPlayer[i][j] - 3, gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
-                }
-
-            }
-        }
-
-    }
 
 
-    @Test
-    void princessEffectTest() {
-        //creates the character
-        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
-        Character princess = ccc.createCharacter(Name.PRINCESS, gm);
-        //put the character in first position
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, princess);
-        //give coins to player
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-    }
 
-    /**
-     * This test verifies that herald has the correct behaviour.
-     */
-    @Test
-    void heraldEffectTest() {
-        int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        CharactersParameters herald = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
-        List<Professor> profes = new ArrayList<>();
-        for (Creature c : Creature.values()) {
-            profes.add(new Professor(c));
-        }
-        for (int i = 0; i < gm.getPlayers().size(); i++) {
-            gm.getPlayers().get(i).addProfessor(profes.get(i));
-        }
-        gm.getPlayers().get(0).addProfessor(profes.get(3));
-        gm.getPlayers().get(0).addProfessor(profes.get(4));
-        //set Herald Character in characters to test her effect.
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new Herald(Name.HERALD, gm));
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
-        gm.effect(herald);
-        for (Creature c : Creature.values()) {
-            if (gm.getTable().getIslands().get(islandIndex).getNumberOfStudentsByCreature(c) == 1) {
-                for (Player p : gm.getPlayers()) {
-                    for (Professor prof : p.getProfessors()) {
-                        if (prof.getCreature().equals(c)) {
-                            //player that has influence on the island
-                            assertEquals(gm.getTable().getIslands().get(islandIndex).getColorOfTowers(), p.getMyColor());
 
-                        }
-                    }
-                }
-            }
-        }
-    }
+
+
+
+
 
     @Test
     void standardEvaluatorTest() {
@@ -710,142 +603,8 @@ public class GameModelTest {
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
     }
-
-    /**
-     * Swaps students between Joker character and player entrance
-     */
-    @Test
-    void JokerTest() {
-        int maxStudentsInJoker = 6;
-        //create the MoverCharacter
-        MoverCharacter joker = new MoverCharacter(Name.JOKER, gm, gm.getTable().getJoker());
-        StudentBucket bucket = gm.getBucket();
-
-        //put the character in first position
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, joker);
-        gm.populateMoverCharacter();
-        //play the first character
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
-
-
-        //necessary students and creatures from the character and the entrance
-        List<Student> studentsInJoker = joker.getStudents();
-        List<Creature> oldJokerCreatures = new ArrayList<>();
-        for (Student s : studentsInJoker) {
-            oldJokerCreatures.add(s.getCreature());
-        }
-        //populate the current player entrance with random students
-        for (int i = 0; i < studentsInJoker.size(); i++) {
-            try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(bucket.generateStudent());
-            } catch (StudentsOutOfStockException ignore) {
-            }
-        }
-        gm.setBucket(bucket);
-
-        List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
-        List<Creature> oldEntranceCreatures = new ArrayList<>();
-        for (Student s : studentsInEntrance) {
-            oldEntranceCreatures.add(s.getCreature());
-        }
-
-        //creates the parameters for the character effect
-        CharactersParameters jokerParameters = new CharactersParameters(oldJokerCreatures,
-                0, 0, null, oldEntranceCreatures);
-        //play character effect
-        gm.effect(jokerParameters);
-        //the number of students should be the same as before
-        assertEquals(maxStudentsInJoker, joker.getStudents().size());
-        assertEquals(maxStudentsInJoker, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
-
-        //get the new creatures in the character and the entrance
-        List<Creature> newJokerCreatures = new ArrayList<>();
-        for (Student s : joker.getStudents()) {
-            newJokerCreatures.add(s.getCreature());
-        }
-        List<Creature> newEntranceCreatures = new ArrayList<>();
-        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents()) {
-            newEntranceCreatures.add(s.getCreature());
-        }
-
-        //the creatures should be swapped
-        assertTrue(oldJokerCreatures.containsAll(newEntranceCreatures));
-        assertTrue(oldEntranceCreatures.containsAll(newJokerCreatures));
-    }
-
-    /**
-     * Swaps students between current player entrance and dining room
-     */
-    @Test
-    void minstrelTest() {
-        //create the Character
-        Minstrel minstrel = new Minstrel(Name.MINSTREL, gm);
-        StudentBucket bucket = gm.getBucket();
-        //put the character in first position
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, minstrel);
-        //play the first character
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
-
-        int maxNumberOfStudentsToSwap = 2;
-        //populate the current player entrance with random students
-        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
-            try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(bucket.generateStudent());
-            } catch (StudentsOutOfStockException ignore) {
-            }
-        }
-        //populate the current player dining room with random students
-        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
-            try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().addStudent(bucket.generateStudent());
-            } catch (StudentsOutOfStockException ignore) {
-            }
-        }
-        gm.setBucket(bucket);
-        //old students in entrance
-        List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
-        List<Creature> oldEntranceCreatures = new ArrayList<>();
-        for (Student s : studentsInEntrance) {
-            oldEntranceCreatures.add(s.getCreature());
-        }
-
-        //old students in dining room
-        List<Student> studentsInDiningRoom = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents();
-        List<Creature> oldDiningRoomCreatures = new ArrayList<>();
-        for (Student s : studentsInDiningRoom) {
-            oldDiningRoomCreatures.add(s.getCreature());
-        }
-
-        //creates the parameters for the character effect
-        CharactersParameters minstrelParameters = new CharactersParameters(oldEntranceCreatures,
-                0, 0, null, oldDiningRoomCreatures);
-        //play character effect
-        gm.effect(minstrelParameters);
-
-        //the number of students should be the same as before
-        assertEquals(maxNumberOfStudentsToSwap, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents().size());
-        assertEquals(maxNumberOfStudentsToSwap, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
-
-        //get the new creatures in the dining room and the entrance
-        List<Creature> newDiningRoomCreatures = new ArrayList<>();
-        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents()) {
-            newDiningRoomCreatures.add(s.getCreature());
-        }
-        List<Creature> newEntranceCreatures = new ArrayList<>();
-        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents()) {
-            newEntranceCreatures.add(s.getCreature());
-        }
-
-        //the creatures should be swapped
-        assertTrue(newEntranceCreatures.containsAll(oldDiningRoomCreatures));
-        assertTrue(newDiningRoomCreatures.containsAll(oldEntranceCreatures));
-
-
-    }
 }
+
+
+
+

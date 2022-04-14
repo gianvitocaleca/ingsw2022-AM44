@@ -335,15 +335,14 @@ public class GameModel extends Observable implements Playable, Observer {
             return false;
         }
 
-        Player currentPlayer = players.get(currentPlayerIndex);
-        Character currentCharacter = characters.get(indexOfCharacter);
 
-        if (currentCharacter.canBePlayed(currentPlayer.getMyCoins())) {
+        if (characters.get(indexOfCharacter).canBePlayed(players.get(currentPlayerIndex).getMyCoins())) {
             //get character cost (it already handles the updated cost)
-            int removedCoins = currentCharacter.getCost();
+            int removedCoins = characters.get(indexOfCharacter).getCost();
             //player pays for the character
-            currentPlayer.removeCoin(removedCoins);
-            currentCharacter.setUpdatedCost();
+            players.get(currentPlayerIndex).removeCoin(removedCoins);
+            characters.get(indexOfCharacter).setUpdatedCost();
+
             //table gets the coins from the player
             table.addCoins(removedCoins);
             //play character
