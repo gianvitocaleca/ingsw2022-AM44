@@ -27,7 +27,6 @@ public class Controller extends Observable implements Observer {
 
     }
 
-
     @Override
     public void update(Observable o, Object arg) {
         if((o instanceof GameModel) && (arg instanceof Name)){

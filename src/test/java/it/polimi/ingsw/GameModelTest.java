@@ -258,13 +258,14 @@ public class GameModelTest {
     void checkNeighbourIslandTest() {
         int oldSize = gm.getTable().getIslands().size();
         Table tempTable = gm.getTable();
+        tempTable.setMotherNaturePosition(11);
         Island newIsland = tempTable.getCurrentIsland();
         newIsland.setColorOfTowers(Color.GREY);
         tempTable.setCurrentIsland(newIsland);
         newIsland = tempTable.getNextIsland();
         newIsland.setColorOfTowers(Color.GREY);
         tempTable.setNextIsland(newIsland);
-        tempTable.setIslands(tempTable.getIslands());
+        // tempTable.setIslands(tempTable.getIslands());
         gm.setTable(tempTable);
         gm.moveMotherNature(0);
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
