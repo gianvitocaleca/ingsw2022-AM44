@@ -32,6 +32,7 @@ public class GameModel extends Observable implements Playable, Observer {
     private int postmanMovements;
     private boolean isFarmer;
     private boolean advancedRules;
+    private boolean lastRound = false;
 
     //Constructor
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
@@ -96,6 +97,7 @@ public class GameModel extends Observable implements Playable, Observer {
             }
         }
         table.setBucket(sb);
+        lastRound=false;
     }
 
     /**
@@ -171,16 +173,17 @@ public class GameModel extends Observable implements Playable, Observer {
 
     //region PLANNING PHASE
 
+    /**
+     * This method sets lastRound=true when table.fillClouds returns false due to StudentsOutOfStockException
+     */
     public void fillClouds(){
         if(!(table.fillClouds())){
-            if (checkEndGame()) {
-                findWinner();
-            }
+            lastRound=true;
         }
     }
 
-    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException {
-        if (indexOfAssistant < 0 || indexOfAssistant > players.get(currentPlayerIndex).getAssistantDeck().size()) {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException,PlanningPhaseEndedException {
+        if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
         List<Assistant> playedAssistants = new ArrayList<Assistant>();
@@ -196,7 +199,11 @@ public class GameModel extends Observable implements Playable, Observer {
         }
 
         players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
-
+        if(currentPlayerIndex<numberOfPlayers){
+            currentPlayerIndex++;
+        }else{
+            throw new PlanningPhaseEndedException();
+        }
         return true;
     }
 
@@ -370,16 +377,14 @@ public class GameModel extends Observable implements Playable, Observer {
         if (table.getIslands().size() == 3) {
             gameEnded = true;
         }
-        StudentBucket sb = table.getBucket();
-        try {
-            Student s = sb.generateStudent();
-        } catch (StudentsOutOfStockException ex) {
-            gameEnded = true;
-        }
 
         //NOTIFY *********************
 
         return gameEnded;
+    }
+
+    public boolean checkIfLastRound(){
+        return lastRound;
     }
 
     @Override
