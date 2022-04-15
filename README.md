@@ -10,9 +10,9 @@
 |:-----------------|:--------------------------------------------------:|
 | Basic rules      | 🟢 |
 | Complete rules   | 🟢 |
-| Socket           | 🔴 |
+| Socket & communication protocol          | 🟡 |
 | GUI              | 🔴 |
-| CLI              | 🔴 |
+| CLI              | 🟡 |
 | Advanced Characters   | 🟢 |
 | 4 players games  | 🔴 |
 | Multiple games   | 🔴 |
