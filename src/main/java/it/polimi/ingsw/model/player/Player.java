@@ -63,7 +63,7 @@ public class Player {
 
         List<Assistant> tempList = new ArrayList<>();
 
-        for(Assistant a : lastPlayedCard){
+        for (Assistant a : lastPlayedCard) {
             tempList.add(new Assistant(a.getName()));
         }
 
@@ -74,7 +74,7 @@ public class Player {
 
         List<Assistant> tempList = new ArrayList<>();
 
-        for(Assistant a : assistantDeck){
+        for (Assistant a : assistantDeck) {
             tempList.add(new Assistant(a.getName()));
         }
 
@@ -84,7 +84,7 @@ public class Player {
     public List<Professor> getProfessors() {
         List<Professor> tempList = new ArrayList<>();
 
-        for(Professor p : professors){
+        for (Professor p : professors) {
             tempList.add(new Professor(p.getCreature()));
         }
 
@@ -161,8 +161,8 @@ public class Player {
 
         Map<Creature, ArrayList<Boolean>> temp = new HashMap<>();
 
-        for(Creature c : Creature.values()){
-            temp.put(c,givenCoins.get(c));
+        for (Creature c : Creature.values()) {
+            temp.put(c, givenCoins.get(c));
         }
 
         return temp;
@@ -205,4 +205,6 @@ public class Player {
     public void setProfessors(List<Professor> professors) {
         this.professors = professors;
     }
+
+
 }
