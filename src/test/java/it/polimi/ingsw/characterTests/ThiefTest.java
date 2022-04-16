@@ -8,13 +8,14 @@ import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.enums.Wizard;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,8 +37,6 @@ class ThiefTest {
     }
 
 
-
-
     /**
      * Removes the students from the dining room of the players
      * Checks if the student bucket correctly updated
@@ -45,46 +44,57 @@ class ThiefTest {
     @Test
     void thiefEffectTest() {
         StudentBucket sb = gm.getBucket();
-        int[][] oldStudentsByPlayer = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
-        ArrayList<Creature> cret = new ArrayList<>(Arrays.asList(Creature.values()));
-        for (int j = 0; j < gm.getPlayers().size(); j++) {
-            for (int i = 0; i < 10; i++) {
+        //map to record the old dining rooms
+        Map<String, DiningRoom> oldDiningRooms = new HashMap<>();
+        int numberOfStudentsByCreature = 9;
+        Creature creatureToRemove = Creature.BLUE_UNICORNS;
+        //populates the players dining rooms and saves them
+        List<Player> players = new ArrayList<>(gm.getPlayers());
+        for (Player p : players) {
+            DiningRoom playerDR = new DiningRoom(numberOfStudentsByCreature);
+            List<Student> newStudents = new ArrayList<>();
+            for (int j = 0; j < 10; j++) {
                 try {
-                    gm.getPlayers().get(j).getDiningRoom().addStudent(sb.generateStudent());
+                    newStudents.add(sb.generateStudent());
                 } catch (StudentsOutOfStockException ignore) {
                 }
             }
-            //saves number of students generated randomly by player and creature
-            for (int k = 0; k < cret.size(); k++) {
-                oldStudentsByPlayer[j][k] = gm.getPlayers().get(j).getDiningRoom().getNumberOfStudentsByCreature(cret.get(k));
-            }
-
+            playerDR.addStudents(newStudents);
+            p.setDiningRoom(playerDR);
+            //gives the necessary coins to the player
+            p.addCoin();
+            p.addCoin();
+            p.addCoin();
+            oldDiningRooms.put(p.getUsername(), playerDR);
         }
+        gm.setPlayers(players);
+        //creates the necessary parameters for the character
         List<Creature> uni = new ArrayList<>();
-        uni.add(Creature.BLUE_UNICORNS);
+        uni.add(creatureToRemove);
         CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
+        //puts the thief as first character
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
 
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-
+        //plays the character
         assertTrue(gm.playCharacter(0));
         assertTrue(gm.effect(thief));
-        for (int i = 0; i < gm.getPlayers().size(); i++) {
-            for (int j = 0; j < cret.size(); j++) {
-                if (!cret.get(j).equals(Creature.BLUE_UNICORNS)) {
-                    assertEquals(oldStudentsByPlayer[i][j],
-                            gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
-                } else if (oldStudentsByPlayer[i][j] < 3) {
-                    assertEquals(0, gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
-                } else {
-                    assertEquals(oldStudentsByPlayer[i][j] - 3, gm.getPlayers().get(i).getDiningRoom().getNumberOfStudentsByCreature(cret.get(j)));
-                }
 
+        for (Player p : gm.getPlayers()) {
+            for (Creature c : Creature.values()) {
+                if (!c.equals(creatureToRemove)) {
+                    //should have the same creatures that were not removed
+                    assertEquals(oldDiningRooms.get(p.getUsername()).getNumberOfStudentsByCreature(c),
+                            p.getDiningRoom().getNumberOfStudentsByCreature(c));
+                } else if (oldDiningRooms.get(p.getUsername()).getNumberOfStudentsByCreature(c) < 3) {
+                    //should have zero creatures
+                    assertEquals(0, p.getDiningRoom().getNumberOfStudentsByCreature(c));
+                } else {
+                    //should have old value - 3 creatures
+                    assertEquals(oldDiningRooms.get(p.getUsername()).getNumberOfStudentsByCreature(c) - 3,
+                            p.getDiningRoom().getNumberOfStudentsByCreature(c));
+                }
             }
         }
-
     }
 }

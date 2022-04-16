@@ -91,13 +91,15 @@ public class GameModel extends Observable implements Playable, Observer {
             int minNumberToRemove = Math.min(numberOfStudentsToRemove, p.getDiningRoom().getNumberOfStudentsByCreature(creature));
             for (int i = 0; i < minNumberToRemove; i++) {
                 //removes the student from the dining room
-                Student removedStudent = p.getDiningRoom().removeStudent(creature);
+                DiningRoom oldDiningRoom = p.getDiningRoom();
+                Student removedStudent = oldDiningRoom.removeStudent(creature);
+                p.setDiningRoom(oldDiningRoom);
                 //gives the student back to the bucket
                 sb.putBackCreature(removedStudent.getCreature());
             }
         }
         table.setBucket(sb);
-        lastRound=false;
+        lastRound = false;
     }
 
     /**
@@ -176,13 +178,13 @@ public class GameModel extends Observable implements Playable, Observer {
     /**
      * This method sets lastRound=true when table.fillClouds returns false due to StudentsOutOfStockException
      */
-    public void fillClouds(){
-        if(!(table.fillClouds())){
-            lastRound=true;
+    public void fillClouds() {
+        if (!(table.fillClouds())) {
+            lastRound = true;
         }
     }
 
-    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException,PlanningPhaseEndedException {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException {
         if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
@@ -199,9 +201,9 @@ public class GameModel extends Observable implements Playable, Observer {
         }
 
         players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
-        if(currentPlayerIndex<numberOfPlayers){
+        if (currentPlayerIndex < numberOfPlayers) {
             currentPlayerIndex++;
-        }else{
+        } else {
             throw new PlanningPhaseEndedException();
         }
         return true;
@@ -227,19 +229,22 @@ public class GameModel extends Observable implements Playable, Observer {
     /**
      * Swaps the students between joker card and player entrance
      *
-     * @param source                       first studentContainer
      * @param providedSourceCreatures      are the creatures that will be removed from the source and added to the destination
      * @param providedDestinationCreatures are the creatures that will be removed from the destination and added to the source
      * @return true if effect is correctly executed
      */
     @Override
-    public boolean jokerEffect(StudentContainer source, List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
+    public boolean jokerEffect(List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
 
-        List<Creature> sourceCreatures = source.getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
+        List<Creature> sourceCreatures = table.getJoker().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
 
         if (sourceCreatures.containsAll(providedSourceCreatures) && destCreatures.containsAll(providedDestinationCreatures)) {
-            swapStudents(source, players.get(currentPlayerIndex).getEntrance(), providedSourceCreatures, providedDestinationCreatures);
+            StudentContainer joker = table.getJoker();
+            Entrance entrance = players.get(currentPlayerIndex).getEntrance();
+            swapStudents(joker, entrance, providedSourceCreatures, providedDestinationCreatures);
+            table.setJoker(joker);
+            players.get(currentPlayerIndex).setEntrance(entrance);
             return true;
         }
         return false;
@@ -297,26 +302,45 @@ public class GameModel extends Observable implements Playable, Observer {
 
     public void populateMoverCharacter() {
         List<Name> charNames = characters.stream().map(Character::getName).toList();
-        List<StudentContainer> movers = new ArrayList<StudentContainer>();
         StudentBucket bucket = table.getBucket();
+        StudentContainer container;
 
         if (charNames.contains(Name.MONK)) {
-            movers.add(table.getMonk());
-        }
-        if (charNames.contains(Name.PRINCESS)) {
-            movers.add(table.getPrincess());
-        }
-        if (charNames.contains(Name.JOKER)) {
-            movers.add(table.getJoker());
-        }
-        for (StudentContainer sc : movers) {
-            for (int i = 0; i < sc.getCapacity(); i++) {
+            container = table.getMonk();
+            for (int i = 0; i < container.getCapacity(); i++) {
                 try {
-                    sc.addStudent(bucket.generateStudent());
+                    container.addStudent(bucket.generateStudent());
                 } catch (StudentsOutOfStockException e) {
                     e.printStackTrace();
                 }
             }
+            table.setMonk(container);
+        }
+        table.setBucket(bucket);
+
+        if (charNames.contains(Name.PRINCESS)) {
+            container = table.getPrincess();
+            for (int i = 0; i < container.getCapacity(); i++) {
+                try {
+                    container.addStudent(bucket.generateStudent());
+                } catch (StudentsOutOfStockException e) {
+                    e.printStackTrace();
+                }
+            }
+            table.setPrincess(container);
+        }
+        table.setBucket(bucket);
+
+        if (charNames.contains(Name.JOKER)) {
+            StudentContainer prova = new Joker(6);
+            for (int i = 0; i < prova.getCapacity(); i++) {
+                try {
+                    prova.addStudent(bucket.generateStudent());
+                } catch (StudentsOutOfStockException e) {
+                    e.printStackTrace();
+                }
+            }
+            table.setJoker(prova);
         }
         table.setBucket(bucket);
     }
@@ -330,7 +354,7 @@ public class GameModel extends Observable implements Playable, Observer {
 
     public void moveMotherNature(int jumps) {
         int j = jumps + postmanMovements;
-        if(!(table.moveMotherNature(j))){
+        if (!(table.moveMotherNature(j))) {
             checkEndGame();
         }
     }
@@ -361,8 +385,8 @@ public class GameModel extends Observable implements Playable, Observer {
         return false;
     }
 
-    public void setTable(Table table){
-        this.table = table;
+    public boolean checkIfLastRound() {
+        return lastRound;
     }
 
     public boolean checkEndGame() {
@@ -383,8 +407,19 @@ public class GameModel extends Observable implements Playable, Observer {
         return gameEnded;
     }
 
-    public boolean checkIfLastRound(){
-        return lastRound;
+    @Override
+    public StudentContainer getStudentContainer(Name name) {
+        switch (name) {
+            case JOKER:
+                return table.getJoker();
+
+            case MONK:
+                return table.getMonk();
+
+            case PRINCESS:
+                return table.getPrincess();
+        }
+        return null;
     }
 
     @Override
@@ -399,18 +434,18 @@ public class GameModel extends Observable implements Playable, Observer {
     }
 
     @Override
-    public StudentContainer getStudentContainer(Name name) {
-        switch(name){
+    public boolean setStudentContainer(StudentContainer container, Name name) {
+        switch (name) {
             case JOKER:
-                return table.getJoker();
+                return table.setJoker(container);
 
             case MONK:
-                return table.getMonk();
+                return table.setMonk(container);
 
             case PRINCESS:
-                return table.getPrincess();
+                return table.setPrincess(container);
         }
-        return null;
+        return false;
     }
 
     @Override
@@ -423,19 +458,17 @@ public class GameModel extends Observable implements Playable, Observer {
         table.setBucket(bucket);
     }
 
-    @Override
-    public boolean setStudentContainer(StudentContainer container, Name name) {
-        switch(name){
-            case JOKER:
-                return table.setJoker(container);
-
-            case MONK:
-                return table.setMonk(container);
-
-            case PRINCESS:
-                return table.setPrincess(container);
-        }
-        return false;
+    //region getters
+    public Table getTable() {
+        Table temp = new Table(numberOfPlayers, advancedRules);
+        temp.setMotherNature(table.getMotherNature());
+        temp.setClouds(table.getClouds());
+        temp.setCoinReserve(table.getCoinReserve());
+        temp.setIslands(table.getIslands());
+        temp.setMonk(table.getMonk());
+        temp.setJoker(table.getJoker());
+        temp.setPrincess(table.getPrincess());
+        return temp;
     }
 
     /**
@@ -458,23 +491,14 @@ public class GameModel extends Observable implements Playable, Observer {
 
     //endregion
 
-    //region getters
-    public Table getTable() {
-        Table temp = new Table(numberOfPlayers,advancedRules);
-        temp.setMotherNature(table.getMotherNature());
-        temp.setClouds(table.getClouds());
-        temp.setCoinReserve(table.getCoinReserve());
-        temp.setIslands(table.getIslands());
-        temp.setMonk(table.getMonk());
-        temp.setJoker(table.getJoker());
-        temp.setPrincess(table.getPrincess());
-        return temp;
+    public void setTable(Table table) {
+        this.table = table;
     }
 
     public List<Player> getPlayers() {
         List<Player> temp = new ArrayList<>();
-        for(Player p: players){
-            Player temPlayer = new Player(p.getUsername(),p.getMyColor(),p.getMyCoins(),p.getWizard(),p.getTowers(),p.getEntrance());
+        for (Player p : players) {
+            Player temPlayer = new Player(p.getUsername(), p.getMyColor(), p.getMyCoins(), p.getWizard(), p.getTowers(), p.getEntrance());
             temPlayer.setAssistantDeck(p.getAssistantDeck());
             temPlayer.setDiningRoom(p.getDiningRoom());
             temPlayer.setLastPlayedCards(p.getLastPlayedCards());
@@ -484,6 +508,7 @@ public class GameModel extends Observable implements Playable, Observer {
         }
         return temp;
     }
+
     //region setters
     public void setPlayers(List<Player> players) {
         this.players = players;
@@ -507,26 +532,23 @@ public class GameModel extends Observable implements Playable, Observer {
         return characters;
     }
 
-    public CharacterInformation getCharactersInformation(int indexOfCharacter){
+    public CharacterInformation getCharactersInformation(int indexOfCharacter) {
 
         Name charactersname = characters.get(indexOfCharacter).getName();
 
         List<Creature> moverContent;
-        if(charactersname.equals(Name.MONK)){
+        if (charactersname.equals(Name.MONK)) {
             moverContent = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
-        }
-        else if(charactersname.equals(Name.JOKER)){
+        } else if (charactersname.equals(Name.JOKER)) {
             moverContent = table.getJoker().getStudents().stream().map(s -> s.getCreature()).toList();
-        }
-        else if(charactersname.equals(Name.PRINCESS)){
+        } else if (charactersname.equals(Name.PRINCESS)) {
             moverContent = table.getPrincess().getStudents().stream().map(s -> s.getCreature()).toList();
-        }
-        else{
+        } else {
             moverContent = new ArrayList<>();
         }
 
         CharacterInformation info = new CharacterInformation(
-                charactersname,characters.get(indexOfCharacter).hasCoin(), table.getDeactivators(),indexOfCharacter,moverContent );
+                charactersname, characters.get(indexOfCharacter).hasCoin(), table.getDeactivators(), indexOfCharacter, moverContent);
 
         return info;
     }
@@ -686,7 +708,7 @@ public class GameModel extends Observable implements Playable, Observer {
             //change the color of the towers on the island
             currentIsland.setColorOfTowers(hasMoreInfluence.getMyColor());
             //check the neighbor islands
-            if(!table.checkNeighborIsland()){
+            if (!table.checkNeighborIsland()) {
                 checkEndGame();
             }
         }

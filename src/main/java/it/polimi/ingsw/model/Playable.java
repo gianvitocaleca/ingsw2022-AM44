@@ -23,7 +23,7 @@ public interface Playable {
 
     boolean minstrelEffect(List<Creature> entranceCreatures, List<Creature> diningRoomCreatures);
 
-    boolean jokerEffect(StudentContainer source, List<Creature> sourceCreature, List<Creature> destinationCreature);
+    boolean jokerEffect(List<Creature> sourceCreature, List<Creature> destinationCreature);
 
     void setInfluenceEvaluator(InfluenceEvaluator evaluator);
 
@@ -41,6 +41,7 @@ public interface Playable {
     StudentContainer getStudentContainer(Name name);
 
     StudentBucket getBucket();
+
     void setBucket(StudentBucket bucket);
 
     boolean setStudentContainer(StudentContainer container, Name name);

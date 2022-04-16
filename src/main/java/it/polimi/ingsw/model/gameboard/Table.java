@@ -30,14 +30,13 @@ public class Table {
         return temp;
     }
 
-    public void setBucket(StudentBucket bucket){
-        this.bucket=bucket;
-    }
+    private int deactivators = 0;
 
     private StudentBucket bucket;
 
-
-    private int deactivators=0;
+    public void setBucket(StudentBucket bucket) {
+        this.bucket = bucket;
+    }
 
 
     private StudentContainer monk = new Monk(MOVER_CAPACITY);
@@ -98,7 +97,7 @@ public class Table {
         //11+0 % 12 = 11
         int mnFuturePos = (motherNature.getCurrentIsland() + jumps) % (islands.size());
         setMotherNaturePosition(mnFuturePos);
-        if(!checkNeighborIsland()){
+        if (!checkNeighborIsland()) {
             return false;
         }
         return true;
@@ -140,12 +139,12 @@ public class Table {
         return true;
     }
 
-    public boolean setDeactivators(int deactivators){
+    public boolean setDeactivators(int deactivators) {
         this.deactivators = deactivators;
         return true;
     }
 
-    public int getDeactivators(){
+    public int getDeactivators() {
         return deactivators;
     }
 
@@ -197,29 +196,28 @@ public class Table {
 
     public List<Island> getIslands() {
         List<Island> temp = new ArrayList<>();
-        for(Island i : islands){
-            temp.add(new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries()));
+        for (Island i : islands) {
+            temp.add(new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries()));
         }
         return temp;
     }
 
 
-
     public Island getCurrentIsland() {
         Island i = islands.get(getMnPosition());
-        Island temp = new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries());
+        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
         return temp;
+    }
+
+    public void setCurrentIsland(Island island) {
+        int currPos = getMnPosition();
+        islands.remove(currPos);
+        islands.add(currPos, island);
     }
 
     public Island getNextIsland() {
         Island i = islands.get(getNextIslandPosition());
-        Island temp = new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries());
-        return temp;
-    }
-
-    public Island getPrevIsland() {
-        Island i = islands.get(getPrevIslandPosition());
-        Island temp = new Island(i.getStudents(),i.getNumberOfTowers(),i.getColorOfTowers(),i.getCapacity(),i.getNumberOfNoEntries());
+        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
         return temp;
     }
 
@@ -228,6 +226,7 @@ public class Table {
     }
 
     public int pos;
+
     private int getNextIslandPosition() {
         pos = motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
         return pos;
@@ -239,14 +238,11 @@ public class Table {
         return temp;
     }
 
-    public List<Cloud> getClouds() {
-        List<Cloud> temp = new ArrayList<>();
-        for(Cloud c: clouds){
-            Cloud tC = new Cloud(c.getCapacity());
-            tC.addStudents(c.getStudents());
-            temp.add(tC);
-        }
-        return temp;
+    public void setNextIsland(Island island) {
+        int nextPos = getNextIslandPosition();
+        islands.remove(nextPos);
+        islands.add(nextPos, island);
+
     }
 
     public int getMnPosition() {
@@ -293,9 +289,10 @@ public class Table {
         return temp;
     }
 
-    public boolean setMonk(StudentContainer monk){
-        this.monk = monk;
-        return true;
+    public Island getPrevIsland() {
+        Island i = islands.get(getPrevIslandPosition());
+        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
+        return temp;
     }
 
     public StudentContainer getPrincess() {
@@ -304,9 +301,10 @@ public class Table {
         return temp;
     }
 
-    public boolean setPrincess(StudentContainer princess){
-        this.princess = princess;
-        return true;
+    public void setPrevIsland(Island island) {
+        int prevPos = getPrevIslandPosition();
+        islands.remove(prevPos);
+        islands.add(prevPos, island);
     }
 
     public StudentContainer getJoker() {
@@ -315,13 +313,18 @@ public class Table {
         return temp;
     }
 
-    public boolean setJoker(StudentContainer joker) {
-        this.joker = joker;
-        return true;
+    public List<Cloud> getClouds() {
+        List<Cloud> temp = new ArrayList<>();
+        for (Cloud c : clouds) {
+            Cloud tC = new Cloud(c.getCapacity());
+            tC.addStudents(c.getStudents());
+            temp.add(tC);
+        }
+        return temp;
     }
 
-    public boolean setMotherNaturePosition(int index){
-        motherNature.setCurrentIsland(index);
+    public boolean setMonk(StudentContainer monk) {
+        this.monk = monk;
         return true;
     }
 
@@ -341,20 +344,20 @@ public class Table {
         this.coinReserve = coinReserve;
     }
 
-    public void setCurrentIsland(Island island){
-        int currPos = getMnPosition();
-        islands.remove(currPos);
-        islands.add(currPos,island);
+    public boolean setPrincess(StudentContainer princess) {
+        this.princess = princess;
+        return true;
     }
-    public void setNextIsland(Island island){
-        int nextPos = getNextIslandPosition();
-        islands.remove(nextPos);
-        islands.add(nextPos,island);
 
+    public boolean setJoker(StudentContainer joker) {
+        //this.joker = joker;
+        this.joker = new Joker(6);
+        this.joker.addStudents(joker.getStudents());
+        return true;
     }
-    public void setPrevIsland(Island island){
-        int prevPos = getPrevIslandPosition();
-        islands.remove(prevPos);
-        islands.add(prevPos,island);
+
+    public boolean setMotherNaturePosition(int index) {
+        motherNature.setCurrentIsland(index);
+        return true;
     }
 }

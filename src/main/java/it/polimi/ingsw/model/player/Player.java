@@ -15,7 +15,7 @@ public class Player {
     private final int diningRoomCapacity = 9;
 
     private final String username;
-    private final Entrance entrance;
+    private Entrance entrance;
     private DiningRoom diningRoom;
     private final Color myColor;
     private final Wizard wizard;
@@ -204,6 +204,10 @@ public class Player {
 
     public void setProfessors(List<Professor> professors) {
         this.professors = professors;
+    }
+
+    public void setEntrance(Entrance entrance) {
+        this.entrance = entrance;
     }
 
 

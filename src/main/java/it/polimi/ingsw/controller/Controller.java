@@ -16,6 +16,8 @@ import it.polimi.ingsw.view.ViewProxy;
 import java.util.Observable;
 import java.util.Observer;
 
+import static sun.security.krb5.KrbException.errorMessage;
+
 public class Controller extends Observable implements Observer {
     /*
     Controller must:
@@ -31,8 +33,7 @@ public class Controller extends Observable implements Observer {
     private GamePhases currentPhase;
 
 
-
-    public Controller(GameModel model, ViewProxy viewProxy){
+    public Controller(GameModel model, ViewProxy viewProxy) {
 
         this.model = model;
         this.viewProxy = viewProxy;
@@ -40,9 +41,9 @@ public class Controller extends Observable implements Observer {
 
     }
 
-    public void run(){
+    public void run() {
 
-        if(currentPhase.equals(GamePhases.LOGIN)){
+        if (currentPhase.equals(GamePhases.LOGIN)) {
             //
 
             currentPhase = GamePhases.PLANNING;
@@ -50,11 +51,11 @@ public class Controller extends Observable implements Observer {
             notifyObservers(new PhaseMessage(Headers.PLANNING));
         }
 
-        while(true){
-            if(currentPhase.equals(GamePhases.PLANNING)){
+        while (true) {
+            if (currentPhase.equals(GamePhases.PLANNING)) {
                 model.fillClouds();
-                if(waitAssistants()){
-                    currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT
+                if (waitAssistants()) {
+                    currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT;
                     setChanged();
                     notifyObservers(new PhaseMessage(Headers.PLANNING));
                 }
@@ -64,12 +65,11 @@ public class Controller extends Observable implements Observer {
     }
 
 
-    private boolean waitAssistants(){
+    private boolean waitAssistants() {
 
         //genera un messaggio CurrentPlayer e lo invia a tutti
         sendCurrentPlayerMessage();
         //controller rimane in ascolto e si aspetta un messaggio playassistant dal currentplayer (update)
-
 
 
         return true;
@@ -79,46 +79,46 @@ public class Controller extends Observable implements Observer {
      * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
      * the winner of the game
      */
-    private void checkIfLastRound(){
-        if(model.checkIfLastRound()){
+    private void checkIfLastRound() {
+        if (model.checkIfLastRound()) {
             Player winner = model.findWinner();
             setChanged();
-            notifyObservers(new PlayerMessage(Headers.winnerPlayer,winner.getUsername()));
+            notifyObservers(new PlayerMessage(Headers.winnerPlayer, winner.getUsername()));
         }
     }
 
-    private void sendCurrentPlayerMessage(){
+    private void sendCurrentPlayerMessage() {
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
         setChanged();
-        notifyObservers(new PlayerMessage(Headers.currentPlayer,curr.getUsername()));
+        notifyObservers(new PlayerMessage(Headers.currentPlayer, curr.getUsername()));
     }
 
-    private void playAssistant(int indexOfAssistant){
-        try{
-            if(!(model.playAssistant(indexOfAssistant))){
-                errorMessage("Non existent assistant");
-            }else{
+    private void playAssistant(int indexOfAssistant) {
+        try {
+            if (!(model.playAssistant(indexOfAssistant))) {
+                errorMessage(1);
+            } else {
                 sendCurrentPlayerMessage();
             }
-        }catch (AssistantAlreadyPlayedException a){
-            errorMessage("Assistant already played");
-        }catch (PlanningPhaseEndedException p){
+        } catch (AssistantAlreadyPlayedException a) {
+            errorMessage(2);
+        } catch (PlanningPhaseEndedException p) {
             model.establishRoundOrder();
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if((o instanceof GameModel) && (arg instanceof Name)){
+        if ((o instanceof GameModel) && (arg instanceof Name)) {
             setChanged();
             notifyObservers(arg);
         }
-        if((o instanceof ViewProxy) && (arg instanceof PlanningMessage)){
+        if ((o instanceof ViewProxy) && (arg instanceof PlanningMessage)) {
             playAssistant(((PlanningMessage) arg).getIndexOfAssistant());
         }
 
-        if((o instanceof ViewProxy) && (arg instanceof CharactersParameters)){
-            if(!(model.effect((CharactersParameters) arg))){
+        if ((o instanceof ViewProxy) && (arg instanceof CharactersParameters)) {
+            if (!(model.effect((CharactersParameters) arg))) {
                 setChanged();
                 notifyObservers(model.getCharacters().get(model.getPlayedCharacter()).getName());
             }

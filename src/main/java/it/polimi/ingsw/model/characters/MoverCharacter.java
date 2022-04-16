@@ -41,7 +41,7 @@ public class MoverCharacter implements Character {
         switch (name) {
             case JOKER:
 
-                if (!(model.jokerEffect(container, answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures()))) {
+                if (!(model.jokerEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures()))) {
                     return false;
                 }
                 return true;
