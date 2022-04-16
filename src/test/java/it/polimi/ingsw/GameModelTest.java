@@ -258,13 +258,14 @@ public class GameModelTest {
     void checkNeighbourIslandTest() {
         int oldSize = gm.getTable().getIslands().size();
         Table tempTable = gm.getTable();
+        tempTable.setMotherNaturePosition(11);
         Island newIsland = tempTable.getCurrentIsland();
         newIsland.setColorOfTowers(Color.GREY);
         tempTable.setCurrentIsland(newIsland);
         newIsland = tempTable.getNextIsland();
         newIsland.setColorOfTowers(Color.GREY);
         tempTable.setNextIsland(newIsland);
-        tempTable.setIslands(tempTable.getIslands());
+        // tempTable.setIslands(tempTable.getIslands());
         gm.setTable(tempTable);
         gm.moveMotherNature(0);
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
@@ -283,82 +284,39 @@ public class GameModelTest {
                 new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
         //now table has 17 coins
         gm.setCurrentPlayerIndex(1);
+
+        List<Player> players = gm.getPlayers();
         Character firstCharacter = gm.getCharacters().get(0);
-        Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
 
         for (int i = 1; i < firstCharacter.getCost(); i++) {
-            currentPlayer.addCoin();
-            gm.getTable().removeCoin();
+            players.get(gm.getCurrentPlayerIndex()).addCoin();
+            Table temp = gm.getTable();
+            temp.removeCoin();
+            gm.setTable(temp);
         }
+        gm.setPlayers(players);
         //now currentPlayer has exactly firstCharacter cost coins, table has 18 - (firstCharacter cost) coins
 
         //currentPlayer plays character(0), now he should have 0 coins, character(0) should have 1 coin in updatedCost,
         //table should have 18 coins
         gm.playCharacter(0);
+        Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
         assertTrue(currentPlayer.getMyCoins() == 0);
+        firstCharacter = gm.getCharacters().get(0);
         assertTrue(firstCharacter.hasCoin());
         assertTrue(gm.getTable().getCoinReserve() == 18);
 
 
     }
 
-    /**
-     * This test verifies that herbalist's effect has the correct behaviour
-     */
-    @Test
-    void herbalistEffectTest() {
-        int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        System.out.println("L'indice dell'isola è: " + islandIndex);
-        CharactersParameters herbalist = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
-        //set Herbalist Character in characters to test her effect.
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
-        gm.effect(herbalist);
-        assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(), 1);
-    }
 
-    /**
-     * This test verifies that herald has the correct behaviour.
-     */
-    @Test
-    void heraldEffectTest() {
-        int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        CharactersParameters herald = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
-        List<Professor> profes = new ArrayList<>();
-        for (Creature c : Creature.values()) {
-            profes.add(new Professor(c));
-        }
-        for (int i = 0; i < gm.getPlayers().size(); i++) {
-            gm.getPlayers().get(i).addProfessor(profes.get(i));
-        }
-        gm.getPlayers().get(0).addProfessor(profes.get(3));
-        gm.getPlayers().get(0).addProfessor(profes.get(4));
-        //set Herald Character in characters to test her effect.
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new Herald(Name.HERALD, gm));
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.playCharacter(0);
-        gm.effect(herald);
-        for (Creature c : Creature.values()) {
-            if (gm.getTable().getIslands().get(islandIndex).getNumberOfStudentsByCreature(c) == 1) {
-                for (Player p : gm.getPlayers()) {
-                    for (Professor prof : p.getProfessors()) {
-                        if (prof.getCreature().equals(c)) {
-                            //player that has influence on the island
-                            assertEquals(gm.getTable().getIslands().get(islandIndex).getColorOfTowers(), p.getMyColor());
 
-                        }
-                    }
-                }
-            }
-        }
-    }
+
+
+
+
+
+
 
     @Test
     void standardEvaluatorTest() {

@@ -1,9 +1,17 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.enums.GamePhases;
+import it.polimi.ingsw.messages.Headers;
+import it.polimi.ingsw.messages.PhaseMessage;
+import it.polimi.ingsw.messages.PlanningMessage;
+import it.polimi.ingsw.messages.PlayerMessage;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.view.ViewProxy;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -18,15 +26,86 @@ public class Controller extends Observable implements Observer {
      */
 
     private GameModel model;
-    private View view;
+    private ViewProxy viewProxy;
 
-    public Controller(GameModel model, View view){
+    private GamePhases currentPhase;
+
+
+
+    public Controller(GameModel model, ViewProxy viewProxy){
 
         this.model = model;
-        this.view = view;
+        this.viewProxy = viewProxy;
+        this.currentPhase = GamePhases.LOGIN;
 
     }
 
+    public void run(){
+
+        if(currentPhase.equals(GamePhases.LOGIN)){
+            //
+
+            currentPhase = GamePhases.PLANNING;
+            setChanged();
+            notifyObservers(new PhaseMessage(Headers.PLANNING));
+        }
+
+        while(true){
+            if(currentPhase.equals(GamePhases.PLANNING)){
+                model.fillClouds();
+                if(waitAssistants()){
+                    currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT
+                    setChanged();
+                    notifyObservers(new PhaseMessage(Headers.PLANNING));
+                }
+            }
+
+        }
+    }
+
+
+    private boolean waitAssistants(){
+
+        //genera un messaggio CurrentPlayer e lo invia a tutti
+        sendCurrentPlayerMessage();
+        //controller rimane in ascolto e si aspetta un messaggio playassistant dal currentplayer (update)
+
+
+
+        return true;
+    }
+
+    /**
+     * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
+     * the winner of the game
+     */
+    private void checkIfLastRound(){
+        if(model.checkIfLastRound()){
+            Player winner = model.findWinner();
+            setChanged();
+            notifyObservers(new PlayerMessage(Headers.winnerPlayer,winner.getUsername()));
+        }
+    }
+
+    private void sendCurrentPlayerMessage(){
+        Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
+        setChanged();
+        notifyObservers(new PlayerMessage(Headers.currentPlayer,curr.getUsername()));
+    }
+
+    private void playAssistant(int indexOfAssistant){
+        try{
+            if(!(model.playAssistant(indexOfAssistant))){
+                errorMessage("Non existent assistant");
+            }else{
+                sendCurrentPlayerMessage();
+            }
+        }catch (AssistantAlreadyPlayedException a){
+            errorMessage("Assistant already played");
+        }catch (PlanningPhaseEndedException p){
+            model.establishRoundOrder();
+        }
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -34,8 +113,11 @@ public class Controller extends Observable implements Observer {
             setChanged();
             notifyObservers(arg);
         }
+        if((o instanceof ViewProxy) && (arg instanceof PlanningMessage)){
+            playAssistant(((PlanningMessage) arg).getIndexOfAssistant());
+        }
 
-        if((o instanceof View) && (arg instanceof CharactersParameters)){
+        if((o instanceof ViewProxy) && (arg instanceof CharactersParameters)){
             if(!(model.effect((CharactersParameters) arg))){
                 setChanged();
                 notifyObservers(model.getCharacters().get(model.getPlayedCharacter()).getName());

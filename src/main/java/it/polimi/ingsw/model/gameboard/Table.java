@@ -95,6 +95,7 @@ public class Table {
     }
 
     public boolean moveMotherNature(int jumps) {
+        //11+0 % 12 = 11
         int mnFuturePos = (motherNature.getCurrentIsland() + jumps) % (islands.size());
         setMotherNaturePosition(mnFuturePos);
         if(!checkNeighborIsland()){
@@ -105,9 +106,9 @@ public class Table {
 
     public boolean checkNeighborIsland() {
         boolean left = false, right = false;
-        Island currentIsland = getCurrentIsland();
-        Island nextIsland = getNextIsland();
-        Island prevIsland = getPrevIsland();
+        Island currentIsland = getCurrentIsland(); //11
+        Island nextIsland = getNextIsland(); //0
+        Island prevIsland = getPrevIsland(); //10
 
         if (prevIsland.getNumberOfTowers() > 0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
             left = true;
@@ -226,8 +227,10 @@ public class Table {
         return motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
     }
 
+    public int pos;
     private int getNextIslandPosition() {
-        return motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
+        pos = motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
+        return pos;
     }
 
     public MotherNature getMotherNature() {
@@ -251,7 +254,7 @@ public class Table {
     }
 
     private void aggregator(int p) {
-        int mnCurrPosition = motherNature.getCurrentIsland();
+        int mnCurrPosition = motherNature.getCurrentIsland(); //11
         List<Student> newStudents = new ArrayList<>(getCurrentIsland().getStudents());
         newStudents.addAll(islands.get(p).getStudents());
 
@@ -339,15 +342,19 @@ public class Table {
     }
 
     public void setCurrentIsland(Island island){
-        islands.remove(getMnPosition());
-        islands.add(getMnPosition(),island);
+        int currPos = getMnPosition();
+        islands.remove(currPos);
+        islands.add(currPos,island);
     }
     public void setNextIsland(Island island){
-        islands.remove(getNextIslandPosition());
-        islands.add(getNextIslandPosition(),island);
+        int nextPos = getNextIslandPosition();
+        islands.remove(nextPos);
+        islands.add(nextPos,island);
+
     }
     public void setPrevIsland(Island island){
-        islands.remove(getPrevIslandPosition());
-        islands.add(getPrevIslandPosition(),island);
+        int prevPos = getPrevIslandPosition();
+        islands.remove(prevPos);
+        islands.add(prevPos,island);
     }
 }
