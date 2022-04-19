@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
 import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.*;
@@ -61,6 +62,8 @@ public class GameModelTest {
             try {
                 gm.playAssistant(i);
             }catch(AssistantAlreadyPlayedException e){
+                e.printStackTrace();
+            }catch(PlanningPhaseEndedException e){
                 e.printStackTrace();
             }
         }
@@ -194,6 +197,8 @@ public class GameModelTest {
             try {
                 gm.playAssistant(0);
             }catch(AssistantAlreadyPlayedException e){
+                e.printStackTrace();
+            }catch(PlanningPhaseEndedException e){
                 e.printStackTrace();
             }
         }

@@ -4,5 +4,4 @@ import it.polimi.ingsw.model.player.Player;
 
 public interface Payload {
 
-
 }

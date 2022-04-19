@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Value;
 import it.polimi.ingsw.model.enums.Wizard;
 import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.*;
@@ -71,6 +72,9 @@ class AssistantTest {
             }catch(AssistantAlreadyPlayedException e){
                 e.printStackTrace();
             }
+            catch(PlanningPhaseEndedException e){
+                e.printStackTrace();
+            }
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
         }
@@ -88,6 +92,8 @@ class AssistantTest {
                 gm.playAssistant(i);
             }catch(AssistantAlreadyPlayedException e){
                 e.printStackTrace();
+            }catch(PlanningPhaseEndedException e){
+                e.printStackTrace();
             }
         }
         gm.setCurrentPlayerIndex(0);
@@ -95,6 +101,8 @@ class AssistantTest {
         try {
             assertFalse(gm.playAssistant(123));
         }catch(AssistantAlreadyPlayedException e){
+            e.printStackTrace();
+        }catch(PlanningPhaseEndedException e){
             e.printStackTrace();
         }
         assertEquals(lastPlayed.getValue(),gm.getPlayers().get(0).getLastPlayedCard().getValue());
@@ -115,12 +123,18 @@ class AssistantTest {
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1);
                 }catch(AssistantAlreadyPlayedException ex){
                 }
+                catch(PlanningPhaseEndedException e){
+                    e.printStackTrace();
+                }
             }else{
                 try{
                     gm.playAssistant(0);
                 }catch(AssistantAlreadyPlayedException ex){
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 10);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
+                }
+                catch(PlanningPhaseEndedException e){
+                    e.printStackTrace();
                 }
             }
         }

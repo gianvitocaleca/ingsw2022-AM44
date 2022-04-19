@@ -1,10 +1,12 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.enums.GamePhases;
+import it.polimi.ingsw.controller.events.StatusEvent;
+import it.polimi.ingsw.controller.events.StringEvent;
+import it.polimi.ingsw.messages.ActionPayload;
 import it.polimi.ingsw.messages.Headers;
-import it.polimi.ingsw.messages.PhaseMessage;
-import it.polimi.ingsw.messages.PlanningMessage;
-import it.polimi.ingsw.messages.PlayerMessage;
+import it.polimi.ingsw.messages.PlanningPayload;
+import it.polimi.ingsw.messages.StringPayload;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.enums.Name;
@@ -12,11 +14,13 @@ import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.view.ViewProxy;
+import it.polimi.ingsw.controller.Listeners.*;
 
+import javax.swing.*;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Controller extends Observable implements Observer {
+public class Controller {
     /*
     Controller must:
     -reset the standard evaluator at the end of every ActionPhase
@@ -27,8 +31,9 @@ public class Controller extends Observable implements Observer {
 
     private GameModel model;
     private ViewProxy viewProxy;
-
     private GamePhases currentPhase;
+
+    private boolean currentPlayerPlayedCharacter = false;
 
 
 
@@ -36,6 +41,13 @@ public class Controller extends Observable implements Observer {
 
         this.model = model;
         this.viewProxy = viewProxy;
+
+        this.viewProxy.addListener(new PlanningPhaseListener(this));
+
+        /*List< PropertyChangeListener> temp = viewProxy.getListeners();
+        temp.add(new PlanningPhaseListener(this));
+        viewProxy.setListeners(temp);*/
+
         this.currentPhase = GamePhases.LOGIN;
 
     }
@@ -46,17 +58,15 @@ public class Controller extends Observable implements Observer {
             //
 
             currentPhase = GamePhases.PLANNING;
-            setChanged();
-            notifyObservers(new PhaseMessage(Headers.PLANNING));
+            sendPhaseMessage(Headers.PLANNING);
         }
 
         while(true){
             if(currentPhase.equals(GamePhases.PLANNING)){
                 model.fillClouds();
                 if(waitAssistants()){
-                    currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT
-                    setChanged();
-                    notifyObservers(new PhaseMessage(Headers.PLANNING));
+                    currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT;
+                    sendPhaseMessage(Headers.ACTION_STUDENTSMOVEMENT);
                 }
             }
 
@@ -82,40 +92,67 @@ public class Controller extends Observable implements Observer {
     private void checkIfLastRound(){
         if(model.checkIfLastRound()){
             Player winner = model.findWinner();
-            setChanged();
-            notifyObservers(new PlayerMessage(Headers.winnerPlayer,winner.getUsername()));
+            sendWinnerPlayerMessage(winner);
         }
     }
 
     private void sendCurrentPlayerMessage(){
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
-        setChanged();
-        notifyObservers(new PlayerMessage(Headers.currentPlayer,curr.getUsername()));
+        viewProxy.eventStringPerformed(new StringEvent(this,curr.getUsername(),Headers.currentPlayer));
     }
 
-    private void playAssistant(int indexOfAssistant){
+    private void sendWinnerPlayerMessage(Player winner){
+        viewProxy.eventStringPerformed(new StringEvent(this,winner.getUsername(),Headers.winnerPlayer));
+    }
+
+    private void sendPhaseMessage (Headers phase){
+
+        if(phase.equals(Headers.action)){
+            if(currentPhase.equals(GamePhases.ACTION_STUDENTSMOVEMENT)){
+                viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(true,false,false, true));
+            }else if (currentPhase.equals(GamePhases.ACTION_MOVEMOTHERNATURE)){
+                if(currentPlayerPlayedCharacter){
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,true,false, false));
+                }else{
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,true,false, true));
+                }
+            }else{
+                if(currentPlayerPlayedCharacter){
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,false,true, false));
+                }else{
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,false,true, true));
+                }
+            }
+        }else{
+            viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new StringPayload(""));
+        }
+
+    }
+
+    public void playAssistant(int indexOfAssistant){
         try{
             if(!(model.playAssistant(indexOfAssistant))){
-                errorMessage("Non existent assistant");
+                viewProxy.eventStringPerformed(new StringEvent(this, "Non existent assistant, play another one", Headers.errorMessage));
             }else{
                 sendCurrentPlayerMessage();
             }
         }catch (AssistantAlreadyPlayedException a){
-            errorMessage("Assistant already played");
+            viewProxy.eventStringPerformed(new StringEvent(this, "Already played assistant, play another one", Headers.errorMessage));
         }catch (PlanningPhaseEndedException p){
             model.establishRoundOrder();
+            currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT;
+            sendPhaseMessage(Headers.action);
+            sendCurrentPlayerMessage();
         }
     }
 
+    public GamePhases getCurrentPhase() {
+        return currentPhase;
+    }
+
+    /*
     @Override
     public void update(Observable o, Object arg) {
-        if((o instanceof GameModel) && (arg instanceof Name)){
-            setChanged();
-            notifyObservers(arg);
-        }
-        if((o instanceof ViewProxy) && (arg instanceof PlanningMessage)){
-            playAssistant(((PlanningMessage) arg).getIndexOfAssistant());
-        }
 
         if((o instanceof ViewProxy) && (arg instanceof CharactersParameters)){
             if(!(model.effect((CharactersParameters) arg))){
@@ -123,5 +160,5 @@ public class Controller extends Observable implements Observer {
                 notifyObservers(model.getCharacters().get(model.getPlayedCharacter()).getName());
             }
         }
-    }
+    } */
 }
