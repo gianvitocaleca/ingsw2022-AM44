@@ -55,7 +55,9 @@ public class GameModel implements Playable {
     // region PLAYABLE OVERRIDE METHODS
     @Override
     public void addNoEntry(int indexOfIsland) {
-        table.getIslands().get(indexOfIsland).addNoEntry();
+        List<Island> islands = table.getIslands();
+        islands.get(indexOfIsland).addNoEntry();
+        table.setIslands(islands);
     }
 
     /**
@@ -117,6 +119,15 @@ public class GameModel implements Playable {
             StudentContainer princess = table.getPrincess();
             DiningRoom currPlayerDiningRoom = players.get(currentPlayerIndex).getDiningRoom();
             moveStudents(princess, currPlayerDiningRoom, sourceCreatures);
+
+            StudentBucket bucket = table.getBucket();
+            try{
+                princess.addStudent(bucket.generateStudent());
+            }catch (StudentsOutOfStockException e){
+                lastRound=true;
+            }
+            table.setBucket(bucket);
+
             table.setPrincess(princess);
             players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
             return true;
@@ -132,6 +143,15 @@ public class GameModel implements Playable {
             StudentContainer monk = table.getMonk();
             Island destination = table.getIslands().get(islandIndex);
             moveStudents(monk, destination, sourceCreatures);
+
+            StudentBucket bucket = table.getBucket();
+            try{
+                monk.addStudent(bucket.generateStudent());
+            }catch (StudentsOutOfStockException e){
+                lastRound=true;
+            }
+            table.setBucket(bucket);
+
             table.setMonk(monk);
             table.setIndexIsland(islandIndex, destination);
             return true;
@@ -188,9 +208,12 @@ public class GameModel implements Playable {
     public boolean setHeraldIsland(int indexIsland) {
         if (indexIsland < table.getIslands().size()) {
             int originalMnPosition = table.getMnPosition();
-            table.getMotherNature().setCurrentIsland(indexIsland);
+            MotherNature mn = table.getMotherNature();
+            mn.setCurrentIsland(indexIsland);
+            table.setMotherNature(mn);
             evaluateInfluence();
-            table.getMotherNature().setCurrentIsland(originalMnPosition);
+            mn.setCurrentIsland(originalMnPosition);
+            table.setMotherNature(mn);
             return true;
         }
         return false;
@@ -218,12 +241,14 @@ public class GameModel implements Playable {
         List<Assistant> playedAssistants = new ArrayList<Assistant>();
 
         if (!(currentPlayerIndex == 0)) {
-            for (int i = currentPlayerIndex - 1; i > 0; i--) {
+            for (int i = currentPlayerIndex - 1; i >= 0; i--) {
                 playedAssistants.add(players.get(i).getLastPlayedCard());
             }
 
-            if (playedAssistants.contains(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant))) {
-                throw new AssistantAlreadyPlayedException();
+            for(Assistant a: playedAssistants){
+                if (a.getName().equals(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant).getName())){
+                    throw new AssistantAlreadyPlayedException();
+                }
             }
         }
 
@@ -711,6 +736,7 @@ public class GameModel implements Playable {
             }
             //change the color of the towers on the island
             currentIsland.setColorOfTowers(hasMoreInfluence.getMyColor());
+            table.setCurrentIsland(currentIsland);
             //check the neighbor islands
             if (!table.checkNeighborIsland()) {
                 checkEndGame();

@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.enums.Wizard;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.model.studentcontainers.Entrance;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,21 +52,39 @@ public class MinstrelTest {
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, minstrel);
         //play the first character
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        List<Player> players = gm.getPlayers();
+        players.get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.setPlayers(players);
         gm.playCharacter(0);
 
         int maxNumberOfStudentsToSwap = 2;
         //populate the current player entrance with random students
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
             try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().addStudent(bucket.generateStudent());
+                players = gm.getPlayers();
+
+                Entrance e = players.get(gm.getCurrentPlayerIndex()).getEntrance();
+                e.addStudent(bucket.generateStudent());
+                players.get(gm.getCurrentPlayerIndex()).setEntrance(e);
+
+                gm.setPlayers(players);
+
             } catch (StudentsOutOfStockException ignore) {
             }
         }
         //populate the current player dining room with random students
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
             try {
-                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().addStudent(bucket.generateStudent());
+
+                players = gm.getPlayers();
+
+                DiningRoom d = players.get(gm.getCurrentPlayerIndex()).getDiningRoom();
+                d.addStudent(bucket.generateStudent());
+                players.get(gm.getCurrentPlayerIndex()).setDiningRoom(d);
+
+                gm.setPlayers(players);
+
+
             } catch (StudentsOutOfStockException ignore) {
             }
         }

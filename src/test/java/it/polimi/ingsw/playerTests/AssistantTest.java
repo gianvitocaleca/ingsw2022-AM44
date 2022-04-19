@@ -75,6 +75,7 @@ class AssistantTest {
             catch(PlanningPhaseEndedException e){
                 e.printStackTrace();
             }
+            gm.setCurrentPlayerIndex(0);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
         }
@@ -115,23 +116,28 @@ class AssistantTest {
     @Test
     void playAssistantAlreadyPlayed(){
         for(int i = 0; i<gm.getPlayers().size(); i++){
-            gm.setCurrentPlayerIndex(i);
+            gm.setCurrentPlayerIndex(i); //0
             if(gm.getCurrentPlayerIndex()==0){
                 try{
                     assertTrue(gm.playAssistant(0));
-                    assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9);
-                    assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1);
+                    assertEquals(gm.getPlayers().get(0).getAssistantDeck().size(), 9);
+                    assertEquals(gm.getPlayers().get(0).getLastPlayedCards().size(), 1);
                 }catch(AssistantAlreadyPlayedException ex){
                 }
                 catch(PlanningPhaseEndedException e){
                     e.printStackTrace();
                 }
-            }else{
+            }else{ //o sei 1 o sei 2
                 try{
                     gm.playAssistant(0);
                 }catch(AssistantAlreadyPlayedException ex){
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 10);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
+                    try{
+                        gm.playAssistant(1);
+                    }catch(PlanningPhaseEndedException e){
+                    }catch(AssistantAlreadyPlayedException ev){}
+
                 }
                 catch(PlanningPhaseEndedException e){
                     e.printStackTrace();

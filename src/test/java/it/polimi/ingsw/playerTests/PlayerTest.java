@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.enums.Value;
 import it.polimi.ingsw.model.enums.Wizard;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.model.studentcontainers.Entrance;
 import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.RepeatedTest;
@@ -61,19 +62,25 @@ class PlayerTest {
     @Test
     void checkCoinGiverTest() {
         Player p = new Player("userName", Color.BLACK, 1, Wizard.BLUE, 8, new Entrance(7));
+        DiningRoom pDining = p.getDiningRoom();
         for (int i = 0; i < 3; i++) {
-            p.getDiningRoom().addStudent(new Student(Creature.BLUE_UNICORNS));
+            pDining.addStudent(new Student(Creature.BLUE_UNICORNS));
         }
+        p.setDiningRoom(pDining);
         assertEquals(true, p.checkCoinGiver(Creature.BLUE_UNICORNS));
 
+        pDining = p.getDiningRoom();
         for (int i = 0; i < 3; i++) {
-            p.getDiningRoom().addStudent(new Student(Creature.BLUE_UNICORNS));
+            pDining.addStudent(new Student(Creature.BLUE_UNICORNS));
         }
-        p.getDiningRoom().addStudent(new Student(Creature.YELLOW_GNOMES));
+        pDining.addStudent(new Student(Creature.YELLOW_GNOMES));
+        p.setDiningRoom(pDining);
         assertEquals(true, p.checkCoinGiver(Creature.BLUE_UNICORNS));
         assertEquals(false, p.checkCoinGiver(Creature.YELLOW_GNOMES));
 
-        p.getDiningRoom().removeStudent(Creature.BLUE_UNICORNS);
+        pDining = p.getDiningRoom();
+        pDining.removeStudent(Creature.BLUE_UNICORNS);
+        p.setDiningRoom(pDining);
         assertEquals(false, p.checkCoinGiver(Creature.BLUE_UNICORNS));
     }
 

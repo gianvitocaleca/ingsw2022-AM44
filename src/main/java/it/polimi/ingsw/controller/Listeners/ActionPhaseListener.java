@@ -1,9 +1,7 @@
 package it.polimi.ingsw.controller.Listeners;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.events.CharacterParametersEvent;
-import it.polimi.ingsw.controller.events.PlanningEvent;
-import it.polimi.ingsw.controller.events.PlayCharacterEvent;
+import it.polimi.ingsw.controller.events.*;
 
 import java.util.EventListener;
 

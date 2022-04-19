@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,7 +10,9 @@ import it.polimi.ingsw.model.enums.Wizard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.Professor;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
+import it.polimi.ingsw.model.studentcontainers.Island;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -48,21 +50,27 @@ public class HeraldTest {
         for (Creature c : Creature.values()) {
             profes.add(new Professor(c));
         }
+        List<Player> players = gm.getPlayers();
+
         for (int i = 0; i < gm.getPlayers().size(); i++) {
-            gm.getPlayers().get(i).addProfessor(profes.get(i));
+            players.get(i).addProfessor(profes.get(i));
         }
-        gm.getPlayers().get(0).addProfessor(profes.get(3));
-        gm.getPlayers().get(0).addProfessor(profes.get(4));
-        //set Herald Character in characters to test her effect.
+        players.get(0).addProfessor(profes.get(3));
+        players.get(0).addProfessor(profes.get(4));
+        //set Herald Character in characters to test his effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herald(Name.HERALD, gm));
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
+        players.get(gm.getCurrentPlayerIndex()).addCoin();
+        players.get(gm.getCurrentPlayerIndex()).addCoin();
+        players.get(gm.getCurrentPlayerIndex()).addCoin();
+        gm.setPlayers(players);
         gm.playCharacter(0);
         gm.effect(herald);
+
+        List <Island> islands = gm.getTable().getIslands();
+
         for (Creature c : Creature.values()) {
-            if (gm.getTable().getIslands().get(islandIndex).getNumberOfStudentsByCreature(c) == 1) {
+            if (islands.get(islandIndex).getNumberOfStudentsByCreature(c) == 1) {
                 for (Player p : gm.getPlayers()) {
                     for (Professor prof : p.getProfessors()) {
                         if (prof.getCreature().equals(c)) {
