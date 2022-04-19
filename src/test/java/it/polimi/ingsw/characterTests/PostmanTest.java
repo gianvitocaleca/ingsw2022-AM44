@@ -3,14 +3,10 @@ package it.polimi.ingsw.characterTests;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.characters.Postman;
-import it.polimi.ingsw.model.characters.Thief;
 import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -59,7 +55,7 @@ public class PostmanTest {
     }
 
     @Test
-    public void setWrongPostmanMovementsTest(){
+    public void setWrongPostmanMovementsTest() {
         CharactersParameters Postman = new CharactersParameters(new ArrayList<>(),
                 0, 200, null, new ArrayList<>());
 

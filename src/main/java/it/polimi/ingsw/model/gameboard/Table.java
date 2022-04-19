@@ -360,4 +360,9 @@ public class Table {
         motherNature.setCurrentIsland(index);
         return true;
     }
+
+    public void setIndexIsland(int index, Island island) {
+        islands.remove(index);
+        islands.add(index, island);
+    }
 }

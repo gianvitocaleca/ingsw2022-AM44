@@ -2,7 +2,7 @@ package it.polimi.ingsw.characterTests;
 
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
-import it.polimi.ingsw.model.characters.Minstrel;
+import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
@@ -43,7 +43,7 @@ public class MinstrelTest {
     @Test
     void minstrelTest() {
         //create the Character
-        Minstrel minstrel = new Minstrel(Name.MINSTREL, gm);
+        MoverCharacter minstrel = new MoverCharacter(Name.MINSTREL, gm);
         StudentBucket bucket = gm.getBucket();
         //put the character in first position
         gm.getCharacters().remove(0);

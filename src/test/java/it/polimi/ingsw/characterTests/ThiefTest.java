@@ -2,7 +2,7 @@ package it.polimi.ingsw.characterTests;
 
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.CharactersParameters;
-import it.polimi.ingsw.model.characters.Thief;
+import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
@@ -74,7 +74,7 @@ class ThiefTest {
         CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
         //puts the thief as first character
         gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
+        gm.getCharacters().add(0, new MoverCharacter(Name.THIEF, gm));
 
         //plays the character
         assertTrue(gm.playCharacter(0));

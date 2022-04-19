@@ -16,12 +16,10 @@ public class MoverCharacter implements Character {
     private Name name;
     private Playable model;
     private int updatedCost = 0;
-    private StudentContainer container;
 
-    public MoverCharacter(Name name, Playable model, StudentContainer container) {
+    public MoverCharacter(Name name, Playable model) {
         this.name = name;
         this.model = model;
-        this.container = container;
     }
 
     @Override
@@ -35,8 +33,6 @@ public class MoverCharacter implements Character {
 
     @Override
     public boolean effect(CharactersParameters answer) {
-        List<Creature> creatures = getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
-        StudentBucket bucket = model.getBucket();
 
         switch (name) {
             case JOKER:
@@ -50,37 +46,28 @@ public class MoverCharacter implements Character {
 
                 //check if provided creature is present in princess' attribute students
 
-                if (creatures.containsAll(answer.getProvidedSourceCreatures())) {
-                    model.princessEffect(container, answer.getProvidedSourceCreatures());
-
-                    try {
-                        container.addStudent(bucket.generateStudent());
-                    } catch (StudentsOutOfStockException e) {
-                        model.checkEndGame();
-                    }
-
-                } else {
+                if (!(model.princessEffect(answer.getProvidedSourceCreatures()))) {
                     return false;
                 }
-                break;
+                return true;
+                
             case MONK:
 
-                if (creatures.containsAll(answer.getProvidedSourceCreatures())) {
-                    model.moveStudents(container, answer.getProvidedDestination(), answer.getProvidedSourceCreatures());
-
-                    try {
-                        container.addStudent(bucket.generateStudent());
-                    } catch (StudentsOutOfStockException e) {
-                        model.checkEndGame();
-                    }
-
-                } else {
+                if (!(model.monkEffect(answer.getProvidedSourceCreatures(), answer.getProvidedIslandIndex()))) {
                     return false;
                 }
-                break;
+                return true;
 
+            case THIEF:
+                model.thiefEffect(answer.getProvidedSourceCreatures().get(0));
+                return true;
+
+            case MINSTREL:
+                if (!(model.minstrelEffect(answer.getProvidedSourceCreatures(), answer.getProvidedDestinationCreatures()))) {
+                    return false;
+                }
+                return true;
         }
-        model.setBucket(bucket);
         return true;
     }
 
@@ -104,15 +91,4 @@ public class MoverCharacter implements Character {
         updatedCost = 1;
     }
 
-    public List<Student> getStudents() {
-        return container.getStudents();
-    }
-
-    public Student removeStudent(Creature creature) {
-        return container.removeStudent(creature);
-    }
-
-    public void addStudents(List<Student> newStudents) {
-        container.addStudents(newStudents);
-    }
 }

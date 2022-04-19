@@ -19,7 +19,7 @@ public interface Playable {
 
     boolean moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creature);
 
-    void princessEffect(StudentContainer source, List<Creature> sourceCreatures);
+    boolean princessEffect(List<Creature> sourceCreatures);
 
     boolean minstrelEffect(List<Creature> entranceCreatures, List<Creature> diningRoomCreatures);
 
@@ -36,13 +36,10 @@ public interface Playable {
     public int getDeactivators();
 
     public boolean setDeactivators(int deactivators);
-
-
-    StudentContainer getStudentContainer(Name name);
-
+    
     StudentBucket getBucket();
 
     void setBucket(StudentBucket bucket);
 
-    boolean setStudentContainer(StudentContainer container, Name name);
+    boolean monkEffect(List<Creature> sourceCreatures, int islandIndex);
 }
