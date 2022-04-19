@@ -201,7 +201,7 @@ public class GameModel extends Observable implements Playable, Observer {
         }
 
         players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
-        if (currentPlayerIndex < numberOfPlayers) {
+        if(currentPlayerIndex<numberOfPlayers-1){
             currentPlayerIndex++;
         } else {
             throw new PlanningPhaseEndedException();
@@ -222,6 +222,7 @@ public class GameModel extends Observable implements Playable, Observer {
             else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
             else return 0;
         });
+        currentPlayerIndex=0;
     }
 
     //MOVE STUDENTS

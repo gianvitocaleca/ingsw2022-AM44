@@ -23,11 +23,6 @@ public class App {
 
         Controller controller = new Controller(model, viewProxy);
 
-        model.addObserver(controller);
-        viewProxy.addObserver(controller);
-
-        controller.addObserver(viewProxy);
-        model.addObserver(viewProxy);
 
         viewProxy.run();
     }

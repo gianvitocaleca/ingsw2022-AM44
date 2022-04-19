@@ -61,7 +61,9 @@ public class GameModelTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException e) {
+            }catch(AssistantAlreadyPlayedException e){
+                e.printStackTrace();
+            }catch(PlanningPhaseEndedException e){
                 e.printStackTrace();
             }
         }
@@ -194,10 +196,10 @@ public class GameModelTest {
         for (int i = 0; i < Value.values().length; i++) {
             try {
                 gm.playAssistant(0);
-            } catch (AssistantAlreadyPlayedException e) {
+            }catch(AssistantAlreadyPlayedException e){
                 e.printStackTrace();
-            } catch (PlanningPhaseEndedException e) {
-                throw new RuntimeException(e);
+            }catch(PlanningPhaseEndedException e){
+                e.printStackTrace();
             }
         }
         assertTrue(gm.checkEndGame());

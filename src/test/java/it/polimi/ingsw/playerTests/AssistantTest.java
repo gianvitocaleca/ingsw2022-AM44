@@ -69,10 +69,11 @@ class AssistantTest {
         for (int i = 0; i < Value.values().length; i++) {
             try {
                 gm.playAssistant(0);
-            } catch (AssistantAlreadyPlayedException e) {
+            }catch(AssistantAlreadyPlayedException e){
                 e.printStackTrace();
-            } catch (PlanningPhaseEndedException e) {
-                throw new RuntimeException(e);
+            }
+            catch(PlanningPhaseEndedException e){
+                e.printStackTrace();
             }
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9 - i);
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1 + i);
@@ -84,25 +85,27 @@ class AssistantTest {
      * The method should not change AssistantDeck and lastPlayedCard
      */
     @Test
-    void playNotExistentAssistant() {
-        for (int i = 0; i < gm.getPlayers().size(); i++) {
+    void playNotExistentAssistant(){
+        for(int i = 0; i<gm.getPlayers().size(); i++){
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            } catch (AssistantAlreadyPlayedException e) {
+            }catch(AssistantAlreadyPlayedException e){
                 e.printStackTrace();
-            } catch (PlanningPhaseEndedException e) {
-                throw new RuntimeException(e);
+            }catch(PlanningPhaseEndedException e){
+                e.printStackTrace();
             }
         }
         gm.setCurrentPlayerIndex(0);
         Assistant lastPlayed = gm.getPlayers().get(0).getLastPlayedCard();
         try {
             assertFalse(gm.playAssistant(123));
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException e) {
+        }catch(AssistantAlreadyPlayedException e){
+            e.printStackTrace();
+        }catch(PlanningPhaseEndedException e){
             e.printStackTrace();
         }
-        assertEquals(lastPlayed.getValue(), gm.getPlayers().get(0).getLastPlayedCard().getValue());
+        assertEquals(lastPlayed.getValue(),gm.getPlayers().get(0).getLastPlayedCard().getValue());
     }
 
     /**
@@ -110,22 +113,28 @@ class AssistantTest {
      * the others cannot play that card and in that case the methos throws an exception.
      */
     @Test
-    void playAssistantAlreadyPlayed() {
-        for (int i = 0; i < gm.getPlayers().size(); i++) {
+    void playAssistantAlreadyPlayed(){
+        for(int i = 0; i<gm.getPlayers().size(); i++){
             gm.setCurrentPlayerIndex(i);
-            if (gm.getCurrentPlayerIndex() == 0) {
-                try {
+            if(gm.getCurrentPlayerIndex()==0){
+                try{
                     assertTrue(gm.playAssistant(0));
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 9);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 1);
-                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ex) {
+                }catch(AssistantAlreadyPlayedException ex){
                 }
-            } else {
-                try {
+                catch(PlanningPhaseEndedException e){
+                    e.printStackTrace();
+                }
+            }else{
+                try{
                     gm.playAssistant(0);
-                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ex) {
+                }catch(AssistantAlreadyPlayedException ex){
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 10);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
+                }
+                catch(PlanningPhaseEndedException e){
+                    e.printStackTrace();
                 }
             }
         }

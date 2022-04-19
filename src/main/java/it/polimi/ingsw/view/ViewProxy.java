@@ -2,20 +2,28 @@ package it.polimi.ingsw.view;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.messages.Headers;
-import it.polimi.ingsw.messages.PlayerMessage;
+import it.polimi.ingsw.controller.Listeners.ActionPhaseListener;
+import it.polimi.ingsw.controller.Listeners.PlanningPhaseListener;
+import it.polimi.ingsw.controller.events.PlanningEvent;
+import it.polimi.ingsw.controller.events.StatusEvent;
+import it.polimi.ingsw.controller.events.StringEvent;
+import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
+import javax.swing.event.EventListenerList;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 
-public class ViewProxy extends Observable implements Observer {
+public class ViewProxy implements EventListener {
 
     private Scanner scanner;
     private Gson gson;
+
+    private EventListenerList listeners = new EventListenerList();
 
 
     public ViewProxy() {
@@ -24,24 +32,61 @@ public class ViewProxy extends Observable implements Observer {
     }
 
     public void run() {
-        System.out.println("Ciao, sono la view");
-        scanner.next();
+
+        //aspetta messaggi
+        //controlla header
+        //sulla base della fase in cui si trova esegue controlli, che superati generano eventi
 
     }
 
-    private void sendMessage(Object message){
-        String toSend = gson.toJson(message);
 
+    public void addListener(PlanningPhaseListener listener){
+
+        listeners.add(PlanningPhaseListener.class,listener);
+    }
+    public void addListener(ActionPhaseListener listener){
+
+        listeners.add(ActionPhaseListener.class,listener);
+    }
+
+
+
+    public void eventStringPerformed(StringEvent evt){
+        String message;
+        switch (evt.getHeader()){
+            case errorMessage:
+                message = gson.toJson(new Message(Headers.errorMessage,new StringPayload(evt.getMessage())));
+                break;
+            case currentPlayer:
+                message = gson.toJson(new Message(Headers.currentPlayer,new StringPayload(evt.getMessage())));
+                break;
+        }
+
+        System.out.println(evt.getMessage());
         //socket
-        System.out.println(toSend);
-        //
     }
+
+    public void eventStatusPerformed(StatusEvent evt, Payload payload){
+        String message = gson.toJson(new Message(evt.getHeader(), payload));
+    }
+
+    public void messageReceiver(PlanningEvent evt){
+        //gson
+
+        for(PlanningPhaseListener event : listeners.getListeners(PlanningPhaseListener.class)){
+            event.eventPerformed(evt);
+        }
+
+    }
+
+
 
     //JOKER DEVE ESSERE GESTITO USANDO IL BOOLEAN SWAP DELLA ENUM NAME, LA PARTE DI LOGICA DEL GIOCO SAREBBE MEGLIO SPOSTARLA NEL CONTROLLER
+    /*
     @Override
     public void update(Observable o, Object arg) {
         if(o instanceof Controller){
-            sendMessage(arg);
+            //sendMessage(arg);
         }
 
 
@@ -110,7 +155,7 @@ public class ViewProxy extends Observable implements Observer {
             setChanged();
             notifyObservers(new CharactersParameters(providedSourceCreatures, providedIslandIndex, providedMnMovements, providedDestination, providedDestinationCreatuers));
         }
-    }
+    } */
 
 
 
