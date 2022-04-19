@@ -2,9 +2,8 @@ package it.polimi.ingsw.characterTests;
 
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.characters.CharactersParameters;
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
-import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
@@ -15,7 +14,6 @@ import it.polimi.ingsw.model.studentcontainers.Entrance;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -1,11 +1,11 @@
-package it.polimi.ingsw.model.characters;
+package it.polimi.ingsw.messages;
 
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
 import java.util.List;
 
-public class CharactersParameters {
+public class CharactersParameters implements Payload {
 
     private List<Creature> providedSourceCreatures;
     private int providedIslandIndex;

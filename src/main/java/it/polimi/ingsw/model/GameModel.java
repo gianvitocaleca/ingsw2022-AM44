@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
@@ -14,7 +15,7 @@ import it.polimi.ingsw.model.students.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameModel extends Observable implements Playable, Observer {
+public class GameModel implements Playable {
 
     public static final int NUMBER_OF_CHARACTERS = 3;
     public static final int THREE_PLAYERS_CAPACITY = 9;
@@ -392,7 +393,7 @@ public class GameModel extends Observable implements Playable, Observer {
     public boolean playCharacter(int indexOfCharacter) {
 
         if (indexOfCharacter < 0 || indexOfCharacter > 2) {
-            return false;
+            throw new IndexOutOfBoundsException();
         }
 
 
@@ -407,11 +408,14 @@ public class GameModel extends Observable implements Playable, Observer {
             table.addCoins(removedCoins);
             //play character
             playedCharacter = indexOfCharacter;
-            askForRequest();
             return true;
         }
 
         return false;
+    }
+
+    public int getPostmanMovements() {
+        return postmanMovements;
     }
 
     public boolean checkIfLastRound() {
@@ -714,10 +718,6 @@ public class GameModel extends Observable implements Playable, Observer {
         }
     }
 
-    private void askForRequest() {
-        setChanged();
-        notifyObservers(characters.get(playedCharacter).getName());
-    }
 
     public boolean effect(CharactersParameters answer) {
         if (!(characters.get(playedCharacter).effect(answer))) {
@@ -726,8 +726,4 @@ public class GameModel extends Observable implements Playable, Observer {
         return true;
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
 }

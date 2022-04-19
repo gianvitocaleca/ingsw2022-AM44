@@ -1,15 +1,8 @@
 package it.polimi.ingsw.model.characters;
 
-import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.Playable;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class MoverCharacter implements Character {
 

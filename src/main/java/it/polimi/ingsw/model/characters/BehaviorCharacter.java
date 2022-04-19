@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.evaluators.*;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.characterTests;
 
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.CharactersParameters;
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.characters.Herbalist;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Name;

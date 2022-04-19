@@ -4,21 +4,15 @@ import it.polimi.ingsw.controller.enums.GamePhases;
 import it.polimi.ingsw.controller.events.StatusEvent;
 import it.polimi.ingsw.controller.events.StringEvent;
 import it.polimi.ingsw.messages.ActionPayload;
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.messages.Headers;
-import it.polimi.ingsw.messages.PlanningPayload;
 import it.polimi.ingsw.messages.StringPayload;
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.CharactersParameters;
-import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.view.ViewProxy;
 import it.polimi.ingsw.controller.Listeners.*;
-
-import javax.swing.*;
-import java.util.Observable;
-import java.util.Observer;
 
 public class Controller {
     /*
@@ -31,9 +25,10 @@ public class Controller {
 
     private GameModel model;
     private ViewProxy viewProxy;
-    private GamePhases currentPhase;
+    private Status currentPhase;
 
     private boolean currentPlayerPlayedCharacter = false;
+
 
 
 
@@ -42,13 +37,16 @@ public class Controller {
         this.model = model;
         this.viewProxy = viewProxy;
 
+        currentPhase = new Status(GamePhases.LOGIN);
+        this.viewProxy.setGamePhase(currentPhase);
+        this.viewProxy.addListener(new ActionPhaseListener(this));
         this.viewProxy.addListener(new PlanningPhaseListener(this));
 
         /*List< PropertyChangeListener> temp = viewProxy.getListeners();
         temp.add(new PlanningPhaseListener(this));
         viewProxy.setListeners(temp);*/
 
-        this.currentPhase = GamePhases.LOGIN;
+
 
     }
 
@@ -57,7 +55,7 @@ public class Controller {
         if(currentPhase.equals(GamePhases.LOGIN)){
             //
 
-            currentPhase = GamePhases.PLANNING;
+            currentPhase.setPhase(GamePhases.PLANNING);
             sendPhaseMessage(Headers.PLANNING);
         }
 
@@ -65,7 +63,7 @@ public class Controller {
             if(currentPhase.equals(GamePhases.PLANNING)){
                 model.fillClouds();
                 if(waitAssistants()){
-                    currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT;
+                    currentPhase.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
                     sendPhaseMessage(Headers.ACTION_STUDENTSMOVEMENT);
                 }
             }
@@ -140,25 +138,37 @@ public class Controller {
             viewProxy.eventStringPerformed(new StringEvent(this, "Already played assistant, play another one", Headers.errorMessage));
         }catch (PlanningPhaseEndedException p){
             model.establishRoundOrder();
-            currentPhase = GamePhases.ACTION_STUDENTSMOVEMENT;
+            currentPhase.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
             sendPhaseMessage(Headers.action);
             sendCurrentPlayerMessage();
         }
     }
 
-    public GamePhases getCurrentPhase() {
-        return currentPhase;
+    public void playCharacter(int indexOfCharacter){
+        try{
+
+            if(!(model.playCharacter(indexOfCharacter))){
+                viewProxy.eventStringPerformed(new StringEvent(this,"You don't have enough coins", Headers.errorMessage));
+            }else{
+                currentPhase.toggleWaitingForParameters();
+            }
+
+        }catch(IndexOutOfBoundsException e){
+            viewProxy.eventStringPerformed(new StringEvent(this,"Non existent character, try again", Headers.errorMessage));
+        }
+
     }
 
-    /*
-    @Override
-    public void update(Observable o, Object arg) {
+    public void effect(CharactersParameters parameters){
+        model.effect(parameters);
+    }
 
-        if((o instanceof ViewProxy) && (arg instanceof CharactersParameters)){
-            if(!(model.effect((CharactersParameters) arg))){
-                setChanged();
-                notifyObservers(model.getCharacters().get(model.getPlayedCharacter()).getName());
-            }
-        }
-    } */
+    public GamePhases getCurrentPhase() {
+        return currentPhase.getPhase();
+    }
+
+    public boolean isWaitingForParameters(){
+        return currentPhase.isWaitingForParameters();
+    }
+
 }

@@ -1,29 +1,26 @@
 package it.polimi.ingsw.view;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.Listeners.ActionPhaseListener;
 import it.polimi.ingsw.controller.Listeners.PlanningPhaseListener;
-import it.polimi.ingsw.controller.events.PlanningEvent;
-import it.polimi.ingsw.controller.events.StatusEvent;
-import it.polimi.ingsw.controller.events.StringEvent;
+import it.polimi.ingsw.controller.Status;
+import it.polimi.ingsw.controller.events.*;
 import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.model.characters.CharactersParameters;
 import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.studentcontainers.Cloud;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 
 import javax.swing.event.EventListenerList;
-import java.beans.PropertyChangeListener;
 import java.util.*;
 
 public class ViewProxy implements EventListener {
 
     private Scanner scanner;
     private Gson gson;
-
     private EventListenerList listeners = new EventListenerList();
+
+    private Status gamePhase;
 
 
     public ViewProxy() {
@@ -39,6 +36,9 @@ public class ViewProxy implements EventListener {
 
     }
 
+    public void setGamePhase(Status gamePhase) {
+        this.gamePhase = gamePhase;
+    }
 
     public void addListener(PlanningPhaseListener listener){
 
@@ -70,131 +70,30 @@ public class ViewProxy implements EventListener {
         String message = gson.toJson(new Message(evt.getHeader(), payload));
     }
 
-    public void messageReceiver(PlanningEvent evt){
-        //gson
+    public void eventCharacterParameters(CharacterPlayedEvent evt, Name charactersName){
+        Payload payload = new CharacterPlayedPayload(charactersName);
+        String message = gson.toJson(new Message(Headers.characterPlayed, payload));
+    }
 
+    public void playAssistantReceiver(PlanningEvent evt){
         for(PlanningPhaseListener event : listeners.getListeners(PlanningPhaseListener.class)){
             event.eventPerformed(evt);
         }
-
     }
 
-
-
-    //JOKER DEVE ESSERE GESTITO USANDO IL BOOLEAN SWAP DELLA ENUM NAME, LA PARTE DI LOGICA DEL GIOCO SAREBBE MEGLIO SPOSTARLA NEL CONTROLLER
-    /*
-    @Override
-    public void update(Observable o, Object arg) {
-        if(o instanceof Controller){
-            //sendMessage(arg);
+    public void playCharacterReceiver(PlayCharacterEvent evt){
+        for(ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)){
+            event.eventPerformed(evt);
         }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        if ((o instanceof Controller) && (arg instanceof Name)) {
-
-            List<Creature> providedSourceCreatures = new ArrayList<>();
-            int providedIslandIndex = 0;
-            int providedMnMovements = 0;
-            StudentContainer providedDestination = null;
-            List<Creature> providedDestinationCreatuers = new ArrayList<Creature>();
-
-            for (int i = 0; i < ((Name) arg).getMaxMoves(); i++) {
-                if (((Name) arg).isNeedsSourceCreature()) {
-                    askForSourceCreature(providedSourceCreatures);
-                }
-                if (((Name) arg).isNeedsDestination()) {
-                    providedDestination = askForDestination();
-                }
-                if (((Name) arg).isNeedsIslandIndex()) {
-                    providedIslandIndex = askForIslandIndex();
-                }
-                if (((Name) arg).isNeedsMnMovements()) {
-                    providedMnMovements = askForMnMovements();
-                }
-                if (((Name) arg).isNeedsDestinationCreature()) {
-                    askForDestinationCreatures(providedDestinationCreatuers);
-                }
-                //per adesso fa tutto maxmoves volte, bisogna implementare il fatto che un utente possa compiere FINO A maxMoves volte la mossa
+    public void characterParametersReceiver(CharacterParametersEvent evt){
+        if(gamePhase.isWaitingForParameters()){  // && su header
+            for(ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)){
+                event.eventPerformed(evt);
             }
-
-            setChanged();
-            notifyObservers(new CharactersParameters(providedSourceCreatures, providedIslandIndex, providedMnMovements, providedDestination, providedDestinationCreatuers));
         }
-    } */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
     private void askForSourceCreature(List<Creature> creatures) {
