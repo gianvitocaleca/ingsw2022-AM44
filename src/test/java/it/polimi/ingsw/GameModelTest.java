@@ -162,6 +162,11 @@ public class GameModelTest {
         int jumps = 1;
         int originalMnPos = gm.getTable().getMnPosition();
         if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
+            try{
+                gm.playAssistant(9);
+            }catch (AssistantAlreadyPlayedException e){}
+            catch (PlanningPhaseEndedException f){}
+            gm.setCurrentPlayerIndex(0);
             gm.moveMotherNature(jumps);
             assertTrue(gm.getTable().getMnPosition() == originalMnPos + jumps);
         } else {
@@ -276,6 +281,11 @@ public class GameModelTest {
         tempTable.setNextIsland(newIsland);
         // tempTable.setIslands(tempTable.getIslands());
         gm.setTable(tempTable);
+        try{
+            gm.playAssistant(9);
+        }catch(AssistantAlreadyPlayedException e){}
+        catch (PlanningPhaseEndedException f){}
+        gm.setCurrentPlayerIndex(0);
         gm.moveMotherNature(0);
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
     }
