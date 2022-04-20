@@ -42,7 +42,7 @@ public class PrincessTest {
         //give coins to player
         gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
         gm.getPlayers().get(gm.getCurrentPlayerIndex()).addCoin();
-        //TEST da COMPLETARE
-        assertEquals(0,1);
+
+        assertEquals(0, 1);
     }
 }
