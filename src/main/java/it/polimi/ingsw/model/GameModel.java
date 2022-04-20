@@ -405,16 +405,38 @@ public class GameModel implements Playable {
      * mnFuturePos uses the module function to establish the correct future position of MotherNature
      *
      * @param jumps number of steps that MotherNature has to do
+     * @return true if mother nature changed her position
      */
 
-    public void moveMotherNature(int jumps) {
-        int j = jumps + postmanMovements;
-        if (!(table.moveMotherNature(j))) {
-            checkEndGame();
+    public boolean moveMotherNature(int jumps) {
+        if(checkJumps(jumps)){
+            int j = jumps + postmanMovements;
+            if (!(table.moveMotherNature(j))) {
+                checkEndGame();
+            }
+            return true;
         }
+        return false;
     }
 
+    /**
+     * verifies if the number of steps is valid
+     * @param jumps is the number of steps the player want mother nature to do
+     * @return true if the assistant card played by the client allows mother nature's movement
+     */
+    private boolean checkJumps(int jumps){
+        if(players.get(currentPlayerIndex).getLastPlayedCard().getMovements()>=jumps){
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * verifies if the character can be played and if it can be played this method removes coin
+     * from the player and gives them to coinReserve.
+     * @param indexOfCharacter is the position of the character played
+     * @return true if the character can be played and paid.
+     */
     public boolean playCharacter(int indexOfCharacter) {
 
         if (indexOfCharacter < 0 || indexOfCharacter > 2) {
@@ -459,9 +481,6 @@ public class GameModel implements Playable {
         if (table.getIslands().size() == 3) {
             gameEnded = true;
         }
-
-        //NOTIFY *********************
-
         return gameEnded;
     }
 

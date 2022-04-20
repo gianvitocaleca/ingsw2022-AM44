@@ -16,6 +16,7 @@ import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.students.Student;
 import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -158,7 +159,7 @@ public class GameModelTest {
      */
     @Test
     void moveMotherNature() {
-        int jumps = 10;
+        int jumps = 1;
         int originalMnPos = gm.getTable().getMnPosition();
         if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
             gm.moveMotherNature(jumps);
@@ -167,6 +168,26 @@ public class GameModelTest {
             gm.moveMotherNature(jumps);
             assertTrue(gm.getTable().getMnPosition() == jumps - (gm.getTable().getIslands().size() - 2 - gm.getTable().getMnPosition()));
         }
+    }
+
+    /**
+     * verifies that mother nature doesn't move if the number of steps overcome the value of the
+     * assistant card played.
+     */
+    @Test
+    void moveMotherNatureTooMuch(){
+        int jumps = 12;
+        int originalMNPos = gm.getTable().getMnPosition();
+        try {
+            gm.playAssistant(0);
+            gm.setCurrentPlayerIndex(0);
+        }catch(AssistantAlreadyPlayedException e){
+            e.printStackTrace();
+        }catch(PlanningPhaseEndedException e){
+            e.printStackTrace();
+        }
+        assertFalse(gm.moveMotherNature(jumps));
+        assertEquals(originalMNPos,gm.getTable().getMnPosition());
     }
 
     /**
@@ -287,13 +308,11 @@ public class GameModelTest {
 
         //currentPlayer plays character(0), now he should have 0 coins, character(0) should have 1 coin in updatedCost,
         //table should have 18 coins
-        gm.playCharacter(0);
+        assertTrue(gm.playCharacter(0));
         Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
         assertTrue(currentPlayer.getMyCoins() == 0);
         firstCharacter = gm.getCharacters().get(0);
         assertTrue(firstCharacter.hasCoin());
         assertTrue(gm.getTable().getCoinReserve() == 18);
-
-
     }
 }

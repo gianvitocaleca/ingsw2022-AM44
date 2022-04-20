@@ -12,11 +12,13 @@ public class Herbalist implements Character {
     public Herbalist(Name name, Playable model) {
         this.name = name;
         this.model = model;
-        model.setDeactivators(4);
     }
 
     @Override
     public boolean canBePlayed(int playerCoins) {
+        if(updatedCost==0){
+            this.model.setDeactivators(4);
+        }
         if(playerCoins>=getCost()&&model.getDeactivators()>0){
             return true;
         }
