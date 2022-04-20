@@ -52,9 +52,7 @@ public class GameModelTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException e){
-                e.printStackTrace();
-            }
+            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
         }
         gm.establishRoundOrder();
         gm.getPlayers().forEach(System.out::println);
