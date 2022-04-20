@@ -6,6 +6,8 @@ import it.polimi.ingsw.model.characters.Postman;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +33,14 @@ public class PostmanTest {
     public void postmanTest() {
         CharactersParameters Postman = new CharactersParameters(new ArrayList<>(),
                 0, 2, null, new ArrayList<>());
-
+        try {
+            gm.playAssistant(0);
+            gm.setCurrentPlayerIndex(0);
+        }catch(AssistantAlreadyPlayedException e){
+            e.printStackTrace();
+        }catch(PlanningPhaseEndedException e){
+            e.printStackTrace();
+        }
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Postman(Name.MAGICPOSTMAN, gm));
 
