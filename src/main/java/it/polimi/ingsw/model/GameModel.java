@@ -118,7 +118,7 @@ public class GameModel implements Playable {
         if (sourceCreatures.containsAll(providedSourceCreatures)) {
             StudentContainer princess = table.getPrincess();
             DiningRoom currPlayerDiningRoom = players.get(currentPlayerIndex).getDiningRoom();
-            moveStudents(princess, currPlayerDiningRoom, sourceCreatures);
+            moveStudents(princess, currPlayerDiningRoom, providedSourceCreatures);
 
             StudentBucket bucket = table.getBucket();
             try {
@@ -149,7 +149,7 @@ public class GameModel implements Playable {
         if (sourceCreatures.containsAll(providedSourceCreatures)) {
             StudentContainer monk = table.getMonk();
             Island destination = table.getIslands().get(islandIndex);
-            moveStudents(monk, destination, sourceCreatures);
+            moveStudents(monk, destination, providedSourceCreatures);
 
             StudentBucket bucket = table.getBucket();
             try {
