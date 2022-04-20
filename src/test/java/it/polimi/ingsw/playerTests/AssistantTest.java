@@ -91,20 +91,14 @@ class AssistantTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException e){
-                e.printStackTrace();
-            }catch(PlanningPhaseEndedException e){
-                e.printStackTrace();
+            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){
             }
         }
         gm.setCurrentPlayerIndex(0);
         Assistant lastPlayed = gm.getPlayers().get(0).getLastPlayedCard();
         try {
             assertFalse(gm.playAssistant(123));
-        }catch(AssistantAlreadyPlayedException e){
-            e.printStackTrace();
-        }catch(PlanningPhaseEndedException e){
-            e.printStackTrace();
+        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){
         }
         assertEquals(lastPlayed.getValue(),gm.getPlayers().get(0).getLastPlayedCard().getValue());
     }

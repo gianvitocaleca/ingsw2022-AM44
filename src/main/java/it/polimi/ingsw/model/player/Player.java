@@ -141,7 +141,9 @@ public class Player {
     }
 
     public Professor removeProfessor(Creature creature) {
-        return professors.stream().filter(p -> p.getCreature().equals(creature)).findFirst().get();
+        Professor temp = professors.stream().filter(p -> p.getCreature().equals(creature)).findFirst().get();
+        professors.remove(temp);
+        return temp;
     }
 
     @Override

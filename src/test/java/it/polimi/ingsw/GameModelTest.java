@@ -1,23 +1,14 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
-import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
-import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
-import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.*;
-import it.polimi.ingsw.model.studentcontainers.Cloud;
-import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.studentcontainers.*;
 import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,7 +20,7 @@ public class GameModelTest {
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {
@@ -52,7 +43,7 @@ public class GameModelTest {
     }
 
     /**
-     * This test verifies that the arraylist of players is orderd in the correct way
+     * This test verifies that the arraylist of players is ordered in the correct way
      * after each player played the assistant card.
      */
     @Test
@@ -61,14 +52,12 @@ public class GameModelTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException e){
-                e.printStackTrace();
-            }catch(PlanningPhaseEndedException e){
+            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException e){
                 e.printStackTrace();
             }
         }
         gm.establishRoundOrder();
-        gm.getPlayers().stream().forEach(System.out::println);
+        gm.getPlayers().forEach(System.out::println);
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(1).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
@@ -94,7 +83,7 @@ public class GameModelTest {
     }
 
     /**
-     * This test verifies the correct behavoiur of the method moveStudents.
+     * This test verifies the correct behavior of the method moveStudents.
      */
     @Test
     void moveStudentsTest() {
@@ -111,9 +100,7 @@ public class GameModelTest {
             creaturesList.add(s.getCreature());
             studentsList.add(s);
         }
-        for (Student s : one.getStudents()) {
-            studentsList.add(s);
-        }
+        studentsList.addAll(one.getStudents());
 
         gm.moveStudents(zero, one, creaturesList);
 
@@ -121,7 +108,6 @@ public class GameModelTest {
         assertEquals(zero.getStudents().size(), 0);
         assertEquals(one.getStudents().size(), finalSize);
         for (Student s : one.getStudents()) {
-            //controlla che tutti i fra fraeggino
             for (Student t : studentsList) {
                 if (t.getCreature().equals(s.getCreature())) {
                     studentsList.remove(t);
@@ -139,11 +125,11 @@ public class GameModelTest {
     @Test
     public void moveStudentsInDiningRoomTest() {
         int totalGameCoins = 20;
-        List<Creature> creat = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
+        List<Creature> creat = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().stream().map(Student::getCreature).collect(Collectors.toList());
         gm.moveStudents(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom(), creat);
         for (Creature c : Creature.values()) {
-            assertEquals(false, gm.getPlayers().get(gm.getCurrentPlayerIndex()).checkCoinGiver(c));
+            assertFalse(gm.getPlayers().get(gm.getCurrentPlayerIndex()).checkCoinGiver(c));
         }
         int totalCoins = 0;
         for (Player p : gm.getPlayers()) {
@@ -164,14 +150,13 @@ public class GameModelTest {
         if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
             try{
                 gm.playAssistant(9);
-            }catch (AssistantAlreadyPlayedException e){}
-            catch (PlanningPhaseEndedException f){}
+            }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
             gm.setCurrentPlayerIndex(0);
             gm.moveMotherNature(jumps);
-            assertTrue(gm.getTable().getMnPosition() == originalMnPos + jumps);
+            assertEquals(gm.getTable().getMnPosition(), originalMnPos + jumps);
         } else {
             gm.moveMotherNature(jumps);
-            assertTrue(gm.getTable().getMnPosition() == jumps - (gm.getTable().getIslands().size() - 2 - gm.getTable().getMnPosition()));
+            assertEquals(gm.getTable().getMnPosition(), jumps - (gm.getTable().getIslands().size() - 2 - gm.getTable().getMnPosition()));
         }
     }
 
@@ -186,11 +171,7 @@ public class GameModelTest {
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        }catch(AssistantAlreadyPlayedException e){
-            e.printStackTrace();
-        }catch(PlanningPhaseEndedException e){
-            e.printStackTrace();
-        }
+        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
         assertFalse(gm.moveMotherNature(jumps));
         assertEquals(originalMNPos,gm.getTable().getMnPosition());
     }
@@ -222,11 +203,7 @@ public class GameModelTest {
             try {
                 gm.playAssistant(0);
                 gm.setCurrentPlayerIndex(0);
-            }catch(AssistantAlreadyPlayedException e){
-                e.printStackTrace();
-            }catch(PlanningPhaseEndedException e){
-                e.printStackTrace();
-            }
+            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
         }
         assertTrue(gm.checkEndGame());
     }
@@ -283,8 +260,7 @@ public class GameModelTest {
         gm.setTable(tempTable);
         try{
             gm.playAssistant(9);
-        }catch(AssistantAlreadyPlayedException e){}
-        catch (PlanningPhaseEndedException f){}
+        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
         gm.setCurrentPlayerIndex(0);
         gm.moveMotherNature(0);
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
@@ -320,9 +296,34 @@ public class GameModelTest {
         //table should have 18 coins
         assertTrue(gm.playCharacter(0));
         Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
-        assertTrue(currentPlayer.getMyCoins() == 0);
+        assertEquals(0, currentPlayer.getMyCoins());
         firstCharacter = gm.getCharacters().get(0);
         assertTrue(firstCharacter.hasCoin());
-        assertTrue(gm.getTable().getCoinReserve() == 18);
+        assertEquals(18, gm.getTable().getCoinReserve());
+    }
+
+    @Test
+    public void checkProfessorTest(){
+
+        List<Player> players = gm.getPlayers();
+
+        DiningRoom room = new DiningRoom(9);
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        players.get(0).setDiningRoom(room);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertTrue(gm.getPlayers().get(0).getProfessors().size()==1);
+        assertTrue(gm.getPlayers().get(0).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
+
+        players = gm.getPlayers();
+        room = new DiningRoom(9);
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        players.get(1).setDiningRoom(room);
+
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertTrue(gm.getPlayers().get(0).getProfessors().size()==0);
+        assertTrue(gm.getPlayers().get(1).getProfessors().size()==1 && gm.getPlayers().get(1).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
     }
 }
