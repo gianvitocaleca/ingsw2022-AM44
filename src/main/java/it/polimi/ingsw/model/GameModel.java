@@ -117,13 +117,13 @@ public class GameModel implements Playable {
         if (sourceCreatures.containsAll(providedSourceCreatures)) {
             StudentContainer princess = table.getPrincess();
             DiningRoom currPlayerDiningRoom = players.get(currentPlayerIndex).getDiningRoom();
-            moveStudents(princess, currPlayerDiningRoom, sourceCreatures);
+            moveStudents(princess, currPlayerDiningRoom, providedSourceCreatures);
 
             StudentBucket bucket = table.getBucket();
-            try{
+            try {
                 princess.addStudent(bucket.generateStudent());
-            }catch (StudentsOutOfStockException e){
-                lastRound=true;
+            } catch (StudentsOutOfStockException e) {
+                lastRound = true;
             }
             table.setBucket(bucket);
 
@@ -134,6 +134,13 @@ public class GameModel implements Playable {
         return false;
     }
 
+    /**
+     * Moves a student from the character to an island of choice
+     *
+     * @param providedSourceCreatures is the creature of the student
+     * @param islandIndex             is the chosen island
+     * @return
+     */
     @Override
     public boolean monkEffect(List<Creature> providedSourceCreatures, int islandIndex) {
         List<Creature> sourceCreatures = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
@@ -141,13 +148,13 @@ public class GameModel implements Playable {
         if (sourceCreatures.containsAll(providedSourceCreatures)) {
             StudentContainer monk = table.getMonk();
             Island destination = table.getIslands().get(islandIndex);
-            moveStudents(monk, destination, sourceCreatures);
+            moveStudents(monk, destination, providedSourceCreatures);
 
             StudentBucket bucket = table.getBucket();
-            try{
+            try {
                 monk.addStudent(bucket.generateStudent());
-            }catch (StudentsOutOfStockException e){
-                lastRound=true;
+            } catch (StudentsOutOfStockException e) {
+                lastRound = true;
             }
             table.setBucket(bucket);
 
@@ -244,8 +251,8 @@ public class GameModel implements Playable {
                 playedAssistants.add(players.get(i).getLastPlayedCard());
             }
 
-            for(Assistant a: playedAssistants){
-                if (a.getName().equals(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant).getName())){
+            for (Assistant a : playedAssistants) {
+                if (a.getName().equals(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant).getName())) {
                     throw new AssistantAlreadyPlayedException();
                 }
             }
@@ -408,7 +415,7 @@ public class GameModel implements Playable {
      */
 
     public boolean moveMotherNature(int jumps) {
-        if(checkJumps(jumps)){
+        if (checkJumps(jumps)) {
             int j = jumps + postmanMovements;
             if (!(table.moveMotherNature(j))) {
                 checkEndGame();
@@ -420,6 +427,7 @@ public class GameModel implements Playable {
 
     /**
      * verifies if the number of steps is valid
+     *
      * @param jumps is the number of steps the player want mother nature to do
      * @return true if the assistant card played by the client allows mother nature's movement
      */
@@ -430,6 +438,7 @@ public class GameModel implements Playable {
     /**
      * verifies if the character can be played and if it can be played this method removes coin
      * from the player and gives them to coinReserve.
+     *
      * @param indexOfCharacter is the position of the character played
      * @return true if the character can be played and paid.
      */

@@ -122,6 +122,10 @@ public class Controller {
 
     }
 
+    /**
+     * this method plays the assistant card and informs the client if an error occurs or it ends well.
+     * @param indexOfAssistant is the assistant card the player wants to play
+     */
     public void playAssistant(int indexOfAssistant){
         try{
             if(!(model.playAssistant(indexOfAssistant))){
@@ -139,6 +143,11 @@ public class Controller {
         }
     }
 
+    /**
+     * this method play a character card and it toggles waitingForParameters.
+     * waitingForParameters is true when the client has to specify what he wants to do with the character card he played.
+     * @param indexOfCharacter is the character the player wants to play.
+     */
     public void playCharacter(int indexOfCharacter){
         try{
 
