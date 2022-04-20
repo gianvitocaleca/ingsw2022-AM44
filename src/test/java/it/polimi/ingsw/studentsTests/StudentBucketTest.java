@@ -17,7 +17,7 @@ public class StudentBucketTest {
 
     @Test
     public void MaxCapacityBucket() {
-        StudentBucket bucket = StudentBucket.getInstance();
+        StudentBucket bucket = new StudentBucket();
         List<Student> temp = new ArrayList<>();
         while (true) {
             try {
@@ -35,8 +35,4 @@ public class StudentBucketTest {
         assertEquals(maxStudentCap, temp.size());
     }
 
-    @BeforeEach
-    public void resetBucket() {
-        StudentBucket.resetMap();
-    }
 }

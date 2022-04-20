@@ -4,8 +4,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.students.StudentBucket;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.ViewProxy;
 
 import java.util.*;
 
@@ -20,16 +19,11 @@ public class App {
         );
 
 
-        View view = new View();
+        ViewProxy viewProxy = new ViewProxy();
 
-        Controller controller = new Controller(model, view);
+        Controller controller = new Controller(model, viewProxy);
 
-        model.addObserver(controller);
-        view.addObserver(controller);
 
-        controller.addObserver(view);
-        model.addObserver(view);
-
-        view.run(model);
+        viewProxy.run();
     }
 }

@@ -25,6 +25,7 @@ public abstract class StudentContainer {
     public void addStudents(List<Student> newStudents){
         students.addAll(newStudents);
     }
+
     public void addStudent(Student student){
         students.add(student);
     }
@@ -40,11 +41,13 @@ public abstract class StudentContainer {
         return capacity;
     }
 
-    public Student getStudentByPosition(int position) {
-        return students.get(position);
-    }
-
     public List<Student> getStudents(){
-        return students;
+
+        List<Student> temp = new ArrayList<>();
+        for(Student s : students){
+            temp.add(new Student(s.getCreature()));
+        }
+        return temp;
+
     }
 }

@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.Playable;
 
 public class Herbalist implements Character {
-    private int deactivator;
     private Name name;
     private Playable model;
     private int updatedCost=0;
@@ -12,12 +12,14 @@ public class Herbalist implements Character {
     public Herbalist(Name name, Playable model) {
         this.name = name;
         this.model = model;
-        deactivator = 4;
     }
 
     @Override
     public boolean canBePlayed(int playerCoins) {
-        if(playerCoins>=getCost()&&deactivator>0){
+        if(updatedCost==0){
+            this.model.setDeactivators(4);
+        }
+        if(playerCoins>=getCost()&&model.getDeactivators()>0){
             return true;
         }
         else{
@@ -26,7 +28,7 @@ public class Herbalist implements Character {
     }
 
     public boolean effect(CharactersParameters answer) {
-            deactivator--;
+            model.setDeactivators(model.getDeactivators()-1);
             model.addNoEntry(answer.getProvidedIslandIndex());
 
             return true;

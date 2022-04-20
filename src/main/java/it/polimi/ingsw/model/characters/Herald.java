@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.characters;
 
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.Playable;
 
@@ -24,6 +25,7 @@ public class Herald implements Character {
         }
     }
 
+    @Override
     public boolean effect(CharactersParameters answer) {
         if(!(model.setHeraldIsland(answer.getProvidedIslandIndex()))){
             return false;

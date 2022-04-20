@@ -1,16 +1,14 @@
 package it.polimi.ingsw.characterTests;
 
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.CharactersParameters;
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.characters.Postman;
-import it.polimi.ingsw.model.characters.Thief;
 import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ public class PostmanTest {
 
     @BeforeEach
     public void createGameModel() {
-        StudentBucket.resetMap();
         gm = new GameModel(true,
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
@@ -36,7 +33,14 @@ public class PostmanTest {
     public void postmanTest() {
         CharactersParameters Postman = new CharactersParameters(new ArrayList<>(),
                 0, 2, null, new ArrayList<>());
-
+        try {
+            gm.playAssistant(0);
+            gm.setCurrentPlayerIndex(0);
+        }catch(AssistantAlreadyPlayedException e){
+            e.printStackTrace();
+        }catch(PlanningPhaseEndedException e){
+            e.printStackTrace();
+        }
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Postman(Name.MAGICPOSTMAN, gm));
 
@@ -60,7 +64,7 @@ public class PostmanTest {
     }
 
     @Test
-    public void setWrongPostmanMovementsTest(){
+    public void setWrongPostmanMovementsTest() {
         CharactersParameters Postman = new CharactersParameters(new ArrayList<>(),
                 0, 200, null, new ArrayList<>());
 

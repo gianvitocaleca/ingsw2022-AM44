@@ -1,14 +1,15 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.enums.GamePhases;
+import it.polimi.ingsw.controller.events.*;
+import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.CharactersParameters;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.model.exceptions.*;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.view.ViewProxy;
+import it.polimi.ingsw.controller.Listeners.*;
 
-import java.util.Observable;
-import java.util.Observer;
-
-public class Controller extends Observable implements Observer {
+public class Controller {
     /*
     Controller must:
     -reset the standard evaluator at the end of every ActionPhase
@@ -18,28 +19,160 @@ public class Controller extends Observable implements Observer {
      */
 
     private GameModel model;
-    private View view;
+    private ViewProxy viewProxy;
+    private Status currentPhase;
 
-    public Controller(GameModel model, View view){
+    private boolean currentPlayerPlayedCharacter = false;
+
+
+
+
+    public Controller(GameModel model, ViewProxy viewProxy){
 
         this.model = model;
-        this.view = view;
+        this.viewProxy = viewProxy;
+
+        currentPhase = new Status(GamePhases.LOGIN);
+        this.viewProxy.setGamePhase(currentPhase);
+        this.viewProxy.addListener(new ActionPhaseListener(this));
+        this.viewProxy.addListener(new PlanningPhaseListener(this));
+
+        /*List< PropertyChangeListener> temp = viewProxy.getListeners();
+        temp.add(new PlanningPhaseListener(this));
+        viewProxy.setListeners(temp);*/
+
+
 
     }
 
+    public void run(){
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if((o instanceof GameModel) && (arg instanceof Name)){
-            setChanged();
-            notifyObservers(arg);
+        if(currentPhase.equals(GamePhases.LOGIN)){
+            //
+
+            currentPhase.setPhase(GamePhases.PLANNING);
+            sendPhaseMessage(Headers.PLANNING);
         }
 
-        if((o instanceof View) && (arg instanceof CharactersParameters)){
-            if(!(model.effect((CharactersParameters) arg))){
-                setChanged();
-                notifyObservers(model.getCharacters().get(model.getPlayedCharacter()).getName());
+        while(true){
+            if(currentPhase.equals(GamePhases.PLANNING)){
+                model.fillClouds();
+                if(waitAssistants()){
+                    currentPhase.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
+                    sendPhaseMessage(Headers.ACTION_STUDENTSMOVEMENT);
+                }
             }
+
         }
     }
+
+
+    private boolean waitAssistants(){
+
+        //genera un messaggio CurrentPlayer e lo invia a tutti
+        sendCurrentPlayerMessage();
+        //controller rimane in ascolto e si aspetta un messaggio playassistant dal currentplayer (update)
+
+
+
+        return true;
+    }
+
+    /**
+     * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
+     * the winner of the game
+     */
+    private void checkIfLastRound(){
+        if(model.checkIfLastRound()){
+            Player winner = model.findWinner();
+            sendWinnerPlayerMessage(winner);
+        }
+    }
+
+    private void sendCurrentPlayerMessage(){
+        Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
+        viewProxy.eventStringPerformed(new StringEvent(this,curr.getUsername(),Headers.currentPlayer));
+    }
+
+    private void sendWinnerPlayerMessage(Player winner){
+        viewProxy.eventStringPerformed(new StringEvent(this,winner.getUsername(),Headers.winnerPlayer));
+    }
+
+    private void sendPhaseMessage (Headers phase){
+
+        if(phase.equals(Headers.action)){
+            if(currentPhase.equals(GamePhases.ACTION_STUDENTSMOVEMENT)){
+                viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(true,false,false, true));
+            }else if (currentPhase.equals(GamePhases.ACTION_MOVEMOTHERNATURE)){
+                if(currentPlayerPlayedCharacter){
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,true,false, false));
+                }else{
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,true,false, true));
+                }
+            }else{
+                if(currentPlayerPlayedCharacter){
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,false,true, false));
+                }else{
+                    viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new ActionPayload(false,false,true, true));
+                }
+            }
+        }else{
+            viewProxy.eventStatusPerformed(new StatusEvent(this,phase),new StringPayload(""));
+        }
+
+    }
+
+    /**
+     * this method plays the assistant card and informs the client if an error occurs or it ends well.
+     * @param indexOfAssistant is the assistant card the player wants to play
+     */
+    public void playAssistant(int indexOfAssistant){
+        try{
+            if(!(model.playAssistant(indexOfAssistant))){
+                viewProxy.eventStringPerformed(new StringEvent(this, "Non existent assistant, play another one", Headers.errorMessage));
+            }else{
+                sendCurrentPlayerMessage();
+            }
+        }catch (AssistantAlreadyPlayedException a){
+            viewProxy.eventStringPerformed(new StringEvent(this, "Already played assistant, play another one", Headers.errorMessage));
+        }catch (PlanningPhaseEndedException p){
+            model.establishRoundOrder();
+            currentPhase.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
+            sendPhaseMessage(Headers.action);
+            sendCurrentPlayerMessage();
+        }
+    }
+
+    /**
+     * this method play a character card and it toggles waitingForParameters.
+     * waitingForParameters is true when the client has to specify what he wants to do with the character card he played.
+     * @param indexOfCharacter is the character the player wants to play.
+     */
+    public void playCharacter(int indexOfCharacter){
+        try{
+
+            if(!(model.playCharacter(indexOfCharacter))){
+                viewProxy.eventStringPerformed(new StringEvent(this,"You don't have enough coins", Headers.errorMessage));
+            }else{
+                currentPhase.toggleWaitingForParameters();
+            }
+
+        }catch(IndexOutOfBoundsException e){
+            viewProxy.eventStringPerformed(new StringEvent(this,"Non existent character, try again", Headers.errorMessage));
+        }
+
+    }
+
+    public void effect(CharactersParameters parameters){
+        model.effect(parameters);
+    }
+
+    public GamePhases getCurrentPhase() {
+        return currentPhase.getPhase();
+    }
+
+    public boolean isWaitingForParameters(){
+        return currentPhase.isWaitingForParameters();
+    }
+
 }

@@ -45,7 +45,9 @@ public class DiningRoom extends StudentContainer {
     public List<Student> getStudents() {
         List<Student> ans = new ArrayList<>();
         for (Creature c : Creature.values()) {
-            ans.addAll(diners.get(c));
+            for(Student s : diners.get(c)){
+                ans.add(new Student (c));
+            }
         }
         return ans;
     }

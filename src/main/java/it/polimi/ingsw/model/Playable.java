@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.model.students.StudentBucket;
 
 import java.util.List;
 
@@ -17,11 +19,11 @@ public interface Playable {
 
     boolean moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creature);
 
-    void princessEffect(StudentContainer source, List<Creature> sourceCreatures);
+    boolean princessEffect(List<Creature> sourceCreatures);
 
     boolean minstrelEffect(List<Creature> entranceCreatures, List<Creature> diningRoomCreatures);
 
-    boolean jokerEffect(StudentContainer source, List<Creature> sourceCreature, List<Creature> destinationCreature);
+    boolean jokerEffect(List<Creature> sourceCreature, List<Creature> destinationCreature);
 
     void setInfluenceEvaluator(InfluenceEvaluator evaluator);
 
@@ -30,4 +32,14 @@ public interface Playable {
     boolean setHeraldIsland(int indexIsland);
 
     boolean checkEndGame();
+
+    public int getDeactivators();
+
+    public boolean setDeactivators(int deactivators);
+    
+    StudentBucket getBucket();
+
+    void setBucket(StudentBucket bucket);
+
+    boolean monkEffect(List<Creature> sourceCreatures, int islandIndex);
 }

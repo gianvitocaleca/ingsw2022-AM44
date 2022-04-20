@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
 import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
 import it.polimi.ingsw.model.studentcontainers.*;
@@ -22,13 +23,27 @@ public class Table {
     private List<Island> islands = new ArrayList<>();
     private List<Cloud> clouds = new ArrayList<>();
     private MotherNature motherNature;
-    private final StudentContainer monk = new Monk(MOVER_CAPACITY);
-    private final StudentContainer princess = new Princess(MOVER_CAPACITY);
-    private final StudentContainer joker = new Joker(JOKER_CAPACITY);
+
+    public StudentBucket getBucket() {
+        StudentBucket temp = new StudentBucket();
+        temp.setMap(bucket.getMap());
+        return temp;
+    }
+
+    private int deactivators = 0;
+
+    private StudentBucket bucket;
+
+    public void setBucket(StudentBucket bucket) {
+        this.bucket = bucket;
+    }
+
+
+    private StudentContainer monk = new Monk(MOVER_CAPACITY);
+    private StudentContainer princess = new Princess(MOVER_CAPACITY);
+    private StudentContainer joker = new Joker(JOKER_CAPACITY);
 
     private int coinReserve = 0;
-    private int numberOfPlayers;
-    private boolean advancedRules;
 
     /**
      * The constructor makes a new table with provided parameters
@@ -38,13 +53,12 @@ public class Table {
      */
     public Table(int numberOfPlayers, boolean advancedRules) {
 
-        this.numberOfPlayers = numberOfPlayers;
-        this.advancedRules = advancedRules;
+        bucket = new StudentBucket();
 
         for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
             List<Student> students = new ArrayList<>();
             try {
-                students.add(StudentBucket.getInstance().generateStudent());
+                students.add(bucket.generateStudent());
             } catch (StudentsOutOfStockException ignored) {
                 ignored.printStackTrace();
             }
@@ -59,16 +73,81 @@ public class Table {
 
     }
 
-    @Override
-    public Table clone(){
-        Table table = new Table(this.numberOfPlayers,this.advancedRules);
-        table.islands=new ArrayList<>(this.islands);
-        table.clouds = new ArrayList<>(this.clouds);
-        table.motherNature = new MotherNature();
-        table.motherNature.setCurrentIsland(this.motherNature.getCurrentIsland());
-        table.coinReserve = this.coinReserve;
-        return table;
+    public boolean fillClouds() {
+        List<Student> newStudentsOnCloud;
+        List<Cloud> newClouds = getClouds();
+
+        for (Cloud c : newClouds) {
+            newStudentsOnCloud = new ArrayList<>();
+            for (int i = 0; i < c.getCapacity(); i++) {
+                try {
+                    newStudentsOnCloud.add(bucket.generateStudent());
+                } catch (StudentsOutOfStockException ex) {
+                    return false;
+                }
+            }
+            c.addStudents(newStudentsOnCloud);
+        }
+
+        setClouds(newClouds);
+        return true;
     }
+
+    public boolean moveMotherNature(int jumps) {
+        //11+0 % 12 = 11
+        int mnFuturePos = (motherNature.getCurrentIsland() + jumps) % (islands.size());
+        setMotherNaturePosition(mnFuturePos);
+        if (!checkNeighborIsland()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkNeighborIsland() {
+        boolean left = false, right = false;
+        Island currentIsland = getCurrentIsland(); //11
+        Island nextIsland = getNextIsland(); //0
+        Island prevIsland = getPrevIsland(); //10
+
+        if (prevIsland.getNumberOfTowers() > 0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
+            left = true;
+        }
+        if (nextIsland.getNumberOfTowers() > 0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
+            right = true;
+        }
+
+        if (right && left) {
+            try {
+                islandFusion("Both");
+            } catch (GroupsOfIslandsException e) {
+                return false;
+            }
+
+        } else if (right) {
+            try {
+                islandFusion("Right");
+            } catch (GroupsOfIslandsException e) {
+                return false;
+            }
+        } else if (left) {
+            try {
+                islandFusion("Left");
+            } catch (GroupsOfIslandsException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean setDeactivators(int deactivators) {
+        this.deactivators = deactivators;
+        return true;
+    }
+
+    public int getDeactivators() {
+        return deactivators;
+    }
+
 
     private void createClouds(int n) {
         for (int i = 0; i < n; i++) {
@@ -116,35 +195,54 @@ public class Table {
     }
 
     public List<Island> getIslands() {
-        return islands;
+        List<Island> temp = new ArrayList<>();
+        for (Island i : islands) {
+            temp.add(new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries()));
+        }
+        return temp;
     }
 
+
     public Island getCurrentIsland() {
-        return islands.get(getMnPosition());
+        Island i = islands.get(getMnPosition());
+        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
+        return temp;
+    }
+
+    public void setCurrentIsland(Island island) {
+        int currPos = getMnPosition();
+        islands.remove(currPos);
+        islands.add(currPos, island);
     }
 
     public Island getNextIsland() {
-        return islands.get(getNextIslandPosition());
-    }
-
-    public Island getPrevIsland() {
-        return islands.get(getPrevIslandPosition());
+        Island i = islands.get(getNextIslandPosition());
+        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
+        return temp;
     }
 
     private int getPrevIslandPosition() {
         return motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
     }
 
-    public MotherNature getMotherNature() {
-        return motherNature;
-    }
+    public int pos;
 
     private int getNextIslandPosition() {
-        return motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
+        pos = motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
+        return pos;
     }
 
-    public List<Cloud> getClouds() {
-        return clouds;
+    public MotherNature getMotherNature() {
+        MotherNature temp = new MotherNature();
+        temp.setCurrentIsland(motherNature.getCurrentIsland());
+        return temp;
+    }
+
+    public void setNextIsland(Island island) {
+        int nextPos = getNextIslandPosition();
+        islands.remove(nextPos);
+        islands.add(nextPos, island);
+
     }
 
     public int getMnPosition() {
@@ -152,7 +250,7 @@ public class Table {
     }
 
     private void aggregator(int p) {
-        int mnCurrPosition = motherNature.getCurrentIsland();
+        int mnCurrPosition = motherNature.getCurrentIsland(); //11
         List<Student> newStudents = new ArrayList<>(getCurrentIsland().getStudents());
         newStudents.addAll(islands.get(p).getStudents());
 
@@ -186,14 +284,85 @@ public class Table {
     }
 
     public StudentContainer getMonk() {
-        return monk;
+        StudentContainer temp = new Monk(monk.getCapacity());
+        temp.addStudents(monk.getStudents());
+        return temp;
+    }
+
+    public Island getPrevIsland() {
+        Island i = islands.get(getPrevIslandPosition());
+        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
+        return temp;
     }
 
     public StudentContainer getPrincess() {
-        return princess;
+        StudentContainer temp = new Princess(princess.getCapacity());
+        temp.addStudents(princess.getStudents());
+        return temp;
+    }
+
+    public void setPrevIsland(Island island) {
+        int prevPos = getPrevIslandPosition();
+        islands.remove(prevPos);
+        islands.add(prevPos, island);
     }
 
     public StudentContainer getJoker() {
-        return joker;
+        StudentContainer temp = new Joker(joker.getCapacity());
+        temp.addStudents(joker.getStudents());
+        return temp;
+    }
+
+    public List<Cloud> getClouds() {
+        List<Cloud> temp = new ArrayList<>();
+        for (Cloud c : clouds) {
+            Cloud tC = new Cloud(c.getCapacity());
+            tC.addStudents(c.getStudents());
+            temp.add(tC);
+        }
+        return temp;
+    }
+
+    public boolean setMonk(StudentContainer monk) {
+        this.monk = monk;
+        return true;
+    }
+
+    public void setIslands(List<Island> islands) {
+        this.islands = islands;
+    }
+
+    public void setClouds(List<Cloud> clouds) {
+        this.clouds = clouds;
+    }
+
+    public void setMotherNature(MotherNature motherNature) {
+        this.motherNature = motherNature;
+    }
+
+    public void setCoinReserve(int coinReserve) {
+        this.coinReserve = coinReserve;
+    }
+
+    public boolean setPrincess(StudentContainer princess) {
+        this.princess = princess;
+        return true;
+    }
+
+    public boolean setJoker(StudentContainer joker) {
+        //this.joker = joker;
+        this.joker = new Joker(6);
+        this.joker.addStudents(joker.getStudents());
+        return true;
+    }
+
+    public boolean setMotherNaturePosition(int index) {
+        motherNature.setCurrentIsland(index);
+        return true;
+    }
+
+    public void setIndexIsland(int index, Island island) {
+        islands.remove(index);
+        islands.add(index, island);
     }
 }

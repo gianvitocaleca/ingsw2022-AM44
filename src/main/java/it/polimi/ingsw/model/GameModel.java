@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.messages.CharactersParameters;
 import it.polimi.ingsw.model.characters.*;
 import it.polimi.ingsw.model.characters.Character;
 import it.polimi.ingsw.model.enums.*;
@@ -14,32 +15,32 @@ import it.polimi.ingsw.model.students.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameModel extends Observable implements Playable, Observer, Cloneable {
+public class GameModel implements Playable {
 
     public static final int NUMBER_OF_CHARACTERS = 3;
     public static final int THREE_PLAYERS_CAPACITY = 9;
     public static final int TWO_PLAYERS_CAPACITY = 7;
-    public static final int TWO_PLAYERS_NUMBEROFTOWERS = 8;
-    public static final int THREE_PLAYERS_NUMBEROFTOWERS = 6;
-    public static final int ADVANCED_RULES_STARTINGCOINS = 1;
-    private final Table table;
+    public static final int TWO_PLAYERS_NUMBER_OF_TOWERS = 8;
+    public static final int THREE_PLAYERS_NUMBER_OF_TOWERS = 6;
+    public static final int ADVANCED_RULES_STARTING_COINS = 1;
+    private Table table;
     private final int numberOfPlayers;
     private List<Player> players;
     private int currentPlayerIndex;
-    private List<Character> characters;
+    private final List<Character> characters;
     private int playedCharacter;
     private InfluenceEvaluator evaluator;
     private int postmanMovements;
     private boolean isFarmer;
     private boolean advancedRules;
+    private boolean lastRound = false;
 
     //Constructor
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         this.advancedRules = advancedRules;
-        //aggiungere un giocatore alla volta per il problema del colore e del mago?
         players = createListOfPlayers(advancedRules, usernames, colors, wizards);
         this.numberOfPlayers = numberOfPlayers;
-        //Il primo a giocare la carta assistente a inizio partita sarà il primo che ha fatto log in e di conseguenza il player in posizione zero
+        //The first player to play assistant card at the beginning of the game will be the first to log in, which is in position 0
         currentPlayerIndex = 0;
         this.table = new Table(numberOfPlayers, advancedRules);
         this.evaluator = new StandardEvaluator();
@@ -49,28 +50,13 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
         populateMoverCharacter();
     }
 
-    private GameModel(GameModel model){
-        this.advancedRules = model.advancedRules;
-        this.numberOfPlayers = model.numberOfPlayers;
-        this.playedCharacter = model.playedCharacter;
-        this.table = model.table.clone();
-        this.players = new ArrayList<>(model.players);
-        this.characters = new ArrayList<>(model.characters);
-    }
-
-
-    //DA RIMUOVERE
-
-    public void setCharacterTestForMVC() {
-        characters.remove(0);
-        characters.set(0, new Postman(Name.MAGICPOSTMAN, this));
-    }
-
 
     // region PLAYABLE OVERRIDE METHODS
     @Override
     public void addNoEntry(int indexOfIsland) {
-        table.getIslands().get(indexOfIsland).addNoEntry();
+        List<Island> islands = table.getIslands();
+        islands.get(indexOfIsland).addNoEntry();
+        table.setIslands(islands);
     }
 
     /**
@@ -100,29 +86,84 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
      */
     @Override
     public void thiefEffect(Creature creature) {
-        StudentBucket sb = StudentBucket.getInstance();
+        StudentBucket sb = table.getBucket();
         int numberOfStudentsToRemove = 3;
         for (Player p : players) {
             //removes 3 or all the students of that creature
             int minNumberToRemove = Math.min(numberOfStudentsToRemove, p.getDiningRoom().getNumberOfStudentsByCreature(creature));
             for (int i = 0; i < minNumberToRemove; i++) {
                 //removes the student from the dining room
-                Student removedStudent = p.getDiningRoom().removeStudent(creature);
+                DiningRoom oldDiningRoom = p.getDiningRoom();
+                Student removedStudent = oldDiningRoom.removeStudent(creature);
+                p.setDiningRoom(oldDiningRoom);
                 //gives the student back to the bucket
                 sb.putBackCreature(removedStudent.getCreature());
             }
         }
+        table.setBucket(sb);
+        lastRound = false;
     }
 
     /**
      * Moves a student from the character to the dining room of current player
      *
-     * @param source          is the Princess student container
-     * @param sourceCreatures is the creature of the student
+     * @param providedSourceCreatures is the creature of the student
+     * @return
      */
     @Override
-    public void princessEffect(StudentContainer source, List<Creature> sourceCreatures) {
-        moveStudents(source, getPlayers().get(currentPlayerIndex).getDiningRoom(), sourceCreatures);
+    public boolean princessEffect(List<Creature> providedSourceCreatures) {
+        List<Creature> sourceCreatures = table.getPrincess().getStudents().stream().map(s -> s.getCreature()).toList();
+
+        if (sourceCreatures.containsAll(providedSourceCreatures)) {
+            StudentContainer princess = table.getPrincess();
+            DiningRoom currPlayerDiningRoom = players.get(currentPlayerIndex).getDiningRoom();
+            moveStudents(princess, currPlayerDiningRoom, providedSourceCreatures);
+
+            StudentBucket bucket = table.getBucket();
+            try {
+                princess.addStudent(bucket.generateStudent());
+            } catch (StudentsOutOfStockException e) {
+                lastRound = true;
+            }
+            table.setBucket(bucket);
+
+            table.setPrincess(princess);
+            players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Moves a student from the character to an island of choice
+     *
+     * @param providedSourceCreatures is the creature of the student
+     * @param islandIndex             is the chosen island
+     * @return
+     */
+    @Override
+    public boolean monkEffect(List<Creature> providedSourceCreatures, int islandIndex) {
+        List<Creature> sourceCreatures = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
+
+        if (sourceCreatures.containsAll(providedSourceCreatures)) {
+            StudentContainer monk = table.getMonk();
+            Island destination = table.getIslands().get(islandIndex);
+            moveStudents(monk, destination, providedSourceCreatures);
+
+            StudentBucket bucket = table.getBucket();
+            try {
+                monk.addStudent(bucket.generateStudent());
+            } catch (StudentsOutOfStockException e) {
+                lastRound = true;
+            }
+            table.setBucket(bucket);
+
+            table.setMonk(monk);
+            table.setIndexIsland(islandIndex, destination);
+            return true;
+        }
+        return false;
+
     }
 
     /**
@@ -173,9 +214,12 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     public boolean setHeraldIsland(int indexIsland) {
         if (indexIsland < table.getIslands().size()) {
             int originalMnPosition = table.getMnPosition();
-            table.getMotherNature().setCurrentIsland(indexIsland);
+            MotherNature mn = table.getMotherNature();
+            mn.setCurrentIsland(indexIsland);
+            table.setMotherNature(mn);
             evaluateInfluence();
-            table.getMotherNature().setCurrentIsland(originalMnPosition);
+            mn.setCurrentIsland(originalMnPosition);
+            table.setMotherNature(mn);
             return true;
         }
         return false;
@@ -187,44 +231,39 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
 
     //region PLANNING PHASE
 
+    /**
+     * This method sets lastRound=true when table.fillClouds returns false due to StudentsOutOfStockException
+     */
     public void fillClouds() {
-        StudentBucket sb = StudentBucket.getInstance();
-        List<Student> newStudentsOnCloud;
-        for (Cloud c : table.getClouds()) {
-            newStudentsOnCloud = new ArrayList<>();
-            for (int i = 0; i < c.getCapacity(); i++) {
-                try {
-                    newStudentsOnCloud.add(sb.generateStudent());
-                } catch (StudentsOutOfStockException ex) {
-                    if (checkEndGame()) {
-                        findWinner();
-                    } else {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-            c.addStudents(newStudentsOnCloud);
+        if (!(table.fillClouds())) {
+            lastRound = true;
         }
     }
 
-    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException {
-        if (indexOfAssistant < 0 || indexOfAssistant > players.get(currentPlayerIndex).getAssistantDeck().size()) {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException {
+        if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
         List<Assistant> playedAssistants = new ArrayList<Assistant>();
 
         if (!(currentPlayerIndex == 0)) {
-            for (int i = currentPlayerIndex - 1; i > 0; i--) {
+            for (int i = currentPlayerIndex - 1; i >= 0; i--) {
                 playedAssistants.add(players.get(i).getLastPlayedCard());
             }
 
-            if (playedAssistants.contains(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant))) {
-                throw new AssistantAlreadyPlayedException();
+            for (Assistant a : playedAssistants) {
+                if (a.getName().equals(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant).getName())) {
+                    throw new AssistantAlreadyPlayedException();
+                }
             }
         }
 
-        players.get(currentPlayerIndex).setAssistantCard(players.get(currentPlayerIndex).getAssistantDeck().get(indexOfAssistant));
-
+        players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
+        if (currentPlayerIndex < numberOfPlayers - 1) {
+            currentPlayerIndex++;
+        } else {
+            throw new PlanningPhaseEndedException();
+        }
         return true;
     }
 
@@ -241,6 +280,7 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
             else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
             else return 0;
         });
+        currentPlayerIndex = 0;
     }
 
     //MOVE STUDENTS
@@ -248,19 +288,22 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     /**
      * Swaps the students between joker card and player entrance
      *
-     * @param source                       first studentContainer
      * @param providedSourceCreatures      are the creatures that will be removed from the source and added to the destination
      * @param providedDestinationCreatures are the creatures that will be removed from the destination and added to the source
      * @return true if effect is correctly executed
      */
     @Override
-    public boolean jokerEffect(StudentContainer source, List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
+    public boolean jokerEffect(List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
 
-        List<Creature> sourceCreatures = source.getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
+        List<Creature> sourceCreatures = table.getJoker().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
 
         if (sourceCreatures.containsAll(providedSourceCreatures) && destCreatures.containsAll(providedDestinationCreatures)) {
-            swapStudents(source, players.get(currentPlayerIndex).getEntrance(), providedSourceCreatures, providedDestinationCreatures);
+            StudentContainer joker = table.getJoker();
+            Entrance entrance = players.get(currentPlayerIndex).getEntrance();
+            swapStudents(joker, entrance, providedSourceCreatures, providedDestinationCreatures);
+            table.setJoker(joker);
+            players.get(currentPlayerIndex).setEntrance(entrance);
             return true;
         }
         return false;
@@ -269,9 +312,9 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     /**
      * Swaps the students from the entrance to the dining room of current player
      *
-     * @param providedEntranceCreatures
-     * @param providedDiningRoomCreatures
-     * @return
+     * @param providedEntranceCreatures is the list of creatures to move from the entrance
+     * @param providedDiningRoomCreatures is the list of creatures to move from the dining room
+     * @return true or false depending on the correct execution of method
      */
     @Override
     public boolean minstrelEffect(List<Creature> providedEntranceCreatures, List<Creature> providedDiningRoomCreatures) {
@@ -280,9 +323,11 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
 
         if (entranceCreatures.containsAll(providedEntranceCreatures) && destCreatures.containsAll(destCreatures)) {
-            swapStudents(players.get(currentPlayerIndex).getEntrance(),
-                    players.get(currentPlayerIndex).getDiningRoom(),
-                    providedEntranceCreatures, providedDiningRoomCreatures);
+            Entrance currPlayerEntrance = players.get(currentPlayerIndex).getEntrance();
+            DiningRoom currPlayerDiningRoom = players.get(currentPlayerIndex).getDiningRoom();
+            swapStudents(currPlayerEntrance, currPlayerDiningRoom, providedEntranceCreatures, providedDiningRoomCreatures);
+            players.get(currentPlayerIndex).setEntrance(currPlayerEntrance);
+            players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
             return true;
         }
         return false;
@@ -291,10 +336,10 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     /**
      * This method is used by Joker and Minstrel characters to swap the students
      *
-     * @param source
-     * @param destination
-     * @param sourceCreature
-     * @param destinationCreature
+     * @param source is the first student container from which students have to be moved
+     * @param destination is the second student container from which students have to be moved
+     * @param sourceCreature is the list of creatures to move from the source container
+     * @param destinationCreature is the list of creatures to move from the destination container
      */
     private void swapStudents(StudentContainer source, StudentContainer destination, List<Creature> sourceCreature, List<Creature> destinationCreature) {
         List<Student> studentsFromSource = new ArrayList<>();
@@ -318,26 +363,47 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
 
     public void populateMoverCharacter() {
         List<Name> charNames = characters.stream().map(Character::getName).toList();
-        List<StudentContainer> movers = new ArrayList<StudentContainer>();
+        StudentBucket bucket = table.getBucket();
+        StudentContainer container;
+
         if (charNames.contains(Name.MONK)) {
-            movers.add(table.getMonk());
-        }
-        if (charNames.contains(Name.PRINCESS)) {
-            movers.add(table.getPrincess());
-        }
-        if (charNames.contains(Name.JOKER)) {
-            movers.add(table.getJoker());
-        }
-        for (StudentContainer sc : movers) {
-            for (int i = 0; i < sc.getCapacity(); i++) {
+            container = table.getMonk();
+            for (int i = 0; i < container.getCapacity(); i++) {
                 try {
-                    sc.addStudent(StudentBucket.generateStudent());
+                    container.addStudent(bucket.generateStudent());
                 } catch (StudentsOutOfStockException e) {
                     e.printStackTrace();
                 }
             }
+            table.setMonk(container);
         }
+        table.setBucket(bucket);
 
+        if (charNames.contains(Name.PRINCESS)) {
+            container = table.getPrincess();
+            for (int i = 0; i < container.getCapacity(); i++) {
+                try {
+                    container.addStudent(bucket.generateStudent());
+                } catch (StudentsOutOfStockException e) {
+                    e.printStackTrace();
+                }
+            }
+            table.setPrincess(container);
+        }
+        table.setBucket(bucket);
+
+        if (charNames.contains(Name.JOKER)) {
+            StudentContainer joker = new Joker(6);
+            for (int i = 0; i < joker.getCapacity(); i++) {
+                try {
+                    joker.addStudent(bucket.generateStudent());
+                } catch (StudentsOutOfStockException e) {
+                    e.printStackTrace();
+                }
+            }
+            table.setJoker(joker);
+        }
+        table.setBucket(bucket);
     }
 
     /**
@@ -345,74 +411,67 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
      * mnFuturePos uses the module function to establish the correct future position of MotherNature
      *
      * @param jumps number of steps that MotherNature has to do
+     * @return true if mother nature changed her position
      */
 
-    public void moveMotherNature(int jumps) {
-        jumps += postmanMovements;
-        int mnFuturePos = (table.getMnPosition() + jumps) % (table.getIslands().size());
-        table.getMotherNature().setCurrentIsland(mnFuturePos);
-        checkNeighborIsland();
+    public boolean moveMotherNature(int jumps) {
+        if (checkJumps(jumps)) {
+            int j = jumps + postmanMovements;
+            if (!(table.moveMotherNature(j))) {
+                checkEndGame();
+            }
+            return true;
+        }
+        return false;
     }
 
-    private void checkNeighborIsland() {
-        boolean left = false, right = false;
-        Island currentIsland = table.getCurrentIsland();
-        Island nextIsland = table.getNextIsland();
-        Island prevIsland = table.getPrevIsland();
-
-        if (prevIsland.getNumberOfTowers() > 0 && prevIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
-            left = true;
-        }
-        if (nextIsland.getNumberOfTowers() > 0 && nextIsland.getColorOfTowers().equals(currentIsland.getColorOfTowers())) {
-            right = true;
-        }
-
-        if (right && left) {
-            try {
-                table.islandFusion("Both");
-            } catch (GroupsOfIslandsException e) {
-                checkEndGame();
-            }
-
-        } else if (right) {
-            try {
-                table.islandFusion("Right");
-            } catch (GroupsOfIslandsException e) {
-                checkEndGame();
-            }
-        } else if (left) {
-            try {
-                table.islandFusion("Left");
-            } catch (GroupsOfIslandsException e) {
-                checkEndGame();
-            }
-        }
+    /**
+     * verifies if the number of steps is valid
+     *
+     * @param jumps is the number of steps the player want mother nature to do
+     * @return true if the assistant card played by the client allows mother nature's movement
+     */
+    private boolean checkJumps(int jumps){
+        return players.get(currentPlayerIndex).getLastPlayedCard().getMovements() >= jumps;
     }
 
+    /**
+     * verifies if the character can be played and if it can be played this method removes coin
+     * from the player and gives them to coinReserve.
+     *
+     * @param indexOfCharacter is the position of the character played
+     * @return true if the character can be played and paid.
+     */
     public boolean playCharacter(int indexOfCharacter) {
 
         if (indexOfCharacter < 0 || indexOfCharacter > 2) {
-            return false;
+            throw new IndexOutOfBoundsException();
         }
 
-        Player currentPlayer = players.get(currentPlayerIndex);
-        Character currentCharacter = characters.get(indexOfCharacter);
 
-        if (currentCharacter.canBePlayed(currentPlayer.getMyCoins())) {
+        if (characters.get(indexOfCharacter).canBePlayed(players.get(currentPlayerIndex).getMyCoins())) {
             //get character cost (it already handles the updated cost)
-            int removedCoins = currentCharacter.getCost();
+            int removedCoins = characters.get(indexOfCharacter).getCost();
             //player pays for the character
-            currentPlayer.removeCoin(removedCoins);
-            currentCharacter.setUpdatedCost();
+            players.get(currentPlayerIndex).removeCoin(removedCoins);
+            characters.get(indexOfCharacter).setUpdatedCost();
+
             //table gets the coins from the player
             table.addCoins(removedCoins);
             //play character
             playedCharacter = indexOfCharacter;
-            askForRequest();
             return true;
         }
 
         return false;
+    }
+
+    public int getPostmanMovements() {
+        return postmanMovements;
+    }
+
+    public boolean checkIfLastRound() {
+        return lastRound;
     }
 
     public boolean checkEndGame() {
@@ -427,17 +486,42 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
         if (table.getIslands().size() == 3) {
             gameEnded = true;
         }
-        StudentBucket sb = StudentBucket.getInstance();
-        try {
-            Student s = sb.generateStudent();
-            //DOBBIAMO RESTITUIRE LO STUDENTE
-        } catch (StudentsOutOfStockException ex) {
-            gameEnded = true;
-        }
-
-        //NOTIFY *********************
-
         return gameEnded;
+    }
+
+    @Override
+    public int getDeactivators() {
+        return table.getDeactivators();
+    }
+
+    @Override
+    public boolean setDeactivators(int deactivators) {
+        table.setDeactivators(deactivators);
+        return true;
+    }
+
+
+    @Override
+    public StudentBucket getBucket() {
+        return table.getBucket();
+    }
+
+    @Override
+    public void setBucket(StudentBucket bucket) {
+        table.setBucket(bucket);
+    }
+
+    //region getters
+    public Table getTable() {
+        Table temp = new Table(numberOfPlayers, advancedRules);
+        temp.setMotherNature(table.getMotherNature());
+        temp.setClouds(table.getClouds());
+        temp.setCoinReserve(table.getCoinReserve());
+        temp.setIslands(table.getIslands());
+        temp.setMonk(table.getMonk());
+        temp.setJoker(table.getJoker());
+        temp.setPrincess(table.getPrincess());
+        return temp;
     }
 
     /**
@@ -460,13 +544,22 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
 
     //endregion
 
-    //region getters
-    public Table getTable() {
-        return table;
+    public void setTable(Table table) {
+        this.table = table;
     }
 
     public List<Player> getPlayers() {
-        return players;
+        List<Player> temp = new ArrayList<>();
+        for (Player p : players) {
+            Player temPlayer = new Player(p.getUsername(), p.getMyColor(), p.getMyCoins(), p.getWizard(), p.getTowers(), p.getEntrance());
+            temPlayer.setAssistantDeck(p.getAssistantDeck());
+            temPlayer.setDiningRoom(p.getDiningRoom());
+            temPlayer.setLastPlayedCards(p.getLastPlayedCards());
+            temPlayer.setGivenCoins(p.getGivenCoins());
+            temPlayer.setProfessors(p.getProfessors());
+            temp.add(temPlayer);
+        }
+        return temp;
     }
 
     //region setters
@@ -492,6 +585,26 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
         return characters;
     }
 
+    public CharacterInformation getCharactersInformation(int indexOfCharacter) {
+
+        Name charactersName = characters.get(indexOfCharacter).getName();
+
+        List<Creature> moverContent;
+        if (charactersName.equals(Name.MONK)) {
+            moverContent = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
+        } else if (charactersName.equals(Name.JOKER)) {
+            moverContent = table.getJoker().getStudents().stream().map(s -> s.getCreature()).toList();
+        } else if (charactersName.equals(Name.PRINCESS)) {
+            moverContent = table.getPrincess().getStudents().stream().map(s -> s.getCreature()).toList();
+        } else {
+            moverContent = new ArrayList<>();
+        }
+
+        return new CharacterInformation(
+                charactersName, characters.get(indexOfCharacter).hasCoin(), table.getDeactivators(), indexOfCharacter, moverContent);
+    }
+
+
     public int getPlayedCharacter() {
         return playedCharacter;
     }
@@ -505,7 +618,7 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
         List<Player> newPlayers = new ArrayList<>();
         if (!advancedRules) {
-            //istanzia il GameModel per le regole da principianti
+            //beginner rules
             if (numberOfPlayers == 2) {
                 for (int i = 0; i < usernames.size(); i++) {
                     Entrance entrance = createEntrance(numberOfPlayers);
@@ -518,7 +631,7 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
                 }
             }
         } else {
-            //istanzio le regole per giocatori esperti
+            //expert game rules
             if (numberOfPlayers == 2) {
                 for (int i = 0; i < usernames.size(); i++) {
                     Entrance entrance = createEntrance(numberOfPlayers);
@@ -541,8 +654,8 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
      */
     private List<Character> createListOfCharacters() {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
-        List<Character> chars = new ArrayList<Character>();
-        List<Name> names = new ArrayList<Name>(Arrays.asList(Name.values()));
+        List<Character> chars = new ArrayList<>();
+        List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
         for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
             chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
@@ -559,19 +672,19 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
     }
 
     private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 0, myWizard, TWO_PLAYERS_NUMBEROFTOWERS, myEntrance);
+        return new Player(myUsername, myColor, 0, myWizard, TWO_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
 
     private Player createThreePlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, 0, myWizard, THREE_PLAYERS_NUMBEROFTOWERS, myEntrance);
+        return new Player(myUsername, myColor, 0, myWizard, THREE_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
 
     private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, ADVANCED_RULES_STARTINGCOINS, myWizard, TWO_PLAYERS_NUMBEROFTOWERS, myEntrance);
+        return new Player(myUsername, myColor, ADVANCED_RULES_STARTING_COINS, myWizard, TWO_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
 
     private Player createThreePlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
-        return new Player(myUsername, myColor, ADVANCED_RULES_STARTINGCOINS, myWizard, THREE_PLAYERS_NUMBEROFTOWERS, myEntrance);
+        return new Player(myUsername, myColor, ADVANCED_RULES_STARTING_COINS, myWizard, THREE_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
     //endregion
 
@@ -581,36 +694,53 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
      * Moves the professors to the correct players
      * Creates the professors if not present
      */
-    private void checkProfessor() {
+    public void checkProfessor() {
         for (Creature c : Creature.values()) {
-            Optional<Player> hasprofessor = Optional.empty();
-            Player hasmorestudents = players.get(0);
-            for (Player p : players) {
-                if (p.getProfessors().size() > 0) {
-                    for (Professor prof : p.getProfessors()) {
-                        if (prof.getCreature().equals(c)) {
-                            hasprofessor = Optional.of(p);
-                            break;
-                        }
-                    }
+
+            Optional<Player> professorOwner = Optional.empty();
+
+
+            for(int i=0; i<players.size(); i++){
+                if(hasProfessor(i,c)){
+                    professorOwner = Optional.of(players.get(i));
+                    break;
                 }
-                if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
-                        hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
-                    hasmorestudents = p;
+
+            }
+
+            //find who has more students of creature c
+            Player hasMoreStudents = players.get(0);
+            for (Player p : players) {
+
+                if(isFarmer && players.get(currentPlayerIndex).getUsername().equals(p.getUsername())){
+                    if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >=
+                            hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                        hasMoreStudents = p;
+                    }
+                }else if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
+                        hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                    hasMoreStudents = p;
                 }
             }
-            if (hasprofessor.isPresent()) {
-                if (!hasprofessor.get().equals(hasmorestudents)) {
-                    if (hasprofessor.get().getDiningRoom().getNumberOfStudentsByCreature(c) <
-                            hasmorestudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
-                        hasmorestudents.addProfessor(hasprofessor.get().removeProfessor(c));
-                    }
+            if (professorOwner.isPresent()) {
+                if (!(professorOwner.get().getUsername().equals(hasMoreStudents.getUsername()))) {
+
+                    hasMoreStudents.addProfessor(professorOwner.get().removeProfessor(c));
                 }
 
             } else {
-                hasmorestudents.addProfessor(new Professor(c));
+                if(hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c)>0){
+                    hasMoreStudents.addProfessor(new Professor(c));
+                }
             }
         }
+    }
+
+    private boolean hasProfessor(int indexOfPlayer, Creature c){
+        if(!players.get(indexOfPlayer).getProfessors().isEmpty()){
+            return players.get(indexOfPlayer).getProfessors().stream().filter(p -> p.getCreature().equals(c)).findFirst().isPresent();
+        }
+        return false;
     }
 
     //endregion
@@ -645,30 +775,17 @@ public class GameModel extends Observable implements Playable, Observer, Cloneab
             }
             //change the color of the towers on the island
             currentIsland.setColorOfTowers(hasMoreInfluence.getMyColor());
+            table.setCurrentIsland(currentIsland);
             //check the neighbor islands
-            checkNeighborIsland();
+            if (!table.checkNeighborIsland()) {
+                checkEndGame();
+            }
         }
     }
 
-    private void askForRequest() {
-        setChanged();
-        notifyObservers(characters.get(playedCharacter).getName());
-    }
 
     public boolean effect(CharactersParameters answer) {
-        if (!(characters.get(playedCharacter).effect(answer))) {
-            return false;
-        }
-        return true;
+        return characters.get(playedCharacter).effect(answer);
     }
 
-    @Override
-    public GameModel clone() {
-        return new GameModel(this);
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
 }

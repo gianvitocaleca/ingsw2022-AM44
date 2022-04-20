@@ -24,12 +24,11 @@ public class IslandTest {
 
     @BeforeEach
     void initializeIsland() {
-        StudentBucket.resetMap();
         List<Student> students = new ArrayList<Student>();
-        sb = StudentBucket.getInstance();
+        sb = new StudentBucket() ;
         for (int i = 0; i < new Random().nextInt(130); i++) {
             try {
-                students.add(StudentBucket.generateStudent());
+                students.add(sb.generateStudent());
             } catch (StudentsOutOfStockException ignored) {
                 System.out.println("Studenti finiti");
                 break;
