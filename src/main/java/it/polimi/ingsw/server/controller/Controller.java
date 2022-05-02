@@ -89,28 +89,28 @@ public class Controller {
 
         if(phase.equals(Headers.action)){
             if(currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)){
-                messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(true,false,false, currentGameStatus.isAdvancedRules()));
+                //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(true,false,false, currentGameStatus.isAdvancedRules()));
             }else if (currentGameStatus.equals(GamePhases.ACTION_MOVEMOTHERNATURE)){
                 if(currentPlayerPlayedCharacter){
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,true,false, false));
+                    //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,true,false, false));
                 }else{
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,true,false, currentGameStatus.isAdvancedRules()));
+                    //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,true,false, currentGameStatus.isAdvancedRules()));
                 }
             }else{
                 if(currentPlayerPlayedCharacter){
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,false,true, false));
+                    //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,false,true, false));
                 }else{
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,false,true, currentGameStatus.isAdvancedRules()));
+                    //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,false,true, currentGameStatus.isAdvancedRules()));
                 }
             }
         }else{
-            messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new StringPayload(""));
+            //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new StringPayload(""));
         }
 
     }
 
     private void sendErrorMessage(String string){
-        messageHandler.eventPerformed(new StringEvent(this,string, Headers.errorMessage, new Socket()));
+        //messageHandler.eventPerformed(new StringEvent(this,string, Headers.errorMessage, new Socket()));
     }
 
     private void sendCharacterPlayedMessage(Name name){

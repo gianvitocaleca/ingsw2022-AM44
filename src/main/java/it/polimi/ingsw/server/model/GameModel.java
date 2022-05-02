@@ -69,7 +69,7 @@ public class GameModel implements Playable {
         postmanMovements = 0;
         playedCharacter = -1;
         populateMoverCharacter();
-        showModel();
+        //showModel();
     }
 
     public boolean isAdvancedRules() {
@@ -209,7 +209,7 @@ public class GameModel implements Playable {
             }
             destination.addStudents(newStudents);
             coinGiver(players.get(currentPlayerIndex));
-            showModel();
+            //showModel();
             return true;
         }
         return false;
@@ -263,7 +263,7 @@ public class GameModel implements Playable {
     public void fillClouds() {
         if (!(table.fillClouds())) {
             lastRound = true;
-            showModel();
+            //showModel();
         }
     }
 
@@ -287,7 +287,7 @@ public class GameModel implements Playable {
         } else {
             currentPlayerIndex = 0;
         }
-        showModel();
+        //showModel();
         return true;
     }
 
@@ -315,7 +315,7 @@ public class GameModel implements Playable {
         } else {
             throw new PlanningPhaseEndedException();
         }
-        showModel();
+        //showModel();
         return true;
     }
 
@@ -472,7 +472,7 @@ public class GameModel implements Playable {
             if (!(table.moveMotherNature(j))) {
                 checkEndGame();
             }
-            showModel();
+            //showModel();
             return true;
         }
         return false;
@@ -516,7 +516,7 @@ public class GameModel implements Playable {
             table.addCoins(removedCoins);
             //play character
             playedCharacter = indexOfCharacter;
-            showModel();
+            //showModel();
             return true;
         }
 
@@ -808,7 +808,7 @@ public class GameModel implements Playable {
                 }
             }
         }
-        showModel();
+        //showModel();
     }
 
     private boolean hasProfessor(int indexOfPlayer, Creature c) {
@@ -861,11 +861,11 @@ public class GameModel implements Playable {
 
     public boolean effect(CharactersParametersPayload answer) {
         boolean temp = characters.get(playedCharacter).effect(answer);
-        showModel();
+        //showModel();
         return temp;
     }
 
-    private void showModel() {
+    /*private void //showModel() {
         Map<Name, Boolean> charactersMap = new HashMap<>();
         for (Character c : characters) {
             charactersMap.put(c.getName(), c.hasCoin());
@@ -876,6 +876,6 @@ public class GameModel implements Playable {
         for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
             event.eventPerformed(new ShowModelEvent(this, payload));
         }
-    }
+    }*/
 
 }
