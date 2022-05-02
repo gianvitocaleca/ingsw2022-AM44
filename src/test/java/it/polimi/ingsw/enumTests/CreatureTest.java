@@ -1,0 +1,17 @@
+package it.polimi.ingsw.enumTests;
+
+import it.polimi.ingsw.server.model.enums.Creature;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class CreatureTest {
+    /**
+     * This tests the correctness of the getName() method from the Creature Enum
+     */
+    @Test
+    public void yellowGnomesCorrectValueTest() {
+        String name = "Yellow Gnomes";
+        assertEquals(name, Creature.YELLOW_GNOMES.getName());
+    }
+}

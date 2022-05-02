@@ -1,0 +1,11 @@
+package it.polimi.ingsw.server.networkMessages;
+
+public enum Headers {
+
+    creationRequirementMessage,
+    loginMessage_Username,
+    loginMessage_Color,
+    loginMessage_Wizard,
+    winnerPlayer, currentPlayer, assistantToPlay, LOGIN, PLANNING, ACTION_STUDENTSMOVEMENT,
+    ACTION_MOVEMOTHERNATURE, ACTION_CLOUDCHOICE, errorMessage, action, characterPlayed, showModelMessage
+}

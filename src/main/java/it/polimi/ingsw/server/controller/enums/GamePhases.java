@@ -1,0 +1,14 @@
+package it.polimi.ingsw.server.controller.enums;
+
+public enum GamePhases {
+    CREATION_NUMBER_OF_PLAYERS,
+    CREATION_RULES,
+    LOGIN_USERNAME,
+    LOGIN_COLOR,
+    LOGIN_WIZARD,
+    PLANNING,
+    ACTION_STUDENTSMOVEMENT,
+    ACTION_MOVEMOTHERNATURE,
+    ACTION_CLOUDCHOICE,
+    ACTION_PLAYED_CHARACTER
+}

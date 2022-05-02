@@ -1,0 +1,55 @@
+package it.polimi.ingsw.server.controller;
+
+import it.polimi.ingsw.server.controller.enums.GamePhases;
+
+/**
+ * this class is used to keep track of game's phases.
+ */
+public class GameStatus {
+    private GamePhases phase;
+    private boolean waitingForParameters = false;
+    private String currentPlayerUsername;
+    private int numberOfStudentsMoved = 0;
+    private boolean advancedRules = false;
+
+    public GameStatus(GamePhases phase, boolean advancedRules) {
+        this.phase = phase;
+        this.advancedRules = advancedRules;
+    }
+
+    public GamePhases getPhase() {
+        return phase;
+    }
+
+    public boolean isWaitingForParameters(){
+        return waitingForParameters;
+    }
+
+    public void toggleWaitingForParameters(){
+        waitingForParameters=!waitingForParameters;
+    }
+
+    public void setPhase(GamePhases phase) {
+        this.phase = phase;
+    }
+
+    public String getCurrentPlayerUsername() {
+        return currentPlayerUsername;
+    }
+
+    public void setCurrentPlayerUsername(String currentPlayerUsername) {
+        this.currentPlayerUsername = currentPlayerUsername;
+    }
+
+    public int getNumberOfStudentsMoved() {
+        return numberOfStudentsMoved;
+    }
+
+    public void setNumberOfStudentsMoved(int numberOfStudentsMoved) {
+        this.numberOfStudentsMoved = numberOfStudentsMoved;
+    }
+
+    public boolean isAdvancedRules() {
+        return advancedRules;
+    }
+}
