@@ -17,7 +17,7 @@ public class NetworkState {
 
     public NetworkState() {
         socketIDList = new ArrayList<>();
-        this.numberOfPlayers = 0;
+        this.numberOfPlayers = 1;
         this.advancedRules = false;
     }
 
@@ -128,7 +128,7 @@ public class NetworkState {
     }
 
     public synchronized List<Socket> getActiveSockets() {
-        return socketIDList.stream().filter(SocketID::isConnected).map(s -> s.socket).toList();
+        return socketIDList.stream().filter(SocketID::isConnected).map(s -> s.getSocket()).toList();
     }
 
     public synchronized int getNumberOfPlayers() {

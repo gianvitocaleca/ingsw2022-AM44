@@ -35,7 +35,7 @@ public class LoginHandler extends Thread implements EventListener {
     }
 
     public boolean isMySocket(Socket socket) {
-        return this.socketId.socket.equals(socket);
+        return this.socketId.getSocket().equals(socket);
     }
 
     @Override
@@ -53,12 +53,12 @@ public class LoginHandler extends Thread implements EventListener {
         sendMessage(Headers.loginMessage_Username, "Provide your username :");
 
         while (true) {
-            username = loginState.getUsername(socketId.socket);
+            username = loginState.getUsername(socketId.getSocket());
             if (username.equals("")) {
-                loginState.removeUsername(socketId.socket);
+                loginState.removeUsername(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "Hey, funny guy :) Nice try, but provide a username, not an empty string");
             } else if (!networkState.setUsername(socketId.id, username)) {
-                loginState.removeUsername(socketId.socket);
+                loginState.removeUsername(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "Player " + username + " already in game, provide a different username");
             } else {
                 break;
@@ -68,9 +68,9 @@ public class LoginHandler extends Thread implements EventListener {
         sendMessage(Headers.loginMessage_Color, "Choose a color : 1 White 2 Black 3 Gray");
 
         while (true) {
-            color = loginState.getColor(socketId.socket);
+            color = loginState.getColor(socketId.getSocket());
             if (!networkState.setColor(socketId.id, color)) {
-                loginState.removeColor(socketId.socket);
+                loginState.removeColor(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The color : " + color + " is already taken!" +
                         "Provide a different color : 1 White 2 Black 3 Gray");
             } else {
@@ -81,9 +81,9 @@ public class LoginHandler extends Thread implements EventListener {
         sendMessage(Headers.loginMessage_Wizard, "Choose a wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji ");
 
         while (true) {
-            wizard = loginState.getWizard(socketId.socket);
+            wizard = loginState.getWizard(socketId.getSocket());
             if (!networkState.setWizard(socketId.id, wizard)) {
-                loginState.removeWizard(socketId.socket);
+                loginState.removeWizard(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The wizard : " + wizard + " is already taken!" +
                         "Provide a different wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");
             } else {

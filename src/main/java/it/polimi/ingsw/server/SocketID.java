@@ -4,7 +4,7 @@ import java.net.Socket;
 
 public class SocketID {
     int id;
-    Socket socket;
+    private Socket socket;
     private PlayerInfo playerInfo;
     boolean isConnected;
 

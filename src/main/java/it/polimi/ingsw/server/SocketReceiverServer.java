@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -55,10 +56,19 @@ public class SocketReceiverServer {
 
         while (true) {
             try {
-                //accept the incoming connection socket
-                socket = serverSocket.accept();
-                //create a new object, and link it to the id
-                SocketID socketId = new SocketID(id, socket);
+                SocketID socketId;
+                while(true){
+                    //accept the incoming connection socket
+                    socket = serverSocket.accept();
+                    //create a new object, and link it to the id
+                    socketId = new SocketID(id, socket);
+                    if(networkState.getNumberOfConnectedSocket() >= networkState.getNumberOfPlayers()){
+                        socket.close();
+                        System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
+                    }else{
+                        break;
+                    }
+                }
                 //add the new object to the status list
                 networkState.addSocket(socketId);
                 Thread t2 = new Thread(new MessageReceiverServer(socket, messageHandler));
