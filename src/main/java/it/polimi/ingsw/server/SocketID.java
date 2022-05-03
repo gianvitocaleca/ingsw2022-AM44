@@ -6,7 +6,7 @@ public class SocketID {
     int id;
     private Socket socket;
     private PlayerInfo playerInfo;
-    boolean isConnected;
+    private boolean isConnected;
 
     public SocketID(int id, Socket socket) {
         this.id = id;
@@ -37,6 +37,10 @@ public class SocketID {
 
     public void setConnected(boolean connected) {
         isConnected = connected;
+    }
+
+    public void setSocket(Socket socket){
+        this.socket = socket;
     }
 
 }

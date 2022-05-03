@@ -12,7 +12,6 @@ public class NetworkState {
     private ServerPhases serverPhase;
     private int numberOfPlayers;
     private boolean advancedRules;
-
     private int loginPhaseEnded = 0;
 
     public NetworkState() {
@@ -26,6 +25,24 @@ public class NetworkState {
         if (loginPhaseEnded == numberOfPlayers) {
             serverPhase = ServerPhases.GAME;
         }
+    }
+
+    public List<SocketID> getSocketIDList() {
+        return socketIDList;
+    }
+
+    public List<SocketID> getDisconnectedSocketIDs(){
+        List<SocketID> temp = new ArrayList<>();
+        for(SocketID s : socketIDList){
+            if(!s.isConnected()){
+                temp.add(s);
+            }
+        }
+        return temp;
+    }
+
+    public List<PlayerInfo> getConnectedPlayerInfo(){
+        return socketIDList.stream().filter(SocketID::isConnected).map(SocketID::getPlayerInfo).toList();
     }
 
 
@@ -118,7 +135,7 @@ public class NetworkState {
     public synchronized void disconnectPlayer(String username) {
         for (SocketID s : socketIDList) {
             if (s.getPlayerInfo().getUsername().equals(username)) {
-                s.isConnected = false;
+                s.setConnected(false);
             }
         }
     }
@@ -164,5 +181,6 @@ public class NetworkState {
         }
         return socket;
     }
+
 }
 

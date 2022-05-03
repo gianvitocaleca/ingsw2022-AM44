@@ -28,7 +28,7 @@ import it.polimi.ingsw.server.viewProxy.MessageHandler;
 import java.net.Socket;
 import java.util.List;
 
-public class Controller {
+public class Controller{
     /*
     Controller must:
     -reset the standard evaluator at the end of every ActionPhase
@@ -46,7 +46,7 @@ public class Controller {
 
 
 
-    public Controller(GameModel model, MessageHandler messageHandler){
+    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus){
 
         this.model = model;
         this.messageHandler = messageHandler;
@@ -56,11 +56,23 @@ public class Controller {
         this.messageHandler.addListener(new PlanningPhaseListener(this));
         this.model.addListener(messageHandler);
 
-        currentGameStatus = new GameStatus(GamePhases.LOGIN_USERNAME,model.isAdvancedRules());
+        currentGameStatus = gameStatus;
+        currentGameStatus.setAdvancedRules(model.isAdvancedRules());
         this.messageHandler.setGamePhase(currentGameStatus);
 
     }
 
+    public void start(){
+        sendCurrentPlayerMessage();
+        switch (currentGameStatus.getPhase()){
+            case PLANNING:
+                sendPhaseMessage(Headers.PLANNING);
+                break;
+            case ACTION_MOVEMOTHERNATURE: case ACTION_STUDENTSMOVEMENT: case ACTION_CLOUDCHOICE: case ACTION_PLAYED_CHARACTER:
+                sendPhaseMessage(Headers.action);
+                break;
+        }
+    }
 
     /**
      * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
@@ -86,7 +98,6 @@ public class Controller {
     }
 
     private void sendPhaseMessage (Headers phase){
-
         if(phase.equals(Headers.action)){
             if(currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)){
                 //messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(true,false,false, currentGameStatus.isAdvancedRules()));

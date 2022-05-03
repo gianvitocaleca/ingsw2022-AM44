@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.controller.events.*;
@@ -45,7 +46,7 @@ public class ControllerTest {
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         view = new MessageHandler();
-        controller = new Controller(gm,view);
+        controller = new Controller(gm,view,new GameStatus(GamePhases.PLANNING,false));
     }
 
     /**

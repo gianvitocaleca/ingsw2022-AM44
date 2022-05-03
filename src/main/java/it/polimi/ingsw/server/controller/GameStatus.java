@@ -17,6 +17,11 @@ public class GameStatus {
         this.advancedRules = advancedRules;
     }
 
+    public void setAdvancedRules(boolean isAdvanced){
+        advancedRules=isAdvanced;
+    }
+
+
     public GamePhases getPhase() {
         return phase;
     }
