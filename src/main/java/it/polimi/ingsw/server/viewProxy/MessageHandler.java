@@ -138,6 +138,8 @@ public class MessageHandler implements EventListener {
                 break;
             case showModelMessage:
                 break;
+            default:
+                break;
         }
 
 

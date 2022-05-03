@@ -6,14 +6,11 @@ import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MessageReceiverServer extends Thread {
 
-    private Socket socket;
+    private SocketID socketId;
 
     private NetworkState networkState;
 
@@ -21,24 +18,32 @@ public class MessageReceiverServer extends Thread {
 
     private EventListenerList listeners = new EventListenerList();
 
-    public MessageReceiverServer(Socket socket, MessageHandler listener, GameStatus gameStatus, NetworkState networkState) {
-        this.socket = socket;
+    private PingHandler pingHandler;
+
+    private PingState pingState;
+
+    public MessageReceiverServer(SocketID socketId, MessageHandler listener, GameStatus gameStatus, NetworkState networkState) {
+        this.socketId = socketId;
         listeners.add(MessageHandler.class, listener);
         this.gameStatus = gameStatus;
         this.networkState = networkState;
+        pingState = new PingState();
+        pingHandler = new PingHandler(networkState,pingState, socketId);
     }
 
 
     @Override
     public void run() {
+        pingHandler.start();
         while (true) {
             try {
-                Scanner in = new Scanner(socket.getInputStream());
+                Scanner in = new Scanner(socketId.getSocket().getInputStream());
                 String line = in.nextLine();
+                pingState.setReceived(true);
                 if(!networkState.getServerPhase().equals(ServerPhases.GAME)|| isCurrent()){
                     MessageReceivedEvent evt = new MessageReceivedEvent(this, line);
                     for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
-                        event.eventPerformed(evt, socket);
+                        event.eventPerformed(evt, socketId.getSocket());
                     }
                 }
             } catch (IOException ignore) {

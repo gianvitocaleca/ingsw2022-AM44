@@ -138,6 +138,7 @@ public class NetworkState {
                 s.setConnected(false);
             }
         }
+        serverPhase=ServerPhases.WAITING;
     }
 
     public synchronized void addSocket(SocketID socketID) {

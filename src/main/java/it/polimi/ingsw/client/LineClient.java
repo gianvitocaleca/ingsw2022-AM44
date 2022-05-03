@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.server.PingState;
 import it.polimi.ingsw.server.networkMessages.Message;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
@@ -16,7 +17,7 @@ public class LineClient {
     private String inputLine;
     private ClientState cs;
     private Gson gson;
-
+    private PingState ps;
 
     private Scanner stdin;
     private PrintWriter socketOut;
@@ -25,6 +26,7 @@ public class LineClient {
         this.ip = ip;
         this.port = port;
         gson = new Gson();
+        ps = new PingState();
     }
 
     public void startClient() throws IOException {
@@ -33,8 +35,10 @@ public class LineClient {
         System.out.println("Connection established");
         System.out.println("Client dynamic port number: " + socket.getLocalPort());
         Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new MessageReceiverClient(s,cs));
+        Thread t = new Thread(new MessageReceiverClient(s,cs,ps));
         t.start();
+        Thread t1 = new Thread(new PingHandler(ps,socket));
+        t1.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         stdin = new Scanner(System.in);
 

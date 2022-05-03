@@ -79,7 +79,7 @@ public class SocketReceiverServer {
                 }while(!networkState.getServerPhase().equals(ServerPhases.GAME));
                 //add the new object to the status list
                 networkState.addSocket(socketId);
-                Thread t2 = new Thread(new MessageReceiverServer(socket, messageHandler,gameStatus,networkState));
+                Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler,gameStatus,networkState));
                 t2.start();
 
                 switch (networkState.getServerPhase()) {
