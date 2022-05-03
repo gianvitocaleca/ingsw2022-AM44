@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.EventListener;
 import java.util.List;
+import java.util.Locale;
 
 public class LoginHandler extends Thread implements EventListener {
     private NetworkState networkState;
@@ -53,8 +54,8 @@ public class LoginHandler extends Thread implements EventListener {
         sendMessage(Headers.loginMessage_Username, "Provide your username :");
 
         while (true) {
-            username = loginState.getUsername(socketId.getSocket());
-            if (username.equals("")) {
+            username = loginState.getUsername(socketId.getSocket()).toLowerCase();
+            if (username.equals("")|| username.contains(" ")) {
                 loginState.removeUsername(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "Hey, funny guy :) Nice try, but provide a username, not an empty string");
             } else if (!networkState.setUsername(socketId.id, username)) {
@@ -69,7 +70,12 @@ public class LoginHandler extends Thread implements EventListener {
 
         while (true) {
             color = loginState.getColor(socketId.getSocket());
-            if (!networkState.setColor(socketId.id, color)) {
+            if(color.equals(Color.WRONG)){
+                loginState.removeColor(socketId.getSocket());
+                sendMessage(Headers.errorMessage, "The chosen color doesn't exist, try again : " +
+                        "1 White 2 Black 3 Gray");
+            }
+            else if (!networkState.setColor(socketId.id, color)) {
                 loginState.removeColor(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The color : " + color + " is already taken!" +
                         "Provide a different color : 1 White 2 Black 3 Gray");
@@ -82,7 +88,13 @@ public class LoginHandler extends Thread implements EventListener {
 
         while (true) {
             wizard = loginState.getWizard(socketId.getSocket());
-            if (!networkState.setWizard(socketId.id, wizard)) {
+            if(wizard.equals(Wizard.WRONG)){
+                loginState.removeWizard(socketId.getSocket());
+                sendMessage(Headers.errorMessage, "The chosen wizard doesn't exist, try again : " +
+                        "1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");
+
+            }
+            else if (!networkState.setWizard(socketId.id, wizard)) {
                 loginState.removeWizard(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The wizard : " + wizard + " is already taken!" +
                         "Provide a different wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");

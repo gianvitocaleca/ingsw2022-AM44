@@ -156,7 +156,13 @@ public class MessageHandler implements EventListener {
                 loginState.setUsername(evt.getSender(), evt.getPayload().getString());
                 break;
             case LOGIN_COLOR:
-                switch(Integer.parseInt(evt.getPayload().getString())){
+                int color;
+                try{
+                    color = Integer.parseInt(evt.getPayload().getString());
+                }catch (NumberFormatException e){
+                    color = 5;
+                }
+                switch(color){
                     case 1:
                         loginState.setColor(evt.getSender(), Color.WHITE );
                         break;
@@ -166,11 +172,20 @@ public class MessageHandler implements EventListener {
                     case 3:
                         loginState.setColor(evt.getSender(), Color.GREY);
                         break;
+                    default:
+                        loginState.setColor(evt.getSender(), Color.WRONG);
+                        break;
                 }
 
                 break;
             case LOGIN_WIZARD:
-                switch (Integer.parseInt(evt.getPayload().getString())){
+                int wizard;
+                try{
+                    wizard = Integer.parseInt(evt.getPayload().getString());
+                }catch (NumberFormatException e){
+                    wizard = 5;
+                }
+                switch (wizard){
                     case 1:
                         loginState.setWizard(evt.getSender(), Wizard.GANDALF);
                         break;
@@ -182,6 +197,9 @@ public class MessageHandler implements EventListener {
                         break;
                     case 4:
                         loginState.setWizard(evt.getSender(), Wizard.KENJI);
+                        break;
+                    default:
+                        loginState.setWizard(evt.getSender(), Wizard.WRONG);
                         break;
                 }
 

@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.controller.enums.GamePhases;
 
 public class CreationState {
     private int numberOfPlayers;
+    private boolean set = false;
     private int advancedRules;
     private GamePhases phase;
     private Boolean creationPhaseEnded = false;
@@ -16,7 +17,7 @@ public class CreationState {
 
     public int getNumberOfPlayers() {
         synchronized (this){
-            while(numberOfPlayers==0){
+            while(!set){
                 try {
                     this.wait();
                 } catch (InterruptedException e) {}
@@ -27,12 +28,17 @@ public class CreationState {
 
     public synchronized void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
+        this.set = true;
         this.notifyAll();
+    }
+
+    public void reset(){
+        this.set = false;
     }
 
     public int getAdvancedRules() {
         synchronized (this){
-            while(advancedRules==-1){
+            while(!set){
                 try {
                     this.wait();
                 } catch (InterruptedException e) {}
@@ -43,6 +49,7 @@ public class CreationState {
 
     public synchronized void setAdvancedRules(int advancedRules) {
         this.advancedRules = advancedRules;
+        this.set = true;
         this.notifyAll();
     }
 
