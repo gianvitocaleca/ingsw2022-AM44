@@ -49,6 +49,7 @@ public class CreationHandler extends Thread{
                     cs.reset();
                 }
                 cs.setCreationPhaseEnded();
+                networkState.setCreationPhaseEnded(true);
                 break;
             }
         }

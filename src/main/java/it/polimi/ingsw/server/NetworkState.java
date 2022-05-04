@@ -13,11 +13,20 @@ public class NetworkState {
     private int numberOfPlayers;
     private boolean advancedRules;
     private int loginPhaseEnded = 0;
+    private boolean creationPhaseEnded = false;
 
     public NetworkState() {
         socketIDList = new ArrayList<>();
         this.numberOfPlayers = 1;
         this.advancedRules = false;
+    }
+
+    public synchronized boolean isCreationPhaseEnded() {
+        return creationPhaseEnded;
+    }
+
+    public synchronized void setCreationPhaseEnded(boolean creationPhaseEnded) {
+        this.creationPhaseEnded = creationPhaseEnded;
     }
 
     public synchronized void setLoginPhaseEnded() {
@@ -132,13 +141,20 @@ public class NetworkState {
         }
     }
 
-    public synchronized void disconnectPlayer(String username) {
+    public synchronized void disconnectPlayer(int id) {
         for (SocketID s : socketIDList) {
-            if (s.getPlayerInfo().getUsername().equals(username)) {
+            if (s.getId()==id) {
                 s.setConnected(false);
             }
         }
-        serverPhase=ServerPhases.WAITING;
+        if(!(serverPhase.equals(ServerPhases.LOGIN))){
+            serverPhase=ServerPhases.WAITING;
+        }else{
+            if(!isCreationPhaseEnded()){
+                setServerPhase(ServerPhases.READY);
+            }
+        }
+
     }
 
     public synchronized void addSocket(SocketID socketID) {

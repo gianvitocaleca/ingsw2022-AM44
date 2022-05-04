@@ -1,11 +1,13 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.events.MessageReceivedEvent;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class MessageReceiverServer extends Thread {
@@ -18,9 +20,13 @@ public class MessageReceiverServer extends Thread {
 
     private EventListenerList listeners = new EventListenerList();
 
-    private PingHandler pingHandler;
+    private ServerPingHandler serverPingHandler;
 
     private PingState pingState;
+    private Scanner in;
+
+    private final int pingTime = 10000;
+    private final int maxNoAnswers = 4;
 
     public MessageReceiverServer(SocketID socketId, MessageHandler listener, GameStatus gameStatus, NetworkState networkState) {
         this.socketId = socketId;
@@ -28,16 +34,20 @@ public class MessageReceiverServer extends Thread {
         this.gameStatus = gameStatus;
         this.networkState = networkState;
         pingState = new PingState();
-        pingHandler = new PingHandler(networkState,pingState, socketId);
+        serverPingHandler = new ServerPingHandler(pingState,networkState,socketId,pingTime,maxNoAnswers);
+        try {
+            in = new Scanner(socketId.getSocket().getInputStream());
+        } catch (IOException e) {
+            System.out.println("Server read error");
+        }
     }
 
 
     @Override
     public void run() {
-        pingHandler.start();
+        serverPingHandler.start();
         while (true) {
-            try {
-                Scanner in = new Scanner(socketId.getSocket().getInputStream());
+            try{
                 String line = in.nextLine();
                 pingState.setReceived(true);
                 if(!networkState.getServerPhase().equals(ServerPhases.GAME)|| isCurrent()){
@@ -46,9 +56,12 @@ public class MessageReceiverServer extends Thread {
                         event.eventPerformed(evt, socketId.getSocket());
                     }
                 }
-            } catch (IOException ignore) {
-                System.out.println("Server read error");
+            }catch (NoSuchElementException ignore){
+                if(pingState.isCloseConnection()){
+                    break;
+                }
             }
+
         }
 
     }

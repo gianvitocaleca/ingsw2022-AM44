@@ -4,10 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import it.polimi.ingsw.server.PingState;
+import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class MessageReceiverClient extends Thread{
@@ -27,22 +31,33 @@ public class MessageReceiverClient extends Thread{
     @Override
     public void run(){
         while(true){
-            socketLine = socketIn.nextLine();
-            ps.setReceived(true);
-            translateMessage(socketLine);
+            try{
+                socketLine = socketIn.nextLine();
+                ps.setReceived(true);
+                translateMessage(socketLine);
+            }
+            catch (NoSuchElementException ignore){
+                if(ps.isCloseConnection()){
+                    break;
+                }
+            }
         }
+
     }
 
     private void translateMessage(String socketLine){
         JsonObject jsonTree = JsonParser.parseString(socketLine).getAsJsonObject();
         JsonElement jsonHeader = jsonTree.get("header");
         Headers header = gson.fromJson(jsonHeader, Headers.class);
-        System.out.println(header);
-        if(!header.equals(Headers.errorMessage)){
+        if(!header.equals(Headers.errorMessage)&&!header.equals(Headers.ping)){
             cs.setHeaders(header);
         }
-        JsonElement jsonPayload = jsonTree.get("payload");
-        StringPayload stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
-        System.out.println(stringPayload.getString());
+        if(!header.equals(Headers.ping)){
+            System.out.println(header);
+            JsonElement jsonPayload = jsonTree.get("payload");
+            StringPayload stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
+            System.out.println(stringPayload.getString());
+        }
+
     }
 }

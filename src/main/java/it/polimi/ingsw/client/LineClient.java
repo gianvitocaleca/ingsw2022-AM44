@@ -1,14 +1,13 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.server.PingState;
+import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.networkMessages.Message;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class LineClient {
@@ -18,7 +17,8 @@ public class LineClient {
     private ClientState cs;
     private Gson gson;
     private PingState ps;
-
+    private final int pingTime = 5000;
+    private final int maxNoAnswers = 4;
     private Scanner stdin;
     private PrintWriter socketOut;
 
@@ -37,35 +37,38 @@ public class LineClient {
         Scanner s = new Scanner(socket.getInputStream());
         Thread t = new Thread(new MessageReceiverClient(s,cs,ps));
         t.start();
-        Thread t1 = new Thread(new PingHandler(ps,socket));
+        Thread t1 = new Thread(new ClientPingHandler(ps,socket,pingTime,maxNoAnswers));
         t1.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         stdin = new Scanner(System.in);
-
         play(socket);
-
-
     }
 
-    private void play(Socket socket){
-        try{
-            while (true){
-                inputLine = stdin.nextLine();
-                String result = encodeMessage(inputLine);
-                socketOut.println(result);
-                socketOut.flush();
+    private void play(Socket socket) {
+        while(!ps.isCloseConnection()) {
+            inputLine = stdin.nextLine();
+            String result = encodeMessage(inputLine);
+            socketOut.println(result);
+            if(socketOut.checkError()){
+                System.out.println("There is an error with the server.. closing connection");
+                break;
             }
-
-        } catch(NoSuchElementException e){
-            System.out.println("Connection closed");
-        } finally {
-            stdin.close();
-            socketOut.close();
+        }
+        while(!ps.isCloseConnection()){
             try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
+        }
+
+        stdin.close();
+        socketOut.close();
+        try {
+            socket.close();
+            System.out.println("Connection closed, server unreachable");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
