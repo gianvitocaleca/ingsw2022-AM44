@@ -55,23 +55,13 @@ public class TableTest {
     public void RightFusionTest() {
         Island currIsland = table.getCurrentIsland();
         Island nextIsland = table.getNextIsland();
-        System.out.println("Right Fusion Test:");
         int originalSize = table.getIslands().size();
         try {
             table.islandFusion("Right");
-        } catch (GroupsOfIslandsException e) {
-            System.out.println("No more island to get fused");
+        } catch (GroupsOfIslandsException ignore) {
         }
 
 
-        for (int i = 0; i < table.getIslands().size(); i++) {
-            System.out.println("Index: " + i + " ");
-            for (Student c : table.getIslands().get(i).getStudents()) {
-                System.out.print(c.getCreature() + " ");
-            }
-            System.out.println();
-            System.out.println(table.getIslands().get(i));
-        }
         currIsland.getStudents().addAll(nextIsland.getStudents());
         List<Student> check = currIsland.getStudents();
 
@@ -97,22 +87,12 @@ public class TableTest {
     public void LeftFusionTest() {
         Island currIsland = table.getCurrentIsland();
         Island prevIsland = table.getPrevIsland();
-        System.out.println("Left Fusion Test:");
         int originalSize = table.getIslands().size();
         try {
             table.islandFusion("Left");
-        } catch (GroupsOfIslandsException e) {
-            System.out.println("No more island to get fused");
+        } catch (GroupsOfIslandsException ignore) {
         }
 
-        for (int i = 0; i < table.getIslands().size(); i++) {
-            System.out.println("Index: " + i + " ");
-            for (Student c : table.getIslands().get(i).getStudents()) {
-                System.out.print(c.getCreature() + " ");
-            }
-            System.out.println();
-            System.out.println(table.getIslands().get(i));
-        }
 
         currIsland.getStudents().addAll(prevIsland.getStudents());
         List<Student> check = currIsland.getStudents();
@@ -140,29 +120,18 @@ public class TableTest {
         Island currIsland = table.getCurrentIsland();
         Island nextIsland = table.getNextIsland();
         Island prevIsland = table.getPrevIsland();
-        System.out.println("Both Fusion Test:");
         int originalSize = table.getIslands().size();
         try {
             table.islandFusion("Both");
-        } catch (GroupsOfIslandsException e) {
-            System.out.println("No more island to get fused");
+        } catch (GroupsOfIslandsException ignore) {
         }
 
-        for (int i = 0; i < table.getIslands().size(); i++) {
-            System.out.println("Index: " + i + " ");
-            for (Student c : table.getIslands().get(i).getStudents()) {
-                System.out.print(c.getCreature() + " ");
-            }
-            System.out.println();
-            System.out.println(table.getIslands().get(i));
-        }
+
         List<Student> check = currIsland.getStudents();
         check.addAll(prevIsland.getStudents());
         check.addAll(nextIsland.getStudents());
 
-        for (Student c : currIsland.getStudents()) {
-            System.out.print(c.getCreature() + " ");
-        }
+
 
 
         assertEquals(table.getCurrentIsland().getStudents().get(0).getCreature(),
@@ -182,12 +151,11 @@ public class TableTest {
      */
     @Test
     public void LastFusionTest() {
-        System.out.println("Last Fusion Test:");
+
         while (true) {
             try {
                 table.islandFusion("Both");
             } catch (GroupsOfIslandsException e) {
-                System.out.println("Last fusion made");
                 assertEquals(3, table.getIslands().size());
                 break;
             }

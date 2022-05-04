@@ -63,7 +63,6 @@ public class GameModelTest {
             }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
         }
         gm.establishRoundOrder();
-        gm.getPlayers().forEach(System.out::println);
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(1).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());

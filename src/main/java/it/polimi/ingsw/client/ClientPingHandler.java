@@ -3,7 +3,6 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.pingHandler.PingHandler;
 import it.polimi.ingsw.pingHandler.PingState;
 
-import java.io.IOException;
 import java.net.Socket;
 
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class MessageSenderServer {
 
@@ -31,7 +32,7 @@ public class MessageSenderServer {
             out.println(message);
             out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Impossible to send message, socket not connected");
         }
     }
 }
