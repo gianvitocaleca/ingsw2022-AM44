@@ -1,18 +1,16 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.characters.Character;
+import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -36,9 +34,12 @@ public class PrincessTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
+    /**
+     * This tests that the princess effect works correctly swapping students between source and destination
+     */
     @Test
     void princessEffectTest() {
         int maxStudentsInPrincess = 4;
@@ -90,7 +91,7 @@ public class PrincessTest {
             oldDiningRoomCreatures.add(s.getCreature());
         }
         //creates the parameters for the character effect
-        CharactersParameters princessParameters = new CharactersParameters(studentToRemoveFromPrincess,
+        CharactersParametersPayload princessParameters = new CharactersParametersPayload(studentToRemoveFromPrincess,
                 0, 0, null, null);
         //play character effect
         gm.effect(princessParameters);

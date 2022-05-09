@@ -1,13 +1,21 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.enums.*;
-import it.polimi.ingsw.model.exceptions.*;
-import it.polimi.ingsw.model.gameboard.Table;
-import it.polimi.ingsw.model.player.*;
-import it.polimi.ingsw.model.studentcontainers.*;
-import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.characters.Character;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.server.model.exceptions.GroupsOfIslandsException;
+import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
+import it.polimi.ingsw.server.model.gameboard.Table;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Professor;
+import it.polimi.ingsw.server.model.studentcontainers.Cloud;
+import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.model.students.Student;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
@@ -28,7 +36,7 @@ public class GameModelTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
     /**
@@ -55,7 +63,6 @@ public class GameModelTest {
             }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
         }
         gm.establishRoundOrder();
-        gm.getPlayers().forEach(System.out::println);
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(1).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(1).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(2).getLastPlayedCard().getValue());
@@ -144,17 +151,22 @@ public class GameModelTest {
     @Test
     void moveMotherNature() {
         int jumps = 1;
+        int index = gm.getCurrentPlayerIndex();
         int originalMnPos = gm.getTable().getMnPosition();
         if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
             try{
                 gm.playAssistant(9);
             }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
-            gm.setCurrentPlayerIndex(0);
+            gm.setCurrentPlayerIndex(index);
             gm.moveMotherNature(jumps);
             assertEquals(gm.getTable().getMnPosition(), originalMnPos + jumps);
         } else {
+            try{
+                gm.playAssistant(9);
+            }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
+            gm.setCurrentPlayerIndex(index);
             gm.moveMotherNature(jumps);
-            assertEquals(gm.getTable().getMnPosition(), jumps - (gm.getTable().getIslands().size() - 2 - gm.getTable().getMnPosition()));
+            assertEquals(gm.getTable().getMnPosition(), (originalMnPos+jumps)%gm.getTable().getIslands().size());
         }
     }
 
@@ -274,7 +286,7 @@ public class GameModelTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
         //now table has 17 coins
         gm.setCurrentPlayerIndex(1);
 
@@ -300,6 +312,10 @@ public class GameModelTest {
         assertEquals(18, gm.getTable().getCoinReserve());
     }
 
+    /**
+     * This tests that when one player has more students of a creature than all the others in the game, it
+     * gets the Professor corresponding to the creature
+     */
     @Test
     public void checkProfessorTest(){
 

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.studentcontainers.DiningRoom;
-import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.server.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,9 +30,12 @@ public class FarmerTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
+    /**
+     * This tests that when the Farmer character is played, the model uses the correct version of check professor method
+     */
     @Test
     public void checkProfessorFarmerTest(){
 

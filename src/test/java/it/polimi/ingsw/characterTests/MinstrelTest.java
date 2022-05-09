@@ -1,18 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.characters.MoverCharacter;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.studentcontainers.DiningRoom;
-import it.polimi.ingsw.model.studentcontainers.Entrance;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.characters.MoverCharacter;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ public class MinstrelTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
     /**
@@ -58,20 +57,8 @@ public class MinstrelTest {
         gm.playCharacter(0);
 
         int maxNumberOfStudentsToSwap = 2;
-        //populate the current player entrance with random students
-        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
-            try {
-                players = gm.getPlayers();
 
-                Entrance e = players.get(gm.getCurrentPlayerIndex()).getEntrance();
-                e.addStudent(bucket.generateStudent());
-                players.get(gm.getCurrentPlayerIndex()).setEntrance(e);
 
-                gm.setPlayers(players);
-
-            } catch (StudentsOutOfStockException ignore) {
-            }
-        }
         //populate the current player dining room with random students
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
             try {
@@ -92,40 +79,47 @@ public class MinstrelTest {
         //old students in entrance
         List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
         List<Creature> oldEntranceCreatures = new ArrayList<>();
-        for (Student s : studentsInEntrance) {
+        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
+            Student s = studentsInEntrance.get(i);
             oldEntranceCreatures.add(s.getCreature());
         }
 
         //old students in dining room
         List<Student> studentsInDiningRoom = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents();
         List<Creature> oldDiningRoomCreatures = new ArrayList<>();
-        for (Student s : studentsInDiningRoom) {
+        for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
+            Student s = studentsInDiningRoom.get(i);
             oldDiningRoomCreatures.add(s.getCreature());
         }
 
+        int oldCounter=0;
+        for(Creature c : Creature.values()){
+            oldCounter+= gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getNumberOfStudentsByCreature(c);
+        }
+
         //creates the parameters for the character effect
-        CharactersParameters minstrelParameters = new CharactersParameters(oldEntranceCreatures,
+        CharactersParametersPayload minstrelParameters = new CharactersParametersPayload(oldEntranceCreatures,
                 0, 0, null, oldDiningRoomCreatures);
         //play character effect
         gm.effect(minstrelParameters);
 
         //the number of students should be the same as before
-        assertEquals(maxNumberOfStudentsToSwap, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents().size());
-        assertEquals(maxNumberOfStudentsToSwap, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
+        int newCounter=0;
+        for(Creature c : Creature.values()){
+            newCounter+= gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getNumberOfStudentsByCreature(c);
+        }
 
-        //get the new creatures in the dining room and the entrance
-        List<Creature> newDiningRoomCreatures = new ArrayList<>();
-        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents()) {
-            newDiningRoomCreatures.add(s.getCreature());
-        }
-        List<Creature> newEntranceCreatures = new ArrayList<>();
-        for (Student s : gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents()) {
-            newEntranceCreatures.add(s.getCreature());
-        }
+        assertEquals(oldCounter,newCounter);
+
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getCapacity(),
+                gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
+
 
         //the creatures should be swapped
-        assertTrue(newEntranceCreatures.containsAll(oldDiningRoomCreatures));
-        assertTrue(newDiningRoomCreatures.containsAll(oldEntranceCreatures));
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(7).getCreature(),oldDiningRoomCreatures.get(0));
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(8).getCreature(),oldDiningRoomCreatures.get(1));
+
+
 
 
     }

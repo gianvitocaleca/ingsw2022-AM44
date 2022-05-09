@@ -2,12 +2,12 @@ package it.polimi.ingsw.studentcontainerTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.model.studentcontainers.Island;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ public class IslandTest {
     @BeforeEach
     void initializeIsland() {
         List<Student> students = new ArrayList<Student>();
-        sb = new StudentBucket() ;
+        sb = new StudentBucket();
         for (int i = 0; i < new Random().nextInt(130); i++) {
             try {
                 students.add(sb.generateStudent());
@@ -53,5 +53,16 @@ public class IslandTest {
             assertEquals(sum, island.getNumberOfStudentsByCreature(c));
         }
 
+    }
+
+    /**
+     * This tests that the methods addNoEntry and removeNoEntry works correctly
+     */
+    @Test
+    public void noEntryTest() {
+        island.addNoEntry();
+        assertEquals(1, island.getNumberOfNoEntries());
+        island.removeNoEntry();
+        assertEquals(0, island.getNumberOfNoEntries());
     }
 }

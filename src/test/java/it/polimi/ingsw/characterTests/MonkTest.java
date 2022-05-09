@@ -1,18 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.studentcontainers.Island;
-import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.characters.Character;
+import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -36,9 +35,12 @@ public class MonkTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
+    /**
+     * This tests that the monk effect is correctly executed, swapping the correct students between source and destination
+     */
     @Test
     void monkEffectTest() {
         int maxStudentsInMonk = 4;
@@ -94,7 +96,7 @@ public class MonkTest {
             oldIslandCreatures.add(s.getCreature());
         }
         //creates the parameters for the character effect
-        CharactersParameters monkParameters = new CharactersParameters(studentToRemoveFromMonk,
+        CharactersParametersPayload monkParameters = new CharactersParametersPayload(studentToRemoveFromMonk,
                 islandDestinationIndex, 0, null, null);
         //play character effect
         gm.effect(monkParameters);
@@ -121,12 +123,16 @@ public class MonkTest {
         //all the other island should be unchanged
         List<Island> newIslands = gm.getTable().getIslands();
         for (int i = 0; i < newIslands.size(); i++) {
+            List<Creature> oldCreatures;
+            List<Creature> newCreatures;
             if (i != islandDestinationIndex) {
-                List<Creature> oldCreatures;
-                List<Creature> newCreatures;
                 oldCreatures = oldIslands.get(i).getStudents().stream().map(Student::getCreature).toList();
                 newCreatures = newIslands.get(i).getStudents().stream().map(Student::getCreature).toList();
                 assertTrue(oldCreatures.containsAll(newCreatures));
+            } else {
+                oldCreatures = oldIslands.get(i).getStudents().stream().map(Student::getCreature).toList();
+                newCreatures = newIslands.get(i).getStudents().stream().map(Student::getCreature).toList();
+                assertTrue(newCreatures.containsAll(oldCreatures) && newCreatures.containsAll(studentToRemoveFromMonk));
             }
         }
 

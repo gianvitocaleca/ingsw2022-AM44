@@ -1,18 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.characters.Herald;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.Professor;
-import it.polimi.ingsw.model.studentcontainers.Cloud;
-import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.characters.Herald;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Professor;
+import it.polimi.ingsw.server.model.studentcontainers.Cloud;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class HeraldTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
     /**
@@ -45,7 +44,7 @@ public class HeraldTest {
     @Test
     void heraldEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        CharactersParameters herald = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
+        CharactersParametersPayload herald = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
         List<Professor> profes = new ArrayList<>();
         for (Creature c : Creature.values()) {
             profes.add(new Professor(c));

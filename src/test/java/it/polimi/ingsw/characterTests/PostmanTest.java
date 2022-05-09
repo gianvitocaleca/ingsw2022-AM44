@@ -1,13 +1,13 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.characters.Postman;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
-import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.characters.Postman;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,12 +26,15 @@ public class PostmanTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
+    /**
+     * This tests that when the postman card is played, motherNature moves of jumps+postmanMovements positions
+     */
     @Test
     public void postmanTest() {
-        CharactersParameters Postman = new CharactersParameters(new ArrayList<>(),
+        CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
                 0, 2, null, new ArrayList<>());
         try {
             gm.playAssistant(0);
@@ -63,9 +66,12 @@ public class PostmanTest {
 
     }
 
+    /**
+     * This tests that when a wrong value for the postmanMovements is provided, the game will not execute the moveMotherNature method
+     */
     @Test
     public void setWrongPostmanMovementsTest() {
-        CharactersParameters Postman = new CharactersParameters(new ArrayList<>(),
+        CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
                 0, 200, null, new ArrayList<>());
 
         gm.getCharacters().remove(0);

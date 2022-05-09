@@ -1,22 +1,22 @@
 package it.polimi.ingsw.evaluatorsTest;
 
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.characters.BehaviorCharacter;
-import it.polimi.ingsw.model.characters.Character;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.model.gameboard.MotherNature;
-import it.polimi.ingsw.model.gameboard.Table;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.Professor;
-import it.polimi.ingsw.model.studentcontainers.Cloud;
-import it.polimi.ingsw.model.studentcontainers.Island;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.characters.BehaviorCharacter;
+import it.polimi.ingsw.server.model.characters.Character;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.server.model.gameboard.MotherNature;
+import it.polimi.ingsw.server.model.gameboard.Table;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Professor;
+import it.polimi.ingsw.server.model.studentcontainers.Cloud;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,9 +41,13 @@ public class FungaroEvaluatorTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
+    /**
+     * This tests that when a Fungaro Character is played, the influenceEvaluator() method skips the selected creature
+     * when calculating the influence for every player
+     */
     @Test
     void fungaroEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
@@ -54,7 +58,7 @@ public class FungaroEvaluatorTest {
         List<Creature> gnomes = new ArrayList<>();
         gnomes.add(Creature.YELLOW_GNOMES);
 
-        fungaro.effect(new CharactersParameters(
+        fungaro.effect(new CharactersParametersPayload(
                 gnomes, 0, 0, new Cloud(10), new ArrayList<>()));
 
         Table table = gm.getTable();

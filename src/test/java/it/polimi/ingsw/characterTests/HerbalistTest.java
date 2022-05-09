@@ -1,13 +1,13 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.characters.Herbalist;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.studentcontainers.Cloud;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.characters.Herbalist;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ public class HerbalistTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
 
@@ -44,7 +44,7 @@ public class HerbalistTest {
     void herbalistEffectTest() {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
 
-        CharactersParameters herbalist = new CharactersParameters(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
+        CharactersParametersPayload herbalist = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
         //set Herbalist Character in characters to test her effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));

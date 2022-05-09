@@ -1,17 +1,17 @@
 package it.polimi.ingsw.evaluatorsTest;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.model.gameboard.MotherNature;
-import it.polimi.ingsw.model.gameboard.Table;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.Professor;
-import it.polimi.ingsw.model.studentcontainers.Island;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.server.model.gameboard.MotherNature;
+import it.polimi.ingsw.server.model.gameboard.Table;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.player.Professor;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +35,13 @@ public class StandardEvaluatorTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
+    /**
+     * This tests that when no BehaviorCharacter is played, the influenceEvaluator() method works correctly
+     * when calculating the influence
+     */
     @Test
     void standardEvaluatorTest() {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;

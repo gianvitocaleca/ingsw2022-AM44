@@ -1,6 +1,6 @@
 package it.polimi.ingsw.gameboardTests;
 
-import it.polimi.ingsw.model.gameboard.MotherNature;
+import it.polimi.ingsw.server.model.gameboard.MotherNature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,6 @@ class MotherNatureTest {
         }
 
         for(int x=0; x<NUMBER_OF_ISLANDS; x++){
-            System.out.print(values.get(x)+" ");
             assertTrue(values.get(x)!=0);
         }
     }

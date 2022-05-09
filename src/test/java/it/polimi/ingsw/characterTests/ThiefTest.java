@@ -1,17 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.model.GameModel;
-import it.polimi.ingsw.messages.CharactersParameters;
-import it.polimi.ingsw.model.characters.MoverCharacter;
-import it.polimi.ingsw.model.enums.Color;
-import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
-import it.polimi.ingsw.model.enums.Wizard;
-import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.studentcontainers.DiningRoom;
-import it.polimi.ingsw.model.students.Student;
-import it.polimi.ingsw.model.students.StudentBucket;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.characters.MoverCharacter;
+import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.server.model.enums.Wizard;
+import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ class ThiefTest {
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
-                new ArrayList<>(Arrays.asList(Wizard.YELLOW, Wizard.PINK, Wizard.BLUE)));
+                new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
     }
 
 
@@ -71,7 +71,7 @@ class ThiefTest {
         //creates the necessary parameters for the character
         List<Creature> uni = new ArrayList<>();
         uni.add(creatureToRemove);
-        CharactersParameters thief = new CharactersParameters(uni, 0, 0, null, new ArrayList<>());
+        CharactersParametersPayload thief = new CharactersParametersPayload(uni, 0, 0, null, new ArrayList<>());
         //puts the thief as first character
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new MoverCharacter(Name.THIEF, gm));
