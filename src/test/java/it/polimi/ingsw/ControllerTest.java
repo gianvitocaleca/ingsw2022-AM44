@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.server.NetworkState;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
@@ -46,6 +47,8 @@ public class ControllerTest {
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         view = new MessageHandler();
+        NetworkState state = new NetworkState();
+        view.setNetworkState(state);
         controller = new Controller(gm,view,new GameStatus(GamePhases.PLANNING,false));
     }
 

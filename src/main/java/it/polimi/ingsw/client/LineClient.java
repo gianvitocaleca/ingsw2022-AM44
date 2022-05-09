@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.networkMessages.StringPayload;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class LineClient {
@@ -18,7 +19,7 @@ public class LineClient {
     private Gson gson;
     private PingState ps;
     private final int pingTime = 5000;
-    private final int maxNoAnswers = 4;
+    private final int maxNoAnswers = 1;
     private Scanner stdin;
     private PrintWriter socketOut;
 

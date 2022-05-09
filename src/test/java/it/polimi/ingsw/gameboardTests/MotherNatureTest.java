@@ -38,7 +38,6 @@ class MotherNatureTest {
         }
 
         for(int x=0; x<NUMBER_OF_ISLANDS; x++){
-            System.out.print(values.get(x)+" ");
             assertTrue(values.get(x)!=0);
         }
     }
