@@ -2,7 +2,6 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.GameStatus;
-import it.polimi.ingsw.server.controller.Listeners.LoginPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
@@ -54,7 +53,6 @@ public class SocketReceiverServer {
         CreationState cs = new CreationState();
         messageHandler.setCreationState(cs);
 
-        LoginPhaseListener lpl = new LoginPhaseListener(loginState);
         GameStatus gameStatus = new GameStatus(GamePhases.PLANNING, false);
 
 
@@ -86,11 +84,9 @@ public class SocketReceiverServer {
                         //class that
                         CreationHandler creator = new CreationHandler(networkState, messageHandler, cs, id);
                         creator.start();
-                        messageHandler.addListener(lpl);
                     case LOGIN:
                         System.out.println("Starting Login for player " + id);
                         LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, cs);
-                        messageHandler.addLoginHandler(login);
                         Thread t = new Thread(login);
                         t.start();
                         break;

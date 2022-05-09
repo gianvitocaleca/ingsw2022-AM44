@@ -3,9 +3,7 @@ package it.polimi.ingsw.server.viewProxy;
 import com.google.gson.*;
 import it.polimi.ingsw.server.*;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
-import it.polimi.ingsw.server.controller.Listeners.LoginPhaseListener;
 import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
-import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.enums.Color;
@@ -54,18 +52,6 @@ public class MessageHandler implements EventListener {
         listeners.add(ActionPhaseListener.class, listener);
     }
 
-    public void addListener(LoginPhaseListener listener) {
-        listeners.add(LoginPhaseListener.class, listener);
-    }
-
-
-    public void addLoginHandler(LoginHandler loginHandler) {
-        for (LoginPhaseListener event : listeners.getListeners(LoginPhaseListener.class)) {
-            event.addLoginHandler(loginHandler);
-        }
-    }
-
-
     public void eventPerformed(StatusEvent evt, Payload payload) {
         message = gson.toJson(new Message(evt.getHeader(), payload));
         mss.sendBroadcastMessage(message);
@@ -108,15 +94,15 @@ public class MessageHandler implements EventListener {
                 break;
             case loginMessage_Username:
                 LoginPayload loginPayload = gson.fromJson(jsonPayload, LoginPayload.class);
-                loginMessageReceiver(new LoginEvent(this, loginPayload, GamePhases.LOGIN_USERNAME, sourceSocket));
+                loginMessageReceiver(sourceSocket, loginPayload, GamePhases.LOGIN_USERNAME);
                 break;
             case loginMessage_Color:
                 LoginPayload loginPayload1 = gson.fromJson(jsonPayload, LoginPayload.class);
-                loginMessageReceiver(new LoginEvent(this, loginPayload1, GamePhases.LOGIN_COLOR, sourceSocket));
+                loginMessageReceiver(sourceSocket, loginPayload1, GamePhases.LOGIN_COLOR);
                 break;
             case loginMessage_Wizard:
                 LoginPayload loginPayload2 = gson.fromJson(jsonPayload, LoginPayload.class);
-                loginMessageReceiver(new LoginEvent(this, loginPayload2, GamePhases.LOGIN_WIZARD, sourceSocket));
+                loginMessageReceiver(sourceSocket, loginPayload2, GamePhases.LOGIN_WIZARD);
                 break;
             case winnerPlayer:
                 break;
@@ -158,30 +144,30 @@ public class MessageHandler implements EventListener {
         }
     }
 
-    public void loginMessageReceiver(LoginEvent evt) {
-        switch (evt.getPhase()) {
+    public void loginMessageReceiver(Socket socket, LoginPayload loginPayload, GamePhases gamePhases) {
+        switch (gamePhases) {
             case LOGIN_USERNAME:
-                loginState.setUsername(evt.getSender(), evt.getPayload().getString());
+                loginState.setUsername(socket, loginPayload.getString());
                 break;
             case LOGIN_COLOR:
                 int color;
                 try {
-                    color = Integer.parseInt(evt.getPayload().getString());
+                    color = Integer.parseInt(loginPayload.getString());
                 } catch (NumberFormatException e) {
                     color = 5;
                 }
                 switch (color) {
                     case 1:
-                        loginState.setColor(evt.getSender(), Color.WHITE);
+                        loginState.setColor(socket, Color.WHITE);
                         break;
                     case 2:
-                        loginState.setColor(evt.getSender(), Color.BLACK);
+                        loginState.setColor(socket, Color.BLACK);
                         break;
                     case 3:
-                        loginState.setColor(evt.getSender(), Color.GREY);
+                        loginState.setColor(socket, Color.GREY);
                         break;
                     default:
-                        loginState.setColor(evt.getSender(), Color.WRONG);
+                        loginState.setColor(socket, Color.WRONG);
                         break;
                 }
 
@@ -189,33 +175,29 @@ public class MessageHandler implements EventListener {
             case LOGIN_WIZARD:
                 int wizard;
                 try {
-                    wizard = Integer.parseInt(evt.getPayload().getString());
+                    wizard = Integer.parseInt(loginPayload.getString());
                 } catch (NumberFormatException e) {
                     wizard = 5;
                 }
                 switch (wizard) {
                     case 1:
-                        loginState.setWizard(evt.getSender(), Wizard.GANDALF);
+                        loginState.setWizard(socket, Wizard.GANDALF);
                         break;
                     case 2:
-                        loginState.setWizard(evt.getSender(), Wizard.BALJEET);
+                        loginState.setWizard(socket, Wizard.BALJEET);
                         break;
                     case 3:
-                        loginState.setWizard(evt.getSender(), Wizard.SABRINA);
+                        loginState.setWizard(socket, Wizard.SABRINA);
                         break;
                     case 4:
-                        loginState.setWizard(evt.getSender(), Wizard.KENJI);
+                        loginState.setWizard(socket, Wizard.KENJI);
                         break;
                     default:
-                        loginState.setWizard(evt.getSender(), Wizard.WRONG);
+                        loginState.setWizard(socket, Wizard.WRONG);
                         break;
                 }
 
                 break;
-        }
-
-        for (LoginPhaseListener event : listeners.getListeners(LoginPhaseListener.class)) {
-            event.eventPerformed(evt);
         }
     }
 

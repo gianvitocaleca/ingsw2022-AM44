@@ -1,10 +1,5 @@
 package it.polimi.ingsw.server;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import it.polimi.ingsw.server.controller.enums.GamePhases;
-import it.polimi.ingsw.server.controller.events.LoginEvent;
 import it.polimi.ingsw.server.controller.events.StringEvent;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Wizard;
@@ -12,11 +7,8 @@ import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import javax.swing.event.EventListenerList;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.EventListener;
-import java.util.List;
-import java.util.Locale;
 
 public class LoginHandler extends Thread implements EventListener {
     private NetworkState networkState;
@@ -55,7 +47,7 @@ public class LoginHandler extends Thread implements EventListener {
 
         while (true) {
             username = loginState.getUsername(socketId.getSocket()).toLowerCase();
-            if (username.equals("")|| username.contains(" ")) {
+            if (username.equals("") || username.contains(" ")) {
                 loginState.removeUsername(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "Hey, funny guy :) Nice try, but provide a username, not an empty string");
             } else if (!networkState.setUsername(socketId.id, username)) {
@@ -70,12 +62,11 @@ public class LoginHandler extends Thread implements EventListener {
 
         while (true) {
             color = loginState.getColor(socketId.getSocket());
-            if(color.equals(Color.WRONG)){
+            if (color.equals(Color.WRONG)) {
                 loginState.removeColor(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The chosen color doesn't exist, try again : " +
                         "1 White 2 Black 3 Gray");
-            }
-            else if (!networkState.setColor(socketId.id, color)) {
+            } else if (!networkState.setColor(socketId.id, color)) {
                 loginState.removeColor(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The color : " + color + " is already taken!" +
                         "Provide a different color : 1 White 2 Black 3 Gray");
@@ -88,13 +79,12 @@ public class LoginHandler extends Thread implements EventListener {
 
         while (true) {
             wizard = loginState.getWizard(socketId.getSocket());
-            if(wizard.equals(Wizard.WRONG)){
+            if (wizard.equals(Wizard.WRONG)) {
                 loginState.removeWizard(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The chosen wizard doesn't exist, try again : " +
                         "1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");
 
-            }
-            else if (!networkState.setWizard(socketId.id, wizard)) {
+            } else if (!networkState.setWizard(socketId.id, wizard)) {
                 loginState.removeWizard(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The wizard : " + wizard + " is already taken!" +
                         "Provide a different wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");
