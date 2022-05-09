@@ -1,12 +1,8 @@
 package it.polimi.ingsw.server.viewProxy;
 
 import com.google.gson.*;
-import it.polimi.ingsw.server.LoginHandler;
-import it.polimi.ingsw.server.LoginState;
-import it.polimi.ingsw.server.MessageSenderServer;
-import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.*;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
-import it.polimi.ingsw.server.controller.Listeners.CreationPhaseListener;
 import it.polimi.ingsw.server.controller.Listeners.LoginPhaseListener;
 import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
 import it.polimi.ingsw.server.controller.GameStatus;
@@ -28,7 +24,10 @@ public class MessageHandler implements EventListener {
 
     private MessageSenderServer mss;
 
+    private final int ERROR = 18;
+
     private LoginState loginState;
+    private CreationState creationState;
 
 
     public MessageHandler() {
@@ -47,6 +46,10 @@ public class MessageHandler implements EventListener {
         this.gamePhase = gamePhase;
     }
 
+    public void setCreationState(CreationState creationState) {
+        this.creationState = creationState;
+    }
+
     public void addListener(PlanningPhaseListener listener) {
         listeners.add(PlanningPhaseListener.class, listener);
     }
@@ -59,7 +62,6 @@ public class MessageHandler implements EventListener {
         listeners.add(LoginPhaseListener.class, listener);
     }
 
-    public void addListener(CreationPhaseListener cpl){listeners.add(CreationPhaseListener.class, cpl);}
 
     public void addLoginHandler(LoginHandler loginHandler) {
         for (LoginPhaseListener event : listeners.getListeners(LoginPhaseListener.class)) {
@@ -100,7 +102,13 @@ public class MessageHandler implements EventListener {
 
             case creationRequirementMessage:
                 StringPayload creationPayload = gson.fromJson(jsonPayload, StringPayload.class);
-                creationMessageReceiver(new CreationEvent(this, Integer.parseInt(creationPayload.getString()), sourceSocket));
+                int ans;
+                try {
+                    ans = Integer.parseInt(creationPayload.getString());
+                } catch (NumberFormatException ignore) {
+                    ans = ERROR;
+                }
+                creationMessageReceiver(ans);
                 break;
             case loginMessage_Username:
                 LoginPayload loginPayload = gson.fromJson(jsonPayload, LoginPayload.class);
@@ -146,9 +154,11 @@ public class MessageHandler implements EventListener {
     }
 
 
-    public void creationMessageReceiver(CreationEvent evt) {
-        for (CreationPhaseListener event : listeners.getListeners(CreationPhaseListener.class)) {
-            event.eventPerformed(evt);
+    public void creationMessageReceiver(int num) {
+        if (creationState.getPhase().equals(GamePhases.CREATION_NUMBER_OF_PLAYERS)) {
+            creationState.setNumberOfPlayers(num);
+        } else if (creationState.getPhase().equals(GamePhases.CREATION_RULES)) {
+            creationState.setAdvancedRules(num);
         }
     }
 
@@ -159,14 +169,14 @@ public class MessageHandler implements EventListener {
                 break;
             case LOGIN_COLOR:
                 int color;
-                try{
+                try {
                     color = Integer.parseInt(evt.getPayload().getString());
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     color = 5;
                 }
-                switch(color){
+                switch (color) {
                     case 1:
-                        loginState.setColor(evt.getSender(), Color.WHITE );
+                        loginState.setColor(evt.getSender(), Color.WHITE);
                         break;
                     case 2:
                         loginState.setColor(evt.getSender(), Color.BLACK);
@@ -182,12 +192,12 @@ public class MessageHandler implements EventListener {
                 break;
             case LOGIN_WIZARD:
                 int wizard;
-                try{
+                try {
                     wizard = Integer.parseInt(evt.getPayload().getString());
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     wizard = 5;
                 }
-                switch (wizard){
+                switch (wizard) {
                     case 1:
                         loginState.setWizard(evt.getSender(), Wizard.GANDALF);
                         break;

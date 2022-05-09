@@ -2,22 +2,17 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.GameStatus;
-import it.polimi.ingsw.server.controller.Listeners.CreationPhaseListener;
 import it.polimi.ingsw.server.controller.Listeners.LoginPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class SocketReceiverServer {
 
@@ -57,30 +52,31 @@ public class SocketReceiverServer {
         LoginState loginState = new LoginState();
         messageHandler.setLoginState(loginState);
         CreationState cs = new CreationState();
+        messageHandler.setCreationState(cs);
 
         LoginPhaseListener lpl = new LoginPhaseListener(loginState);
-        GameStatus gameStatus = new GameStatus(GamePhases.PLANNING,false);
+        GameStatus gameStatus = new GameStatus(GamePhases.PLANNING, false);
 
 
         while (true) {
             try {
                 SocketID socketId;
-                do{
+                do {
                     //accept the incoming connection socket
                     socket = serverSocket.accept();
                     //create a new object, and link it to the id
                     socketId = new SocketID(id, socket);
-                    if(networkState.getNumberOfConnectedSocket() >= networkState.getNumberOfPlayers()){
+                    if (networkState.getNumberOfConnectedSocket() >= networkState.getNumberOfPlayers()) {
                         socket.close();
                         System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
-                    }else{
+                    } else {
                         break;
                     }
-                }while(!networkState.getServerPhase().equals(ServerPhases.GAME));
+                } while (!networkState.getServerPhase().equals(ServerPhases.GAME));
                 //add the new object to the status list
                 networkState.addSocket(socketId);
-                System.out.println("Client "+id+" connected, number of clients "+ networkState.getNumberOfConnectedSocket());
-                Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler,gameStatus,networkState));
+                System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket());
+                Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
                 t2.start();
 
                 switch (networkState.getServerPhase()) {
@@ -88,13 +84,12 @@ public class SocketReceiverServer {
                         networkState.setServerPhase(ServerPhases.LOGIN);
                         System.out.println("Starting Creation");
                         //class that
-                        CreationHandler creator = new CreationHandler(networkState, messageHandler,cs,id);
-                        messageHandler.addListener(new CreationPhaseListener(creator,cs));
+                        CreationHandler creator = new CreationHandler(networkState, messageHandler, cs, id);
                         creator.start();
                         messageHandler.addListener(lpl);
                     case LOGIN:
                         System.out.println("Starting Login for player " + id);
-                        LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState,cs);
+                        LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, cs);
                         messageHandler.addLoginHandler(login);
                         Thread t = new Thread(login);
                         t.start();
@@ -108,22 +103,22 @@ public class SocketReceiverServer {
             }
         }
         List<PlayerInfo> playerInfos = networkState.getConnectedPlayerInfo();
-        List<String> usernames = playerInfos.stream().map(s->s.getUsername()).toList();
-        List<Color> color = playerInfos.stream().map(s->s.getColor()).toList();
-        List<Wizard> wizards = playerInfos.stream().map(s->s.getWizard()).toList();
-        GameModel model = new GameModel(networkState.isAdvancedRules(), usernames,networkState.getNumberOfPlayers(),
-                color,wizards);
-        Controller controller = new Controller(model,messageHandler,gameStatus);
+        List<String> usernames = playerInfos.stream().map(s -> s.getUsername()).toList();
+        List<Color> color = playerInfos.stream().map(s -> s.getColor()).toList();
+        List<Wizard> wizards = playerInfos.stream().map(s -> s.getWizard()).toList();
+        GameModel model = new GameModel(networkState.isAdvancedRules(), usernames, networkState.getNumberOfPlayers(),
+                color, wizards);
+        Controller controller = new Controller(model, messageHandler, gameStatus);
         controller.start();
         System.out.println("Game is starting");
-        while(!networkState.getServerPhase().equals(ServerPhases.GAME_ENDED)){
-            switch (networkState.getServerPhase()){
+        while (!networkState.getServerPhase().equals(ServerPhases.GAME_ENDED)) {
+            switch (networkState.getServerPhase()) {
                 case GAME:
                     System.out.println("Game running");
                     break;
                 case WAITING:
                     List<SocketID> disconnectedSocketIDList = networkState.getDisconnectedSocketIDs();
-                    while (disconnectedSocketIDList.size()>0){
+                    while (disconnectedSocketIDList.size() > 0) {
                         socket = serverSocket.accept();
                         disconnectedSocketIDList.get(0).setSocket(socket);
                         disconnectedSocketIDList.remove(0);
