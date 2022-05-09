@@ -19,7 +19,6 @@ import java.util.*;
 public class MessageHandler implements EventListener {
     private Gson gson;
     private EventListenerList listeners = new EventListenerList();
-    private GameStatus gamePhase;
     private String message;
 
     private MessageSenderServer mss;
@@ -42,9 +41,6 @@ public class MessageHandler implements EventListener {
         mss = new MessageSenderServer(networkState);
     }
 
-    public void setGamePhase(GameStatus gamePhase) {
-        this.gamePhase = gamePhase;
-    }
 
     public void setCreationState(CreationState creationState) {
         this.creationState = creationState;
@@ -236,10 +232,8 @@ public class MessageHandler implements EventListener {
     }
 
     public void characterParametersReceiver(CharacterParametersEvent evt) {
-        if (gamePhase.isWaitingForParameters()) {  // && su header
-            for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
-                event.eventPerformed(evt);
-            }
+        for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
+            event.eventPerformed(evt);
         }
     }
 

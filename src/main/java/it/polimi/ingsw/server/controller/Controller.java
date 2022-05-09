@@ -28,7 +28,7 @@ import it.polimi.ingsw.server.viewProxy.MessageHandler;
 import java.net.Socket;
 import java.util.List;
 
-public class Controller{
+public class Controller {
     /*
     Controller must:
     -reset the standard evaluator at the end of every ActionPhase
@@ -44,9 +44,7 @@ public class Controller{
     private boolean currentPlayerPlayedCharacter = false;
 
 
-
-
-    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus){
+    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus) {
 
         this.model = model;
         this.messageHandler = messageHandler;
@@ -58,17 +56,19 @@ public class Controller{
 
         currentGameStatus = gameStatus;
         currentGameStatus.setAdvancedRules(model.isAdvancedRules());
-        this.messageHandler.setGamePhase(currentGameStatus);
 
     }
 
-    public void start(){
+    public void start() {
         sendCurrentPlayerMessage();
-        switch (currentGameStatus.getPhase()){
+        switch (currentGameStatus.getPhase()) {
             case PLANNING:
                 sendPhaseMessage(Headers.PLANNING);
                 break;
-            case ACTION_MOVEMOTHERNATURE: case ACTION_STUDENTSMOVEMENT: case ACTION_CLOUDCHOICE: case ACTION_PLAYED_CHARACTER:
+            case ACTION_MOVEMOTHERNATURE:
+            case ACTION_STUDENTSMOVEMENT:
+            case ACTION_CLOUDCHOICE:
+            case ACTION_PLAYED_CHARACTER:
                 sendPhaseMessage(Headers.action);
                 break;
         }
@@ -78,8 +78,8 @@ public class Controller{
      * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
      * the winner of the game
      */
-    private boolean checkIfLastRound(){
-        if(model.checkIfLastRound()){
+    private boolean checkIfLastRound() {
+        if (model.checkIfLastRound()) {
             Player winner = model.findWinner();
             sendWinnerPlayerMessage(winner);
             return true;
@@ -87,64 +87,65 @@ public class Controller{
         return false;
     }
 
-    private void sendCurrentPlayerMessage(){
+    private void sendCurrentPlayerMessage() {
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
         currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
-        messageHandler.eventPerformed(new StringEvent(this,curr.getUsername(), Headers.currentPlayer, new Socket()));
+        messageHandler.eventPerformed(new StringEvent(this, curr.getUsername(), Headers.currentPlayer, new Socket()));
     }
 
-    private void sendWinnerPlayerMessage(Player winner){
-        messageHandler.eventPerformed(new StringEvent(this,winner.getUsername(),Headers.winnerPlayer, new Socket()));
+    private void sendWinnerPlayerMessage(Player winner) {
+        messageHandler.eventPerformed(new StringEvent(this, winner.getUsername(), Headers.winnerPlayer, new Socket()));
     }
 
-    private void sendPhaseMessage (Headers phase){
-        if(phase.equals(Headers.action)){
-            if(currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)){
-                messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(true,false,false, currentGameStatus.isAdvancedRules()));
-            }else if (currentGameStatus.equals(GamePhases.ACTION_MOVEMOTHERNATURE)){
-                if(currentPlayerPlayedCharacter){
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,true,false, false));
-                }else{
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,true,false, currentGameStatus.isAdvancedRules()));
+    private void sendPhaseMessage(Headers phase) {
+        if (phase.equals(Headers.action)) {
+            if (currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
+                messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules()));
+            } else if (currentGameStatus.equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
+                if (currentPlayerPlayedCharacter) {
+                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, true, false, false));
+                } else {
+                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, true, false, currentGameStatus.isAdvancedRules()));
                 }
-            }else{
-                if(currentPlayerPlayedCharacter){
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,false,true, false));
-                }else{
-                    messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new ActionPayload(false,false,true, currentGameStatus.isAdvancedRules()));
+            } else {
+                if (currentPlayerPlayedCharacter) {
+                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, false, true, false));
+                } else {
+                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, false, true, currentGameStatus.isAdvancedRules()));
                 }
             }
-        }else{
-            messageHandler.eventPerformed(new StatusEvent(this,phase, new Socket()),new StringPayload(""));
+        } else {
+            messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new StringPayload(""));
         }
 
     }
 
-    private void sendErrorMessage(String string){
-        messageHandler.eventPerformed(new StringEvent(this,string, Headers.errorMessage, new Socket()));
+    private void sendErrorMessage(String string) {
+        messageHandler.eventPerformed(new StringEvent(this, string, Headers.errorMessage, new Socket()));
     }
 
-    private void sendCharacterPlayedMessage(Name name){
-        messageHandler.eventPerformed(new CharacterPlayedEvent(this,name));
+    private void sendCharacterPlayedMessage(Name name) {
+        messageHandler.eventPerformed(new CharacterPlayedEvent(this, name));
     }
 
     /**
      * this method plays the assistant card and informs the client if an error occurs or it ends well.
+     *
      * @param indexOfAssistant is the assistant card the player wants to play
      */
-    public void playAssistant(int indexOfAssistant){
-        if(model.getCurrentPlayerIndex()==0){
+    public void playAssistant(int indexOfAssistant) {
+        if (model.getCurrentPlayerIndex() == 0) {
             model.fillClouds();
         }
-        try{
-            if(!(model.playAssistant(indexOfAssistant))){
+        try {
+            if (!(model.playAssistant(indexOfAssistant))) {
                 sendErrorMessage("Non existent assistant, play another one");
-            }else{
+            } else {
                 sendCurrentPlayerMessage();
             }
-        }catch (AssistantAlreadyPlayedException a){
+        } catch (AssistantAlreadyPlayedException a) {
             sendErrorMessage("Already played assistant, play another one");
-        }catch (PlanningPhaseEndedException p){
+        } catch (PlanningPhaseEndedException p) {
             model.establishRoundOrder();
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
             sendPhaseMessage(Headers.action);
@@ -154,26 +155,27 @@ public class Controller{
 
     /**
      * This method let currentPlayer move 3 students from entrance to diningRoom or Island
+     *
      * @param evt contains information about source creatures and destination
      */
-    public void moveStudents(MoveStudentsEvent evt){
+    public void moveStudents(MoveStudentsEvent evt) {
         List<Player> players = model.getPlayers();
         Entrance playerEntrance = players.get(model.getCurrentPlayerIndex()).getEntrance();
 
-        if(evt.isDestinationIsland()){
+        if (evt.isDestinationIsland()) {
 
             Table table = model.getTable();
             Island destinationIsland = table.getIslands().get(evt.getIndexOfIsland());
 
-            setDestination(playerEntrance,destinationIsland,evt.getCreatureList());
+            setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
 
-            table.setIndexIsland(evt.getIndexOfIsland(),destinationIsland);
+            table.setIndexIsland(evt.getIndexOfIsland(), destinationIsland);
             model.setTable(table);
 
-        }else{
+        } else {
             DiningRoom playerDiningRoom = players.get(model.getCurrentPlayerIndex()).getDiningRoom();
 
-            setDestination(playerEntrance,playerDiningRoom,evt.getCreatureList());
+            setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
 
             players.get(model.getCurrentPlayerIndex()).setDiningRoom(playerDiningRoom);
         }
@@ -183,19 +185,19 @@ public class Controller{
         model.checkProfessor();
     }
 
-    private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures){
-        if(!(model.moveStudents(source,destination,creatures))){
+    private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
+        if (!(model.moveStudents(source, destination, creatures))) {
             sendErrorMessage("Wrong creatures in entrance, try again");
-        }else{
-            currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved()+1);
-            if(currentGameStatus.isAdvancedRules()){
-                if(currentGameStatus.getNumberOfStudentsMoved()==NUMBER_OF_STUDENTS_TO_MOVE_ADVANCED){
+        } else {
+            currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved() + 1);
+            if (currentGameStatus.isAdvancedRules()) {
+                if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE_ADVANCED) {
                     currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
                     currentGameStatus.setNumberOfStudentsMoved(0);
                     sendPhaseMessage(Headers.action);
                 }
-            }else{
-                if(currentGameStatus.getNumberOfStudentsMoved()==NUMBER_OF_STUDENTS_TO_MOVE_BASIC){
+            } else {
+                if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE_BASIC) {
                     currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
                     currentGameStatus.setNumberOfStudentsMoved(0);
                     sendPhaseMessage(Headers.action);
@@ -207,36 +209,37 @@ public class Controller{
 
     /**
      * This method moves mother nature of the number of jumps provided by the player
+     *
      * @param jumps is the number of jumps
      */
-    public void moveMotherNature(int jumps){
-        if(!(model.moveMotherNature(jumps))){
+    public void moveMotherNature(int jumps) {
+        if (!(model.moveMotherNature(jumps))) {
             sendErrorMessage("Incorrect number of jumps provided");
-        }else{
+        } else {
             currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
             sendPhaseMessage(Headers.action);
         }
     }
 
-    public void selectCloud(int indexOfCloud){
+    public void selectCloud(int indexOfCloud) {
         int currentPlayerIndex = model.getCurrentPlayerIndex();
-        try{
-            if(!(model.moveFromSelectedCloud(indexOfCloud))){
+        try {
+            if (!(model.moveFromSelectedCloud(indexOfCloud))) {
                 sendErrorMessage("Incorrect index of cloud provided");
-            }else{
-                if(currentPlayerIndex==model.getNumberOfPlayers()-1){
-                    if(!checkIfLastRound()){
+            } else {
+                if (currentPlayerIndex == model.getNumberOfPlayers() - 1) {
+                    if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(GamePhases.PLANNING);
                         sendPhaseMessage(Headers.PLANNING);
                         sendCurrentPlayerMessage();
                     }
-                }else{
+                } else {
                     currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
                     sendPhaseMessage(Headers.action);
                     sendCurrentPlayerMessage();
                 }
             }
-        }catch(CloudAlreadySelectedException e){
+        } catch (CloudAlreadySelectedException e) {
             sendErrorMessage("Cloud already selected, try again");
         }
     }
@@ -244,26 +247,32 @@ public class Controller{
     /**
      * this method play a character card and it toggles waitingForParameters.
      * waitingForParameters is true when the client has to specify what he wants to do with the character card he played.
+     *
      * @param indexOfCharacter is the character the player wants to play.
      */
-    public void playCharacter(int indexOfCharacter){
-        try{
+    public void playCharacter(int indexOfCharacter) {
+        try {
 
-            if(!(model.playCharacter(indexOfCharacter))){
+            if (!(model.playCharacter(indexOfCharacter))) {
                 sendErrorMessage("You don't have enough coins");
-            }else{
+            } else {
                 currentGameStatus.toggleWaitingForParameters();
                 sendCharacterPlayedMessage(model.getCharacters().get(model.getPlayedCharacter()).getName());
             }
 
-        }catch(IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             sendErrorMessage("Non existent character, try again");
         }
 
     }
 
-    public void effect(CharactersParametersPayload parameters){
-        model.effect(parameters);
+    public void effect(CharactersParametersPayload parameters) {
+        if (isWaitingForParameters()) {
+            model.effect(parameters);
+        } else {
+            sendErrorMessage("You cannot play the character right now!");
+        }
+
     }
 
     public GamePhases getCurrentPhase() {
@@ -274,13 +283,13 @@ public class Controller{
         GameStatus temp = new GameStatus(currentGameStatus.getPhase(), currentGameStatus.isAdvancedRules());
         temp.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved());
         temp.setCurrentPlayerUsername(currentGameStatus.getCurrentPlayerUsername());
-        if(currentGameStatus.isWaitingForParameters()){
+        if (currentGameStatus.isWaitingForParameters()) {
             temp.toggleWaitingForParameters();
         }
         return temp;
     }
 
-    public boolean isWaitingForParameters(){
+    public boolean isWaitingForParameters() {
         return currentGameStatus.isWaitingForParameters();
     }
 
