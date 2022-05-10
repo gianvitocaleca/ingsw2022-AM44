@@ -22,6 +22,8 @@ public class SocketReceiverServer {
     private MessageHandler messageHandler;
     private int id = 100;
 
+    private boolean gameStarted = false;
+
     public SocketReceiverServer(int port) {
         this.port = port;
         this.networkState = new NetworkState();
@@ -54,7 +56,9 @@ public class SocketReceiverServer {
         messageHandler.setCreationState(cs);
 
         GameStatus gameStatus = new GameStatus(GamePhases.PLANNING, false);
-
+        GameHandler gameHandler = new GameHandler(networkState, gameStatus);
+        Thread gameHandlerThread = new Thread(gameHandler);
+        gameHandlerThread.start();
 
         while (true) {
             try {
@@ -68,68 +72,38 @@ public class SocketReceiverServer {
                         socket.close();
                         System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
                     } else {
-                        break;
+                        //add the new object to the status list
+                        networkState.addSocket(socketId);
+                        System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket());
+                        Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
+                        t2.start();
+
+                        switch (networkState.getServerPhase()) {
+                            case READY:
+                                networkState.setServerPhase(ServerPhases.LOGIN);
+                                System.out.println("Starting Creation");
+                                //class that
+                                CreationHandler creator = new CreationHandler(networkState, messageHandler, cs, id);
+                                creator.start();
+                            case LOGIN:
+                                System.out.println("Starting Login for player " + id);
+                                LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, cs);
+                                Thread t = new Thread(login);
+                                t.start();
+                            case GAME:
+                                System.out.println("Game started for player " + id);
+                        }
+
+                        id++;
                     }
                 } while (!networkState.getServerPhase().equals(ServerPhases.GAME));
-                //add the new object to the status list
-                networkState.addSocket(socketId);
-                System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket());
-                Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
-                t2.start();
-
-                switch (networkState.getServerPhase()) {
-                    case READY:
-                        networkState.setServerPhase(ServerPhases.LOGIN);
-                        System.out.println("Starting Creation");
-                        //class that
-                        CreationHandler creator = new CreationHandler(networkState, messageHandler, cs, id);
-                        creator.start();
-                    case LOGIN:
-                        System.out.println("Starting Login for player " + id);
-                        LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, cs);
-                        Thread t = new Thread(login);
-                        t.start();
-                        break;
-                }
-
-                id++;
 
             } catch (IOException e) {
                 break;
             }
         }
-        List<PlayerInfo> playerInfos = networkState.getConnectedPlayerInfo();
-        List<String> usernames = playerInfos.stream().map(s -> s.getUsername()).toList();
-        List<Color> color = playerInfos.stream().map(s -> s.getColor()).toList();
-        List<Wizard> wizards = playerInfos.stream().map(s -> s.getWizard()).toList();
-        GameModel model = new GameModel(networkState.isAdvancedRules(), usernames, networkState.getNumberOfPlayers(),
-                color, wizards);
-        Controller controller = new Controller(model, messageHandler, gameStatus);
-        controller.start();
-        System.out.println("Game is starting");
-        while (!networkState.getServerPhase().equals(ServerPhases.GAME_ENDED)) {
-            switch (networkState.getServerPhase()) {
-                case GAME:
-                    System.out.println("Game running");
-                    break;
-                case WAITING:
-                    List<SocketID> disconnectedSocketIDList = networkState.getDisconnectedSocketIDs();
-                    while (disconnectedSocketIDList.size() > 0) {
-                        socket = serverSocket.accept();
-                        disconnectedSocketIDList.get(0).setSocket(socket);
-                        disconnectedSocketIDList.remove(0);
-                    }
-                    networkState.setServerPhase(ServerPhases.GAME);
-                    controller.start();
-                    break;
-            }
-        }
 
         serverSocket.close();
-    }
-
-    public NetworkState getNetworkState() {
-        return networkState;
     }
 
 }

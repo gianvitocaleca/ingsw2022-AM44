@@ -19,7 +19,7 @@ public class LineClient {
     private Gson gson;
     private PingState ps;
     private final int pingTime = 5000;
-    private final int maxNoAnswers = 1;
+    private final int maxNoAnswers = 4;
     private Scanner stdin;
     private PrintWriter socketOut;
 

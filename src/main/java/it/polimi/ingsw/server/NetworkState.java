@@ -31,8 +31,20 @@ public class NetworkState {
 
     public synchronized void setLoginPhaseEnded() {
         loginPhaseEnded++;
-        if (loginPhaseEnded == numberOfPlayers) {
+        this.notifyAll();
+    }
+
+    public boolean getLoginPhaseEnded() {
+        synchronized (this){
+            while(loginPhaseEnded!=numberOfPlayers){
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             serverPhase = ServerPhases.GAME;
+            return true;
         }
     }
 
