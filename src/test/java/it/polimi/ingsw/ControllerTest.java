@@ -49,7 +49,7 @@ public class ControllerTest {
         view = new MessageHandler();
         NetworkState state = new NetworkState();
         view.setNetworkState(state);
-        controller = new Controller(gm,view,new GameStatus(GamePhases.PLANNING,false));
+        controller = new Controller(gm,view,new GameStatus(GamePhases.PLANNING,false),state);
     }
 
     /**

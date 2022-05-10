@@ -69,7 +69,6 @@ public class GameModel implements Playable {
         postmanMovements = 0;
         playedCharacter = -1;
         populateMoverCharacter();
-        //showModel();
     }
 
     public boolean isAdvancedRules() {
@@ -209,7 +208,6 @@ public class GameModel implements Playable {
             }
             destination.addStudents(newStudents);
             coinGiver(players.get(currentPlayerIndex));
-            //showModel();
             return true;
         }
         return false;
@@ -263,7 +261,6 @@ public class GameModel implements Playable {
     public void fillClouds() {
         if (!(table.fillClouds())) {
             lastRound = true;
-            //showModel();
         }
     }
 
@@ -287,7 +284,6 @@ public class GameModel implements Playable {
         } else {
             currentPlayerIndex = 0;
         }
-        //showModel();
         return true;
     }
 
@@ -315,7 +311,6 @@ public class GameModel implements Playable {
         } else {
             throw new PlanningPhaseEndedException();
         }
-        //showModel();
         return true;
     }
 
@@ -472,7 +467,6 @@ public class GameModel implements Playable {
             if (!(table.moveMotherNature(j))) {
                 checkEndGame();
             }
-            //showModel();
             return true;
         }
         return false;
@@ -516,7 +510,6 @@ public class GameModel implements Playable {
             table.addCoins(removedCoins);
             //play character
             playedCharacter = indexOfCharacter;
-            //showModel();
             return true;
         }
 
@@ -808,7 +801,6 @@ public class GameModel implements Playable {
                 }
             }
         }
-        //showModel();
     }
 
     private boolean hasProfessor(int indexOfPlayer, Creature c) {
@@ -861,21 +853,9 @@ public class GameModel implements Playable {
 
     public boolean effect(CharactersParametersPayload answer) {
         boolean temp = characters.get(playedCharacter).effect(answer);
-        //showModel();
         return temp;
     }
 
-    /*private void //showModel() {
-        Map<Name, Boolean> charactersMap = new HashMap<>();
-        for (Character c : characters) {
-            charactersMap.put(c.getName(), c.hasCoin());
-        }
-        ShowModelPayload payload = new ShowModelPayload(getPlayers(), getTable(), charactersMap,
-                characters.get(playedCharacter).getName());
 
-        for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
-            event.eventPerformed(new ShowModelEvent(this, payload));
-        }
-    }*/
 
 }

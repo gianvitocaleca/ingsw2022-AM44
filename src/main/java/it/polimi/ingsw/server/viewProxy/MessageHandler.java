@@ -63,13 +63,18 @@ public class MessageHandler implements EventListener {
     }
 
     public void eventPerformed(ShowModelEvent evt) {
-        message = gson.toJson(new Message(Headers.characterPlayed, evt.getPayload()));
+        message = gson.toJson(new Message(Headers.showModelMessage, evt.getPayload()));
         mss.sendBroadcastMessage(message);
     }
 
     public void eventPerformed(StringEvent evt) {
         message = gson.toJson(new Message(evt.getHeader(), new StringPayload(evt.getMessage())));
         mss.sendMessage(message, evt.getSocket());
+    }
+
+    public void eventPerformed(BroadcastEvent evt) {
+        message = gson.toJson(new Message(evt.getHeader(), new StringPayload(evt.getMessage())));
+        mss.sendBroadcastMessage(message);
     }
 
     public synchronized void eventPerformed(MessageReceivedEvent evt, Socket sourceSocket) {
@@ -113,6 +118,8 @@ public class MessageHandler implements EventListener {
             case LOGIN:
                 break;
             case PLANNING:
+                PlanningAnswerPayload planningAnswerPayload = gson.fromJson(jsonPayload,PlanningAnswerPayload.class);
+                playAssistantReceiver(new PlanningEvent(this,planningAnswerPayload.getIndexOfAssistant()));
                 break;
             case ACTION_STUDENTSMOVEMENT:
                 break;

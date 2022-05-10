@@ -1,13 +1,13 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
-import it.polimi.ingsw.server.controller.events.CharacterPlayedEvent;
-import it.polimi.ingsw.server.controller.events.MoveStudentsEvent;
-import it.polimi.ingsw.server.controller.events.StatusEvent;
-import it.polimi.ingsw.server.controller.events.StringEvent;
+import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.characters.Character;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
@@ -19,14 +19,16 @@ import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.server.networkMessages.ActionPayload;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
-import it.polimi.ingsw.server.networkMessages.Headers;
-import it.polimi.ingsw.server.networkMessages.StringPayload;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
+import javax.management.monitor.Monitor;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Controller {
     /*
@@ -43,8 +45,10 @@ public class Controller {
     private GameStatus currentGameStatus;
     private boolean currentPlayerPlayedCharacter = false;
 
+    private NetworkState networkState;
 
-    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus) {
+
+    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
 
         this.model = model;
         this.messageHandler = messageHandler;
@@ -56,11 +60,14 @@ public class Controller {
 
         currentGameStatus = gameStatus;
         currentGameStatus.setAdvancedRules(model.isAdvancedRules());
+        currentGameStatus.setCurrentPlayerUsername(model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername());
+        this.networkState = networkState;
 
     }
 
     public void start() {
-        sendCurrentPlayerMessage();
+        //sendCurrentPlayerMessage();
+        showModel();
         switch (currentGameStatus.getPhase()) {
             case PLANNING:
                 sendPhaseMessage(Headers.PLANNING);
@@ -90,7 +97,7 @@ public class Controller {
     private void sendCurrentPlayerMessage() {
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
         currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
-        messageHandler.eventPerformed(new StringEvent(this, curr.getUsername(), Headers.currentPlayer, new Socket()));
+        messageHandler.eventPerformed(new BroadcastEvent(this, curr.getUsername(), Headers.currentPlayer));
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
@@ -115,13 +122,22 @@ public class Controller {
                 }
             }
         } else {
-            messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new StringPayload(""));
+            messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
     }
 
     private void sendErrorMessage(String string) {
-        messageHandler.eventPerformed(new StringEvent(this, string, Headers.errorMessage, new Socket()));
+        int id = 0;
+        for(SocketID socketID: networkState.getSocketIDList()){
+            if(socketID.getPlayerInfo().getUsername().equals(
+                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())){
+                id = socketID.getId();
+            }
+        }
+        System.out.println(string);
+        messageHandler.eventPerformed(new StringEvent(this, string, Headers.errorMessage,
+                networkState.getSocketByID(id)));
     }
 
     private void sendCharacterPlayedMessage(Name name) {
@@ -293,4 +309,39 @@ public class Controller {
         return currentGameStatus.isWaitingForParameters();
     }
 
+    private void showModel(){
+        ShowModelPayload showModelPayload =new ShowModelPayload(model.getPlayers(), model.getTable());
+
+        if(currentGameStatus.isAdvancedRules()) {
+            List<Name> characters = new ArrayList<>();
+            for (Character c : model.getCharacters()) {
+                characters.add(c.getName());
+            }
+            showModelPayload.setCharacters(characters);
+            List<Creature> creatureList;
+            if(model.getTable().getJoker().getStudents().size()>0){
+                creatureList = new ArrayList<>();
+                for(Student s: model.getTable().getJoker().getStudents()){
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setJokerCreatures(creatureList);
+            }
+            if(model.getTable().getPrincess().getStudents().size()>0){
+                creatureList = new ArrayList<>();
+                for(Student s: model.getTable().getPrincess().getStudents()){
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setPrincessCreatures(creatureList);
+            }
+            if(model.getTable().getMonk().getStudents().size()>0){
+                creatureList = new ArrayList<>();
+                for(Student s: model.getTable().getMonk().getStudents()){
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setMonkCreatures(creatureList);
+            }
+        }
+
+        messageHandler.eventPerformed(new ShowModelEvent(this,showModelPayload));
+    }
 }

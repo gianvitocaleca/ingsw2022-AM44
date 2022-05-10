@@ -56,7 +56,7 @@ public class SocketReceiverServer {
         messageHandler.setCreationState(cs);
 
         GameStatus gameStatus = new GameStatus(GamePhases.PLANNING, false);
-        GameHandler gameHandler = new GameHandler(networkState, gameStatus);
+        GameHandler gameHandler = new GameHandler(networkState, gameStatus, messageHandler);
         Thread gameHandlerThread = new Thread(gameHandler);
         gameHandlerThread.start();
 

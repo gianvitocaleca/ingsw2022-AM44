@@ -2,7 +2,9 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.pingHandler.PingState;
+import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.Message;
+import it.polimi.ingsw.server.networkMessages.PlanningAnswerPayload;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
 import java.io.IOException;
@@ -50,6 +52,9 @@ public class LineClient {
             inputLine = stdin.nextLine();
             String result = encodeMessage(inputLine);
             socketOut.println(result);
+            if(cs.getHeaders().equals(Headers.loginMessage_Username)){
+                setUsername(inputLine);
+            }
             if(socketOut.checkError()){
                 System.out.println("There is an error with the server.. closing connection");
                 break;
@@ -74,6 +79,19 @@ public class LineClient {
     }
 
     private String encodeMessage(String string){
+        if(cs.getHeaders().equals(Headers.PLANNING)){
+            return gson.toJson(new Message(cs.getHeaders(),new PlanningAnswerPayload(cs.getUsername(),Integer.parseInt(string))));
+        }
         return gson.toJson(new Message(cs.getHeaders(),new StringPayload(string)));
+    }
+
+    private void setUsername(String username){
+        if(cs.getHeaders().equals(Headers.loginMessage_Username)){
+            cs.setUsername(username);
+        }
+    }
+
+    private void playAssistant(){
+        System.out.println("Which assistant do you want to play?");
     }
 }

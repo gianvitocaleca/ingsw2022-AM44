@@ -13,10 +13,12 @@ public class GameHandler implements Runnable{
 
     private NetworkState networkState;
     private GameStatus gameStatus;
+    private MessageHandler messageHandler;
 
-    public GameHandler(NetworkState networkState, GameStatus gameStatus){
+    public GameHandler(NetworkState networkState, GameStatus gameStatus, MessageHandler messageHandler){
         this.networkState = networkState;
         this.gameStatus = gameStatus;
+        this.messageHandler = messageHandler;
     }
 
     public void run(){
@@ -29,9 +31,8 @@ public class GameHandler implements Runnable{
 
         GameModel model = new GameModel(networkState.isAdvancedRules(), usernames, networkState.getNumberOfPlayers(),
                 color, wizards);
-        MessageHandler messageHandler = new MessageHandler();
         messageHandler.setNetworkState(networkState);
-        Controller controller = new Controller(model, messageHandler, gameStatus);
+        Controller controller = new Controller(model, messageHandler, gameStatus, networkState);
         controller.start();
         System.out.println("Game is starting");
     }
