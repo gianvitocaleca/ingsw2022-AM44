@@ -262,6 +262,9 @@ public class GameModel implements Playable {
         if (!(table.fillClouds())) {
             lastRound = true;
         }
+        ShowModelPayload modelUpdate = new ShowModelPayload(getPlayers(), getTable());
+        modelUpdate.setUpdateClouds();
+        showModel(modelUpdate);
     }
 
     public boolean moveFromSelectedCloud(int indexOfCloud) throws CloudAlreadySelectedException {
@@ -856,6 +859,12 @@ public class GameModel implements Playable {
         return temp;
     }
 
+    public void showModel(ShowModelPayload modelUpdate) {
+        ShowModelEvent modelEvent = new ShowModelEvent(this, modelUpdate);
+        for (MessageHandler listener : listeners.getListeners(MessageHandler.class)) {
+            listener.eventPerformed(modelEvent);
+        }
+    }
 
 
 }

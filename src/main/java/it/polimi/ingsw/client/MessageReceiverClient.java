@@ -12,9 +12,6 @@ import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -71,7 +68,7 @@ public class MessageReceiverClient extends Thread {
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 System.out.println(stringPayload.getString());
                 break;
-            case PLANNING:
+            case planning:
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 if (stringPayload.getString().equals(cs.getUsername())) {
                     cs.setCurrentPlayer(true);

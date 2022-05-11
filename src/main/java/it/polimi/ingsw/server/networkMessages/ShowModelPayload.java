@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShowModelPayload implements Payload{
+public class ShowModelPayload implements Payload {
 
-    List<Player> playersList;
+    private String currentPlayerUsername;
+    private List<Player> playersList;
 
     private List<Island> islands;
     private List<Cloud> clouds;
@@ -22,10 +23,20 @@ public class ShowModelPayload implements Payload{
     private int deactivators;
     private int coinReserve;
 
-    private List<Name> characters;
+    private Map<Name, Integer> characters;
     private List<Creature> monkCreatures;
     private List<Creature> princessCreatures;
     private List<Creature> jokerCreatures;
+
+    private boolean updatePlayersAssistant = false; //assistantDeck, lastPlayedCard
+    private boolean updatePlayersEntrance = false; //entrance
+    private boolean updatePlayersDiningRoom = false; //dining, professors, myCoins, coinReserve
+    private boolean updateIslands = false; //player's towers, islands, deactivators
+    private boolean updateAll = false;
+    private boolean updateClouds = false;
+    private boolean updateMotherNature = false;
+    private boolean updateCoinReserve = false; //myCoins, coinReserve
+    private boolean updatePlayedCharacter = false;
 
 
     public ShowModelPayload(List<Player> playersList, Table table) {
@@ -40,16 +51,24 @@ public class ShowModelPayload implements Payload{
         this.princessCreatures = new ArrayList<>();
     }
 
-    public void setCharacters(List<Name> characters) {
-        this.characters = characters;
+    public String getCurrentPlayerUsername() {
+        return currentPlayerUsername;
+    }
+
+    public void setCurrentPlayerUsername(String username) {
+        this.currentPlayerUsername = username;
+    }
+
+    public Map<Name, Integer> getCharacters() {
+        return characters;
     }
 
     public List<Player> getPlayersList() {
         return playersList;
     }
 
-    public List<Name> getCharacters() {
-        return characters;
+    public void setCharacters(Map<Name, Integer> characters) {
+        this.characters = characters;
     }
 
     public void setMonkCreatures(List<Creature> monkCreatures) {
@@ -99,9 +118,81 @@ public class ShowModelPayload implements Payload{
     @Override
     public String toString() {
         String string = "Players:";
-        for(Player p : playersList){
-            string = string +" "+p.getUsername();
+        for (Player p : playersList) {
+            string = string + " " + p.getUsername();
         }
         return string;
+    }
+
+    public boolean isUpdatePlayersAssistant() {
+        return updatePlayersAssistant;
+    }
+
+    public void setUpdatePlayersAssistant() {
+        this.updatePlayersAssistant = true;
+    }
+
+    public boolean isUpdatePlayersEntrance() {
+        return updatePlayersEntrance;
+    }
+
+    public void setUpdatePlayersEntrance() {
+        this.updatePlayersEntrance = true;
+    }
+
+    public boolean isUpdatePlayersDiningRoom() {
+        return updatePlayersDiningRoom;
+    }
+
+    public void setUpdatePlayersDiningRoom() {
+        this.updatePlayersDiningRoom = true;
+    }
+
+    public boolean isUpdateIslands() {
+        return updateIslands;
+    }
+
+    public void setUpdateIslands() {
+        this.updateIslands = true;
+    }
+
+    public boolean isUpdateAll() {
+        return updateAll;
+    }
+
+    public void setUpdateAll() {
+        this.updateAll = true;
+    }
+
+    public boolean isUpdateClouds() {
+        return updateClouds;
+    }
+
+    public void setUpdateClouds() {
+        this.updateClouds = true;
+    }
+
+    public boolean isUpdateMotherNature() {
+        return updateMotherNature;
+    }
+
+    public void setUpdateMotherNature() {
+        this.updateMotherNature = true;
+    }
+
+    public boolean isUpdateCoinReserve() {
+        return updateCoinReserve;
+    }
+
+    public void setUpdateCoinReserve() {
+        this.updateCoinReserve = true;
+    }
+
+    public boolean isUpdatePlayedCharacter() {
+        return updatePlayedCharacter;
+    }
+
+    public void setUpdatePlayedCharacter() {
+        this.updatePlayedCharacter = true;
     }
 }

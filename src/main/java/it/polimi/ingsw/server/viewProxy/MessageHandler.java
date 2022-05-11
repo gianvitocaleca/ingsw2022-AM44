@@ -117,9 +117,9 @@ public class MessageHandler implements EventListener {
                 break;
             case LOGIN:
                 break;
-            case PLANNING:
-                PlanningAnswerPayload planningAnswerPayload = gson.fromJson(jsonPayload,PlanningAnswerPayload.class);
-                playAssistantReceiver(new PlanningEvent(this,planningAnswerPayload.getIndexOfAssistant()));
+            case planning:
+                PlanningAnswerPayload planningAnswerPayload = gson.fromJson(jsonPayload, PlanningAnswerPayload.class);
+                playAssistantReceiver(new PlanningEvent(this, planningAnswerPayload.getIndexOfAssistant()));
                 break;
             case ACTION_STUDENTSMOVEMENT:
                 break;

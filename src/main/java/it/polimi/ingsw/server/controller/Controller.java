@@ -25,7 +25,9 @@ import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Controller {
     /*
@@ -67,7 +69,7 @@ public class Controller {
         showModel();
         switch (currentGameStatus.getPhase()) {
             case PLANNING:
-                sendPhaseMessage(Headers.PLANNING);
+                sendPhaseMessage(Headers.planning);
                 break;
             case ACTION_MOVEMOTHERNATURE:
             case ACTION_STUDENTSMOVEMENT:
@@ -155,7 +157,7 @@ public class Controller {
                 sendErrorMessage("Non existent assistant, play another one");
             } else {
                 updateCurrentPlayer();
-                sendPhaseMessage(Headers.PLANNING);
+                sendPhaseMessage(Headers.planning);
             }
         } catch (AssistantAlreadyPlayedException a) {
             sendErrorMessage("Already played assistant, play another one");
@@ -244,7 +246,7 @@ public class Controller {
                 if (currentPlayerIndex == model.getNumberOfPlayers() - 1) {
                     if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(GamePhases.PLANNING);
-                        sendPhaseMessage(Headers.PLANNING);
+                        sendPhaseMessage(Headers.planning);
                         updateCurrentPlayer();
                     }
                 } else {
@@ -311,9 +313,9 @@ public class Controller {
         ShowModelPayload showModelPayload = new ShowModelPayload(model.getPlayers(), model.getTable());
 
         if (currentGameStatus.isAdvancedRules()) {
-            List<Name> characters = new ArrayList<>();
+            Map<Name, Integer> characters = new HashMap<>();
             for (Character c : model.getCharacters()) {
-                characters.add(c.getName());
+                characters.put(c.getName(), c.getCost());
             }
             showModelPayload.setCharacters(characters);
             List<Creature> creatureList;

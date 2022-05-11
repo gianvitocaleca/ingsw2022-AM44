@@ -7,6 +7,6 @@ public enum Headers {
     loginMessage_Color,
     loginMessage_Wizard,
     ping,
-    winnerPlayer, currentPlayer, assistantToPlay, LOGIN, PLANNING, ACTION_STUDENTSMOVEMENT,
-    ACTION_MOVEMOTHERNATURE, ACTION_CLOUDCHOICE, errorMessage, action, characterPlayed, showModelMessage
+    winnerPlayer, currentPlayer, assistantToPlay, LOGIN, planning, ACTION_STUDENTSMOVEMENT,
+    ACTION_MOVEMOTHERNATURE, ACTION_CLOUDCHOICE, errorMessage, action, characterPlayed, showModelMessage, modelUpdateMessage
 }

@@ -10,7 +10,6 @@ import it.polimi.ingsw.server.networkMessages.StringPayload;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class LineClient {
@@ -88,7 +87,7 @@ public class LineClient {
             System.out.println("You are not the current player! Please wait");
             return error;
         }
-        if (cs.getHeaders().equals(Headers.PLANNING)) {
+        if (cs.getHeaders().equals(Headers.planning)) {
             try {
                 int temp = Integer.parseInt(string);
                 return gson.toJson(new Message(cs.getHeaders(), new PlanningAnswerPayload(cs.getUsername(), temp)));
