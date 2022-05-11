@@ -37,6 +37,10 @@ public class ClientState {
         if (payload.isUpdateAll()) {
             modelCache = payload;
         }
+        if (payload.isUpdateClouds()) {
+            modelCache.setClouds(payload.getClouds());
+        }
+        if (payload.)
 
     }
 

@@ -106,7 +106,7 @@ public class MessageReceiverClient extends Thread {
     }
 
     private void printModel() {
-        System.out.println(cs.getModelCache());
+        System.out.print(cs.getModelCache());
     }
 
     private void planning() {
@@ -122,6 +122,20 @@ public class MessageReceiverClient extends Thread {
     }
 
     private void action(ActionPayload actionPayload) {
+        System.out.println("Allowed actions in this turn :=:");
+        if (actionPayload.isMoveStudents()) {
+            System.out.println("Move students");
+        }
+        if (actionPayload.isMoveMotherNature()) {
+            System.out.println("Move mother nature");
+        }
+        if (actionPayload.isSelectCloud()) {
+            System.out.println("Select cloud");
+        }
+        if (actionPayload.isPlayCharacter()) {
+            System.out.println("Play character");
+        }
+
 
     }
 }

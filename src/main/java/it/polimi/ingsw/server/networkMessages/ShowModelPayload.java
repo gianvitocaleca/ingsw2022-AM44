@@ -91,6 +91,30 @@ public class ShowModelPayload implements Payload {
         return clouds;
     }
 
+    public void setPlayersList(List<Player> playersList) {
+        this.playersList = playersList;
+    }
+
+    public void setIslands(List<Island> islands) {
+        this.islands = islands;
+    }
+
+    public void setClouds(List<Cloud> clouds) {
+        this.clouds = clouds;
+    }
+
+    public void setMotherNature(int motherNature) {
+        this.motherNature = motherNature;
+    }
+
+    public void setDeactivators(int deactivators) {
+        this.deactivators = deactivators;
+    }
+
+    public void setCoinReserve(int coinReserve) {
+        this.coinReserve = coinReserve;
+    }
+
     public int getMotherNature() {
         return motherNature;
     }
@@ -189,11 +213,14 @@ public class ShowModelPayload implements Payload {
 
     @Override
     public String toString() {
-        String string = "Players:";
+        String string = "\r Players:";
         for (Player p : playersList) {
             string = string + " " + p.getUsername();
         }
-        string += "\n";
+        string += " Clouds:=: ";
+        for (Cloud c : clouds) {
+            string += " " + c.getStudents().size();
+        }
         return string;
     }
 
