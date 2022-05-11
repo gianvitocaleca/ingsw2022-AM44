@@ -7,11 +7,14 @@ public class ActionPayload implements Payload {
     private boolean selectCloud;
     private boolean playCharacter;
 
-    public ActionPayload(boolean moveStudents, boolean moveMotherNature, boolean selectCloud, boolean playCharacter) {
+    private String currentPlayer;
+
+    public ActionPayload(boolean moveStudents, boolean moveMotherNature, boolean selectCloud, boolean playCharacter, String currentPlayer) {
         this.moveStudents = moveStudents;
         this.moveMotherNature = moveMotherNature;
         this.selectCloud = selectCloud;
         this.playCharacter = playCharacter;
+        this.currentPlayer = currentPlayer;
     }
 
     public boolean isMoveStudents() {
@@ -28,5 +31,9 @@ public class ActionPayload implements Payload {
 
     public boolean isPlayCharacter() {
         return playCharacter;
+    }
+
+    public String getCurrentPlayer() {
+        return currentPlayer;
     }
 }

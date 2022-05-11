@@ -34,7 +34,7 @@ public class MessageReceiverServer extends Thread {
         this.gameStatus = gameStatus;
         this.networkState = networkState;
         pingState = new PingState();
-        serverPingHandler = new ServerPingHandler(pingState,networkState,socketId,pingTime,maxNoAnswers);
+        serverPingHandler = new ServerPingHandler(pingState, networkState, socketId, pingTime, maxNoAnswers);
         try {
             in = new Scanner(socketId.getSocket().getInputStream());
         } catch (IOException e) {
@@ -47,17 +47,17 @@ public class MessageReceiverServer extends Thread {
     public void run() {
         serverPingHandler.start();
         while (true) {
-            try{
+            try {
                 String line = in.nextLine();
                 pingState.setReceived(true);
-                if(!networkState.getServerPhase().equals(ServerPhases.GAME)|| isCurrent()){
+                if (!networkState.getServerPhase().equals(ServerPhases.GAME) || isCurrent()) {
                     MessageReceivedEvent evt = new MessageReceivedEvent(this, line);
                     for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
                         event.eventPerformed(evt, socketId.getSocket());
                     }
                 }
-            }catch (NoSuchElementException ignore){
-                if(pingState.isCloseConnection()){
+            } catch (NoSuchElementException ignore) {
+                if (pingState.isCloseConnection()) {
                     break;
                 }
             }
@@ -66,11 +66,8 @@ public class MessageReceiverServer extends Thread {
 
     }
 
-    private boolean isCurrent(){
-        for(SocketID s : networkState.getSocketIDList()){
-            if (s.getPlayerInfo().getUsername().equals(gameStatus.getCurrentPlayerUsername())) return true;
-        }
-        return false;
+    private boolean isCurrent() {
+        return socketId.getPlayerInfo().getUsername().equals(gameStatus.getCurrentPlayerUsername());
     }
 
 }

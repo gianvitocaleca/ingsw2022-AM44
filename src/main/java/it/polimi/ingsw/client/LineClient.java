@@ -25,7 +25,9 @@ public class LineClient {
     private Scanner stdin;
     private PrintWriter socketOut;
 
-    public LineClient(String ip, int port){
+    private String error = "error";
+
+    public LineClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
         gson = new Gson();
@@ -38,9 +40,9 @@ public class LineClient {
         System.out.println("Connection established");
         System.out.println("Client dynamic port number: " + socket.getLocalPort());
         Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new MessageReceiverClient(s,cs,ps));
+        Thread t = new Thread(new MessageReceiverClient(s, cs, ps));
         t.start();
-        Thread t1 = new Thread(new ClientPingHandler(ps,socket,pingTime,maxNoAnswers));
+        Thread t1 = new Thread(new ClientPingHandler(ps, socket, pingTime, maxNoAnswers));
         t1.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         stdin = new Scanner(System.in);
@@ -48,19 +50,22 @@ public class LineClient {
     }
 
     private void play(Socket socket) {
-        while(!ps.isCloseConnection()) {
-            inputLine = stdin.nextLine();
-            String result = encodeMessage(inputLine);
+        while (!ps.isCloseConnection()) {
+            String result;
+            do {
+                inputLine = stdin.nextLine();
+                result = encodeMessage(inputLine);
+            } while (result.equals(error));
             socketOut.println(result);
-            if(cs.getHeaders().equals(Headers.loginMessage_Username)){
+            if (cs.getHeaders().equals(Headers.loginMessage_Username)) {
                 setUsername(inputLine);
             }
-            if(socketOut.checkError()){
+            if (socketOut.checkError()) {
                 System.out.println("There is an error with the server.. closing connection");
                 break;
             }
         }
-        while(!ps.isCloseConnection()){
+        while (!ps.isCloseConnection()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -78,20 +83,30 @@ public class LineClient {
         }
     }
 
-    private String encodeMessage(String string){
-        if(cs.getHeaders().equals(Headers.PLANNING)){
-            return gson.toJson(new Message(cs.getHeaders(),new PlanningAnswerPayload(cs.getUsername(),Integer.parseInt(string))));
+    private String encodeMessage(String string) {
+        if (!cs.getCurrentPlayer()) {
+            System.out.println("You are not the current player! Please wait");
+            return error;
         }
-        return gson.toJson(new Message(cs.getHeaders(),new StringPayload(string)));
+        if (cs.getHeaders().equals(Headers.PLANNING)) {
+            try {
+                int temp = Integer.parseInt(string);
+                return gson.toJson(new Message(cs.getHeaders(), new PlanningAnswerPayload(cs.getUsername(), temp)));
+            } catch (NumberFormatException ignore) {
+                System.out.println("Please provide a valid selection number!");
+                return error;
+            }
+        }
+        return gson.toJson(new Message(cs.getHeaders(), new StringPayload(string)));
     }
 
-    private void setUsername(String username){
-        if(cs.getHeaders().equals(Headers.loginMessage_Username)){
+    private void setUsername(String username) {
+        if (cs.getHeaders().equals(Headers.loginMessage_Username)) {
             cs.setUsername(username);
         }
     }
 
-    private void playAssistant(){
+    private void playAssistant() {
         System.out.println("Which assistant do you want to play?");
     }
 }

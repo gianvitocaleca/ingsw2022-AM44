@@ -104,31 +104,31 @@ public class Controller {
     private void sendPhaseMessage(Headers phase) {
         if (phase.equals(Headers.action)) {
             if (currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
-                messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules()));
+                messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
             } else if (currentGameStatus.equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
                 if (currentPlayerPlayedCharacter) {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, true, false, false));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, true, false, false, currentGameStatus.getCurrentPlayerUsername()));
                 } else {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, true, false, currentGameStatus.isAdvancedRules()));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, true, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
                 }
             } else {
                 if (currentPlayerPlayedCharacter) {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, false, true, false));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, false, true, false, currentGameStatus.getCurrentPlayerUsername()));
                 } else {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, false, true, currentGameStatus.isAdvancedRules()));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, false, true, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
                 }
             }
         } else {
-            messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
+            messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
     }
 
     private void sendErrorMessage(String string) {
         int id = 0;
-        for(SocketID socketID: networkState.getSocketIDList()){
-            if(socketID.getPlayerInfo().getUsername().equals(
-                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())){
+        for (SocketID socketID : networkState.getSocketIDList()) {
+            if (socketID.getPlayerInfo().getUsername().equals(
+                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())) {
                 id = socketID.getId();
             }
         }
@@ -307,39 +307,39 @@ public class Controller {
         return currentGameStatus.isWaitingForParameters();
     }
 
-    private void showModel(){
-        ShowModelPayload showModelPayload =new ShowModelPayload(model.getPlayers(), model.getTable());
+    private void showModel() {
+        ShowModelPayload showModelPayload = new ShowModelPayload(model.getPlayers(), model.getTable());
 
-        if(currentGameStatus.isAdvancedRules()) {
+        if (currentGameStatus.isAdvancedRules()) {
             List<Name> characters = new ArrayList<>();
             for (Character c : model.getCharacters()) {
                 characters.add(c.getName());
             }
             showModelPayload.setCharacters(characters);
             List<Creature> creatureList;
-            if(model.getTable().getJoker().getStudents().size()>0){
+            if (model.getTable().getJoker().getStudents().size() > 0) {
                 creatureList = new ArrayList<>();
-                for(Student s: model.getTable().getJoker().getStudents()){
+                for (Student s : model.getTable().getJoker().getStudents()) {
                     creatureList.add(s.getCreature());
                 }
                 showModelPayload.setJokerCreatures(creatureList);
             }
-            if(model.getTable().getPrincess().getStudents().size()>0){
+            if (model.getTable().getPrincess().getStudents().size() > 0) {
                 creatureList = new ArrayList<>();
-                for(Student s: model.getTable().getPrincess().getStudents()){
+                for (Student s : model.getTable().getPrincess().getStudents()) {
                     creatureList.add(s.getCreature());
                 }
                 showModelPayload.setPrincessCreatures(creatureList);
             }
-            if(model.getTable().getMonk().getStudents().size()>0){
+            if (model.getTable().getMonk().getStudents().size() > 0) {
                 creatureList = new ArrayList<>();
-                for(Student s: model.getTable().getMonk().getStudents()){
+                for (Student s : model.getTable().getMonk().getStudents()) {
                     creatureList.add(s.getCreature());
                 }
                 showModelPayload.setMonkCreatures(creatureList);
             }
         }
 
-        messageHandler.eventPerformed(new ShowModelEvent(this,showModelPayload));
+        messageHandler.eventPerformed(new ShowModelEvent(this, showModelPayload));
     }
 }

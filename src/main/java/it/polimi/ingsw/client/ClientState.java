@@ -8,6 +8,8 @@ public class ClientState {
     private Headers headers;
     private String username;
 
+    private boolean currentPlayer = true;
+
     private ShowModelPayload modelCache;
 
     public ClientState() {
@@ -22,19 +24,27 @@ public class ClientState {
         this.headers = headers;
     }
 
-    public void setUsername(String username){
-        this.username = username;
-    }
-
-    public String getUsername(){
+    public String getUsername() {
         return this.username;
     }
 
-    public void setShowModel(ShowModelPayload payload){
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setShowModel(ShowModelPayload payload) {
         modelCache = payload;
     }
 
     public ShowModelPayload getModelCache() {
         return modelCache;
+    }
+
+    public boolean getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(boolean value) {
+        currentPlayer = value;
     }
 }
