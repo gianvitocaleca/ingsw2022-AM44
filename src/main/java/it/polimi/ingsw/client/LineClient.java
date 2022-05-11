@@ -108,4 +108,6 @@ public class LineClient {
     private void playAssistant() {
         System.out.println("Which assistant do you want to play?");
     }
+
+
 }

@@ -65,8 +65,12 @@ public class Controller {
     }
 
     public void start() {
-        //sendCurrentPlayerMessage();
-        showModel();
+        updateCurrentPlayer();
+
+        ShowModelPayload modelUpdate = model.showModelPayloadCreator();
+        modelUpdate.setUpdateAll();
+        model.showModel(modelUpdate);
+
         switch (currentGameStatus.getPhase()) {
             case PLANNING:
                 sendPhaseMessage(Headers.planning);
@@ -121,6 +125,9 @@ public class Controller {
                 }
             }
         } else {
+            if (model.getCurrentPlayerIndex() == 0) {
+                model.fillClouds();
+            }
             messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
@@ -149,9 +156,7 @@ public class Controller {
      * @param indexOfAssistant is the assistant card the player wants to play
      */
     public void playAssistant(int indexOfAssistant) {
-        if (model.getCurrentPlayerIndex() == 0) {
-            model.fillClouds();
-        }
+
         try {
             if (!(model.playAssistant(indexOfAssistant))) {
                 sendErrorMessage("Non existent assistant, play another one");
@@ -309,39 +314,4 @@ public class Controller {
         return currentGameStatus.isWaitingForParameters();
     }
 
-    private void showModel() {
-        ShowModelPayload showModelPayload = new ShowModelPayload(model.getPlayers(), model.getTable());
-
-        if (currentGameStatus.isAdvancedRules()) {
-            Map<Name, Integer> characters = new HashMap<>();
-            for (Character c : model.getCharacters()) {
-                characters.put(c.getName(), c.getCost());
-            }
-            showModelPayload.setCharacters(characters);
-            List<Creature> creatureList;
-            if (model.getTable().getJoker().getStudents().size() > 0) {
-                creatureList = new ArrayList<>();
-                for (Student s : model.getTable().getJoker().getStudents()) {
-                    creatureList.add(s.getCreature());
-                }
-                showModelPayload.setJokerCreatures(creatureList);
-            }
-            if (model.getTable().getPrincess().getStudents().size() > 0) {
-                creatureList = new ArrayList<>();
-                for (Student s : model.getTable().getPrincess().getStudents()) {
-                    creatureList.add(s.getCreature());
-                }
-                showModelPayload.setPrincessCreatures(creatureList);
-            }
-            if (model.getTable().getMonk().getStudents().size() > 0) {
-                creatureList = new ArrayList<>();
-                for (Student s : model.getTable().getMonk().getStudents()) {
-                    creatureList.add(s.getCreature());
-                }
-                showModelPayload.setMonkCreatures(creatureList);
-            }
-        }
-
-        messageHandler.eventPerformed(new ShowModelEvent(this, showModelPayload));
-    }
 }

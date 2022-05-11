@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.model.ModelCache;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 
@@ -33,7 +34,10 @@ public class ClientState {
     }
 
     public void setShowModel(ShowModelPayload payload) {
-        modelCache = payload;
+        if (payload.isUpdateAll()) {
+            modelCache = payload;
+        }
+
     }
 
     public ShowModelPayload getModelCache() {

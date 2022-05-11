@@ -262,7 +262,7 @@ public class GameModel implements Playable {
         if (!(table.fillClouds())) {
             lastRound = true;
         }
-        ShowModelPayload modelUpdate = new ShowModelPayload(getPlayers(), getTable());
+        ShowModelPayload modelUpdate = showModelPayloadCreator();
         modelUpdate.setUpdateClouds();
         showModel(modelUpdate);
     }
@@ -309,6 +309,9 @@ public class GameModel implements Playable {
         }
 
         players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
+        ShowModelPayload modelUpdate = showModelPayloadCreator();
+        modelUpdate.setUpdatePlayersAssistant();
+        showModel(modelUpdate);
         if (currentPlayerIndex < numberOfPlayers - 1) {
             currentPlayerIndex++;
         } else {
@@ -864,6 +867,42 @@ public class GameModel implements Playable {
         for (MessageHandler listener : listeners.getListeners(MessageHandler.class)) {
             listener.eventPerformed(modelEvent);
         }
+    }
+
+    public ShowModelPayload showModelPayloadCreator() {
+        ShowModelPayload showModelPayload = new ShowModelPayload(getPlayers(), getTable());
+
+        if (isAdvancedRules()) {
+            Map<Name, Integer> characters = new HashMap<>();
+            for (Character c : getCharacters()) {
+                characters.put(c.getName(), c.getCost());
+            }
+            showModelPayload.setCharacters(characters);
+            List<Creature> creatureList;
+            if (getTable().getJoker().getStudents().size() > 0) {
+                creatureList = new ArrayList<>();
+                for (Student s : getTable().getJoker().getStudents()) {
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setJokerCreatures(creatureList);
+            }
+            if (getTable().getPrincess().getStudents().size() > 0) {
+                creatureList = new ArrayList<>();
+                for (Student s : getTable().getPrincess().getStudents()) {
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setPrincessCreatures(creatureList);
+            }
+            if (getTable().getMonk().getStudents().size() > 0) {
+                creatureList = new ArrayList<>();
+                for (Student s : getTable().getMonk().getStudents()) {
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setMonkCreatures(creatureList);
+            }
+        }
+
+        return showModelPayload;
     }
 
 

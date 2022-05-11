@@ -115,15 +115,6 @@ public class ShowModelPayload implements Payload {
         return jokerCreatures;
     }
 
-    @Override
-    public String toString() {
-        String string = "Players:";
-        for (Player p : playersList) {
-            string = string + " " + p.getUsername();
-        }
-        return string;
-    }
-
     public boolean isUpdatePlayersAssistant() {
         return updatePlayersAssistant;
     }
@@ -195,4 +186,15 @@ public class ShowModelPayload implements Payload {
     public void setUpdatePlayedCharacter() {
         this.updatePlayedCharacter = true;
     }
+
+    @Override
+    public String toString() {
+        String string = "Players:";
+        for (Player p : playersList) {
+            string = string + " " + p.getUsername();
+        }
+        string += "\n";
+        return string;
+    }
+
 }
