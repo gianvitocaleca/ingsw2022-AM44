@@ -23,12 +23,9 @@ import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
-import javax.management.monitor.Monitor;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Controller {
     /*
@@ -94,10 +91,10 @@ public class Controller {
         return false;
     }
 
-    private void sendCurrentPlayerMessage() {
+    private void updateCurrentPlayer() {
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
         currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
-        messageHandler.eventPerformed(new BroadcastEvent(this, curr.getUsername(), Headers.currentPlayer));
+        //messageHandler.eventPerformed(new BroadcastEvent(this, curr.getUsername(), Headers.currentPlayer));
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
@@ -157,15 +154,16 @@ public class Controller {
             if (!(model.playAssistant(indexOfAssistant))) {
                 sendErrorMessage("Non existent assistant, play another one");
             } else {
-                sendCurrentPlayerMessage();
+                updateCurrentPlayer();
+                sendPhaseMessage(Headers.PLANNING);
             }
         } catch (AssistantAlreadyPlayedException a) {
             sendErrorMessage("Already played assistant, play another one");
         } catch (PlanningPhaseEndedException p) {
             model.establishRoundOrder();
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
+            updateCurrentPlayer();
             sendPhaseMessage(Headers.action);
-            sendCurrentPlayerMessage();
         }
     }
 
@@ -247,12 +245,12 @@ public class Controller {
                     if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(GamePhases.PLANNING);
                         sendPhaseMessage(Headers.PLANNING);
-                        sendCurrentPlayerMessage();
+                        updateCurrentPlayer();
                     }
                 } else {
                     currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
                     sendPhaseMessage(Headers.action);
-                    sendCurrentPlayerMessage();
+                    updateCurrentPlayer();
                 }
             }
         } catch (CloudAlreadySelectedException e) {
