@@ -40,7 +40,6 @@ public class ClientState {
         if (payload.isUpdateClouds()) {
             modelCache.setClouds(payload.getClouds());
         }
-        if (payload.)
 
     }
 
