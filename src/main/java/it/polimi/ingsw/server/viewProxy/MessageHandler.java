@@ -112,33 +112,16 @@ public class MessageHandler implements EventListener {
                 LoginPayload loginPayload2 = gson.fromJson(jsonPayload, LoginPayload.class);
                 loginMessageReceiver(sourceSocket, loginPayload2, GamePhases.LOGIN_WIZARD);
                 break;
-            case winnerPlayer:
-                break;
-            case currentPlayer:
-                break;
-            case assistantToPlay:
-                break;
-            case LOGIN:
-                break;
             case planning:
                 PlanningAnswerPayload planningAnswerPayload = gson.fromJson(jsonPayload, PlanningAnswerPayload.class);
                 playAssistantReceiver(new PlanningEvent(this, planningAnswerPayload.getIndexOfAssistant()));
                 break;
-            case ACTION_STUDENTSMOVEMENT:
-                break;
-            case ACTION_MOVEMOTHERNATURE:
-                break;
-            case ACTION_CLOUDCHOICE:
-                break;
-            case errorMessage:
-                break;
             case action:
-                break;
-            case characterPlayed:
-                break;
-            case showModelMessage:
+                ActionAnswerPayload actionAnswerPayload = gson.fromJson(jsonPayload, ActionAnswerPayload.class);
+
                 break;
             default:
+                System.out.println("Wrong header provided! How did this happen?");
                 break;
         }
 
