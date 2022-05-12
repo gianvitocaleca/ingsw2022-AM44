@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.polimi.ingsw.pingHandler.PingState;
+import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.networkMessages.ActionPayload;
@@ -83,7 +84,11 @@ public class MessageReceiverClient extends Thread {
                 actionPayload = gson.fromJson(jsonPayload, ActionPayload.class);
                 if (actionPayload.getCurrentPlayer().equals(cs.getUsername())) {
                     cs.setCurrentPlayer(true);
-                    action(actionPayload);
+                    cs.setMoveStudents(actionPayload.isMoveStudents());
+                    cs.setMoveMotherNature(actionPayload.isMoveMotherNature());
+                    cs.setSelectCloud(actionPayload.isSelectCloud());
+                    cs.setSelectCharacter(actionPayload.isPlayCharacter());
+                    action();
                 } else {
                     System.out.println("The current player is " + actionPayload.getCurrentPlayer() + " and the current phase is "
                             + header);
@@ -121,19 +126,35 @@ public class MessageReceiverClient extends Thread {
         }
     }
 
-    private void action(ActionPayload actionPayload) {
-        System.out.println("Allowed actions in this turn :=:");
-        if (actionPayload.isMoveStudents()) {
-            System.out.println("Move students");
+    private void action() {
+        System.out.println(":=: Allowed actions in this turn :=:");
+        if (cs.isMoveStudents()) {
+            System.out.println(":=: Move students <MS> :=:");
+            System.out.println("Specify the student creature <R,G,Y,B,P>");
+            System.out.println("Specify the destination <0," + cs.getModelCache().getIslands().size() + "> (0 is your Dinig Room, the others are the islands)");
+            System.out.println("For example MS:R:2");
         }
-        if (actionPayload.isMoveMotherNature()) {
-            System.out.println("Move mother nature");
+        if (cs.isMoveMotherNature()) {
+            System.out.println(":=: Move mother nature <MMN> :=:");
+            System.out.println("Specify the number of jumps you want to make");
+            System.out.println("For example MMN:3");
         }
-        if (actionPayload.isSelectCloud()) {
-            System.out.println("Select cloud");
+        if (cs.isSelectCloud()) {
+            System.out.println(":=: Select cloud <SC> :=:");
+            System.out.println("Choose a cloud from which you want to take the new students to put in your entrance");
+            System.out.println("<0," + (cs.getModelCache().getClouds().size() - 1) + "> clouds available");
+            System.out.println("For example SC:1");
         }
-        if (actionPayload.isPlayCharacter()) {
-            System.out.println("Play character");
+        if (cs.isSelectCharacter()) {
+            System.out.println(":=: Play character <PC> :=:");
+            System.out.println("Choose a character to play");
+            List<Name> chars = cs.getModelCache().getCharacters().keySet().stream().toList();
+            int i;
+            for (i = 0; i < chars.size() - 1; i++) {
+                System.out.print(" " + i + ":" + chars.get(i) + ", ");
+            }
+            System.out.print(" " + i + ":" + chars.get(i) + " \n");
+            System.out.println("For example PC:2");
         }
 
 

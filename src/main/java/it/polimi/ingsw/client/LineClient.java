@@ -2,14 +2,15 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.pingHandler.PingState;
-import it.polimi.ingsw.server.networkMessages.Headers;
-import it.polimi.ingsw.server.networkMessages.Message;
-import it.polimi.ingsw.server.networkMessages.PlanningAnswerPayload;
-import it.polimi.ingsw.server.networkMessages.StringPayload;
+import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.networkMessages.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class LineClient {
@@ -96,6 +97,36 @@ public class LineClient {
                 return error;
             }
         }
+        if (cs.getHeaders().equals(Headers.action)) {
+            List<String> result = Arrays.stream(string.split(":")).toList();
+            switch (result.get(0).toUpperCase()) {
+                case "MS":
+                    if (cs.isMoveStudents()) {
+                        return createMoveStudentMessage(result);
+                    }
+                    break;
+                case "MMN":
+                    if (cs.isMoveMotherNature()) {
+                        return createMessage(result, true, false, false);
+                    }
+                    break;
+                case "SC":
+                    if (cs.isSelectCloud()) {
+                        return createMessage(result, false, true, false);
+                    }
+                    break;
+                case "PC":
+                    if (cs.isSelectCharacter()) {
+                        return createMessage(result, false, false, true);
+                    }
+                    break;
+                default:
+                    System.out.println("Wrong command syntax, please try again");
+            }
+            System.out.println("Why did you ignore the instructions ?");
+            System.out.println("(╯°□°）╯$ $ $");
+            return error;
+        }
         return gson.toJson(new Message(cs.getHeaders(), new StringPayload(string)));
     }
 
@@ -109,5 +140,63 @@ public class LineClient {
         System.out.println("Which assistant do you want to play?");
     }
 
+    private Optional<Creature> creatureFromCli(String provided) {
+        Optional<Creature> ans = Optional.empty();
+        switch (provided) {
+            case "R":
+                ans = Optional.of(Creature.RED_DRAGONS);
+                break;
+            case "G":
+                ans = Optional.of(Creature.GREEN_FROGS);
+                break;
+            case "B":
+                ans = Optional.of(Creature.BLUE_UNICORNS);
+                break;
+            case "Y":
+                ans = Optional.of(Creature.YELLOW_GNOMES);
+                break;
+            case "P":
+                ans = Optional.of(Creature.PINK_FAIRIES);
+                break;
+            default:
+                break;
+        }
+        return ans;
+    }
+
+    private String createMoveStudentMessage(List<String> result) {
+        Optional<Creature> selection = creatureFromCli(result.get(1).toUpperCase());
+        if (selection.isEmpty()) {
+            return error;
+        }
+        int providedDestination;
+        boolean isDiningRoomDestination = false;
+        try {
+            providedDestination = Integer.parseInt(result.get(2));
+        } catch (NumberFormatException ignore) {
+            System.out.println("Why did you do it!");
+            System.out.println("(ง •̀_•́)ง");
+            return error;
+        }
+        if (providedDestination == 0) {
+            isDiningRoomDestination = true;
+        }
+        return gson.toJson(new Message(cs.getHeaders(),
+                new ActionAnswerPayload(true, false, false,
+                        false, isDiningRoomDestination, selection.get(), providedDestination - 1)));
+    }
+
+    private String createMessage(List<String> result, boolean isMMN, boolean isSC, boolean isPC) {
+        int providedMovement;
+        try {
+            providedMovement = Integer.parseInt(result.get(1));
+        } catch (NumberFormatException ignore) {
+            System.out.println("Why did you do it!");
+            System.out.println("(ง •̀_•́)ง");
+            return error;
+        }
+        return gson.toJson(new Message(cs.getHeaders(), new ActionAnswerPayload(false, isMMN, isSC,
+                isPC, false, Creature.RED_DRAGONS, providedMovement)));
+    }
 
 }

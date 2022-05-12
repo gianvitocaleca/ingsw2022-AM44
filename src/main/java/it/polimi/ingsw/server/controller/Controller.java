@@ -109,9 +109,9 @@ public class Controller {
 
     private void sendPhaseMessage(Headers phase) {
         if (phase.equals(Headers.action)) {
-            if (currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
+            if (currentGameStatus.getPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
                 messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
-            } else if (currentGameStatus.equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
+            } else if (currentGameStatus.getPhase().equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
                 if (currentPlayerPlayedCharacter) {
                     messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, true, false, false, currentGameStatus.getCurrentPlayerUsername()));
                 } else {

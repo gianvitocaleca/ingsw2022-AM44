@@ -217,10 +217,12 @@ public class ShowModelPayload implements Payload {
         for (Player p : playersList) {
             string = string + " " + p.getUsername();
         }
+        string += "\n";
         string += " Clouds:=: ";
         for (Cloud c : clouds) {
             string += " " + c.getStudents().size();
         }
+        string += "\n";
         return string;
     }
 

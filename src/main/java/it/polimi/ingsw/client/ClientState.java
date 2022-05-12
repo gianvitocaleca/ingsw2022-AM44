@@ -13,6 +13,12 @@ public class ClientState {
 
     private ShowModelPayload modelCache;
 
+    private boolean moveStudents = false;
+    private boolean moveMotherNature = false;
+    private boolean selectCloud;
+    private boolean selectCharacter;
+
+
     public ClientState() {
         this.headers = Headers.creationRequirementMessage;
     }
@@ -53,5 +59,37 @@ public class ClientState {
 
     public void setCurrentPlayer(boolean value) {
         currentPlayer = value;
+    }
+
+    public boolean isMoveStudents() {
+        return moveStudents;
+    }
+
+    public void setMoveStudents(boolean moveStudents) {
+        this.moveStudents = moveStudents;
+    }
+
+    public boolean isMoveMotherNature() {
+        return moveMotherNature;
+    }
+
+    public void setMoveMotherNature(boolean moveMotherNature) {
+        this.moveMotherNature = moveMotherNature;
+    }
+
+    public boolean isSelectCloud() {
+        return selectCloud;
+    }
+
+    public void setSelectCloud(boolean selectCloud) {
+        this.selectCloud = selectCloud;
+    }
+
+    public boolean isSelectCharacter() {
+        return selectCharacter;
+    }
+
+    public void setSelectCharacter(boolean selectCharacter) {
+        this.selectCharacter = selectCharacter;
     }
 }
