@@ -13,7 +13,6 @@ import it.polimi.ingsw.server.model.gameboard.MotherNature;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.model.students.StudentBucket;
@@ -54,7 +53,7 @@ public class CentaurEvaluatorTest {
 
         Character centaur = new BehaviorCharacter(Name.CENTAUR, gm);
         centaur.effect(new CharactersParametersPayload(
-                new ArrayList<>(), 0, 0, new Cloud(10), new ArrayList<>()));
+                new ArrayList<>(), 0, 0, new ArrayList<>()));
 
         Table table = gm.getTable();
         List<Island> islands = table.getIslands();

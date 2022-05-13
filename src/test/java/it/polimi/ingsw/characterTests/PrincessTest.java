@@ -92,7 +92,7 @@ public class PrincessTest {
         }
         //creates the parameters for the character effect
         CharactersParametersPayload princessParameters = new CharactersParametersPayload(studentToRemoveFromPrincess,
-                0, 0, null, null);
+                0, 0, null);
         //play character effect
         gm.effect(princessParameters);
         //the number of students should be the same as before

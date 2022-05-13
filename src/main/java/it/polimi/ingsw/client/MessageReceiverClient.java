@@ -164,8 +164,21 @@ public class MessageReceiverClient extends Thread {
 
     private void characterParameterSelection(CharacterPlayedPayload cpp) {
         Name character = cpp.getCharactersName();
-        if (character.isNeedsDestination()) {
-
+        cs.setCurrentPlayedCharacter(character);
+        if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
+            System.out.println("Choose the creature from the character card and the destination Island on which to put it");
+            System.out.println("C:G:I:7");
+        } else if (character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()) {
+            System.out.println("Which creatures from the character card and the destination do you want to swap?");
+            System.out.println("For example to swap character (C) creatures Red, Green and Blue  with " +
+                    "the destination (D) creatures Blue, Yellow and Pink use the following syntax");
+            System.out.println("C:R,G,B:D:B,Y,P");
+        } else if (character.isNeedsIslandIndex()) {
+            System.out.println("Which island do you want to choose?");
+        } else if (character.isNeedsSourceCreature()) {
+            System.out.println("Which Creature do you want to choose?");
+        } else if (character.isNeedsMnMovements()) {
+            System.out.println("How many more jumps do you want Mother Nature to do?");
         }
     }
 

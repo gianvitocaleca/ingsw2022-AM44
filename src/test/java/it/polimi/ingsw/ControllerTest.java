@@ -152,7 +152,7 @@ public class ControllerTest {
 
         assertTrue(controller.isWaitingForParameters());
 
-        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 2, null, new ArrayList<>());
+        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 2, new ArrayList<>());
         CharacterParametersEvent ev2 = new CharacterParametersEvent(view, parameters);
         view.characterParametersReceiver(ev2);
 

@@ -71,7 +71,7 @@ class ThiefTest {
         //creates the necessary parameters for the character
         List<Creature> uni = new ArrayList<>();
         uni.add(creatureToRemove);
-        CharactersParametersPayload thief = new CharactersParametersPayload(uni, 0, 0, null, new ArrayList<>());
+        CharactersParametersPayload thief = new CharactersParametersPayload(uni, 0, 0, new ArrayList<>());
         //puts the thief as first character
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new MoverCharacter(Name.THIEF, gm));

@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.ModelCache;
+import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 
@@ -17,6 +18,8 @@ public class ClientState {
     private boolean moveMotherNature = false;
     private boolean selectCloud;
     private boolean selectCharacter;
+
+    private Name currentPlayedCharacter;
 
 
     public ClientState() {
@@ -91,5 +94,13 @@ public class ClientState {
 
     public void setSelectCharacter(boolean selectCharacter) {
         this.selectCharacter = selectCharacter;
+    }
+
+    public Name getCurrentPlayedCharacter() {
+        return currentPlayedCharacter;
+    }
+
+    public void setCurrentPlayedCharacter(Name character) {
+        currentPlayedCharacter = character;
     }
 }

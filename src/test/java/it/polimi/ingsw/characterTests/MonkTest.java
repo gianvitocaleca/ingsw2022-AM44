@@ -97,7 +97,7 @@ public class MonkTest {
         }
         //creates the parameters for the character effect
         CharactersParametersPayload monkParameters = new CharactersParametersPayload(studentToRemoveFromMonk,
-                islandDestinationIndex, 0, null, null);
+                islandDestinationIndex, 0, null);
         //play character effect
         gm.effect(monkParameters);
         //the number of students should be the same as before

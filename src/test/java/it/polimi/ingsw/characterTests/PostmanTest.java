@@ -35,13 +35,13 @@ public class PostmanTest {
     @Test
     public void postmanTest() {
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
-                0, 2, null, new ArrayList<>());
+                0, 2, new ArrayList<>());
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        }catch(AssistantAlreadyPlayedException e){
+        } catch (AssistantAlreadyPlayedException e) {
             e.printStackTrace();
-        }catch(PlanningPhaseEndedException e){
+        } catch (PlanningPhaseEndedException e) {
             e.printStackTrace();
         }
         gm.getCharacters().remove(0);
@@ -72,7 +72,7 @@ public class PostmanTest {
     @Test
     public void setWrongPostmanMovementsTest() {
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
-                0, 200, null, new ArrayList<>());
+                0, 200, new ArrayList<>());
 
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Postman(Name.MAGICPOSTMAN, gm));

@@ -82,10 +82,9 @@ public class JokerTest {
         oldEntranceCreatures.add(studentsInEntrance.get(0).getCreature());
 
 
-
         //creates the parameters for the character effect
         CharactersParametersPayload jokerParameters = new CharactersParametersPayload(oldJokerCreatures,
-                0, 0, null, oldEntranceCreatures);
+                0, 0, oldEntranceCreatures);
         //play character effect
         gm.effect(jokerParameters);
         //the number of students should be the same as before
@@ -93,9 +92,9 @@ public class JokerTest {
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getCapacity(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
 
-        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(8).getCreature(),oldJokerCreatures.get(0));
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(8).getCreature(), oldJokerCreatures.get(0));
 
-        assertEquals(gm.getTable().getJoker().getStudents().get(5).getCreature(),oldEntranceCreatures.get(0));
+        assertEquals(gm.getTable().getJoker().getStudents().get(5).getCreature(), oldEntranceCreatures.get(0));
 
     }
 }

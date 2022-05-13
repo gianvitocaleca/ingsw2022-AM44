@@ -3,15 +3,13 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.networkMessages.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class LineClient {
     private String ip;
@@ -123,9 +121,59 @@ public class LineClient {
                 default:
                     System.out.println("Wrong command syntax, please try again");
             }
-            System.out.println("Why did you ignore the instructions ?");
-            System.out.println("(╯°□°）╯$ $ $");
-            return error;
+            return badGuysHandler();
+        }
+        if (cs.getHeaders().equals(Headers.characterPlayed)) {
+            List<String> result = Arrays.stream(string.split(":")).toList();
+            if (result.size() == 1) {
+                int selectedNumber;
+                try {
+                    selectedNumber = Integer.parseInt(result.get(0));
+                    if (cs.getCurrentPlayedCharacter().equals(Name.HERBALIST) ||
+                            cs.getCurrentPlayedCharacter().equals(Name.HERALD) ||
+                            cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)) {
+                        return createCharIntMessage(selectedNumber);
+                    }
+                } catch (NumberFormatException ignore) {
+                    Optional<Creature> ans = creatureFromCli(result.get(0));
+                    if (!ans.isEmpty()) {
+                        return createCreatureCharMessage(ans.get());
+                    }
+                    return badGuysHandler();
+                }
+            } else if (result.size() == 4) {
+                switch (cs.getCurrentPlayedCharacter()) {
+                    case Name.MONK:
+                        if (result.get(0).equals("C")) {
+                            Optional<Creature> creature = creatureFromCli(result.get(1));
+                            if (!creature.isEmpty()) {
+                                if (result.get(2).equals("I")) {
+                                    int providedInteger;
+                                    try {
+                                        providedInteger = Integer.parseInt(result.get(3));
+                                        return createMonkMessage(creature.get(), providedInteger);
+                                    } catch (NumberFormatException ignore) {
+                                        return badGuysHandler();
+                                    }
+
+                                }
+                                return badGuysHandler();
+                            }
+                            return badGuysHandler();
+                        }
+                        return badGuysHandler();
+                    break;
+                    case Name.MINSTREL:
+                    case JOKER:
+
+                        break;
+                    default:
+                        return badGuysHandler();
+                }
+            } else {
+                return badGuysHandler();
+            }
+
         }
         return gson.toJson(new Message(cs.getHeaders(), new StringPayload(string)));
     }
@@ -199,4 +247,32 @@ public class LineClient {
                 isPC, false, Creature.RED_DRAGONS, providedMovement)));
     }
 
+    private String createCharIntMessage(int selectedNumber) {
+        if (cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)) {
+            return gson.toJson(new Message(cs.getHeaders(),
+                    new CharactersParametersPayload(new ArrayList<>(), 0, selectedNumber, new ArrayList<>())));
+        }
+        return gson.toJson(new Message(cs.getHeaders(),
+                new CharactersParametersPayload(new ArrayList<>(), selectedNumber, 0, new ArrayList<>())));
+    }
+
+    private String createCreatureCharMessage(Creature creature) {
+        List<Creature> creatureList = new ArrayList<>();
+        creatureList.add(creature);
+        return gson.toJson(new Message(cs.getHeaders(),
+                new CharactersParametersPayload(creatureList, 0, 0, new ArrayList<>())));
+    }
+
+    private String createMonkMessage(Creature creature, int island) {
+        List<Creature> creatureList = new ArrayList<>();
+        creatureList.add(creature);
+        return gson.toJson(new Message(cs.getHeaders(),
+                new CharactersParametersPayload(creatureList, island, 0, new ArrayList<>())));
+    }
+
+    private String badGuysHandler() {
+        System.out.println("Bad syntax!");
+        System.out.println("(╯°□°）╯$ $ $");
+        return error;
+    }
 }
