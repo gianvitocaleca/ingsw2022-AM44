@@ -7,7 +7,6 @@ import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
 import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.characters.Character;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
@@ -19,15 +18,11 @@ import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Controller {
     /*
@@ -100,7 +95,7 @@ public class Controller {
     private void updateCurrentPlayer() {
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
         currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
-        //messageHandler.eventPerformed(new BroadcastEvent(this, curr.getUsername(), Headers.currentPlayer));
+        currentPlayerPlayedCharacter = false;
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
@@ -147,7 +142,14 @@ public class Controller {
     }
 
     private void sendCharacterPlayedMessage(Name name) {
-        messageHandler.eventPerformed(new CharacterPlayedEvent(this, name));
+        int id = 0;
+        for (SocketID socketID : networkState.getSocketIDList()) {
+            if (socketID.getPlayerInfo().getUsername().equals(
+                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())) {
+                id = socketID.getId();
+            }
+        }
+        messageHandler.eventPerformed(new CharacterPlayedEvent(this, name, networkState.getSocketByID(id)));
     }
 
     /**
@@ -251,13 +253,13 @@ public class Controller {
                 if (currentPlayerIndex == model.getNumberOfPlayers() - 1) {
                     if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(GamePhases.PLANNING);
-                        sendPhaseMessage(Headers.planning);
                         updateCurrentPlayer();
+                        sendPhaseMessage(Headers.planning);
                     }
                 } else {
                     currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
-                    sendPhaseMessage(Headers.action);
                     updateCurrentPlayer();
+                    sendPhaseMessage(Headers.action);
                 }
             }
         } catch (CloudAlreadySelectedException e) {
@@ -312,6 +314,10 @@ public class Controller {
 
     public boolean isWaitingForParameters() {
         return currentGameStatus.isWaitingForParameters();
+    }
+
+    public boolean getCurrentPlayerPlayedCharacter() {
+        return currentPlayerPlayedCharacter;
     }
 
 }

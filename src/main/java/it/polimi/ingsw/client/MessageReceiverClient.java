@@ -5,13 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.polimi.ingsw.pingHandler.PingState;
+import it.polimi.ingsw.server.controller.events.CharacterPlayedEvent;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.networkMessages.ActionPayload;
-import it.polimi.ingsw.server.networkMessages.Headers;
-import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
-import it.polimi.ingsw.server.networkMessages.StringPayload;
+import it.polimi.ingsw.server.networkMessages.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -56,6 +54,7 @@ public class MessageReceiverClient extends Thread {
         JsonElement jsonPayload = jsonTree.get("payload");
         StringPayload stringPayload;
         ActionPayload actionPayload;
+        CharacterPlayedPayload charPayload;
 
         switch (header) {
             case showModelMessage:
@@ -95,6 +94,9 @@ public class MessageReceiverClient extends Thread {
                     cs.setCurrentPlayer(false);
                 }
                 break;
+            case characterPlayed:
+                charPayload = gson.fromJson(jsonPayload, CharacterPlayedPayload.class);
+                characterParameterSelection(charPayload);
         }
     }
 
@@ -159,4 +161,12 @@ public class MessageReceiverClient extends Thread {
 
 
     }
+
+    private void characterParameterSelection(CharacterPlayedPayload cpp) {
+        Name character = cpp.getCharactersName();
+        if (character.isNeedsDestination()) {
+
+        }
+    }
+
 }

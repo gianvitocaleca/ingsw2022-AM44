@@ -225,7 +225,7 @@ public class ControllerTest {
         List<Creature> providedCreature = new ArrayList<>();
         providedCreature.add(Creature.YELLOW_GNOMES);
 
-        MoveStudentsEvent evt = new MoveStudentsEvent(view, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername(),
+        MoveStudentsEvent evt = new MoveStudentsEvent(view,
                 false, 12, providedCreature);
 
         view.moveStudentsReceiver(evt);
@@ -240,7 +240,7 @@ public class ControllerTest {
 
         providedCreature.remove(0);
         providedCreature.add(Creature.RED_DRAGONS);
-        evt = new MoveStudentsEvent(view, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername(),
+        evt = new MoveStudentsEvent(view,
                 true, 0, providedCreature);
 
         view.moveStudentsReceiver(evt);
@@ -250,14 +250,14 @@ public class ControllerTest {
 
         providedCreature.remove(0);
         providedCreature.add(Creature.RED_DRAGONS);
-        evt = new MoveStudentsEvent(view, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername(),
+        evt = new MoveStudentsEvent(view,
                 true, 0, providedCreature);
 
         view.moveStudentsReceiver(evt);
 
         providedCreature.remove(0);
         providedCreature.add(Creature.YELLOW_GNOMES);
-        evt = new MoveStudentsEvent(view, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername(),
+        evt = new MoveStudentsEvent(view,
                 true, 0, providedCreature);
 
         view.moveStudentsReceiver(evt);
@@ -295,7 +295,7 @@ public class ControllerTest {
         List<Creature> providedCreature = new ArrayList<>();
         providedCreature.add(Creature.PINK_FAIRIES);
 
-        MoveStudentsEvent evt = new MoveStudentsEvent(view, gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername(),
+        MoveStudentsEvent evt = new MoveStudentsEvent(view,
                 false, 12, providedCreature);
 
         view.moveStudentsReceiver(evt);

@@ -61,6 +61,9 @@ public class App {
                 case server:
                     ServerMain serverMain = new ServerMain();
                     if (args.length > 1) {
+                        if (args[1].equals(port)) {
+                            serverMain.start(defaultPort);
+                        }
                         int providedServerPort;
                         try {
                             providedServerPort = Integer.parseInt(args[1]);

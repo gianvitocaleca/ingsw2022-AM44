@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.enums.Color;
+import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.networkMessages.*;
 
@@ -62,7 +63,7 @@ public class MessageHandler implements EventListener {
 
     public void eventPerformed(CharacterPlayedEvent evt) {
         message = gson.toJson(new Message(Headers.characterPlayed, new CharacterPlayedPayload(evt.getCharactersName())));
-        mss.sendBroadcastMessage(message);
+        mss.sendMessage(message, evt.getSocket());
     }
 
     public void eventPerformed(ShowModelEvent evt) {
@@ -118,7 +119,9 @@ public class MessageHandler implements EventListener {
                 break;
             case action:
                 ActionAnswerPayload actionAnswerPayload = gson.fromJson(jsonPayload, ActionAnswerPayload.class);
-
+                createActionEvent(actionAnswerPayload);
+                break;
+            case ping:
                 break;
             default:
                 System.out.println("Wrong header provided! How did this happen?");
@@ -128,6 +131,23 @@ public class MessageHandler implements EventListener {
 
     }
 
+
+    private void createActionEvent(ActionAnswerPayload aap) {
+        if (aap.isMoveStudents()) {
+            List<Creature> studentCreature = new ArrayList<>();
+            studentCreature.add(aap.getStudentCreatureToMove());
+            MoveStudentsEvent event = new MoveStudentsEvent(this, !aap.isDestinationDiningRoom(), aap.getClientInt(), studentCreature);
+            moveStudentsReceiver(event);
+        }
+        if (aap.isMoveMotherNature() || aap.isSelectCloud()) {
+            IntegerEvent event = new IntegerEvent(this, aap.getClientInt());
+            integerEventReceiver(event);
+        }
+        if (aap.isPlayCharacter()) {
+            PlayCharacterEvent event = new PlayCharacterEvent(this, aap.getClientInt());
+            playCharacterReceiver(event);
+        }
+    }
 
     public void creationMessageReceiver(int num) {
         if (creationState.getPhase().equals(GamePhases.CREATION_NUMBER_OF_PLAYERS)) {
