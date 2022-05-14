@@ -63,7 +63,7 @@ public class MessageHandler implements EventListener {
 
     public void eventPerformed(CharacterPlayedEvent evt) {
         message = gson.toJson(new Message(Headers.characterPlayed, new CharacterPlayedPayload(evt.getCharactersName())));
-        mss.sendMessage(message, evt.getSocket());
+        mss.sendBroadcastMessage(message);
     }
 
     public void eventPerformed(ShowModelEvent evt) {
@@ -121,6 +121,9 @@ public class MessageHandler implements EventListener {
                 ActionAnswerPayload actionAnswerPayload = gson.fromJson(jsonPayload, ActionAnswerPayload.class);
                 createActionEvent(actionAnswerPayload);
                 break;
+            case characterPlayed:
+                CharactersParametersPayload charactersParametersPayload = gson.fromJson(jsonPayload,CharactersParametersPayload.class);
+                characterParametersReceiver(new CharacterParametersEvent(this,charactersParametersPayload));
             case ping:
                 break;
             default:

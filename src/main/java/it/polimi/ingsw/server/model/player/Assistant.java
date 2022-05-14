@@ -19,4 +19,9 @@ public class Assistant {
     public int getMovements(){
         return name.getMovements();
     }
+
+    @Override
+    public String toString() {
+        return ""+name;
+    }
 }

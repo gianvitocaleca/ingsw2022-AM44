@@ -32,8 +32,7 @@ public class Controller {
     -do all resets with a proper reset method in GameModel
     -check if a player needs to earn a coin and give it to him, if possible, and proceeds to remove it from the coin reserve
      */
-    private final int NUMBER_OF_STUDENTS_TO_MOVE_BASIC = 3;
-    private final int NUMBER_OF_STUDENTS_TO_MOVE_ADVANCED = 4;
+    private final int NUMBER_OF_STUDENTS_TO_MOVE;
     private GameModel model;
     private MessageHandler messageHandler;
     private GameStatus currentGameStatus;
@@ -56,6 +55,7 @@ public class Controller {
         currentGameStatus.setAdvancedRules(model.isAdvancedRules());
         currentGameStatus.setCurrentPlayerUsername(model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername());
         this.networkState = networkState;
+        this.NUMBER_OF_STUDENTS_TO_MOVE = model.getNumberOfPlayers()+1;
 
     }
 
@@ -205,7 +205,6 @@ public class Controller {
 
         players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
         model.setPlayers(players);
-        model.checkProfessor();
     }
 
     private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
@@ -213,20 +212,11 @@ public class Controller {
             sendErrorMessage("Wrong creatures in entrance, try again");
         } else {
             currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved() + 1);
-            if (currentGameStatus.isAdvancedRules()) {
-                if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE_ADVANCED) {
-                    currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
-                    currentGameStatus.setNumberOfStudentsMoved(0);
-                    sendPhaseMessage(Headers.action);
-                }
-            } else {
-                if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE_BASIC) {
-                    currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
-                    currentGameStatus.setNumberOfStudentsMoved(0);
-                    sendPhaseMessage(Headers.action);
-                }
+            if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
+                currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
+                currentGameStatus.setNumberOfStudentsMoved(0);
             }
-
+                sendPhaseMessage(Headers.action);
         }
     }
 
@@ -291,7 +281,13 @@ public class Controller {
 
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
-            model.effect(parameters);
+            if(model.effect(parameters)){
+                currentGameStatus.toggleWaitingForParameters();
+                sendPhaseMessage(Headers.action);
+            }
+            else{
+                sendErrorMessage("Wrong Parameters");
+            }
         } else {
             sendErrorMessage("You cannot play the character right now!");
         }

@@ -122,7 +122,6 @@ public class Player {
     }
 
     public void setAssistantCard(int indexofassistant) {
-
         lastPlayedCard.add(assistantDeck.remove(indexofassistant));
     }
 

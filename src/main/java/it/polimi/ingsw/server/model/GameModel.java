@@ -81,6 +81,9 @@ public class GameModel implements Playable {
         List<Island> islands = table.getIslands();
         islands.get(indexOfIsland).addNoEntry();
         table.setIslands(islands);
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdateIslands();
+        showModel(payload);
     }
 
     /**
@@ -90,6 +93,10 @@ public class GameModel implements Playable {
     @Override
     public void evaluateInfluence() {
         evaluator.evaluateInfluence(this);
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdateIslands();
+        payload.setUpdateMotherNature();
+        showModel(payload);
     }
 
     /**
@@ -126,6 +133,7 @@ public class GameModel implements Playable {
         }
         table.setBucket(sb);
         lastRound = false;
+        checkProfessor();
     }
 
     /**
@@ -208,6 +216,7 @@ public class GameModel implements Playable {
             }
             destination.addStudents(newStudents);
             coinGiver(players.get(currentPlayerIndex));
+            checkProfessor();
             return true;
         }
         return false;
@@ -347,6 +356,9 @@ public class GameModel implements Playable {
      */
     @Override
     public boolean jokerEffect(List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
+        if(providedSourceCreatures.size()!=providedDestinationCreatures.size()||providedDestinationCreatures.size()>Name.JOKER.getMaxMoves()){
+            return false;
+        }
 
         List<Creature> sourceCreatures = table.getJoker().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
@@ -472,6 +484,8 @@ public class GameModel implements Playable {
             int j = jumps + postmanMovements;
             if (!(table.moveMotherNature(j))) {
                 checkEndGame();
+            }else{
+                evaluateInfluence();
             }
             return true;
         }
@@ -807,6 +821,11 @@ public class GameModel implements Playable {
                 }
             }
         }
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdatePlayersDiningRoom();
+        payload.setUpdatePlayersEntrance();
+        payload.setUpdateIslands();
+        showModel(payload);
     }
 
     private boolean hasProfessor(int indexOfPlayer, Creature c) {
@@ -859,6 +878,11 @@ public class GameModel implements Playable {
 
     public boolean effect(CharactersParametersPayload answer) {
         boolean temp = characters.get(playedCharacter).effect(answer);
+        if(temp){
+            ShowModelPayload payload = showModelPayloadCreator();
+            payload.setUpdatePlayedCharacter();
+            showModel(payload);
+        }
         return temp;
     }
 
@@ -871,7 +895,7 @@ public class GameModel implements Playable {
 
     public ShowModelPayload showModelPayloadCreator() {
         ShowModelPayload showModelPayload = new ShowModelPayload(getPlayers(), getTable());
-
+        showModelPayload.setCurrentPlayerUsername(players.get(getCurrentPlayerIndex()).getUsername());
         if (isAdvancedRules()) {
             Map<Name, Integer> characters = new HashMap<>();
             for (Character c : getCharacters()) {

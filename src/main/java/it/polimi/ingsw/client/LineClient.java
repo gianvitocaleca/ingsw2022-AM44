@@ -118,8 +118,6 @@ public class LineClient {
                         return createMessage(result, false, false, true);
                     }
                     break;
-                default:
-                    System.out.println("Wrong command syntax, please try again");
             }
             return badGuysHandler();
         }
@@ -143,10 +141,10 @@ public class LineClient {
                 }
             } else if (result.size() == 4) {
                 switch (cs.getCurrentPlayedCharacter()) {
-                    case Name.MONK:
+                    case MONK:
                         if (result.get(0).equals("C")) {
                             Optional<Creature> creature = creatureFromCli(result.get(1));
-                            if (!creature.isEmpty()) {
+                            if (creature.isPresent()) {
                                 if (result.get(2).equals("I")) {
                                     int providedInteger;
                                     try {
@@ -162,11 +160,9 @@ public class LineClient {
                             return badGuysHandler();
                         }
                         return badGuysHandler();
-                    break;
-                    case Name.MINSTREL:
+                    case MINSTREL:
                     case JOKER:
-
-                        break;
+                        return createSwapMessage(result,cs.getCurrentPlayedCharacter().getMaxMoves());
                     default:
                         return badGuysHandler();
                 }
@@ -178,15 +174,36 @@ public class LineClient {
         return gson.toJson(new Message(cs.getHeaders(), new StringPayload(string)));
     }
 
+    private String createSwapMessage(List<String> result, int maxMoves){
+        if(result.get(0).equals("C")&&result.get(2).equals("D")){
+            List<String> sourceCreatures = Arrays.stream(result.get(1).split(",")).toList();
+            List<String> destinationCreatures = Arrays.stream(result.get(3).split(",")).toList();
+            if(sourceCreatures.size()==destinationCreatures.size()&&sourceCreatures.size()<=maxMoves){
+                List<Creature> sC = new ArrayList<>();
+                List<Creature> dC = new ArrayList<>();
+                for(int i=0; i<sourceCreatures.size(); i++){
+                    if(creatureFromCli(sourceCreatures.get(i)).isPresent() && creatureFromCli(destinationCreatures.get(i)).isPresent()){
+                        sC.add(creatureFromCli(sourceCreatures.get(i)).get());
+                        dC.add(creatureFromCli(destinationCreatures.get(i)).get());
+                    }
+                    else{
+                        return badGuysHandler();
+                    }
+                }
+                return gson.toJson(new Message(cs.getHeaders(),
+                        new CharactersParametersPayload(sC, 0, 0, dC)));
+            }
+            return badGuysHandler();
+        }
+        return badGuysHandler();
+    }
+
     private void setUsername(String username) {
         if (cs.getHeaders().equals(Headers.loginMessage_Username)) {
-            cs.setUsername(username);
+            cs.setUsername(username.toLowerCase());
         }
     }
 
-    private void playAssistant() {
-        System.out.println("Which assistant do you want to play?");
-    }
 
     private Optional<Creature> creatureFromCli(String provided) {
         Optional<Creature> ans = Optional.empty();

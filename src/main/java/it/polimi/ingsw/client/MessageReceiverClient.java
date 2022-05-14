@@ -69,7 +69,9 @@ public class MessageReceiverClient extends Thread {
                 System.out.println(stringPayload.getString());
                 break;
             case planning:
+                printModel();
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
+                cs.getModelCache().setCurrentPlayerUsername(stringPayload.getString());
                 if (stringPayload.getString().equals(cs.getUsername())) {
                     cs.setCurrentPlayer(true);
                     planning();
@@ -80,7 +82,9 @@ public class MessageReceiverClient extends Thread {
                 }
                 break;
             case action:
+                printModel();
                 actionPayload = gson.fromJson(jsonPayload, ActionPayload.class);
+                cs.getModelCache().setCurrentPlayerUsername(actionPayload.getCurrentPlayer());
                 if (actionPayload.getCurrentPlayer().equals(cs.getUsername())) {
                     cs.setCurrentPlayer(true);
                     cs.setMoveStudents(actionPayload.isMoveStudents());
@@ -96,7 +100,12 @@ public class MessageReceiverClient extends Thread {
                 break;
             case characterPlayed:
                 charPayload = gson.fromJson(jsonPayload, CharacterPlayedPayload.class);
-                characterParameterSelection(charPayload);
+                if(cs.getCurrentPlayer()){
+                    characterParameterSelection(charPayload);
+                }else{
+                    System.out.println(cs.getModelCache().getCurrentPlayerUsername()+" is playing "+charPayload.getCharactersName());
+                }
+
         }
     }
 
@@ -109,7 +118,6 @@ public class MessageReceiverClient extends Thread {
 
     private void setShowModel(ShowModelPayload payload) {
         cs.setShowModel(payload);
-        printModel();
     }
 
     private void printModel() {

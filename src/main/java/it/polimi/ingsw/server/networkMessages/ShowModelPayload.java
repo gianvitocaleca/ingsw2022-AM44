@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.networkMessages;
 
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.gameboard.MotherNature;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.Cloud;
@@ -16,7 +15,6 @@ public class ShowModelPayload implements Payload {
 
     private String currentPlayerUsername;
     private List<Player> playersList;
-
     private List<Island> islands;
     private List<Cloud> clouds;
     private int motherNature;
@@ -203,27 +201,115 @@ public class ShowModelPayload implements Payload {
         this.updateCoinReserve = true;
     }
 
-    public boolean isUpdatePlayedCharacter() {
-        return updatePlayedCharacter;
-    }
-
     public void setUpdatePlayedCharacter() {
         this.updatePlayedCharacter = true;
     }
 
+    public boolean isUpdatePlayedCharacter() {
+        return updatePlayedCharacter;
+    }
+
+    public int getCurrentPlayerCoins(){
+        int i = 0;
+        for(Player p: playersList){
+            if(p.getUsername().equals(currentPlayerUsername)){
+                i = p.getMyCoins();
+            }
+        }
+        return i;
+    }
+
+    public int getPlayerTowers(String username){
+        int i = 0;
+        for(Player p: playersList){
+            if(p.getUsername().equals(username)){
+                i = p.getTowers();
+            }
+        }
+        return i;
+    }
+
+
     @Override
     public String toString() {
-        String string = "\r Players:";
+        StringBuilder string = new StringBuilder("\r Players:");
         for (Player p : playersList) {
-            string = string + " " + p.getUsername();
+            string.append(printPlayer(p));
         }
-        string += "\n";
-        string += " Clouds:=: ";
+        string.append("\n");
+        string.append("Clouds:=: ");
+        int i = 0;
         for (Cloud c : clouds) {
-            string += " " + c.getStudents().size();
+            string.append("\n"+i).append(": ").append(c.getStudents());
+            i++;
         }
-        string += "\n";
+        string.append("\n");
+        string.append("Islands:=: ");
+        i = 1;
+        for (Island e : islands) {
+            string.append("\n"+i).append(": ").append(printIsland(e));
+            if(i==motherNature){
+                string.append("\nMother nature is here!!!");
+            }
+            i++;
+        }
+        string.append("\n");
+        if(characters.size()>0){
+        string.append(" Table:=: ");
+        string.append("\nCoin Reserve: ").append(coinReserve).append("\n");
+            string.append("Characters:\n"+ printCharacters());
+        }
+        string.append("\n");
+        return string.toString();
+    }
+
+    private String printPlayer(Player p){
+        String string;
+        string = "\nUsername: "+ p.getUsername() + " Professors: " +p.getProfessors() +"\n" +
+                "Wizard: "+p.getWizard()+ " Color: "+p.getMyColor()+ "\n"
+                +"Entrance: "+p.getEntrance().getStudents()+ "\n"
+                +"Dining Room: "+p.getDiningRoom().getStudents()+ "\n";
+        if(characters.size()>0) {
+            string += "Coins: " + p.getMyCoins();
+        }
+        string+=" Towers: "+p.getTowers()+ "\n"
+                +"Last Played Assistant: ";
+        if(!(p.getAssistantDeck().size()== 10)){
+            string+=p.getLastPlayedCard();
+        }else{
+            string+="none";
+        }
+
         return string;
     }
 
+    private String printIsland(Island i){
+        String string = "Students: "+i.getStudents()+"\n"
+            +"Towers: "+i.getNumberOfTowers();
+        if(i.getNumberOfTowers()>0){
+            string += ", Of Color"+i.getColorOfTowers();
+        }
+        if(characters.size()>0){
+            string += "\nDeactivators:"+i.getNumberOfNoEntries();
+        }
+        return string;
+    }
+
+    private String printCharacters(){
+        String string = "";
+        int i=2;
+        for(Name n: characters.keySet()){
+            string += i+":"+n+" Cost:"+characters.get(n);
+            if(n.equals(Name.MONK)){
+                string +=" Creatures: "+monkCreatures;
+            }else if(n.equals(Name.PRINCESS)){
+                string +=" Creatures: "+princessCreatures;
+            }else if(n.equals(Name.JOKER)){
+                string +=" Creatures: "+jokerCreatures;
+            }
+            string+="\n";
+            i--;
+        }
+        return string;
+    }
 }
