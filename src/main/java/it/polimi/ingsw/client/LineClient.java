@@ -97,27 +97,29 @@ public class LineClient {
         }
         if (cs.getHeaders().equals(Headers.action)) {
             List<String> result = Arrays.stream(string.split(":")).toList();
-            switch (result.get(0).toUpperCase()) {
-                case "MS":
-                    if (cs.isMoveStudents()) {
-                        return createMoveStudentMessage(result);
-                    }
-                    break;
-                case "MMN":
-                    if (cs.isMoveMotherNature()) {
-                        return createMessage(result, true, false, false);
-                    }
-                    break;
-                case "SC":
-                    if (cs.isSelectCloud()) {
-                        return createMessage(result, false, true, false);
-                    }
-                    break;
-                case "PC":
-                    if (cs.isSelectCharacter()) {
-                        return createMessage(result, false, false, true);
-                    }
-                    break;
+            if (result.size() > 0) {
+                switch (result.get(0).toUpperCase()) {
+                    case "MS":
+                        if (cs.isMoveStudents() && result.size() == 3) {
+                            return createMoveStudentMessage(result);
+                        }
+                        break;
+                    case "MMN":
+                        if (cs.isMoveMotherNature() && result.size() == 2) {
+                            return createMessage(result, true, false, false);
+                        }
+                        break;
+                    case "SC":
+                        if (cs.isSelectCloud() && result.size() == 2) {
+                            return createMessage(result, false, true, false);
+                        }
+                        break;
+                    case "PC":
+                        if (cs.isSelectCharacter() && result.size() == 2) {
+                            return createMessage(result, false, false, true);
+                        }
+                        break;
+                }
             }
             return badGuysHandler();
         }
@@ -162,7 +164,7 @@ public class LineClient {
                         return badGuysHandler();
                     case MINSTREL:
                     case JOKER:
-                        return createSwapMessage(result,cs.getCurrentPlayedCharacter().getMaxMoves());
+                        return createSwapMessage(result, cs.getCurrentPlayedCharacter().getMaxMoves());
                     default:
                         return badGuysHandler();
                 }
@@ -174,19 +176,18 @@ public class LineClient {
         return gson.toJson(new Message(cs.getHeaders(), new StringPayload(string)));
     }
 
-    private String createSwapMessage(List<String> result, int maxMoves){
-        if(result.get(0).equals("C")&&result.get(2).equals("D")){
+    private String createSwapMessage(List<String> result, int maxMoves) {
+        if (result.get(0).equals("C") && result.get(2).equals("D")) {
             List<String> sourceCreatures = Arrays.stream(result.get(1).split(",")).toList();
             List<String> destinationCreatures = Arrays.stream(result.get(3).split(",")).toList();
-            if(sourceCreatures.size()==destinationCreatures.size()&&sourceCreatures.size()<=maxMoves){
+            if (sourceCreatures.size() == destinationCreatures.size() && sourceCreatures.size() <= maxMoves) {
                 List<Creature> sC = new ArrayList<>();
                 List<Creature> dC = new ArrayList<>();
-                for(int i=0; i<sourceCreatures.size(); i++){
-                    if(creatureFromCli(sourceCreatures.get(i)).isPresent() && creatureFromCli(destinationCreatures.get(i)).isPresent()){
+                for (int i = 0; i < sourceCreatures.size(); i++) {
+                    if (creatureFromCli(sourceCreatures.get(i)).isPresent() && creatureFromCli(destinationCreatures.get(i)).isPresent()) {
                         sC.add(creatureFromCli(sourceCreatures.get(i)).get());
                         dC.add(creatureFromCli(destinationCreatures.get(i)).get());
-                    }
-                    else{
+                    } else {
                         return badGuysHandler();
                     }
                 }
@@ -232,7 +233,7 @@ public class LineClient {
     private String createMoveStudentMessage(List<String> result) {
         Optional<Creature> selection = creatureFromCli(result.get(1).toUpperCase());
         if (selection.isEmpty()) {
-            return error;
+            return badGuysHandler();
         }
         int providedDestination;
         boolean isDiningRoomDestination = false;
@@ -252,16 +253,16 @@ public class LineClient {
     }
 
     private String createMessage(List<String> result, boolean isMMN, boolean isSC, boolean isPC) {
-        int providedMovement;
+        int providedIndex;
         try {
-            providedMovement = Integer.parseInt(result.get(1));
+            providedIndex = Integer.parseInt(result.get(1));
         } catch (NumberFormatException ignore) {
             System.out.println("Why did you do it!");
             System.out.println("(ง •̀_•́)ง");
             return error;
         }
         return gson.toJson(new Message(cs.getHeaders(), new ActionAnswerPayload(false, isMMN, isSC,
-                isPC, false, Creature.RED_DRAGONS, providedMovement)));
+                isPC, false, Creature.RED_DRAGONS, providedIndex)));
     }
 
     private String createCharIntMessage(int selectedNumber) {

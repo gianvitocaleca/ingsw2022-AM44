@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class ShowModelPayload implements Payload {
         this.monkCreatures = new ArrayList<>();
         this.jokerCreatures = new ArrayList<>();
         this.princessCreatures = new ArrayList<>();
+        this.characters = new HashMap<>();
     }
 
     public String getCurrentPlayerUsername() {
@@ -209,20 +211,20 @@ public class ShowModelPayload implements Payload {
         return updatePlayedCharacter;
     }
 
-    public int getCurrentPlayerCoins(){
+    public int getCurrentPlayerCoins() {
         int i = 0;
-        for(Player p: playersList){
-            if(p.getUsername().equals(currentPlayerUsername)){
+        for (Player p : playersList) {
+            if (p.getUsername().equals(currentPlayerUsername)) {
                 i = p.getMyCoins();
             }
         }
         return i;
     }
 
-    public int getPlayerTowers(String username){
+    public int getPlayerTowers(String username) {
         int i = 0;
-        for(Player p: playersList){
-            if(p.getUsername().equals(username)){
+        for (Player p : playersList) {
+            if (p.getUsername().equals(username)) {
                 i = p.getTowers();
             }
         }
@@ -240,74 +242,74 @@ public class ShowModelPayload implements Payload {
         string.append("Clouds:=: ");
         int i = 0;
         for (Cloud c : clouds) {
-            string.append("\n"+i).append(": ").append(c.getStudents());
+            string.append("\n" + i).append(": ").append(c.getStudents());
             i++;
         }
         string.append("\n");
         string.append("Islands:=: ");
         i = 1;
         for (Island e : islands) {
-            string.append("\n"+i).append(": ").append(printIsland(e));
-            if(i==motherNature){
+            string.append("\n" + i).append(": ").append(printIsland(e));
+            if (i == motherNature) {
                 string.append("\nMother nature is here!!!");
             }
             i++;
         }
         string.append("\n");
-        if(characters.size()>0){
-        string.append(" Table:=: ");
-        string.append("\nCoin Reserve: ").append(coinReserve).append("\n");
-            string.append("Characters:\n"+ printCharacters());
+        if (characters.size() > 0) {
+            string.append(" Table:=: ");
+            string.append("\nCoin Reserve: ").append(coinReserve).append("\n");
+            string.append("Characters:\n" + printCharacters());
         }
         string.append("\n");
         return string.toString();
     }
 
-    private String printPlayer(Player p){
+    private String printPlayer(Player p) {
         String string;
-        string = "\nUsername: "+ p.getUsername() + " Professors: " +p.getProfessors() +"\n" +
-                "Wizard: "+p.getWizard()+ " Color: "+p.getMyColor()+ "\n"
-                +"Entrance: "+p.getEntrance().getStudents()+ "\n"
-                +"Dining Room: "+p.getDiningRoom().getStudents()+ "\n";
-        if(characters.size()>0) {
+        string = "\nUsername: " + p.getUsername() + " Professors: " + p.getProfessors() + "\n" +
+                "Wizard: " + p.getWizard() + " Color: " + p.getMyColor() + "\n"
+                + "Entrance: " + p.getEntrance().getStudents() + "\n"
+                + "Dining Room: " + p.getDiningRoom().getStudents() + "\n";
+        if (characters.size() > 0) {
             string += "Coins: " + p.getMyCoins();
         }
-        string+=" Towers: "+p.getTowers()+ "\n"
-                +"Last Played Assistant: ";
-        if(!(p.getAssistantDeck().size()== 10)){
-            string+=p.getLastPlayedCard();
-        }else{
-            string+="none";
+        string += " Towers: " + p.getTowers() + "\n"
+                + "Last Played Assistant: ";
+        if (!(p.getAssistantDeck().size() == 10)) {
+            string += p.getLastPlayedCard();
+        } else {
+            string += "none";
         }
 
         return string;
     }
 
-    private String printIsland(Island i){
-        String string = "Students: "+i.getStudents()+"\n"
-            +"Towers: "+i.getNumberOfTowers();
-        if(i.getNumberOfTowers()>0){
-            string += ", Of Color"+i.getColorOfTowers();
+    private String printIsland(Island i) {
+        String string = "Students: " + i.getStudents() + "\n"
+                + "Towers: " + i.getNumberOfTowers();
+        if (i.getNumberOfTowers() > 0) {
+            string += ", Of Color" + i.getColorOfTowers();
         }
-        if(characters.size()>0){
-            string += "\nDeactivators:"+i.getNumberOfNoEntries();
+        if (characters.size() > 0) {
+            string += "\nDeactivators:" + i.getNumberOfNoEntries();
         }
         return string;
     }
 
-    private String printCharacters(){
+    private String printCharacters() {
         String string = "";
-        int i=2;
-        for(Name n: characters.keySet()){
-            string += i+":"+n+" Cost:"+characters.get(n);
-            if(n.equals(Name.MONK)){
-                string +=" Creatures: "+monkCreatures;
-            }else if(n.equals(Name.PRINCESS)){
-                string +=" Creatures: "+princessCreatures;
-            }else if(n.equals(Name.JOKER)){
-                string +=" Creatures: "+jokerCreatures;
+        int i = 2;
+        for (Name n : characters.keySet()) {
+            string += i + ":" + n + " Cost:" + characters.get(n);
+            if (n.equals(Name.MONK)) {
+                string += " Creatures: " + monkCreatures;
+            } else if (n.equals(Name.PRINCESS)) {
+                string += " Creatures: " + princessCreatures;
+            } else if (n.equals(Name.JOKER)) {
+                string += " Creatures: " + jokerCreatures;
             }
-            string+="\n";
+            string += "\n";
             i--;
         }
         return string;

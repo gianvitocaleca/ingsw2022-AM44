@@ -161,6 +161,7 @@ public class GameModel implements Playable {
 
             table.setPrincess(princess);
             players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
+            checkProfessor();
             return true;
         }
         return false;
@@ -192,6 +193,7 @@ public class GameModel implements Playable {
 
             table.setMonk(monk);
             table.setIndexIsland(islandIndex, destination);
+            checkProfessor();
             return true;
         }
         return false;
@@ -215,17 +217,16 @@ public class GameModel implements Playable {
                 newStudents.add(source.removeStudent(c));
             }
             destination.addStudents(newStudents);
-            coinGiver(players.get(currentPlayerIndex));
-            checkProfessor();
+            coinGiver();
             return true;
         }
         return false;
     }
 
-    private void coinGiver(Player currPlayer) {
+    public void coinGiver() {
         for (Creature c : Creature.values()) {
-            if (table.getCoinReserve() > 0) {
-                if (currPlayer.checkCoinGiver(c)) {
+            if (advancedRules) {
+                if (players.get(currentPlayerIndex).checkCoinGiver(c)) {
                     table.removeCoin();
                 }
             }
@@ -356,7 +357,7 @@ public class GameModel implements Playable {
      */
     @Override
     public boolean jokerEffect(List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
-        if(providedSourceCreatures.size()!=providedDestinationCreatures.size()||providedDestinationCreatures.size()>Name.JOKER.getMaxMoves()){
+        if (providedSourceCreatures.size() != providedDestinationCreatures.size() || providedDestinationCreatures.size() > Name.JOKER.getMaxMoves()) {
             return false;
         }
 
@@ -369,6 +370,7 @@ public class GameModel implements Playable {
             swapStudents(joker, entrance, providedSourceCreatures, providedDestinationCreatures);
             table.setJoker(joker);
             players.get(currentPlayerIndex).setEntrance(entrance);
+            checkProfessor();
             return true;
         }
         return false;
@@ -393,6 +395,7 @@ public class GameModel implements Playable {
             swapStudents(currPlayerEntrance, currPlayerDiningRoom, providedEntranceCreatures, providedDiningRoomCreatures);
             players.get(currentPlayerIndex).setEntrance(currPlayerEntrance);
             players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
+            checkProfessor();
             return true;
         }
         return false;
@@ -484,7 +487,7 @@ public class GameModel implements Playable {
             int j = jumps + postmanMovements;
             if (!(table.moveMotherNature(j))) {
                 checkEndGame();
-            }else{
+            } else {
                 evaluateInfluence();
             }
             return true;
@@ -878,7 +881,7 @@ public class GameModel implements Playable {
 
     public boolean effect(CharactersParametersPayload answer) {
         boolean temp = characters.get(playedCharacter).effect(answer);
-        if(temp){
+        if (temp) {
             ShowModelPayload payload = showModelPayloadCreator();
             payload.setUpdatePlayedCharacter();
             showModel(payload);

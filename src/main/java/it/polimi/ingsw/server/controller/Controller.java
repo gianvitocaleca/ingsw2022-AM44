@@ -55,7 +55,7 @@ public class Controller {
         currentGameStatus.setAdvancedRules(model.isAdvancedRules());
         currentGameStatus.setCurrentPlayerUsername(model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername());
         this.networkState = networkState;
-        this.NUMBER_OF_STUDENTS_TO_MOVE = model.getNumberOfPlayers()+1;
+        this.NUMBER_OF_STUDENTS_TO_MOVE = model.getNumberOfPlayers() + 1;
 
     }
 
@@ -205,6 +205,9 @@ public class Controller {
 
         players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
         model.setPlayers(players);
+        model.checkProfessor();
+        model.coinGiver();
+        sendPhaseMessage(Headers.action);
     }
 
     private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
@@ -216,7 +219,6 @@ public class Controller {
                 currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
                 currentGameStatus.setNumberOfStudentsMoved(0);
             }
-                sendPhaseMessage(Headers.action);
         }
     }
 
@@ -281,11 +283,10 @@ public class Controller {
 
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
-            if(model.effect(parameters)){
+            if (model.effect(parameters)) {
                 currentGameStatus.toggleWaitingForParameters();
                 sendPhaseMessage(Headers.action);
-            }
-            else{
+            } else {
                 sendErrorMessage("Wrong Parameters");
             }
         } else {

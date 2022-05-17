@@ -100,10 +100,10 @@ public class MessageReceiverClient extends Thread {
                 break;
             case characterPlayed:
                 charPayload = gson.fromJson(jsonPayload, CharacterPlayedPayload.class);
-                if(cs.getCurrentPlayer()){
+                if (cs.getCurrentPlayer()) {
                     characterParameterSelection(charPayload);
-                }else{
-                    System.out.println(cs.getModelCache().getCurrentPlayerUsername()+" is playing "+charPayload.getCharactersName());
+                } else {
+                    System.out.println(cs.getModelCache().getCurrentPlayerUsername() + " is playing " + charPayload.getCharactersName());
                 }
 
         }
@@ -187,6 +187,8 @@ public class MessageReceiverClient extends Thread {
             System.out.println("Which Creature do you want to choose?");
         } else if (character.isNeedsMnMovements()) {
             System.out.println("How many more jumps do you want Mother Nature to do?");
+        } else {
+            System.out.println("You have played the character: " + character);
         }
     }
 
