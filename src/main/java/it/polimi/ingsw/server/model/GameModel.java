@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.controller.events.ShowModelEvent;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
@@ -91,7 +92,7 @@ public class GameModel implements Playable {
      * If island has NoEntry does nothing and removes one NoEntry
      */
     @Override
-    public void evaluateInfluence() {
+    public void evaluateInfluence() throws GameEndedException {
         evaluator.evaluateInfluence(this);
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdateIslands();
@@ -253,7 +254,7 @@ public class GameModel implements Playable {
     }
 
     @Override
-    public boolean setHeraldIsland(int indexIsland) {
+    public boolean setHeraldIsland(int indexIsland) throws GameEndedException {
         if (indexIsland < table.getIslands().size()) {
             int originalMnPosition = table.getMnPosition();
             MotherNature mn = table.getMotherNature();
@@ -313,7 +314,7 @@ public class GameModel implements Playable {
         return true;
     }
 
-    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException, GameEndedException {
         if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
@@ -338,6 +339,9 @@ public class GameModel implements Playable {
         if (currentPlayerIndex < numberOfPlayers - 1) {
             currentPlayerIndex++;
         } else {
+            if(players.get(currentPlayerIndex).getAssistantDeck().size()==0){
+                throw new GameEndedException();
+            }
             throw new PlanningPhaseEndedException();
         }
         return true;
@@ -497,11 +501,13 @@ public class GameModel implements Playable {
      * @return true if mother nature changed her position
      */
 
-    public boolean moveMotherNature(int jumps) {
+    public boolean moveMotherNature(int jumps) throws GameEndedException {
         if (checkJumps(jumps)) {
             int j = jumps + postmanMovements;
             if (!(table.moveMotherNature(j))) {
-                checkEndGame();
+                if(checkEndGame()){
+                    throw new GameEndedException();
+                };
             } else {
                 evaluateInfluence();
             }
@@ -838,11 +844,11 @@ public class GameModel implements Playable {
 
     //work in progress
 
-    public void conquerIsland(Player hasMoreInfluence) {
+    public void conquerIsland(Player hasMoreInfluence) throws GameEndedException {
 
         Island currentIsland = table.getCurrentIsland();
 
-        if (!hasMoreInfluence.getMyColor().equals(currentIsland.getColorOfTowers())) {
+        if (!hasMoreInfluence.getMyColor().equals(currentIsland.getColorOfTowers())||currentIsland.getNumberOfTowers()==0) {
             //swap towers
             if (currentIsland.getNumberOfTowers() > 0) {
                 for (Player p : players) {
@@ -868,13 +874,13 @@ public class GameModel implements Playable {
             table.setCurrentIsland(currentIsland);
             //check the neighbor islands
             if (!table.checkNeighborIsland()) {
-                checkEndGame();
+                throw new GameEndedException();
             }
         }
     }
 
 
-    public boolean effect(CharactersParametersPayload answer) {
+    public boolean effect(CharactersParametersPayload answer) throws GameEndedException {
         boolean temp = characters.get(playedCharacter).effect(answer);
         if (temp) {
             ShowModelPayload payload = showModelPayloadCreator();

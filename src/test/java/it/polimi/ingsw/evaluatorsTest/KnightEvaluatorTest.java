@@ -1,5 +1,6 @@
 package it.polimi.ingsw.evaluatorsTest;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.BehaviorCharacter;
@@ -47,7 +48,7 @@ public class KnightEvaluatorTest {
      * when calculating the influence for the current player
      */
     @Test
-    void knightEvaluatorTest() {
+    void knightEvaluatorTest() throws GameEndedException {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
         StudentBucket bucket = gm.getBucket();
 

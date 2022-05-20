@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface Playable {
     void addNoEntry(int indexOfIsland);
 
-    void evaluateInfluence();
+    void evaluateInfluence() throws GameEndedException;
 
     void setPostmanMovements(int numberOfSteps);
 
@@ -28,7 +29,7 @@ public interface Playable {
 
     void setFarmer();
 
-    boolean setHeraldIsland(int indexIsland);
+    boolean setHeraldIsland(int indexIsland) throws GameEndedException;
 
     boolean checkEndGame();
 

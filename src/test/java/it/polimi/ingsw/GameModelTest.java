@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.Character;
 import it.polimi.ingsw.server.model.enums.Color;
@@ -60,7 +61,7 @@ public class GameModelTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
+            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){}
         }
         gm.establishRoundOrder();
         assertTrue(gm.getPlayers().get(0).getLastPlayedCard().getValue() < gm.getPlayers().get(1).getLastPlayedCard().getValue());
@@ -156,16 +157,25 @@ public class GameModelTest {
         if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
             try{
                 gm.playAssistant(9);
-            }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
+            }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){}
             gm.setCurrentPlayerIndex(index);
-            gm.moveMotherNature(jumps);
+            try{
+                gm.moveMotherNature(jumps);
+            }catch (GameEndedException ignore){
+
+            }
+
             assertEquals(gm.getTable().getMnPosition(), originalMnPos + jumps);
         } else {
             try{
                 gm.playAssistant(9);
-            }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
+            }catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){}
             gm.setCurrentPlayerIndex(index);
-            gm.moveMotherNature(jumps);
+            try{
+                gm.moveMotherNature(jumps);
+            }catch (GameEndedException ignore){
+
+            }
             assertEquals(gm.getTable().getMnPosition(), (originalMnPos+jumps)%gm.getTable().getIslands().size());
         }
     }
@@ -181,8 +191,12 @@ public class GameModelTest {
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
-        assertFalse(gm.moveMotherNature(jumps));
+        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){}
+        try{
+            assertFalse(gm.moveMotherNature(jumps));
+        }catch (GameEndedException ignore){
+
+        }
         assertEquals(originalMNPos,gm.getTable().getMnPosition());
     }
 
@@ -191,7 +205,7 @@ public class GameModelTest {
      * a player has no tower left.
      */
     @Test
-    void checkEndGameTowersFinished() {
+    void checkEndGameTowersFinished() throws GameEndedException {
         List<Player> playerToSet = new ArrayList<>();
         for (Player p : gm.getPlayers()) {
             assertEquals(p.getTowers(), 6);
@@ -213,7 +227,7 @@ public class GameModelTest {
             try {
                 gm.playAssistant(0);
                 gm.setCurrentPlayerIndex(0);
-            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
+            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){}
         }
         assertTrue(gm.checkEndGame());
     }
@@ -224,7 +238,7 @@ public class GameModelTest {
      * Also gives professors to the players
      */
     @Test
-    void findWinner() {
+    void findWinner() throws GameEndedException {
         List<Professor> professors = new ArrayList<>();
         List<Player> tempPlayer = gm.getPlayers();
         for (Creature c : Creature.values()) {
@@ -270,9 +284,13 @@ public class GameModelTest {
         gm.setTable(tempTable);
         try{
             gm.playAssistant(9);
-        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore){}
+        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){}
         gm.setCurrentPlayerIndex(0);
-        gm.moveMotherNature(0);
+        try{
+            gm.moveMotherNature(0);
+        }catch (GameEndedException ignore){
+
+        }
         assertEquals(oldSize - 1, gm.getTable().getIslands().size());
     }
 

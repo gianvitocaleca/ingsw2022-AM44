@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.evaluators;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.gameboard.Table;
@@ -18,7 +19,7 @@ public class FungaroEvaluator implements InfluenceEvaluator {
     }
 
     @Override
-    public void evaluateInfluence(GameModel model) {
+    public void evaluateInfluence(GameModel model) throws GameEndedException {
         Table table = model.getTable();
         List<Player> players = model.getPlayers();
 

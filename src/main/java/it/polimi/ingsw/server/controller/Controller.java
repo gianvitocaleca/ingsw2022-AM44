@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
@@ -100,7 +101,7 @@ public class Controller {
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
-        messageHandler.eventPerformed(new StringEvent(this, winner.getUsername(), Headers.winnerPlayer, new Socket()));
+        messageHandler.eventPerformed(new BroadcastEvent(this,winner.getUsername(),Headers.winnerPlayer));
     }
 
     private void sendPhaseMessage(Headers phase) {
@@ -174,6 +175,10 @@ public class Controller {
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
             updateCurrentPlayer();
             sendPhaseMessage(Headers.action);
+        } catch (GameEndedException e){
+            if(model.checkEndGame()){
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
     }
 
@@ -233,12 +238,19 @@ public class Controller {
      * @param jumps is the number of jumps
      */
     public void moveMotherNature(int jumps) {
-        if (!(model.moveMotherNature(jumps))) {
-            sendErrorMessage("Incorrect number of jumps provided");
-        } else {
-            currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
-            sendPhaseMessage(Headers.action);
+        try{
+            if (!(model.moveMotherNature(jumps))) {
+                sendErrorMessage("Incorrect number of jumps provided");
+            } else {
+                currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+                sendPhaseMessage(Headers.action);
+            }
+        }catch (GameEndedException e){
+            if(model.checkEndGame()){
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
+
     }
 
     public void selectCloud(int indexOfCloud) {
@@ -296,12 +308,19 @@ public class Controller {
 
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
-            if (model.effect(parameters)) {
-                currentGameStatus.toggleWaitingForParameters();
-                sendPhaseMessage(Headers.action);
-            } else {
-                sendErrorMessage("Wrong Parameters");
+            try{
+                if (model.effect(parameters)) {
+                    currentGameStatus.toggleWaitingForParameters();
+                    sendPhaseMessage(Headers.action);
+                } else {
+                    sendErrorMessage("Wrong Parameters");
+                }
+            }catch(GameEndedException e){
+                if(model.checkEndGame()){
+                    sendWinnerPlayerMessage(model.findWinner());
+                }
             }
+
         } else {
             sendErrorMessage("You cannot play the character right now!");
         }
@@ -309,8 +328,15 @@ public class Controller {
     }
 
     public void effect(){
-        model.effect(new CharactersParametersPayload(new ArrayList<>(),0,0,new ArrayList<>()));
-        sendPhaseMessage(Headers.action);
+        try{
+            model.effect(new CharactersParametersPayload(new ArrayList<>(),0,0,new ArrayList<>()));
+            sendPhaseMessage(Headers.action);
+        }catch (GameEndedException e){
+            if(model.checkEndGame()){
+                sendWinnerPlayerMessage(model.findWinner());
+            }
+        }
+
     }
 
     public GamePhases getCurrentPhase() {
