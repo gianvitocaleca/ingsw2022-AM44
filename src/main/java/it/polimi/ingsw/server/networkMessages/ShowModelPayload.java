@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.networkMessages;
 
+import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.gameboard.Table;
@@ -7,10 +8,7 @@ import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShowModelPayload implements Payload {
 
@@ -22,7 +20,7 @@ public class ShowModelPayload implements Payload {
     private int deactivators;
     private int coinReserve;
 
-    private Map<Name, Integer> characters;
+    private List<CharacterInformation> characters;
     private List<Creature> monkCreatures;
     private List<Creature> princessCreatures;
     private List<Creature> jokerCreatures;
@@ -48,7 +46,7 @@ public class ShowModelPayload implements Payload {
         this.monkCreatures = new ArrayList<>();
         this.jokerCreatures = new ArrayList<>();
         this.princessCreatures = new ArrayList<>();
-        this.characters = new HashMap<>();
+        this.characters = new ArrayList<>();
     }
 
     public String getCurrentPlayerUsername() {
@@ -59,7 +57,7 @@ public class ShowModelPayload implements Payload {
         this.currentPlayerUsername = username;
     }
 
-    public Map<Name, Integer> getCharacters() {
+    public List<CharacterInformation> getCharacters() {
         return characters;
     }
 
@@ -67,7 +65,7 @@ public class ShowModelPayload implements Payload {
         return playersList;
     }
 
-    public void setCharacters(Map<Name, Integer> characters) {
+    public void setCharacters(List<CharacterInformation> characters) {
         this.characters = characters;
     }
 
@@ -250,7 +248,7 @@ public class ShowModelPayload implements Payload {
         i = 1;
         for (Island e : islands) {
             string.append("\n" + i).append(": ").append(printIsland(e));
-            if (i == motherNature) {
+            if (i-1 == motherNature) {
                 string.append("\nMother nature is here!!!");
             }
             i++;
@@ -299,18 +297,16 @@ public class ShowModelPayload implements Payload {
 
     private String printCharacters() {
         String string = "";
-        int i = 2;
-        for (Name n : characters.keySet()) {
-            string += i + ":" + n + " Cost:" + characters.get(n);
-            if (n.equals(Name.MONK)) {
+        for (CharacterInformation c: characters) {
+            string += c.getIndex() + ":" + c.getName() + " Cost:" + c.getCost();
+            if (c.getName().equals(Name.MONK)) {
                 string += " Creatures: " + monkCreatures;
-            } else if (n.equals(Name.PRINCESS)) {
+            } else if (c.getName().equals(Name.PRINCESS)) {
                 string += " Creatures: " + princessCreatures;
-            } else if (n.equals(Name.JOKER)) {
+            } else if (c.getName().equals(Name.JOKER)) {
                 string += " Creatures: " + jokerCreatures;
             }
             string += "\n";
-            i--;
         }
         return string;
     }

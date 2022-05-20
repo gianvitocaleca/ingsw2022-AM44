@@ -1,10 +1,10 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.controller.events.ShowModelEvent;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import it.polimi.ingsw.server.model.characters.Character;
-import it.polimi.ingsw.server.model.characters.CharacterInformation;
 import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
@@ -218,18 +218,26 @@ public class GameModel implements Playable {
             }
             destination.addStudents(newStudents);
             coinGiver();
+            checkProfessor();
             return true;
         }
         return false;
     }
 
     public void coinGiver() {
+        boolean update = false;
         for (Creature c : Creature.values()) {
             if (advancedRules) {
                 if (players.get(currentPlayerIndex).checkCoinGiver(c)) {
                     table.removeCoin();
+                    update = true;
                 }
             }
+        }
+        if(update){
+            ShowModelPayload payload = showModelPayloadCreator();
+            payload.setUpdateCoinReserve();
+            showModel(payload);
         }
 
     }
@@ -297,6 +305,11 @@ public class GameModel implements Playable {
         } else {
             currentPlayerIndex = 0;
         }
+        postmanMovements = 0;
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdateClouds();
+        payload.setUpdatePlayersEntrance();
+        showModel(payload);
         return true;
     }
 
@@ -423,6 +436,8 @@ public class GameModel implements Playable {
         //swaps the students
         source.addStudents(studentsFromDestination);
         destination.addStudents(studentsFromSource);
+        coinGiver();
+        checkProfessor();
     }
 
     /**
@@ -502,7 +517,7 @@ public class GameModel implements Playable {
      * @return true if the assistant card played by the client allows mother nature's movement
      */
     private boolean checkJumps(int jumps) {
-        if (jumps < 0) {
+        if (jumps <= 0) {
             return false;
         }
         return players.get(currentPlayerIndex).getLastPlayedCard().getMovements() >= jumps;
@@ -657,26 +672,6 @@ public class GameModel implements Playable {
     public List<Character> getCharacters() {
         return characters;
     }
-
-    public CharacterInformation getCharactersInformation(int indexOfCharacter) {
-
-        Name charactersName = characters.get(indexOfCharacter).getName();
-
-        List<Creature> moverContent;
-        if (charactersName.equals(Name.MONK)) {
-            moverContent = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
-        } else if (charactersName.equals(Name.JOKER)) {
-            moverContent = table.getJoker().getStudents().stream().map(s -> s.getCreature()).toList();
-        } else if (charactersName.equals(Name.PRINCESS)) {
-            moverContent = table.getPrincess().getStudents().stream().map(s -> s.getCreature()).toList();
-        } else {
-            moverContent = new ArrayList<>();
-        }
-
-        return new CharacterInformation(
-                charactersName, characters.get(indexOfCharacter).hasCoin(), table.getDeactivators(), indexOfCharacter, moverContent);
-    }
-
 
     public int getPlayedCharacter() {
         return playedCharacter;
@@ -900,11 +895,13 @@ public class GameModel implements Playable {
         ShowModelPayload showModelPayload = new ShowModelPayload(getPlayers(), getTable());
         showModelPayload.setCurrentPlayerUsername(players.get(getCurrentPlayerIndex()).getUsername());
         if (isAdvancedRules()) {
-            Map<Name, Integer> characters = new HashMap<>();
+            List<CharacterInformation> characterInfos = new ArrayList<>();
+            int i = 0;
             for (Character c : getCharacters()) {
-                characters.put(c.getName(), c.getCost());
+                characterInfos.add(new CharacterInformation(c.getName(),c.getCost(),i));
+                i++;
             }
-            showModelPayload.setCharacters(characters);
+            showModelPayload.setCharacters(characterInfos);
             List<Creature> creatureList;
             if (getTable().getJoker().getStudents().size() > 0) {
                 creatureList = new ArrayList<>();

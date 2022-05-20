@@ -100,12 +100,18 @@ public class MessageReceiverClient extends Thread {
                 break;
             case characterPlayed:
                 charPayload = gson.fromJson(jsonPayload, CharacterPlayedPayload.class);
-                if (cs.getCurrentPlayer()) {
+                if (cs.getCurrentPlayer() && charPayload.getCharactersName().needsParameters()) {
                     characterParameterSelection(charPayload);
-                } else {
+                } else if(cs.getCurrentPlayer()){
+                    System.out.println("You have played the character: " + charPayload.getCharactersName());
+                }else{
                     System.out.println(cs.getModelCache().getCurrentPlayerUsername() + " is playing " + charPayload.getCharactersName());
                 }
-
+                break;
+            case winnerPlayer:
+                stringPayload = gson.fromJson(jsonPayload,StringPayload.class);
+                System.out.println("The winner is "+stringPayload.getString());
+                break;
         }
     }
 
@@ -158,13 +164,8 @@ public class MessageReceiverClient extends Thread {
         if (cs.isSelectCharacter()) {
             System.out.println(":=: Play character <PC> :=:");
             System.out.println("Choose a character to play");
-            List<Name> chars = cs.getModelCache().getCharacters().keySet().stream().toList();
-            int i;
-            for (i = 0; i < chars.size() - 1; i++) {
-                System.out.print(" " + i + ":" + chars.get(i) + ", ");
-            }
-            System.out.print(" " + i + ":" + chars.get(i) + " \n");
-            System.out.println("For example PC:2");
+            cs.getModelCache().getCharacters().stream().forEach(c -> System.out.println(c.getIndex()+":"+c.getName()+":"+c.getCost()));
+            System.out.println("\nFor example PC:2");
         }
 
 
@@ -181,14 +182,13 @@ public class MessageReceiverClient extends Thread {
             System.out.println("For example to swap character (C) creatures Red, Green and Blue  with " +
                     "the destination (D) creatures Blue, Yellow and Pink use the following syntax");
             System.out.println("C:R,G,B:D:B,Y,P");
+            System.out.println("Select at most "+character.getMaxMoves()+" creatures");
         } else if (character.isNeedsIslandIndex()) {
             System.out.println("Which island do you want to choose?");
         } else if (character.isNeedsSourceCreature()) {
             System.out.println("Which Creature do you want to choose?");
         } else if (character.isNeedsMnMovements()) {
             System.out.println("How many more jumps do you want Mother Nature to do?");
-        } else {
-            System.out.println("You have played the character: " + character);
         }
     }
 

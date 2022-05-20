@@ -22,6 +22,7 @@ import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -184,13 +185,14 @@ public class Controller {
     public void moveStudents(MoveStudentsEvent evt) {
         List<Player> players = model.getPlayers();
         Entrance playerEntrance = players.get(model.getCurrentPlayerIndex()).getEntrance();
+        boolean isOkEntrance = false;
 
         if (evt.isDestinationIsland()) {
 
             Table table = model.getTable();
             Island destinationIsland = table.getIslands().get(evt.getIndexOfIsland());
 
-            setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
+            isOkEntrance = setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
 
             table.setIndexIsland(evt.getIndexOfIsland(), destinationIsland);
             model.setTable(table);
@@ -198,21 +200,23 @@ public class Controller {
         } else {
             DiningRoom playerDiningRoom = players.get(model.getCurrentPlayerIndex()).getDiningRoom();
 
-            setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
+            isOkEntrance = setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
 
             players.get(model.getCurrentPlayerIndex()).setDiningRoom(playerDiningRoom);
         }
-
-        players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
-        model.setPlayers(players);
-        model.checkProfessor();
-        model.coinGiver();
-        sendPhaseMessage(Headers.action);
+        if(isOkEntrance){
+            players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
+            model.setPlayers(players);
+            model.checkProfessor();
+            model.coinGiver();
+            sendPhaseMessage(Headers.action);
+        }
     }
 
-    private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
+    private boolean setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         if (!(model.moveStudents(source, destination, creatures))) {
             sendErrorMessage("Wrong creatures in entrance, try again");
+            return false;
         } else {
             currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved() + 1);
             if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
@@ -220,6 +224,7 @@ public class Controller {
                 currentGameStatus.setNumberOfStudentsMoved(0);
             }
         }
+        return true;
     }
 
     /**
@@ -271,8 +276,16 @@ public class Controller {
             if (!(model.playCharacter(indexOfCharacter))) {
                 sendErrorMessage("You don't have enough coins");
             } else {
-                currentGameStatus.toggleWaitingForParameters();
-                sendCharacterPlayedMessage(model.getCharacters().get(model.getPlayedCharacter()).getName());
+                Name playedCharacterName = model.getCharacters().get(model.getPlayedCharacter()).getName();
+                if(playedCharacterName.needsParameters()){
+                    currentGameStatus.toggleWaitingForParameters();
+                    sendCharacterPlayedMessage(playedCharacterName);
+                }
+                else{
+                    sendCharacterPlayedMessage(playedCharacterName);
+                    effect();
+                }
+
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -293,6 +306,11 @@ public class Controller {
             sendErrorMessage("You cannot play the character right now!");
         }
 
+    }
+
+    public void effect(){
+        model.effect(new CharactersParametersPayload(new ArrayList<>(),0,0,new ArrayList<>()));
+        sendPhaseMessage(Headers.action);
     }
 
     public GamePhases getCurrentPhase() {
@@ -316,5 +334,4 @@ public class Controller {
     public boolean getCurrentPlayerPlayedCharacter() {
         return currentPlayerPlayedCharacter;
     }
-
 }
