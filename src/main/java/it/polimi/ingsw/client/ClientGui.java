@@ -4,14 +4,19 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -20,85 +25,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientGui extends Application {
-    private ScreenController screenController;
+
+    private final Color backgroundColor = Color.AQUAMARINE;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Scene creationScene = creationScene(new MessageGUI());
-        creationScene.setFill(Color.BLUE);
+
+        //Pane creation
+        BorderPane creationRoot = new BorderPane();
+        creationRoot.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        BorderPane gameRoot = new BorderPane();
+        gameRoot.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
+        //Scene creation
+        Scene creationScene = new Scene(creationRoot);
+        Scene gameScene = new Scene(gameRoot);
+        //Creation components
+        Button twoPlayers = new Button("Two players");
+        twoPlayers.setFont(Font.font(30));
+        Button threePlayers = new Button("Three players");
+        threePlayers.setFont(Font.font(30));
+        twoPlayers.setOnMouseClicked(e -> {
+            gameSceneGenerator(gameRoot, 2);
+            primaryStage.setScene(gameScene);
+            primaryStage.setMaximized(true);
+            primaryStage.setResizable(false);
+        });
+        threePlayers.setOnMouseClicked(e -> {
+            gameSceneGenerator(gameRoot, 3);
+            primaryStage.setScene(gameScene);
+            primaryStage.setMaximized(true);
+            primaryStage.setResizable(false);
+        });
+        HBox buttons = new HBox(twoPlayers, threePlayers);
+        buttons.setSpacing(5);
+        buttons.setAlignment(Pos.CENTER);
+
+        Text title = new Text("Eryantis");
+        title.setFont(Font.font("Papyrus", FontWeight.LIGHT, 160));
+        title.setFill(Color.DARKVIOLET);
+        title.setStroke(Color.LIGHTGOLDENRODYELLOW);
+        title.setStrokeWidth(1);
+        VBox titleBox = new VBox(title);
+        titleBox.setAlignment(Pos.CENTER);
+        creationRoot.setTop(titleBox);
+        //Game components
+
+        creationRoot.setCenter(buttons);
         primaryStage.setScene(creationScene);
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Eryantis");
-
-
-        screenController = new ScreenController(creationScene);
-
         primaryStage.show();
     }
 
-    private Scene creationScene(MessageGUI message) {
-
-        GridPane creationPane = new GridPane();
-        Scene creationScene = new Scene(creationPane);
-        //creationScene.
-
-        String result = message.getMessaggio();
-        List<String> results = List.of(result.split(":"));
-        List<String> values = List.of(results.get(1).split(","));
-
-
-        Text text = new Text(results.get(0));
-        ChoiceBox numberOfPlayers = new ChoiceBox();
-        numberOfPlayers.getItems().addAll(values.get(0), values.get(1));
-        Button buttonRegister = new Button("Confirm");
-
-        creationPane.add(text, 0, 0);
-        creationPane.add(numberOfPlayers, 0, 1);
-        creationPane.add(buttonRegister, 0, 2);
-        buttonRegister.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                screenController.addScreen("gamePane", gamePane(Integer.parseInt(numberOfPlayers.getValue().toString())));
-                screenController.activate("gamePane");
-            }
-        });
-        return creationScene;
-    }
-
-    private GridPane gamePane(int numberOfPlayers) {
-        GridPane gameDispositionPane = new GridPane();
-
-        gameDispositionPane.setMinSize(1920, 1080);
-        gameDispositionPane.setPadding(new Insets(10, 10, 10, 10));
-        gameDispositionPane.setVgap(5);
-        gameDispositionPane.add(playerPaneGenerator(), 0, 0);
+    private void gameSceneGenerator(BorderPane gamePane, int numberOfPlayers) {
+        gamePane.setLeft(playerPaneGenerator());
         Group islands = new Group();
-        gameDispositionPane.add(islands, 1, 0);
         Image island = new Image("island.png");
         List<ImageView> islandView = new ArrayList<>();
-        islandView.add(new ImageView(island));
-        islandView.add(new ImageView(island));
-        islandView.add(new ImageView(island));
-        int j = 0;
-        for (ImageView i : islandView) {
-            i.setX(0 + j);
-            i.setY(0 + j);
-            islands.getChildren().add(i);
-
-            j += 50;
-
+        int numberOfIslands = 12;
+        int centerX = 100;
+        int centerY = 100;
+        int radius = 300;
+        for (int i = 0; i < numberOfIslands; i++) {
+            ImageView islandImageView = new ImageView(island);
+            islandImageView.setX(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands));
+            islandImageView.setY(centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
+            islandView.add(islandImageView);
         }
-
+        islands.getChildren().addAll(islandView);
+        gamePane.setCenter(islands);
         if (numberOfPlayers == 3) {
-            gameDispositionPane.add(playerPaneGenerator(), 2, 0);
+            gamePane.setRight(playerPaneGenerator());
         }
 
-
-        return gameDispositionPane;
     }
 
     private GridPane playerPaneGenerator() {
         GridPane player1Pane = new GridPane();
+        player1Pane.setAlignment(Pos.CENTER);
         player1Pane.setMinSize(50, 100);
         player1Pane.setPadding(new Insets(10, 10, 10, 10));
         player1Pane.setVgap(5);
@@ -112,3 +116,5 @@ public class ClientGui extends Application {
         return player1Pane;
     }
 }
+
+
