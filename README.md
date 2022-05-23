@@ -10,11 +10,11 @@
 |:-----------------|:--------------------------------------------------:|
 | Basic rules      | 🟢 |
 | Complete rules   | 🟢 |
-| Socket & communication protocol          | 🟡 |
-| GUI              | 🔴 |
-| CLI              | 🟡 |
+| Socket & communication protocol          | 🟢 |
+| GUI              | 🟡 |
+| CLI              | 🟢 |
 | Advanced Characters   | 🟢 |
 | 4 players games  | 🔴 |
 | Multiple games   | 🔴 |
 | Persistence      | 🔴 |
-| Disconnections resilience             | 🔴 |
+| Disconnections resilience             | 🟡 |
