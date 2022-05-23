@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.Postman;
@@ -33,15 +34,13 @@ public class PostmanTest {
      * This tests that when the postman card is played, motherNature moves of jumps+postmanMovements positions
      */
     @Test
-    public void postmanTest() {
+    public void postmanTest() throws GameEndedException {
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
                 0, 2, new ArrayList<>());
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        } catch (AssistantAlreadyPlayedException e) {
-            e.printStackTrace();
-        } catch (PlanningPhaseEndedException e) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException e) {
             e.printStackTrace();
         }
         gm.getCharacters().remove(0);
@@ -57,10 +56,18 @@ public class PostmanTest {
         int oldposition = gm.getTable().getMnPosition();
 
         if (2 < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
-            gm.moveMotherNature(0);
+            try{
+                gm.moveMotherNature(0);
+            }catch (GameEndedException ignore){
+
+            }
             assertTrue(gm.getTable().getMnPosition() == oldposition + 2);
         } else {
-            gm.moveMotherNature(0);
+            try{
+                gm.moveMotherNature(0);
+            }catch (GameEndedException ignore){
+
+            }
             assertTrue(gm.getTable().getMnPosition() == (oldposition + 2) % (gm.getTable().getIslands().size()));
         }
 
@@ -70,7 +77,7 @@ public class PostmanTest {
      * This tests that when a wrong value for the postmanMovements is provided, the game will not execute the moveMotherNature method
      */
     @Test
-    public void setWrongPostmanMovementsTest() {
+    public void setWrongPostmanMovementsTest() throws GameEndedException {
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
                 0, 200, new ArrayList<>());
 

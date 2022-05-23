@@ -61,4 +61,8 @@ public enum Name {
     public boolean isNeedsDestinationCreature() {
         return needsDestinationCreature;
     }
+
+    public boolean needsParameters(){
+        return needsSourceCreature || needsIslandIndex || needsMnMovements || needsDestination || needsDestinationCreature;
+    }
 }

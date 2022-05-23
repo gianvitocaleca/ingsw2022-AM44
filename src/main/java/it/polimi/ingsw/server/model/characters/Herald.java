@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.characters;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.Playable;
@@ -26,7 +27,7 @@ public class Herald implements Character {
     }
 
     @Override
-    public boolean effect(CharactersParametersPayload answer) {
+    public boolean effect(CharactersParametersPayload answer) throws GameEndedException {
         if(!(model.setHeraldIsland(answer.getProvidedIslandIndex()))){
             return false;
         }

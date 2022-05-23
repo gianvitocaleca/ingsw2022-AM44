@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.evaluators;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public class KnightEvaluator implements InfluenceEvaluator {
     @Override
-    public void evaluateInfluence(GameModel model) {
+    public void evaluateInfluence(GameModel model) throws GameEndedException {
         Table table = model.getTable();
         List<Player> players = model.getPlayers();
 

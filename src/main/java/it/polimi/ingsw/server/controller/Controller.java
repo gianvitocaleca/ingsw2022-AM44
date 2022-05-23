@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
@@ -22,6 +23,7 @@ import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -99,7 +101,7 @@ public class Controller {
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
-        messageHandler.eventPerformed(new StringEvent(this, winner.getUsername(), Headers.winnerPlayer, new Socket()));
+        messageHandler.eventPerformed(new BroadcastEvent(this,winner.getUsername(),Headers.winnerPlayer));
     }
 
     private void sendPhaseMessage(Headers phase) {
@@ -173,6 +175,10 @@ public class Controller {
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
             updateCurrentPlayer();
             sendPhaseMessage(Headers.action);
+        } catch (GameEndedException e){
+            if(model.checkEndGame()){
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
     }
 
@@ -184,13 +190,14 @@ public class Controller {
     public void moveStudents(MoveStudentsEvent evt) {
         List<Player> players = model.getPlayers();
         Entrance playerEntrance = players.get(model.getCurrentPlayerIndex()).getEntrance();
+        boolean isOkEntrance = false;
 
         if (evt.isDestinationIsland()) {
 
             Table table = model.getTable();
             Island destinationIsland = table.getIslands().get(evt.getIndexOfIsland());
 
-            setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
+            isOkEntrance = setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
 
             table.setIndexIsland(evt.getIndexOfIsland(), destinationIsland);
             model.setTable(table);
@@ -198,21 +205,23 @@ public class Controller {
         } else {
             DiningRoom playerDiningRoom = players.get(model.getCurrentPlayerIndex()).getDiningRoom();
 
-            setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
+            isOkEntrance = setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
 
             players.get(model.getCurrentPlayerIndex()).setDiningRoom(playerDiningRoom);
         }
-
-        players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
-        model.setPlayers(players);
-        model.checkProfessor();
-        model.coinGiver();
-        sendPhaseMessage(Headers.action);
+        if(isOkEntrance){
+            players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
+            model.setPlayers(players);
+            model.checkProfessor();
+            model.coinGiver();
+            sendPhaseMessage(Headers.action);
+        }
     }
 
-    private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
+    private boolean setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         if (!(model.moveStudents(source, destination, creatures))) {
             sendErrorMessage("Wrong creatures in entrance, try again");
+            return false;
         } else {
             currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved() + 1);
             if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
@@ -220,6 +229,7 @@ public class Controller {
                 currentGameStatus.setNumberOfStudentsMoved(0);
             }
         }
+        return true;
     }
 
     /**
@@ -228,12 +238,19 @@ public class Controller {
      * @param jumps is the number of jumps
      */
     public void moveMotherNature(int jumps) {
-        if (!(model.moveMotherNature(jumps))) {
-            sendErrorMessage("Incorrect number of jumps provided");
-        } else {
-            currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
-            sendPhaseMessage(Headers.action);
+        try{
+            if (!(model.moveMotherNature(jumps))) {
+                sendErrorMessage("Incorrect number of jumps provided");
+            } else {
+                currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+                sendPhaseMessage(Headers.action);
+            }
+        }catch (GameEndedException e){
+            if(model.checkEndGame()){
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
+
     }
 
     public void selectCloud(int indexOfCloud) {
@@ -271,8 +288,16 @@ public class Controller {
             if (!(model.playCharacter(indexOfCharacter))) {
                 sendErrorMessage("You don't have enough coins");
             } else {
-                currentGameStatus.toggleWaitingForParameters();
-                sendCharacterPlayedMessage(model.getCharacters().get(model.getPlayedCharacter()).getName());
+                Name playedCharacterName = model.getCharacters().get(model.getPlayedCharacter()).getName();
+                if(playedCharacterName.needsParameters()){
+                    currentGameStatus.toggleWaitingForParameters();
+                    sendCharacterPlayedMessage(playedCharacterName);
+                }
+                else{
+                    sendCharacterPlayedMessage(playedCharacterName);
+                    effect();
+                }
+
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -283,14 +308,33 @@ public class Controller {
 
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
-            if (model.effect(parameters)) {
-                currentGameStatus.toggleWaitingForParameters();
-                sendPhaseMessage(Headers.action);
-            } else {
-                sendErrorMessage("Wrong Parameters");
+            try{
+                if (model.effect(parameters)) {
+                    currentGameStatus.toggleWaitingForParameters();
+                    sendPhaseMessage(Headers.action);
+                } else {
+                    sendErrorMessage("Wrong Parameters");
+                }
+            }catch(GameEndedException e){
+                if(model.checkEndGame()){
+                    sendWinnerPlayerMessage(model.findWinner());
+                }
             }
+
         } else {
             sendErrorMessage("You cannot play the character right now!");
+        }
+
+    }
+
+    public void effect(){
+        try{
+            model.effect(new CharactersParametersPayload(new ArrayList<>(),0,0,new ArrayList<>()));
+            sendPhaseMessage(Headers.action);
+        }catch (GameEndedException e){
+            if(model.checkEndGame()){
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
 
     }
@@ -316,5 +360,4 @@ public class Controller {
     public boolean getCurrentPlayerPlayedCharacter() {
         return currentPlayerPlayedCharacter;
     }
-
 }
