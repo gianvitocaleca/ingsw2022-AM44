@@ -78,7 +78,8 @@ public class ClientGui extends Application {
     }
 
     private void gameSceneGenerator(BorderPane gamePane, int numberOfPlayers) {
-        gamePane.setLeft(playerPaneGenerator());
+        gamePane.setLeft(playerPaneGenerator(false));
+        gamePane.setBottom(playerPaneGenerator(true));
         Group islands = new Group();
         Image island = new Image("island.png");
         List<ImageView> islandView = new ArrayList<>();
@@ -95,12 +96,12 @@ public class ClientGui extends Application {
         islands.getChildren().addAll(islandView);
         gamePane.setCenter(islands);
         if (numberOfPlayers == 3) {
-            gamePane.setRight(playerPaneGenerator());
+            gamePane.setRight(playerPaneGenerator(false));
         }
 
     }
 
-    private GridPane playerPaneGenerator() {
+    private GridPane playerPaneGenerator(boolean isMe) {
         GridPane player1Pane = new GridPane();
         player1Pane.setAlignment(Pos.CENTER);
         player1Pane.setMinSize(50, 100);
@@ -109,7 +110,12 @@ public class ClientGui extends Application {
         player1Pane.add(new Text("Username"), 0, 0);
         player1Pane.add(new Text("Mago"), 0, 1);
         player1Pane.add(new Text("Colore"), 0, 4);
-        ImageView imageView = new ImageView(new Image("plancia.png"));
+        ImageView imageView;
+        if (isMe) {
+            imageView = new ImageView(new Image("plancia2.png"));
+        } else {
+            imageView = new ImageView(new Image("plancia.png"));
+        }
         imageView.setFitHeight(460);
         imageView.setFitWidth(200);
         player1Pane.add(imageView, 0, 3);

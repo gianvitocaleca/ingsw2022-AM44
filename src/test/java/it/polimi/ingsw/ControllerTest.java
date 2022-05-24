@@ -18,6 +18,7 @@ import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -204,6 +205,7 @@ public class ControllerTest {
      */
     @Test
     public void moveStudentsTest() {
+        planningIfNo();
         Entrance entrance = new Entrance(9);
         List<Student> studentList = new ArrayList<>();
         studentList.add(new Student(Creature.RED_DRAGONS));
@@ -306,9 +308,8 @@ public class ControllerTest {
     }
 
     private void planningIfNo() {
-        if (!planned) {
+        if (controller.getCurrentPhase().equals(GamePhases.PLANNING)) {
             completePlanningPhaseTest();
-            planned = true;
         }
     }
 
@@ -431,14 +432,23 @@ public class ControllerTest {
     @Test
     public void selectLastCloudTest() {
 
+        //selects the cloud for the first player
         selectCloudTest();
-        moveMotherNatureTest();
+        //moves the students and MotherNature for the second player
+        GameStatus gameStatus = controller.getCurrentStatus();
+        gameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+        controller.setCurrentStatus(gameStatus);
+
 
         int cloudSelected = 1;
         IntegerEvent evt = new IntegerEvent(view, cloudSelected);
         view.integerEventReceiver(evt);
 
-        moveMotherNatureTest();
+        //moves the students and MotheNature for the third player
+        gameStatus = controller.getCurrentStatus();
+        gameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+        controller.setCurrentStatus(gameStatus);
+
         cloudSelected = 2;
         evt = new IntegerEvent(view, cloudSelected);
         view.integerEventReceiver(evt);

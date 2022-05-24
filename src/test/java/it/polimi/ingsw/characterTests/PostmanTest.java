@@ -35,8 +35,9 @@ public class PostmanTest {
      */
     @Test
     public void postmanTest() throws GameEndedException {
+        int numberOfPostmanJumps = 2;
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
-                0, 2, new ArrayList<>());
+                0, numberOfPostmanJumps, new ArrayList<>());
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
@@ -54,21 +55,22 @@ public class PostmanTest {
         gm.effect(Postman);
 
         int oldposition = gm.getTable().getMnPosition();
+        int numberOfMNJumps = 1;
 
         if (2 < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
-            try{
-                gm.moveMotherNature(0);
-            }catch (GameEndedException ignore){
+            try {
+                gm.moveMotherNature(numberOfMNJumps);
+            } catch (GameEndedException ignore) {
 
             }
-            assertTrue(gm.getTable().getMnPosition() == oldposition + 2);
+            assertTrue(gm.getTable().getMnPosition() == oldposition + (numberOfMNJumps + numberOfPostmanJumps));
         } else {
-            try{
-                gm.moveMotherNature(0);
-            }catch (GameEndedException ignore){
+            try {
+                gm.moveMotherNature(numberOfMNJumps);
+            } catch (GameEndedException ignore) {
 
             }
-            assertTrue(gm.getTable().getMnPosition() == (oldposition + 2) % (gm.getTable().getIslands().size()));
+            assertTrue(gm.getTable().getMnPosition() == (oldposition + (numberOfMNJumps + numberOfPostmanJumps)) % (gm.getTable().getIslands().size()));
         }
 
     }

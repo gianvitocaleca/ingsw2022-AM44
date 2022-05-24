@@ -101,7 +101,7 @@ public class Controller {
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
-        messageHandler.eventPerformed(new BroadcastEvent(this,winner.getUsername(),Headers.winnerPlayer));
+        messageHandler.eventPerformed(new BroadcastEvent(this, winner.getUsername(), Headers.winnerPlayer));
     }
 
     private void sendPhaseMessage(Headers phase) {
@@ -175,8 +175,8 @@ public class Controller {
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
             updateCurrentPlayer();
             sendPhaseMessage(Headers.action);
-        } catch (GameEndedException e){
-            if(model.checkEndGame()){
+        } catch (GameEndedException e) {
+            if (model.checkEndGame()) {
                 sendWinnerPlayerMessage(model.findWinner());
             }
         }
@@ -209,7 +209,7 @@ public class Controller {
 
             players.get(model.getCurrentPlayerIndex()).setDiningRoom(playerDiningRoom);
         }
-        if(isOkEntrance){
+        if (isOkEntrance) {
             players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
             model.setPlayers(players);
             model.checkProfessor();
@@ -238,15 +238,15 @@ public class Controller {
      * @param jumps is the number of jumps
      */
     public void moveMotherNature(int jumps) {
-        try{
+        try {
             if (!(model.moveMotherNature(jumps))) {
                 sendErrorMessage("Incorrect number of jumps provided");
             } else {
                 currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
                 sendPhaseMessage(Headers.action);
             }
-        }catch (GameEndedException e){
-            if(model.checkEndGame()){
+        } catch (GameEndedException e) {
+            if (model.checkEndGame()) {
                 sendWinnerPlayerMessage(model.findWinner());
             }
         }
@@ -289,11 +289,10 @@ public class Controller {
                 sendErrorMessage("You don't have enough coins");
             } else {
                 Name playedCharacterName = model.getCharacters().get(model.getPlayedCharacter()).getName();
-                if(playedCharacterName.needsParameters()){
+                if (playedCharacterName.needsParameters()) {
                     currentGameStatus.toggleWaitingForParameters();
                     sendCharacterPlayedMessage(playedCharacterName);
-                }
-                else{
+                } else {
                     sendCharacterPlayedMessage(playedCharacterName);
                     effect();
                 }
@@ -308,15 +307,15 @@ public class Controller {
 
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
-            try{
+            try {
                 if (model.effect(parameters)) {
                     currentGameStatus.toggleWaitingForParameters();
                     sendPhaseMessage(Headers.action);
                 } else {
                     sendErrorMessage("Wrong Parameters");
                 }
-            }catch(GameEndedException e){
-                if(model.checkEndGame()){
+            } catch (GameEndedException e) {
+                if (model.checkEndGame()) {
                     sendWinnerPlayerMessage(model.findWinner());
                 }
             }
@@ -327,12 +326,12 @@ public class Controller {
 
     }
 
-    public void effect(){
-        try{
-            model.effect(new CharactersParametersPayload(new ArrayList<>(),0,0,new ArrayList<>()));
+    public void effect() {
+        try {
+            model.effect(new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>()));
             sendPhaseMessage(Headers.action);
-        }catch (GameEndedException e){
-            if(model.checkEndGame()){
+        } catch (GameEndedException e) {
+            if (model.checkEndGame()) {
                 sendWinnerPlayerMessage(model.findWinner());
             }
         }
@@ -351,6 +350,10 @@ public class Controller {
             temp.toggleWaitingForParameters();
         }
         return temp;
+    }
+
+    public void setCurrentStatus(GameStatus providedGS) {
+        this.currentGameStatus = providedGS;
     }
 
     public boolean isWaitingForParameters() {

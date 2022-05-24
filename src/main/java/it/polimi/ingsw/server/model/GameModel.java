@@ -235,7 +235,7 @@ public class GameModel implements Playable {
                 }
             }
         }
-        if(update){
+        if (update) {
             ShowModelPayload payload = showModelPayloadCreator();
             payload.setUpdateCoinReserve();
             showModel(payload);
@@ -339,7 +339,7 @@ public class GameModel implements Playable {
         if (currentPlayerIndex < numberOfPlayers - 1) {
             currentPlayerIndex++;
         } else {
-            if(players.get(currentPlayerIndex).getAssistantDeck().size()==0){
+            if (players.get(currentPlayerIndex).getAssistantDeck().size() == 0) {
                 throw new GameEndedException();
             }
             throw new PlanningPhaseEndedException();
@@ -505,9 +505,11 @@ public class GameModel implements Playable {
         if (checkJumps(jumps)) {
             int j = jumps + postmanMovements;
             if (!(table.moveMotherNature(j))) {
-                if(checkEndGame()){
+                if (checkEndGame()) {
+                    System.out.println("Sto lanciando un eccezione");
                     throw new GameEndedException();
-                };
+                }
+                ;
             } else {
                 evaluateInfluence();
             }
@@ -728,12 +730,12 @@ public class GameModel implements Playable {
      */
     private List<Character> createListOfCharacters() {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
-        List<Character> chars = new ArrayList<>();
+        List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
         for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
-            chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
+            characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
-        return chars;
+        return characterList;
     }
 
     //region createListOfPlayers
@@ -848,7 +850,7 @@ public class GameModel implements Playable {
 
         Island currentIsland = table.getCurrentIsland();
 
-        if (!hasMoreInfluence.getMyColor().equals(currentIsland.getColorOfTowers())||currentIsland.getNumberOfTowers()==0) {
+        if (!hasMoreInfluence.getMyColor().equals(currentIsland.getColorOfTowers()) || currentIsland.getNumberOfTowers() == 0) {
             //swap towers
             if (currentIsland.getNumberOfTowers() > 0) {
                 for (Player p : players) {
@@ -904,7 +906,7 @@ public class GameModel implements Playable {
             List<CharacterInformation> characterInfos = new ArrayList<>();
             int i = 0;
             for (Character c : getCharacters()) {
-                characterInfos.add(new CharacterInformation(c.getName(),c.getCost(),i));
+                characterInfos.add(new CharacterInformation(c.getName(), c.getCost(), i));
                 i++;
             }
             showModelPayload.setCharacters(characterInfos);

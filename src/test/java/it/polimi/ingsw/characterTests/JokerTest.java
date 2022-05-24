@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.Character;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
@@ -40,7 +41,7 @@ public class JokerTest {
      * Swaps students between Joker character and player entrance
      */
     @Test
-    void JokerTest() {
+    void JokerTest() throws GameEndedException {
         int maxStudentsInJoker = 6;
         int characterToPlayIndex = 0;
 
@@ -98,7 +99,7 @@ public class JokerTest {
     }
 
     @Test
-    void WrongJokerTest() {
+    void WrongJokerTest() throws GameEndedException {
         int characterToPlayIndex = 0;
 
         List<Name> chars = gm.getCharacters().stream().map(Character::getName).toList();
@@ -144,10 +145,9 @@ public class JokerTest {
         oldEntranceCreatures.add(studentsInEntrance.get(3).getCreature());
 
 
-
         //creates the parameters for the character effect
         CharactersParametersPayload jokerParameters = new CharactersParametersPayload(oldJokerCreatures,
-                0, 0,  oldEntranceCreatures);
+                0, 0, oldEntranceCreatures);
         //play character effect
         assertFalse(gm.effect(jokerParameters));
 

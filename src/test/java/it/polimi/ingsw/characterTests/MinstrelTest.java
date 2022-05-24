@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.MoverCharacter;
@@ -43,7 +44,7 @@ public class MinstrelTest {
      * Swaps students between current player entrance and dining room
      */
     @Test
-    void minstrelTest() {
+    void minstrelTest() throws GameEndedException {
         //create the Character
         MoverCharacter minstrel = new MoverCharacter(Name.MINSTREL, gm);
         StudentBucket bucket = gm.getBucket();

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.Character;
@@ -41,7 +42,7 @@ public class PrincessTest {
      * This tests that the princess effect works correctly swapping students between source and destination
      */
     @Test
-    void princessEffectTest() {
+    void princessEffectTest() throws GameEndedException {
         int maxStudentsInPrincess = 4;
         int characterToPlayIndex = 0;
 

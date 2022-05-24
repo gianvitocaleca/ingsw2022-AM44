@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.Herald;
@@ -41,7 +42,7 @@ public class HeraldTest {
      * This test verifies that herald has the correct behaviour.
      */
     @Test
-    void heraldEffectTest() {
+    void heraldEffectTest() throws GameEndedException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
         CharactersParametersPayload herald = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new ArrayList<>());
         List<Professor> profes = new ArrayList<>();
