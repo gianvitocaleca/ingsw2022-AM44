@@ -13,16 +13,19 @@ public class ConcreteGUISender extends AbstractSender{
 
     private Queue<String> guiEvents;
     private String inputLine;
-    public ConcreteGUISender(String ip, int port) {
+    private ClientGui clientGui;
+    public ConcreteGUISender(String ip, int port, ClientGui clientGui) {
         super(ip, port);
         guiEvents = new LinkedList<>();
+        this.clientGui = clientGui;
+
     }
 
     @Override
     public void startClient() throws IOException {
         super.startClient();
         Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new ConcreteGUIReceiver(s, cs, ps));
+        Thread t = new Thread(new ConcreteGUIReceiver(s, cs, ps, clientGui));
         t.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         play(socket);

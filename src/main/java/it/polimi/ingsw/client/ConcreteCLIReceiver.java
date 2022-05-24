@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.networkMessages.CharacterPlayedPayload;
+import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     }
 
     @Override
-    void stringMessage(StringPayload payload) {
+    void stringMessage(Headers header, StringPayload payload) {
         System.out.println(payload.getString());
     }
 

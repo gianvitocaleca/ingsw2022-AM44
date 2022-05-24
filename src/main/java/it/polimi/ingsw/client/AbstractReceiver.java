@@ -62,7 +62,7 @@ public abstract class AbstractReceiver extends Thread {
             case creationRequirementMessage_TypeOfRules:
             case errorMessage:
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
-                stringMessage(stringPayload);
+                stringMessage(header,stringPayload);
                 break;
             case planning:
                 printModel();
@@ -125,7 +125,7 @@ public abstract class AbstractReceiver extends Thread {
         cs.setShowModel(payload);
     }
 
-    abstract void stringMessage(StringPayload payload);
+    abstract void stringMessage(Headers header, StringPayload payload);
     abstract void printModel();
 
     abstract void planning();

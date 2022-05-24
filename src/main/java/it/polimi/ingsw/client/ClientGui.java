@@ -25,13 +25,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientGui extends Application {
-
+    private static String address;
+    private static int port;
     private final Color backgroundColor = Color.AQUAMARINE;
     private int numberOfPlayers = 2;
     private boolean advancedRules = false;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        AbstractSender client = new ConcreteGUISender(address, port,this);
+        Thread t = new Thread(() -> {
+            try {
+                client.startClient();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        t.start();
 
         //Pane creation
         BorderPane creationRoot = new BorderPane();
@@ -169,6 +180,14 @@ public class ClientGui extends Application {
         player.setSpacing(5);
         player.setAlignment(Pos.CENTER);
         return player;
+    }
+
+    public static void setAddress(String address) {
+        ClientGui.address = address;
+    }
+
+    public static void setPort(int port) {
+        ClientGui.port = port;
     }
 }
 
