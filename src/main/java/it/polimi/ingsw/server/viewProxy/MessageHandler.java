@@ -91,7 +91,8 @@ public class MessageHandler implements EventListener {
 
         switch (header) {
 
-            case creationRequirementMessage:
+            case creationRequirementMessage_NumberOfPlayers:
+            case creationRequirementMessage_TypeOfRules:
                 StringPayload creationPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 int ans;
                 try {

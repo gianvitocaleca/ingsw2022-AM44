@@ -2,10 +2,10 @@ package it.polimi.ingsw.client;
 
 import java.io.IOException;
 
-public class ClienCliMain {
+public class ClientCliMain {
 
     public static void main(String[] args) {
-        LineClient client = new LineClient("127.0.0.1", 1337);
+        AbstractSender client = new ConcreteCLISender("127.0.0.1", 1337);
         try {
             client.startClient();
         } catch (IOException e) {
@@ -14,7 +14,7 @@ public class ClienCliMain {
     }
 
     public static void start(String address, int port) {
-        LineClient client = new LineClient(address, port);
+        AbstractSender client = new ConcreteCLISender(address, port);
         try {
             client.startClient();
         } catch (IOException e) {

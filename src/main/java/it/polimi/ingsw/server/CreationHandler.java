@@ -22,7 +22,7 @@ public class CreationHandler extends Thread{
 
     @Override
     public void run() {
-        sendMessage(Headers.creationRequirementMessage, "Select the number of players [2 or 3]:");
+        sendMessage(Headers.creationRequirementMessage_NumberOfPlayers, "Select the number of players [2 or 3]:");
         while(true) {
             int number = cs.getNumberOfPlayers();
             if (number != 2 && number != 3) {
@@ -33,7 +33,7 @@ public class CreationHandler extends Thread{
                 cs.reset();
                 System.out.println("Number of players: " + number);
                 cs.setPhase(GamePhases.CREATION_RULES);
-                sendMessage(Headers.creationRequirementMessage, "Choose the rules type [0 standard|1 advanced]:");
+                sendMessage(Headers.creationRequirementMessage_TypeOfRules, "Choose the rules type [0 standard|1 advanced]:");
                 break;
             }
         }

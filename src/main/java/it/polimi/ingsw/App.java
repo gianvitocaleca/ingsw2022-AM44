@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.client.ClienCliMain;
+import it.polimi.ingsw.client.ClientCliMain;
 import it.polimi.ingsw.client.ClientGuiMain;
 import it.polimi.ingsw.server.ServerMain;
 
@@ -27,7 +27,6 @@ public class App {
         if (args.length > 0) {
             switch (args[0]) {
                 case client:
-
                     if (args.length > 1) {
                         if (Gui.equals(args[1])) {
                             isGui = true;
@@ -114,7 +113,7 @@ public class App {
         if (isGui) {
             ClientGuiMain.start(address, providedPort);
         } else {
-            ClienCliMain.start(address, providedPort);
+            ClientCliMain.start(address, providedPort);
         }
     }
 

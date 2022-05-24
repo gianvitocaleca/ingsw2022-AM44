@@ -1,18 +1,23 @@
 package it.polimi.ingsw.client;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,13 +61,13 @@ public class ClientGui extends Application {
         twoPlayers.setOnMouseClicked(e -> {
             this.numberOfPlayers = 2;
             creationRoot.setCenter(typeOfRulesButtons);
-            primaryStage.setMaximized(true);
+            primaryStage.setFullScreen(true);
             primaryStage.setResizable(false);
         });
         threePlayers.setOnMouseClicked(e -> {
             this.numberOfPlayers = 3;
             creationRoot.setCenter(typeOfRulesButtons);
-            primaryStage.setMaximized(true);
+            primaryStage.setFullScreen(true);
             primaryStage.setResizable(false);
         });
 
@@ -70,15 +75,18 @@ public class ClientGui extends Application {
             this.advancedRules = false;
             gameSceneGenerator(gameRoot, numberOfPlayers);
             primaryStage.setScene(gameScene);
-            primaryStage.setMaximized(true);
+            primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            primaryStage.setFullScreen(true);
             primaryStage.setResizable(false);
         });
         advancedRules.setOnMouseClicked(e -> {
             this.advancedRules = true;
             gameSceneGenerator(gameRoot, numberOfPlayers);
             primaryStage.setScene(gameScene);
-            primaryStage.setMaximized(true);
             primaryStage.setResizable(false);
+            primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            primaryStage.setFullScreen(true);
+
         });
 
 
@@ -98,9 +106,14 @@ public class ClientGui extends Application {
 
         creationRoot.setCenter(numOfPlayersButtons);
         primaryStage.setScene(creationScene);
-        primaryStage.setMaximized(true);
+        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        primaryStage.setFullScreen(true);
         primaryStage.setTitle("Eryantis");
         primaryStage.show();
+    }
+
+    public void prova(){
+        System.out.println("Prova");
     }
 
     private void gameSceneGenerator(BorderPane gamePane, int numberOfPlayers) {

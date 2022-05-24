@@ -11,77 +11,41 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
-public class LineClient {
-    private String ip;
-    private int port;
-    private String inputLine;
-    private ClientState cs;
-    private Gson gson;
-    private PingState ps;
-    private final int pingTime = 5000;
-    private final int maxNoAnswers = 4;
-    private Scanner stdin;
-    private PrintWriter socketOut;
+public abstract class AbstractSender {
+    protected String ip;
+    protected int port;
+    protected ClientState cs;
+    protected Gson gson;
+    protected PingState ps;
+    protected final int pingTime = 5000;
+    protected final int maxNoAnswers = 4;
 
-    private String error = "error";
+    protected Socket socket;
 
-    public LineClient(String ip, int port) {
+    protected PrintWriter socketOut;
+    protected final String error = "error";
+
+    public AbstractSender(String ip, int port) {
         this.ip = ip;
         this.port = port;
         gson = new Gson();
         ps = new PingState();
+        socket = new Socket();
     }
 
     public void startClient() throws IOException {
         cs = new ClientState();
-        Socket socket = new Socket(ip, port);
+        socket = new Socket(ip, port);
         System.out.println("Connection established");
         System.out.println("Client dynamic port number: " + socket.getLocalPort());
-        Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new MessageReceiverClient(s, cs, ps));
-        t.start();
         Thread t1 = new Thread(new ClientPingHandler(ps, socket, pingTime, maxNoAnswers));
         t1.start();
-        socketOut = new PrintWriter(socket.getOutputStream());
-        stdin = new Scanner(System.in);
-        play(socket);
     }
 
-    private void play(Socket socket) {
-        while (!ps.isCloseConnection()) {
-            String result;
-            do {
-                inputLine = stdin.nextLine();
-                result = encodeMessage(inputLine);
-            } while (result.equals(error));
-            socketOut.println(result);
-            if (cs.getHeaders().equals(Headers.loginMessage_Username)) {
-                setUsername(inputLine);
-            }
-            if (socketOut.checkError()) {
-                System.out.println("There is an error with the server.. closing connection");
-                break;
-            }
-        }
-        while (!ps.isCloseConnection()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    abstract void play(Socket socket);
 
-        stdin.close();
-        socketOut.close();
-        try {
-            socket.close();
-            System.out.println("Connection closed, server unreachable");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String encodeMessage(String string) {
+    protected String encodeMessage(String string) {
+        if (string == null) return error;
         if (!cs.getCurrentPlayer()) {
             System.out.println("You are not the current player! Please wait");
             return error;
@@ -199,7 +163,7 @@ public class LineClient {
         return badGuysHandler();
     }
 
-    private void setUsername(String username) {
+    protected void setUsername(String username) {
         if (cs.getHeaders().equals(Headers.loginMessage_Username)) {
             cs.setUsername(username.toLowerCase());
         }
