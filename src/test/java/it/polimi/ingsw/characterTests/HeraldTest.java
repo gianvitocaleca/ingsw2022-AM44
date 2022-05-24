@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.Herald;
@@ -9,7 +10,6 @@ import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,9 +42,9 @@ public class HeraldTest {
      * This test verifies that herald has the correct behaviour.
      */
     @Test
-    void heraldEffectTest() {
+    void heraldEffectTest() throws GameEndedException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
-        CharactersParametersPayload herald = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
+        CharactersParametersPayload herald = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new ArrayList<>());
         List<Professor> profes = new ArrayList<>();
         for (Creature c : Creature.values()) {
             profes.add(new Professor(c));
@@ -66,7 +66,7 @@ public class HeraldTest {
         gm.playCharacter(0);
         gm.effect(herald);
 
-        List <Island> islands = gm.getTable().getIslands();
+        List<Island> islands = gm.getTable().getIslands();
 
         for (Creature c : Creature.values()) {
             if (islands.get(islandIndex).getNumberOfStudentsByCreature(c) == 1) {

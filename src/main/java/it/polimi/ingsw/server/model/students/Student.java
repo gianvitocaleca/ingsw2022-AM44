@@ -13,4 +13,8 @@ public class Student {
         return creature;
     }
 
+    @Override
+    public String toString() {
+        return ""+creature;
+    }
 }

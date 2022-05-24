@@ -1,10 +1,11 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.controller.events.ShowModelEvent;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import it.polimi.ingsw.server.model.characters.Character;
-import it.polimi.ingsw.server.model.characters.CharacterInformation;
 import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
@@ -69,7 +70,6 @@ public class GameModel implements Playable {
         postmanMovements = 0;
         playedCharacter = -1;
         populateMoverCharacter();
-        //showModel();
     }
 
     public boolean isAdvancedRules() {
@@ -82,6 +82,9 @@ public class GameModel implements Playable {
         List<Island> islands = table.getIslands();
         islands.get(indexOfIsland).addNoEntry();
         table.setIslands(islands);
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdateIslands();
+        showModel(payload);
     }
 
     /**
@@ -89,8 +92,12 @@ public class GameModel implements Playable {
      * If island has NoEntry does nothing and removes one NoEntry
      */
     @Override
-    public void evaluateInfluence() {
+    public void evaluateInfluence() throws GameEndedException {
         evaluator.evaluateInfluence(this);
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdateIslands();
+        payload.setUpdateMotherNature();
+        showModel(payload);
     }
 
     /**
@@ -127,6 +134,7 @@ public class GameModel implements Playable {
         }
         table.setBucket(sb);
         lastRound = false;
+        checkProfessor();
     }
 
     /**
@@ -154,6 +162,7 @@ public class GameModel implements Playable {
 
             table.setPrincess(princess);
             players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
+            checkProfessor();
             return true;
         }
         return false;
@@ -185,6 +194,7 @@ public class GameModel implements Playable {
 
             table.setMonk(monk);
             table.setIndexIsland(islandIndex, destination);
+            checkProfessor();
             return true;
         }
         return false;
@@ -208,20 +218,27 @@ public class GameModel implements Playable {
                 newStudents.add(source.removeStudent(c));
             }
             destination.addStudents(newStudents);
-            coinGiver(players.get(currentPlayerIndex));
-            //showModel();
+            coinGiver();
+            checkProfessor();
             return true;
         }
         return false;
     }
 
-    private void coinGiver(Player currPlayer) {
+    public void coinGiver() {
+        boolean update = false;
         for (Creature c : Creature.values()) {
-            if (table.getCoinReserve() > 0) {
-                if (currPlayer.checkCoinGiver(c)) {
+            if (advancedRules) {
+                if (players.get(currentPlayerIndex).checkCoinGiver(c)) {
                     table.removeCoin();
+                    update = true;
                 }
             }
+        }
+        if (update) {
+            ShowModelPayload payload = showModelPayloadCreator();
+            payload.setUpdateCoinReserve();
+            showModel(payload);
         }
 
     }
@@ -237,7 +254,7 @@ public class GameModel implements Playable {
     }
 
     @Override
-    public boolean setHeraldIsland(int indexIsland) {
+    public boolean setHeraldIsland(int indexIsland) throws GameEndedException {
         if (indexIsland < table.getIslands().size()) {
             int originalMnPosition = table.getMnPosition();
             MotherNature mn = table.getMotherNature();
@@ -263,8 +280,10 @@ public class GameModel implements Playable {
     public void fillClouds() {
         if (!(table.fillClouds())) {
             lastRound = true;
-            //showModel();
         }
+        ShowModelPayload modelUpdate = showModelPayloadCreator();
+        modelUpdate.setUpdateClouds();
+        showModel(modelUpdate);
     }
 
     public boolean moveFromSelectedCloud(int indexOfCloud) throws CloudAlreadySelectedException {
@@ -287,11 +306,15 @@ public class GameModel implements Playable {
         } else {
             currentPlayerIndex = 0;
         }
-        //showModel();
+        postmanMovements = 0;
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdateClouds();
+        payload.setUpdatePlayersEntrance();
+        showModel(payload);
         return true;
     }
 
-    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException {
+    public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException, GameEndedException {
         if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
@@ -310,12 +333,17 @@ public class GameModel implements Playable {
         }
 
         players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
+        ShowModelPayload modelUpdate = showModelPayloadCreator();
+        modelUpdate.setUpdatePlayersAssistant();
+        showModel(modelUpdate);
         if (currentPlayerIndex < numberOfPlayers - 1) {
             currentPlayerIndex++;
         } else {
+            if (players.get(currentPlayerIndex).getAssistantDeck().size() == 0) {
+                throw new GameEndedException();
+            }
             throw new PlanningPhaseEndedException();
         }
-        //showModel();
         return true;
     }
 
@@ -346,6 +374,9 @@ public class GameModel implements Playable {
      */
     @Override
     public boolean jokerEffect(List<Creature> providedSourceCreatures, List<Creature> providedDestinationCreatures) {
+        if (providedSourceCreatures.size() != providedDestinationCreatures.size() || providedDestinationCreatures.size() > Name.JOKER.getMaxMoves()) {
+            return false;
+        }
 
         List<Creature> sourceCreatures = table.getJoker().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
         List<Creature> destCreatures = players.get(currentPlayerIndex).getEntrance().getStudents().stream().map(s -> s.getCreature()).collect(Collectors.toList());
@@ -356,6 +387,7 @@ public class GameModel implements Playable {
             swapStudents(joker, entrance, providedSourceCreatures, providedDestinationCreatures);
             table.setJoker(joker);
             players.get(currentPlayerIndex).setEntrance(entrance);
+            checkProfessor();
             return true;
         }
         return false;
@@ -380,6 +412,7 @@ public class GameModel implements Playable {
             swapStudents(currPlayerEntrance, currPlayerDiningRoom, providedEntranceCreatures, providedDiningRoomCreatures);
             players.get(currentPlayerIndex).setEntrance(currPlayerEntrance);
             players.get(currentPlayerIndex).setDiningRoom(currPlayerDiningRoom);
+            checkProfessor();
             return true;
         }
         return false;
@@ -407,6 +440,8 @@ public class GameModel implements Playable {
         //swaps the students
         source.addStudents(studentsFromDestination);
         destination.addStudents(studentsFromSource);
+        coinGiver();
+        checkProfessor();
     }
 
     /**
@@ -466,13 +501,18 @@ public class GameModel implements Playable {
      * @return true if mother nature changed her position
      */
 
-    public boolean moveMotherNature(int jumps) {
+    public boolean moveMotherNature(int jumps) throws GameEndedException {
         if (checkJumps(jumps)) {
             int j = jumps + postmanMovements;
             if (!(table.moveMotherNature(j))) {
-                checkEndGame();
+                if (checkEndGame()) {
+                    System.out.println("Sto lanciando un eccezione");
+                    throw new GameEndedException();
+                }
+                ;
+            } else {
+                evaluateInfluence();
             }
-            //showModel();
             return true;
         }
         return false;
@@ -485,7 +525,7 @@ public class GameModel implements Playable {
      * @return true if the assistant card played by the client allows mother nature's movement
      */
     private boolean checkJumps(int jumps) {
-        if (jumps < 0) {
+        if (jumps <= 0) {
             return false;
         }
         return players.get(currentPlayerIndex).getLastPlayedCard().getMovements() >= jumps;
@@ -516,7 +556,6 @@ public class GameModel implements Playable {
             table.addCoins(removedCoins);
             //play character
             playedCharacter = indexOfCharacter;
-            //showModel();
             return true;
         }
 
@@ -642,26 +681,6 @@ public class GameModel implements Playable {
         return characters;
     }
 
-    public CharacterInformation getCharactersInformation(int indexOfCharacter) {
-
-        Name charactersName = characters.get(indexOfCharacter).getName();
-
-        List<Creature> moverContent;
-        if (charactersName.equals(Name.MONK)) {
-            moverContent = table.getMonk().getStudents().stream().map(s -> s.getCreature()).toList();
-        } else if (charactersName.equals(Name.JOKER)) {
-            moverContent = table.getJoker().getStudents().stream().map(s -> s.getCreature()).toList();
-        } else if (charactersName.equals(Name.PRINCESS)) {
-            moverContent = table.getPrincess().getStudents().stream().map(s -> s.getCreature()).toList();
-        } else {
-            moverContent = new ArrayList<>();
-        }
-
-        return new CharacterInformation(
-                charactersName, characters.get(indexOfCharacter).hasCoin(), table.getDeactivators(), indexOfCharacter, moverContent);
-    }
-
-
     public int getPlayedCharacter() {
         return playedCharacter;
     }
@@ -711,12 +730,12 @@ public class GameModel implements Playable {
      */
     private List<Character> createListOfCharacters() {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
-        List<Character> chars = new ArrayList<>();
+        List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
         for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
-            chars.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
+            characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
-        return chars;
+        return characterList;
     }
 
     //region createListOfPlayers
@@ -808,7 +827,11 @@ public class GameModel implements Playable {
                 }
             }
         }
-        //showModel();
+        ShowModelPayload payload = showModelPayloadCreator();
+        payload.setUpdatePlayersDiningRoom();
+        payload.setUpdatePlayersEntrance();
+        payload.setUpdateIslands();
+        showModel(payload);
     }
 
     private boolean hasProfessor(int indexOfPlayer, Creature c) {
@@ -823,11 +846,11 @@ public class GameModel implements Playable {
 
     //work in progress
 
-    public void conquerIsland(Player hasMoreInfluence) {
+    public void conquerIsland(Player hasMoreInfluence) throws GameEndedException {
 
         Island currentIsland = table.getCurrentIsland();
 
-        if (!hasMoreInfluence.getMyColor().equals(currentIsland.getColorOfTowers())) {
+        if (!hasMoreInfluence.getMyColor().equals(currentIsland.getColorOfTowers()) || currentIsland.getNumberOfTowers() == 0) {
             //swap towers
             if (currentIsland.getNumberOfTowers() > 0) {
                 for (Player p : players) {
@@ -853,29 +876,66 @@ public class GameModel implements Playable {
             table.setCurrentIsland(currentIsland);
             //check the neighbor islands
             if (!table.checkNeighborIsland()) {
-                checkEndGame();
+                throw new GameEndedException();
             }
         }
     }
 
 
-    public boolean effect(CharactersParametersPayload answer) {
+    public boolean effect(CharactersParametersPayload answer) throws GameEndedException {
         boolean temp = characters.get(playedCharacter).effect(answer);
-        //showModel();
+        if (temp) {
+            ShowModelPayload payload = showModelPayloadCreator();
+            payload.setUpdatePlayedCharacter();
+            showModel(payload);
+        }
         return temp;
     }
 
-    /*private void //showModel() {
-        Map<Name, Boolean> charactersMap = new HashMap<>();
-        for (Character c : characters) {
-            charactersMap.put(c.getName(), c.hasCoin());
+    public void showModel(ShowModelPayload modelUpdate) {
+        ShowModelEvent modelEvent = new ShowModelEvent(this, modelUpdate);
+        for (MessageHandler listener : listeners.getListeners(MessageHandler.class)) {
+            listener.eventPerformed(modelEvent);
         }
-        ShowModelPayload payload = new ShowModelPayload(getPlayers(), getTable(), charactersMap,
-                characters.get(playedCharacter).getName());
+    }
 
-        for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
-            event.eventPerformed(new ShowModelEvent(this, payload));
+    public ShowModelPayload showModelPayloadCreator() {
+        ShowModelPayload showModelPayload = new ShowModelPayload(getPlayers(), getTable());
+        showModelPayload.setCurrentPlayerUsername(players.get(getCurrentPlayerIndex()).getUsername());
+        if (isAdvancedRules()) {
+            List<CharacterInformation> characterInfos = new ArrayList<>();
+            int i = 0;
+            for (Character c : getCharacters()) {
+                characterInfos.add(new CharacterInformation(c.getName(), c.getCost(), i));
+                i++;
+            }
+            showModelPayload.setCharacters(characterInfos);
+            List<Creature> creatureList;
+            if (getTable().getJoker().getStudents().size() > 0) {
+                creatureList = new ArrayList<>();
+                for (Student s : getTable().getJoker().getStudents()) {
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setJokerCreatures(creatureList);
+            }
+            if (getTable().getPrincess().getStudents().size() > 0) {
+                creatureList = new ArrayList<>();
+                for (Student s : getTable().getPrincess().getStudents()) {
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setPrincessCreatures(creatureList);
+            }
+            if (getTable().getMonk().getStudents().size() > 0) {
+                creatureList = new ArrayList<>();
+                for (Student s : getTable().getMonk().getStudents()) {
+                    creatureList.add(s.getCreature());
+                }
+                showModelPayload.setMonkCreatures(creatureList);
+            }
         }
-    }*/
+
+        return showModelPayload;
+    }
+
 
 }

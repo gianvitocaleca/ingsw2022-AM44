@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.MoverCharacter;
@@ -43,7 +44,7 @@ public class MinstrelTest {
      * Swaps students between current player entrance and dining room
      */
     @Test
-    void minstrelTest() {
+    void minstrelTest() throws GameEndedException {
         //create the Character
         MoverCharacter minstrel = new MoverCharacter(Name.MINSTREL, gm);
         StudentBucket bucket = gm.getBucket();
@@ -92,34 +93,32 @@ public class MinstrelTest {
             oldDiningRoomCreatures.add(s.getCreature());
         }
 
-        int oldCounter=0;
-        for(Creature c : Creature.values()){
-            oldCounter+= gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getNumberOfStudentsByCreature(c);
+        int oldCounter = 0;
+        for (Creature c : Creature.values()) {
+            oldCounter += gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getNumberOfStudentsByCreature(c);
         }
 
         //creates the parameters for the character effect
         CharactersParametersPayload minstrelParameters = new CharactersParametersPayload(oldEntranceCreatures,
-                0, 0, null, oldDiningRoomCreatures);
+                0, 0, oldDiningRoomCreatures);
         //play character effect
         gm.effect(minstrelParameters);
 
         //the number of students should be the same as before
-        int newCounter=0;
-        for(Creature c : Creature.values()){
-            newCounter+= gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getNumberOfStudentsByCreature(c);
+        int newCounter = 0;
+        for (Creature c : Creature.values()) {
+            newCounter += gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getNumberOfStudentsByCreature(c);
         }
 
-        assertEquals(oldCounter,newCounter);
+        assertEquals(oldCounter, newCounter);
 
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getCapacity(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
 
 
         //the creatures should be swapped
-        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(7).getCreature(),oldDiningRoomCreatures.get(0));
-        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(8).getCreature(),oldDiningRoomCreatures.get(1));
-
-
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(7).getCreature(), oldDiningRoomCreatures.get(0));
+        assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(8).getCreature(), oldDiningRoomCreatures.get(1));
 
 
     }

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
-import it.polimi.ingsw.server.controller.events.CharacterPlayedEvent;
-import it.polimi.ingsw.server.controller.events.MoveStudentsEvent;
-import it.polimi.ingsw.server.controller.events.StatusEvent;
-import it.polimi.ingsw.server.controller.events.StringEvent;
+import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
@@ -19,13 +19,10 @@ import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.server.networkMessages.ActionPayload;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
-import it.polimi.ingsw.server.networkMessages.Headers;
-import it.polimi.ingsw.server.networkMessages.StringPayload;
+import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
-import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -36,15 +33,16 @@ public class Controller {
     -do all resets with a proper reset method in GameModel
     -check if a player needs to earn a coin and give it to him, if possible, and proceeds to remove it from the coin reserve
      */
-    private final int NUMBER_OF_STUDENTS_TO_MOVE_BASIC = 3;
-    private final int NUMBER_OF_STUDENTS_TO_MOVE_ADVANCED = 4;
+    private final int NUMBER_OF_STUDENTS_TO_MOVE;
     private GameModel model;
     private MessageHandler messageHandler;
     private GameStatus currentGameStatus;
     private boolean currentPlayerPlayedCharacter = false;
 
+    private NetworkState networkState;
 
-    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus) {
+
+    public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
 
         this.model = model;
         this.messageHandler = messageHandler;
@@ -56,14 +54,22 @@ public class Controller {
 
         currentGameStatus = gameStatus;
         currentGameStatus.setAdvancedRules(model.isAdvancedRules());
+        currentGameStatus.setCurrentPlayerUsername(model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername());
+        this.networkState = networkState;
+        this.NUMBER_OF_STUDENTS_TO_MOVE = model.getNumberOfPlayers() + 1;
 
     }
 
     public void start() {
-        sendCurrentPlayerMessage();
+        updateCurrentPlayer();
+
+        ShowModelPayload modelUpdate = model.showModelPayloadCreator();
+        modelUpdate.setUpdateAll();
+        model.showModel(modelUpdate);
+
         switch (currentGameStatus.getPhase()) {
             case PLANNING:
-                sendPhaseMessage(Headers.PLANNING);
+                sendPhaseMessage(Headers.planning);
                 break;
             case ACTION_MOVEMOTHERNATURE:
             case ACTION_STUDENTSMOVEMENT:
@@ -87,45 +93,64 @@ public class Controller {
         return false;
     }
 
-    private void sendCurrentPlayerMessage() {
+    private void updateCurrentPlayer() {
         Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
         currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
-        messageHandler.eventPerformed(new StringEvent(this, curr.getUsername(), Headers.currentPlayer, new Socket()));
+        currentPlayerPlayedCharacter = false;
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
-        messageHandler.eventPerformed(new StringEvent(this, winner.getUsername(), Headers.winnerPlayer, new Socket()));
+        messageHandler.eventPerformed(new BroadcastEvent(this, winner.getUsername(), Headers.winnerPlayer));
     }
 
     private void sendPhaseMessage(Headers phase) {
         if (phase.equals(Headers.action)) {
-            if (currentGameStatus.equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
-                messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules()));
-            } else if (currentGameStatus.equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
+            if (currentGameStatus.getPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
+                messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
+            } else if (currentGameStatus.getPhase().equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
                 if (currentPlayerPlayedCharacter) {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, true, false, false));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, true, false, false, currentGameStatus.getCurrentPlayerUsername()));
                 } else {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, true, false, currentGameStatus.isAdvancedRules()));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, true, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
                 }
             } else {
                 if (currentPlayerPlayedCharacter) {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, false, true, false));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, false, true, false, currentGameStatus.getCurrentPlayerUsername()));
                 } else {
-                    messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new ActionPayload(false, false, true, currentGameStatus.isAdvancedRules()));
+                    messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, false, true, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
                 }
             }
         } else {
-            messageHandler.eventPerformed(new StatusEvent(this, phase, new Socket()), new StringPayload(""));
+            if (model.getCurrentPlayerIndex() == 0) {
+                model.fillClouds();
+            }
+            messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
     }
 
     private void sendErrorMessage(String string) {
-        messageHandler.eventPerformed(new StringEvent(this, string, Headers.errorMessage, new Socket()));
+        int id = 0;
+        for (SocketID socketID : networkState.getSocketIDList()) {
+            if (socketID.getPlayerInfo().getUsername().equals(
+                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())) {
+                id = socketID.getId();
+            }
+        }
+        System.out.println(string);
+        messageHandler.eventPerformed(new StringEvent(this, string, Headers.errorMessage,
+                networkState.getSocketByID(id)));
     }
 
     private void sendCharacterPlayedMessage(Name name) {
-        messageHandler.eventPerformed(new CharacterPlayedEvent(this, name));
+        int id = 0;
+        for (SocketID socketID : networkState.getSocketIDList()) {
+            if (socketID.getPlayerInfo().getUsername().equals(
+                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())) {
+                id = socketID.getId();
+            }
+        }
+        messageHandler.eventPerformed(new CharacterPlayedEvent(this, name, networkState.getSocketByID(id)));
     }
 
     /**
@@ -134,22 +159,25 @@ public class Controller {
      * @param indexOfAssistant is the assistant card the player wants to play
      */
     public void playAssistant(int indexOfAssistant) {
-        if (model.getCurrentPlayerIndex() == 0) {
-            model.fillClouds();
-        }
+
         try {
             if (!(model.playAssistant(indexOfAssistant))) {
                 sendErrorMessage("Non existent assistant, play another one");
             } else {
-                sendCurrentPlayerMessage();
+                updateCurrentPlayer();
+                sendPhaseMessage(Headers.planning);
             }
         } catch (AssistantAlreadyPlayedException a) {
             sendErrorMessage("Already played assistant, play another one");
         } catch (PlanningPhaseEndedException p) {
             model.establishRoundOrder();
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
+            updateCurrentPlayer();
             sendPhaseMessage(Headers.action);
-            sendCurrentPlayerMessage();
+        } catch (GameEndedException e) {
+            if (model.checkEndGame()) {
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
     }
 
@@ -161,13 +189,14 @@ public class Controller {
     public void moveStudents(MoveStudentsEvent evt) {
         List<Player> players = model.getPlayers();
         Entrance playerEntrance = players.get(model.getCurrentPlayerIndex()).getEntrance();
+        boolean isOkEntrance = false;
 
         if (evt.isDestinationIsland()) {
 
             Table table = model.getTable();
             Island destinationIsland = table.getIslands().get(evt.getIndexOfIsland());
 
-            setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
+            isOkEntrance = setDestination(playerEntrance, destinationIsland, evt.getCreatureList());
 
             table.setIndexIsland(evt.getIndexOfIsland(), destinationIsland);
             model.setTable(table);
@@ -175,36 +204,31 @@ public class Controller {
         } else {
             DiningRoom playerDiningRoom = players.get(model.getCurrentPlayerIndex()).getDiningRoom();
 
-            setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
+            isOkEntrance = setDestination(playerEntrance, playerDiningRoom, evt.getCreatureList());
 
             players.get(model.getCurrentPlayerIndex()).setDiningRoom(playerDiningRoom);
         }
-
-        players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
-        model.setPlayers(players);
-        model.checkProfessor();
+        if (isOkEntrance) {
+            players.get(model.getCurrentPlayerIndex()).setEntrance(playerEntrance);
+            model.setPlayers(players);
+            model.checkProfessor();
+            model.coinGiver();
+            sendPhaseMessage(Headers.action);
+        }
     }
 
-    private void setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
+    private boolean setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         if (!(model.moveStudents(source, destination, creatures))) {
             sendErrorMessage("Wrong creatures in entrance, try again");
+            return false;
         } else {
             currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved() + 1);
-            if (currentGameStatus.isAdvancedRules()) {
-                if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE_ADVANCED) {
-                    currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
-                    currentGameStatus.setNumberOfStudentsMoved(0);
-                    sendPhaseMessage(Headers.action);
-                }
-            } else {
-                if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE_BASIC) {
-                    currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
-                    currentGameStatus.setNumberOfStudentsMoved(0);
-                    sendPhaseMessage(Headers.action);
-                }
+            if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
+                currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
+                currentGameStatus.setNumberOfStudentsMoved(0);
             }
-
         }
+        return true;
     }
 
     /**
@@ -213,12 +237,19 @@ public class Controller {
      * @param jumps is the number of jumps
      */
     public void moveMotherNature(int jumps) {
-        if (!(model.moveMotherNature(jumps))) {
-            sendErrorMessage("Incorrect number of jumps provided");
-        } else {
-            currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
-            sendPhaseMessage(Headers.action);
+        try {
+            if (!(model.moveMotherNature(jumps))) {
+                sendErrorMessage("Incorrect number of jumps provided");
+            } else {
+                currentGameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+                sendPhaseMessage(Headers.action);
+            }
+        } catch (GameEndedException e) {
+            if (model.checkEndGame()) {
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
+
     }
 
     public void selectCloud(int indexOfCloud) {
@@ -230,13 +261,13 @@ public class Controller {
                 if (currentPlayerIndex == model.getNumberOfPlayers() - 1) {
                     if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(GamePhases.PLANNING);
-                        sendPhaseMessage(Headers.PLANNING);
-                        sendCurrentPlayerMessage();
+                        updateCurrentPlayer();
+                        sendPhaseMessage(Headers.planning);
                     }
                 } else {
                     currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
+                    updateCurrentPlayer();
                     sendPhaseMessage(Headers.action);
-                    sendCurrentPlayerMessage();
                 }
             }
         } catch (CloudAlreadySelectedException e) {
@@ -256,8 +287,15 @@ public class Controller {
             if (!(model.playCharacter(indexOfCharacter))) {
                 sendErrorMessage("You don't have enough coins");
             } else {
-                currentGameStatus.toggleWaitingForParameters();
-                sendCharacterPlayedMessage(model.getCharacters().get(model.getPlayedCharacter()).getName());
+                Name playedCharacterName = model.getCharacters().get(model.getPlayedCharacter()).getName();
+                if (playedCharacterName.needsParameters()) {
+                    currentGameStatus.toggleWaitingForParameters();
+                    sendCharacterPlayedMessage(playedCharacterName);
+                } else {
+                    sendCharacterPlayedMessage(playedCharacterName);
+                    effect();
+                }
+
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -268,9 +306,33 @@ public class Controller {
 
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
-            model.effect(parameters);
+            try {
+                if (model.effect(parameters)) {
+                    currentGameStatus.toggleWaitingForParameters();
+                    sendPhaseMessage(Headers.action);
+                } else {
+                    sendErrorMessage("Wrong Parameters");
+                }
+            } catch (GameEndedException e) {
+                if (model.checkEndGame()) {
+                    sendWinnerPlayerMessage(model.findWinner());
+                }
+            }
+
         } else {
             sendErrorMessage("You cannot play the character right now!");
+        }
+
+    }
+
+    public void effect() {
+        try {
+            model.effect(new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>()));
+            sendPhaseMessage(Headers.action);
+        } catch (GameEndedException e) {
+            if (model.checkEndGame()) {
+                sendWinnerPlayerMessage(model.findWinner());
+            }
         }
 
     }
@@ -289,8 +351,15 @@ public class Controller {
         return temp;
     }
 
+    public void setCurrentStatus(GameStatus providedGS) {
+        this.currentGameStatus = providedGS;
+    }
+
     public boolean isWaitingForParameters() {
         return currentGameStatus.isWaitingForParameters();
     }
 
+    public boolean getCurrentPlayerPlayedCharacter() {
+        return currentPlayerPlayedCharacter;
+    }
 }

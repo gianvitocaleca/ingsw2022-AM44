@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.evaluators;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
@@ -12,7 +13,7 @@ import java.util.Optional;
 //CENTAUR DOES NOT EVALUATE TOWERS
 public class CentaurEvaluator implements InfluenceEvaluator {
     @Override
-    public void evaluateInfluence(GameModel model) {
+    public void evaluateInfluence(GameModel model) throws GameEndedException {
         Table table = model.getTable();
         List<Player> players = model.getPlayers();
 
@@ -35,7 +36,7 @@ public class CentaurEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            if(hasmoreinfluece.isPresent()){
+            if (hasmoreinfluece.isPresent()) {
                 model.conquerIsland(hasmoreinfluece.get());
             }
 

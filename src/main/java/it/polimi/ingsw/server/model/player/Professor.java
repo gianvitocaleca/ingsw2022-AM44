@@ -12,4 +12,10 @@ public class Professor {
     public Creature getCreature() {
         return creature;
     }
+
+    @Override
+    public String toString() {
+        return "" + creature;
+
+    }
 }

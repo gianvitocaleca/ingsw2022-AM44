@@ -1,5 +1,6 @@
 package it.polimi.ingsw.evaluatorsTest;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.BehaviorCharacter;
@@ -13,7 +14,6 @@ import it.polimi.ingsw.server.model.gameboard.MotherNature;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.model.students.StudentBucket;
@@ -49,7 +49,7 @@ public class FungaroEvaluatorTest {
      * when calculating the influence for every player
      */
     @Test
-    void fungaroEvaluatorTest() {
+    void fungaroEvaluatorTest() throws GameEndedException {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
         StudentBucket bucket = gm.getBucket();
 
@@ -59,7 +59,7 @@ public class FungaroEvaluatorTest {
         gnomes.add(Creature.YELLOW_GNOMES);
 
         fungaro.effect(new CharactersParametersPayload(
-                gnomes, 0, 0, new Cloud(10), new ArrayList<>()));
+                gnomes, 0, 0, new ArrayList<>()));
 
         Table table = gm.getTable();
         List<Island> islands = table.getIslands();

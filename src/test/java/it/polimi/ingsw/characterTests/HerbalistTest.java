@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.Herbalist;
@@ -7,7 +8,6 @@ import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,10 +41,10 @@ public class HerbalistTest {
      * This test verifies that herbalist's effect has the correct behaviour
      */
     @Test
-    void herbalistEffectTest() {
+    void herbalistEffectTest() throws GameEndedException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
 
-        CharactersParametersPayload herbalist = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new Cloud(12), new ArrayList<>());
+        CharactersParametersPayload herbalist = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new ArrayList<>());
         //set Herbalist Character in characters to test her effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herbalist(Name.HERBALIST, gm));

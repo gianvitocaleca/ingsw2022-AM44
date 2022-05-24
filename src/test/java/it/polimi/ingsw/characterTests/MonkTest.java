@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.Character;
@@ -42,7 +43,7 @@ public class MonkTest {
      * This tests that the monk effect is correctly executed, swapping the correct students between source and destination
      */
     @Test
-    void monkEffectTest() {
+    void monkEffectTest() throws GameEndedException {
         int maxStudentsInMonk = 4;
         int characterToPlayIndex = 0;
 
@@ -97,7 +98,7 @@ public class MonkTest {
         }
         //creates the parameters for the character effect
         CharactersParametersPayload monkParameters = new CharactersParametersPayload(studentToRemoveFromMonk,
-                islandDestinationIndex, 0, null, null);
+                islandDestinationIndex, 0, null);
         //play character effect
         gm.effect(monkParameters);
         //the number of students should be the same as before

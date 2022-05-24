@@ -20,22 +20,36 @@ public class ActionPhaseListener implements EventListener {
         this.controller = controller;
     }
 
-    public void eventPerformed(PlayCharacterEvent evt){
-        controller.playCharacter(evt.getIndexOfCharacter());
+    public void eventPerformed(PlayCharacterEvent evt) {
+        if (controller.getCurrentStatus().isAdvancedRules() && !controller.getCurrentPlayerPlayedCharacter()) {
+            controller.playCharacter(evt.getIndexOfCharacter());
+        }else{
+            System.out.println("Current player tried to play the character more than one time per turn!");
+        }
+
     }
 
-    public void eventPerformed(CharacterParametersEvent evt){
-        controller.effect(evt.getParameters());
+    public void eventPerformed(CharacterParametersEvent evt) {
+        if(controller.isWaitingForParameters()){
+            controller.effect(evt.getParameters());
+        }else{
+            System.out.println("No I don't think I will!");
+        }
     }
 
-    public void eventPerformed(MoveStudentsEvent evt){
-        controller.moveStudents(evt);
+    public void eventPerformed(MoveStudentsEvent evt) {
+        if (controller.getCurrentPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
+            controller.moveStudents(evt);
+        }else{
+            System.out.println("No I don't think I will!");
+        }
+
     }
 
-    public void eventPerformed(IntegerEvent evt){
-        if(controller.getCurrentPhase().equals(GamePhases.ACTION_MOVEMOTHERNATURE)){
+    public void eventPerformed(IntegerEvent evt) {
+        if (controller.getCurrentPhase().equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
             controller.moveMotherNature(evt.getValue());
-        }else if(controller.getCurrentPhase().equals(GamePhases.ACTION_CLOUDCHOICE)){
+        } else if (controller.getCurrentPhase().equals(GamePhases.ACTION_CLOUDCHOICE)) {
             controller.selectCloud(evt.getValue());
         }
 

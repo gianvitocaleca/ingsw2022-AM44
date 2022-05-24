@@ -1,5 +1,6 @@
 package it.polimi.ingsw.evaluatorsTest;
 
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
@@ -43,7 +44,7 @@ public class StandardEvaluatorTest {
      * when calculating the influence
      */
     @Test
-    void standardEvaluatorTest() {
+    void standardEvaluatorTest() throws GameEndedException {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
         StudentBucket bucket = gm.getBucket();
 

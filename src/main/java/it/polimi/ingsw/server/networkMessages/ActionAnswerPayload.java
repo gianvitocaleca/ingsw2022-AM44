@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.networkMessages;
 
 import it.polimi.ingsw.server.model.enums.Creature;
 
-public class ActionAnswerPayload {
+public class ActionAnswerPayload implements Payload {
 
     private boolean moveStudents;
     private boolean moveMotherNature;
