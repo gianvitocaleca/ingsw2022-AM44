@@ -411,14 +411,16 @@ public class ControllerTest {
     public void selectAlreadySelectedCloudTest() {
 
         selectCloudTest();
-        moveMotherNatureTest();
+        GameStatus gameStatus = controller.getCurrentStatus();
+        gameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+        controller.setCurrentStatus(gameStatus);
 
         int currPlayerIndex = gm.getCurrentPlayerIndex();
         int cloudSelected = 0;
         IntegerEvent evt = new IntegerEvent(view, cloudSelected);
         view.integerEventReceiver(evt);
 
-        assertEquals(gm.getPlayers().get(currPlayerIndex).getEntrance().getStudents().size(), 5);
+        assertEquals(gm.getPlayers().get(currPlayerIndex).getEntrance().getStudents().size(), 9);
         assertEquals(gm.getTable().getClouds().get(0).getStudents().size(), 0);
 
     }

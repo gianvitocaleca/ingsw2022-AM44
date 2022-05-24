@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.evaluators;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
@@ -40,7 +40,7 @@ public class StandardEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            if(hasmoreinfluece.isPresent()){
+            if (hasmoreinfluece.isPresent()) {
                 model.conquerIsland(hasmoreinfluece.get());
             }
 

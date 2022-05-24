@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.evaluators.InfluenceEvaluator;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
@@ -36,7 +36,7 @@ public interface Playable {
     public int getDeactivators();
 
     public boolean setDeactivators(int deactivators);
-    
+
     StudentBucket getBucket();
 
     void setBucket(StudentBucket bucket);

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.evaluatorsTest;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;

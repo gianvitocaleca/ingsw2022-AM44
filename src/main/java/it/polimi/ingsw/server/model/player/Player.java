@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.player;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Value;
@@ -132,7 +132,7 @@ public class Player {
 
     public void removeTowers(int placedTowers) throws GameEndedException {
         towers -= placedTowers;
-        if(towers==0){
+        if (towers == 0) {
             throw new GameEndedException();
         }
     }

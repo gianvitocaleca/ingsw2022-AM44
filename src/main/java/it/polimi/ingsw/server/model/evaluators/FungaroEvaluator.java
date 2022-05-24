@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.evaluators;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.gameboard.Table;
@@ -32,7 +32,7 @@ public class FungaroEvaluator implements InfluenceEvaluator {
                 //if player has professor add the relative influence
                 if (p.getProfessors().size() > 0) {
                     for (Professor prof : p.getProfessors()) {
-                        if(!(prof.getCreature().equals(creature))){
+                        if (!(prof.getCreature().equals(creature))) {
                             sum += ci.getNumberOfStudentsByCreature(prof.getCreature());
                         }
                     }
@@ -49,7 +49,7 @@ public class FungaroEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            if(hasmoreinfluece.isPresent()){
+            if (hasmoreinfluece.isPresent()) {
                 model.conquerIsland(hasmoreinfluece.get());
             }
 

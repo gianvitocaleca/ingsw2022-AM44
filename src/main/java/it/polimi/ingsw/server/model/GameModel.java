@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.controller.events.ShowModelEvent;
 import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;

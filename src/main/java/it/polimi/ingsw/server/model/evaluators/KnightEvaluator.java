@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.evaluators;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
@@ -23,8 +23,8 @@ public class KnightEvaluator implements InfluenceEvaluator {
             for (Player p : players) {
                 int sum = 0;
                 //add +2 to influence of knight card to current player
-                if(p.equals(players.get(model.getCurrentPlayerIndex()))){
-                    sum+=2;
+                if (p.equals(players.get(model.getCurrentPlayerIndex()))) {
+                    sum += 2;
                 }
                 //if player has professor add the relative influence
                 if (p.getProfessors().size() > 0) {
@@ -44,7 +44,7 @@ public class KnightEvaluator implements InfluenceEvaluator {
                 }
             }
             //if the player who has more influence has changed
-            if(hasMoreInfluence.isPresent()){
+            if (hasMoreInfluence.isPresent()) {
                 model.conquerIsland(hasMoreInfluence.get());
             }
         } else {

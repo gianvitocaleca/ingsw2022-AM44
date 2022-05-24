@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
@@ -22,7 +22,6 @@ import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.networkMessages.*;
 import it.polimi.ingsw.server.viewProxy.MessageHandler;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 

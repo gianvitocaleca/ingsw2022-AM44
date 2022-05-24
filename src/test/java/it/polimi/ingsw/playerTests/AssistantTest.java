@@ -2,7 +2,7 @@ package it.polimi.ingsw.playerTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Value;
@@ -69,7 +69,7 @@ class AssistantTest {
         for (int i = 0; i < Value.values().length; i++) {
             try {
                 gm.playAssistant(0);
-            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException e){
+            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException e) {
                 e.printStackTrace();
             }
             gm.setCurrentPlayerIndex(0);
@@ -83,21 +83,21 @@ class AssistantTest {
      * The method should not change AssistantDeck and lastPlayedCard
      */
     @Test
-    void playNotExistentAssistant(){
-        for(int i = 0; i<gm.getPlayers().size(); i++){
+    void playNotExistentAssistant() {
+        for (int i = 0; i < gm.getPlayers().size(); i++) {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){
+            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
             }
         }
         gm.setCurrentPlayerIndex(0);
         Assistant lastPlayed = gm.getPlayers().get(0).getLastPlayedCard();
         try {
             assertFalse(gm.playAssistant(123));
-        }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore){
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
         }
-        assertEquals(lastPlayed.getValue(),gm.getPlayers().get(0).getLastPlayedCard().getValue());
+        assertEquals(lastPlayed.getValue(), gm.getPlayers().get(0).getLastPlayedCard().getValue());
     }
 
     /**
@@ -105,29 +105,28 @@ class AssistantTest {
      * the others cannot play that card and in that case the methos throws an exception.
      */
     @Test
-    void playAssistantAlreadyPlayed(){
-        for(int i = 0; i<gm.getPlayers().size(); i++){
+    void playAssistantAlreadyPlayed() {
+        for (int i = 0; i < gm.getPlayers().size(); i++) {
             gm.setCurrentPlayerIndex(i); //0
-            if(gm.getCurrentPlayerIndex()==0){
-                try{
+            if (gm.getCurrentPlayerIndex() == 0) {
+                try {
                     assertTrue(gm.playAssistant(0));
                     assertEquals(gm.getPlayers().get(0).getAssistantDeck().size(), 9);
                     assertEquals(gm.getPlayers().get(0).getLastPlayedCards().size(), 1);
-                }catch(AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ex){
+                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ex) {
                 }
-            }else{ //o sei 1 o sei 2
-                try{
+            } else { //o sei 1 o sei 2
+                try {
                     gm.playAssistant(0);
-                }catch(AssistantAlreadyPlayedException ex){
+                } catch (AssistantAlreadyPlayedException ex) {
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getAssistantDeck().size(), 10);
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
-                    try{
+                    try {
                         gm.playAssistant(1);
-                    }catch(PlanningPhaseEndedException | AssistantAlreadyPlayedException | GameEndedException e){
+                    } catch (PlanningPhaseEndedException | AssistantAlreadyPlayedException | GameEndedException e) {
                     }
 
-                }
-                catch(PlanningPhaseEndedException | GameEndedException e){
+                } catch (PlanningPhaseEndedException | GameEndedException e) {
                     e.printStackTrace();
                 }
             }
