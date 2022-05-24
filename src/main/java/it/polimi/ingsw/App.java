@@ -31,6 +31,8 @@ public class App {
                     if (args.length > 1) {
                         if (Gui.equals(args[1])) {
                             isGui = true;
+                        } else {
+                            isGui = false;
                         }
                         if (args.length > 2) {
                             if (address.equals(args[2])) {

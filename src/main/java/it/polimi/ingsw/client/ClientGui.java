@@ -1,21 +1,16 @@
 package it.polimi.ingsw.client;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -27,6 +22,8 @@ import java.util.List;
 public class ClientGui extends Application {
 
     private final Color backgroundColor = Color.AQUAMARINE;
+    private int numberOfPlayers = 2;
+    private boolean advancedRules = false;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -36,29 +33,58 @@ public class ClientGui extends Application {
         creationRoot.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         BorderPane gameRoot = new BorderPane();
         gameRoot.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
+
         //Scene creation
         Scene creationScene = new Scene(creationRoot);
         Scene gameScene = new Scene(gameRoot);
-        //Creation components
+
+        //Creation number of players buttons
         Button twoPlayers = new Button("Two players");
         twoPlayers.setFont(Font.font(30));
         Button threePlayers = new Button("Three players");
         threePlayers.setFont(Font.font(30));
+
+        //Creation type of rules buttons
+        Button basicRules = new Button("Basic Rules");
+        twoPlayers.setFont(Font.font(30));
+        Button advancedRules = new Button("Advanced Rules");
+        threePlayers.setFont(Font.font(30));
+        HBox typeOfRulesButtons = new HBox(basicRules, advancedRules);
+        typeOfRulesButtons.setSpacing(5);
+        typeOfRulesButtons.setAlignment(Pos.CENTER);
+
         twoPlayers.setOnMouseClicked(e -> {
-            gameSceneGenerator(gameRoot, 2);
-            primaryStage.setScene(gameScene);
+            this.numberOfPlayers = 2;
+            creationRoot.setCenter(typeOfRulesButtons);
             primaryStage.setMaximized(true);
             primaryStage.setResizable(false);
         });
         threePlayers.setOnMouseClicked(e -> {
-            gameSceneGenerator(gameRoot, 3);
+            this.numberOfPlayers = 3;
+            creationRoot.setCenter(typeOfRulesButtons);
+            primaryStage.setMaximized(true);
+            primaryStage.setResizable(false);
+        });
+
+        basicRules.setOnMouseClicked(e -> {
+            this.advancedRules = false;
+            gameSceneGenerator(gameRoot, numberOfPlayers);
             primaryStage.setScene(gameScene);
             primaryStage.setMaximized(true);
             primaryStage.setResizable(false);
         });
-        HBox buttons = new HBox(twoPlayers, threePlayers);
-        buttons.setSpacing(5);
-        buttons.setAlignment(Pos.CENTER);
+        advancedRules.setOnMouseClicked(e -> {
+            this.advancedRules = true;
+            gameSceneGenerator(gameRoot, numberOfPlayers);
+            primaryStage.setScene(gameScene);
+            primaryStage.setMaximized(true);
+            primaryStage.setResizable(false);
+        });
+
+
+        HBox numOfPlayersButtons = new HBox(twoPlayers, threePlayers);
+        numOfPlayersButtons.setSpacing(5);
+        numOfPlayersButtons.setAlignment(Pos.CENTER);
 
         Text title = new Text("Eryantis");
         title.setFont(Font.font("Papyrus", FontWeight.LIGHT, 160));
@@ -70,7 +96,7 @@ public class ClientGui extends Application {
         creationRoot.setTop(titleBox);
         //Game components
 
-        creationRoot.setCenter(buttons);
+        creationRoot.setCenter(numOfPlayersButtons);
         primaryStage.setScene(creationScene);
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Eryantis");
@@ -78,8 +104,8 @@ public class ClientGui extends Application {
     }
 
     private void gameSceneGenerator(BorderPane gamePane, int numberOfPlayers) {
-        gamePane.setLeft(playerPaneGenerator(false));
-        gamePane.setBottom(playerPaneGenerator(true));
+        gamePane.setLeft(otherPlayerGenerator());
+        gamePane.setBottom(myPlayerGenerator());
         Group islands = new Group();
         Image island = new Image("island.png");
         List<ImageView> islandView = new ArrayList<>();
@@ -96,30 +122,40 @@ public class ClientGui extends Application {
         islands.getChildren().addAll(islandView);
         gamePane.setCenter(islands);
         if (numberOfPlayers == 3) {
-            gamePane.setRight(playerPaneGenerator(false));
+            gamePane.setRight(otherPlayerGenerator());
+        }
+        if (advancedRules) {
+            gamePane.setTop(new Text("Advanced Rules"));
+        } else {
+            gamePane.setTop(new Text("Basic Rules"));
         }
 
     }
 
-    private GridPane playerPaneGenerator(boolean isMe) {
-        GridPane player1Pane = new GridPane();
-        player1Pane.setAlignment(Pos.CENTER);
-        player1Pane.setMinSize(50, 100);
-        player1Pane.setPadding(new Insets(10, 10, 10, 10));
-        player1Pane.setVgap(5);
-        player1Pane.add(new Text("Username"), 0, 0);
-        player1Pane.add(new Text("Mago"), 0, 1);
-        player1Pane.add(new Text("Colore"), 0, 4);
-        ImageView imageView;
-        if (isMe) {
-            imageView = new ImageView(new Image("plancia2.png"));
-        } else {
-            imageView = new ImageView(new Image("plancia.png"));
-        }
-        imageView.setFitHeight(460);
-        imageView.setFitWidth(200);
-        player1Pane.add(imageView, 0, 3);
-        return player1Pane;
+    private VBox otherPlayerGenerator() {
+        Text username = new Text("Username");
+        Text wizard = new Text("Wizard");
+        Text color = new Text("Color");
+        ImageView gameBoard = new ImageView(new Image("plancia.png"));
+        gameBoard.setFitHeight(460);
+        gameBoard.setFitWidth(200);
+        VBox player = new VBox(username, wizard, gameBoard, color);
+        player.setSpacing(5);
+        player.setAlignment(Pos.CENTER);
+        return player;
+    }
+
+    private HBox myPlayerGenerator() {
+        Text username = new Text("Username");
+        Text wizard = new Text("Wizard");
+        Text color = new Text("Color");
+        ImageView gameBoard = new ImageView(new Image("plancia2.png"));
+        gameBoard.setFitHeight(200);
+        gameBoard.setFitWidth(460);
+        HBox player = new HBox(username, wizard, gameBoard, color);
+        player.setSpacing(5);
+        player.setAlignment(Pos.CENTER);
+        return player;
     }
 }
 
