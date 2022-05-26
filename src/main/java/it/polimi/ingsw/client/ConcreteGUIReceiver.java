@@ -4,12 +4,14 @@ import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.networkMessages.CharacterPlayedPayload;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
+import javafx.application.Platform;
 
 import java.util.Scanner;
 
-public class ConcreteGUIReceiver extends  AbstractReceiver{
+public class ConcreteGUIReceiver extends AbstractReceiver {
 
-    private ClientGui clientGui;
+    private static ClientGui clientGui;
+
     public ConcreteGUIReceiver(Scanner socketIn, ClientState cs, PingState ps, ClientGui clientGui) {
         super(socketIn, cs, ps);
         this.clientGui = clientGui;
@@ -17,9 +19,9 @@ public class ConcreteGUIReceiver extends  AbstractReceiver{
 
     @Override
     void stringMessage(Headers header, StringPayload payload) {
-        switch (header){
+        switch (header) {
             case creationRequirementMessage_NumberOfPlayers:
-                clientGui.prova();
+                Platform.runLater(() -> clientGui.creationMechanics());
                 break;
         }
     }

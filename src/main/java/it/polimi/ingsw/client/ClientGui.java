@@ -46,9 +46,6 @@ public class ClientGui extends Application {
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
 
-        //Start the sender component
-        startSender();
-
         //Pane creation
         root = new BorderPane();
 
@@ -58,8 +55,8 @@ public class ClientGui extends Application {
         //Game Title
         root.setTop(gameTitle());
 
-        //Game creation phase
-        creationMechanics();
+        //Join screen
+        root.setCenter(joinButton());
 
         //Game components
 
@@ -74,6 +71,20 @@ public class ClientGui extends Application {
             e.consume();
             quitStage();
         });
+    }
+
+    private Button joinButton() {
+        //Background
+        root.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        //first buttons to appear
+        //Join button
+        Button join = new Button("Join");
+        join.setFont(Font.font(30));
+        join.setOnAction(e -> {
+            //Start the sender component
+            startSender();
+        });
+        return join;
     }
 
     private void startSender() {
@@ -99,9 +110,7 @@ public class ClientGui extends Application {
         return titleBox;
     }
 
-    private void creationMechanics() {
-        //Background
-        root.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+    public void creationMechanics() {
 
         //Creation number of players buttons
         Button twoPlayers = new Button("Two players");
@@ -140,7 +149,6 @@ public class ClientGui extends Application {
 
         });
 
-        //first buttons to appear
         root.setCenter(numOfPlayersButtons);
     }
 
