@@ -5,7 +5,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
@@ -21,6 +23,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ClientGui extends Application {
     private static String address;
@@ -29,34 +32,81 @@ public class ClientGui extends Application {
     private int numberOfPlayers = 2;
     private boolean advancedRules = false;
 
+    private String gameTitle = "Eryantis";
+    private Stage stage;
+    private BorderPane root;
+    private AbstractSender client;
+    private Thread senderThread;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
+        stage = primaryStage;
 
-        AbstractSender client = new ConcreteGUISender(address, port, this);
-        Thread t = new Thread(() -> {
+        //Start the sender component
+        startSender();
+
+        //Pane creation
+        root = new BorderPane();
+
+        //Scene creation
+        Scene mainScene = new Scene(root);
+
+        //Game Title
+        root.setTop(gameTitle());
+
+        //Game creation phase
+        creationMechanics();
+
+        //Game components
+
+
+        primaryStage.setMaximized(true);
+        primaryStage.setScene(mainScene);
+        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        primaryStage.setTitle(gameTitle);
+        primaryStage.show();
+        primaryStage.setResizable(false);
+        primaryStage.setOnCloseRequest(e -> {
+            e.consume();
+            quitStage();
+        });
+    }
+
+    private void startSender() {
+        client = new ConcreteGUISender(address, port, this);
+        senderThread = new Thread(() -> {
             try {
                 client.startClient();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-        t.start();
+        senderThread.start();
+    }
 
-        //Pane creation
-        BorderPane root = new BorderPane();
+    private VBox gameTitle() {
+        Text title = new Text(gameTitle);
+        title.setFont(Font.font("Papyrus", FontWeight.LIGHT, 160));
+        title.setFill(Color.DARKVIOLET);
+        title.setStroke(Color.LIGHTGOLDENRODYELLOW);
+        title.setStrokeWidth(1);
+        VBox titleBox = new VBox(title);
+        titleBox.setAlignment(Pos.CENTER);
+        return titleBox;
+    }
+
+    private void creationMechanics() {
+        //Background
         root.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-        //BorderPane gameRoot = new BorderPane();
-        //gameRoot.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        //Scene creation
-        Scene mainScene = new Scene(root);
-        //Scene gameScene = new Scene(gameRoot);
 
         //Creation number of players buttons
         Button twoPlayers = new Button("Two players");
         twoPlayers.setFont(Font.font(30));
         Button threePlayers = new Button("Three players");
         threePlayers.setFont(Font.font(30));
+        HBox numOfPlayersButtons = new HBox(twoPlayers, threePlayers);
+        numOfPlayersButtons.setSpacing(5);
+        numOfPlayersButtons.setAlignment(Pos.CENTER);
 
         //Creation type of rules buttons
         Button basicRules = new Button("Basic Rules");
@@ -67,61 +117,37 @@ public class ClientGui extends Application {
         typeOfRulesButtons.setSpacing(5);
         typeOfRulesButtons.setAlignment(Pos.CENTER);
 
-        twoPlayers.setOnMouseClicked(e -> {
+        twoPlayers.setOnAction(e -> {
             this.numberOfPlayers = 2;
             root.setCenter(typeOfRulesButtons);
         });
-        threePlayers.setOnMouseClicked(e -> {
+        threePlayers.setOnAction(e -> {
             this.numberOfPlayers = 3;
             root.setCenter(typeOfRulesButtons);
         });
 
-        basicRules.setOnMouseClicked(e -> {
+        basicRules.setOnAction(e -> {
             this.advancedRules = false;
-            gamePaneGenerator(root, numberOfPlayers);
+            gamePaneGenerator();
         });
-        advancedRules.setOnMouseClicked(e -> {
+        advancedRules.setOnAction(e -> {
             this.advancedRules = true;
-            gamePaneGenerator(root, numberOfPlayers);
+            gamePaneGenerator();
 
         });
 
-
-        HBox numOfPlayersButtons = new HBox(twoPlayers, threePlayers);
-        numOfPlayersButtons.setSpacing(5);
-        numOfPlayersButtons.setAlignment(Pos.CENTER);
-
-        Text title = new Text("Eryantis");
-        title.setFont(Font.font("Papyrus", FontWeight.LIGHT, 160));
-        title.setFill(Color.DARKVIOLET);
-        title.setStroke(Color.LIGHTGOLDENRODYELLOW);
-        title.setStrokeWidth(1);
-        VBox titleBox = new VBox(title);
-        titleBox.setAlignment(Pos.CENTER);
-        root.setTop(titleBox);
-        //Game components
-
+        //first buttons to appear
         root.setCenter(numOfPlayersButtons);
-        primaryStage.setMaximized(true);
-        //primaryStage.setFullScreen(true);
-
-        primaryStage.setScene(mainScene);
-        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-
-
-        primaryStage.setTitle("Eryantis");
-        primaryStage.show();
-        primaryStage.setResizable(false);
     }
 
     public void prova() {
         System.out.println("Prova");
     }
 
-    private void gamePaneGenerator(BorderPane gamePane, int numberOfPlayers) {
-        gamePane.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        gamePane.setLeft(otherPlayerGenerator());
-        gamePane.setBottom(myPlayerGenerator());
+    private void gamePaneGenerator() {
+        root.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
+        root.setLeft(otherPlayerGenerator());
+        root.setBottom(myPlayerGenerator());
         //Island creation
         Group table = new Group();
         Image island = new Image("new_island.png");
@@ -154,9 +180,9 @@ public class ClientGui extends Application {
         }
         table.getChildren().addAll(cloudView);
 
-        gamePane.setCenter(table);
+        root.setCenter(table);
         if (numberOfPlayers == 3) {
-            gamePane.setRight(otherPlayerGenerator());
+            root.setRight(otherPlayerGenerator());
         }
         Text typeOfRules;
         if (advancedRules) {
@@ -168,10 +194,11 @@ public class ClientGui extends Application {
         typeOfRules.setFont(Font.font(30));
         Button quit = new Button("Quit Game");
         quit.setFont(Font.font(30));
+        quit.setOnAction(e -> quitStage());
         HBox topMenu = new HBox(typeOfRules, quit);
         topMenu.setAlignment(Pos.CENTER);
         topMenu.setSpacing(50);
-        gamePane.setTop(topMenu);
+        root.setTop(topMenu);
     }
 
     private VBox otherPlayerGenerator() {
@@ -201,7 +228,6 @@ public class ClientGui extends Application {
         player.setAlignment(Pos.CENTER);
         return player;
     }
-
 
     private HBox createCreatures() {
         Rectangle redCreature = new Rectangle(50, 50, Color.RED);
@@ -246,6 +272,25 @@ public class ClientGui extends Application {
 
     public static void setPort(int port) {
         ClientGui.port = port;
+    }
+
+    public void quitStage() {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to quit?",
+                ButtonType.YES,
+                ButtonType.NO);
+        a.setTitle(gameTitle);
+        a.setHeaderText("The game is still in progress...");
+        ImageView logo = new ImageView(new Image("logo.png"));
+        logo.setFitWidth(100);
+        logo.setFitHeight(141);
+        a.setGraphic(logo);
+        Optional<ButtonType> confirm = a.showAndWait();
+        if (confirm.isPresent() && confirm.get() == ButtonType.YES) {
+            //send quit message
+            //close socket thread
+            stage.close();
+        }
     }
 }
 
