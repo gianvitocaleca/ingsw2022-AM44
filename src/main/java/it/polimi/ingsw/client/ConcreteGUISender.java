@@ -14,9 +14,9 @@ public class ConcreteGUISender extends AbstractSender{
     private Queue<String> guiEvents;
     private String inputLine;
     private ClientGui clientGui;
-    public ConcreteGUISender(String ip, int port, ClientGui clientGui) {
+    public ConcreteGUISender(String ip, int port, ClientGui clientGui, Queue guiEvents) {
         super(ip, port);
-        guiEvents = new LinkedList<>();
+        this.guiEvents = guiEvents;
         this.clientGui = clientGui;
 
     }

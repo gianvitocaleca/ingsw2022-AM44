@@ -21,7 +21,22 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
     void stringMessage(Headers header, StringPayload payload) {
         switch (header) {
             case creationRequirementMessage_NumberOfPlayers:
-                Platform.runLater(() -> clientGui.creationMechanics());
+                Platform.runLater(() -> clientGui.numberOfPlayers());
+                break;
+            case creationRequirementMessage_TypeOfRules:
+                Platform.runLater(() -> clientGui.typeOfRules());
+                break;
+            case loginMessage_Username:
+                Platform.runLater(()-> clientGui.loginUsername());
+                break;
+            case loginMessage_Color:
+                Platform.runLater(() -> clientGui.color());
+                break;
+            case loginMessage_Wizard:
+                Platform.runLater(()-> clientGui.wizard());
+                break;
+            case errorMessage:
+                Platform.runLater(()-> clientGui.errorAlert(payload.getString()));
                 break;
         }
     }
@@ -33,7 +48,7 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
 
     @Override
     void planning() {
-
+        Platform.runLater(()-> clientGui.gamePaneGenerator());
     }
 
     @Override

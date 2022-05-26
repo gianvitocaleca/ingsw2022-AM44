@@ -2,13 +2,12 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.server.model.enums.Creature;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
@@ -22,9 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ClientGui extends Application {
     private static String address;
@@ -38,6 +35,8 @@ public class ClientGui extends Application {
     private BorderPane root;
     private AbstractSender client;
     private Thread senderThread;
+
+    private Queue<String> guiEvents;
     private String cssLayout = "-fx-border-color: black;\n" +
             "-fx-border-insets: 5;\n" +
             "-fx-border-width: 3;\n";
@@ -59,8 +58,6 @@ public class ClientGui extends Application {
         root.setCenter(joinButton());
 
         //Game components
-
-
         primaryStage.setMaximized(true);
         primaryStage.setScene(mainScene);
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -88,7 +85,8 @@ public class ClientGui extends Application {
     }
 
     private void startSender() {
-        client = new ConcreteGUISender(address, port, this);
+        guiEvents = new LinkedList<>();
+        client = new ConcreteGUISender(address, port, this, guiEvents);
         senderThread = new Thread(() -> {
             try {
                 client.startClient();
@@ -110,8 +108,7 @@ public class ClientGui extends Application {
         return titleBox;
     }
 
-    public void creationMechanics() {
-
+    public void numberOfPlayers(){
         //Creation number of players buttons
         Button twoPlayers = new Button("Two players");
         twoPlayers.setFont(Font.font(30));
@@ -120,6 +117,20 @@ public class ClientGui extends Application {
         HBox numOfPlayersButtons = new HBox(twoPlayers, threePlayers);
         numOfPlayersButtons.setSpacing(5);
         numOfPlayersButtons.setAlignment(Pos.CENTER);
+
+        twoPlayers.setOnAction(e -> {
+            this.numberOfPlayers = 2;
+            guiEvents.add("2");
+        });
+        threePlayers.setOnAction(e -> {
+            this.numberOfPlayers = 3;
+            guiEvents.add("3");
+        });
+
+        root.setCenter(numOfPlayersButtons);
+    }
+
+    public void typeOfRules() {
 
         //Creation type of rules buttons
         Button basicRules = new Button("Basic Rules");
@@ -130,33 +141,112 @@ public class ClientGui extends Application {
         typeOfRulesButtons.setSpacing(5);
         typeOfRulesButtons.setAlignment(Pos.CENTER);
 
-        twoPlayers.setOnAction(e -> {
-            this.numberOfPlayers = 2;
-            root.setCenter(typeOfRulesButtons);
-        });
-        threePlayers.setOnAction(e -> {
-            this.numberOfPlayers = 3;
-            root.setCenter(typeOfRulesButtons);
-        });
-
         basicRules.setOnAction(e -> {
             this.advancedRules = false;
-            gamePaneGenerator();
+            guiEvents.add("0");
         });
         advancedRules.setOnAction(e -> {
             this.advancedRules = true;
-            gamePaneGenerator();
-
+            guiEvents.add("1");
         });
 
-        root.setCenter(numOfPlayersButtons);
+        root.setCenter(typeOfRulesButtons);
     }
 
-    public void prova() {
-        System.out.println("Prova");
+    public void loginUsername(){
+        Text text = new Text("Provide your username");
+        text.setFont(Font.font(20));
+        TextField prompt = new TextField("");
+        prompt.setMaxWidth(200);
+        prompt.setOnAction(e -> {
+            guiEvents.add(prompt.getCharacters().toString());
+        });
+
+        VBox box = new VBox(text, prompt);
+        box.setSpacing(5);
+        box.setAlignment(Pos.CENTER);
+
+        root.setCenter(box);
     }
 
-    private void gamePaneGenerator() {
+    public void color(){
+        Text text = new Text("Choose a color");
+        text.setFont(Font.font(20));
+        ChoiceBox<String> prompt = new ChoiceBox<>();
+        prompt.getItems().addAll("White","Black","Gray");
+        Button button = new Button();
+        button.setText("Confirm");
+        button.setOnAction(e -> {
+            switch (prompt.getValue()){
+                case "White":
+                    guiEvents.add("1");
+                    break;
+                case "Black":
+                    guiEvents.add("2");
+                    break;
+                case "Gray":
+                    guiEvents.add("3");
+                    break;
+            }
+            //button.setDisable(true);
+        });
+
+        HBox hBox = new HBox(prompt,button);
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.CENTER);
+        VBox box = new VBox(text,hBox);
+        box.setSpacing(5);
+        box.setAlignment(Pos.CENTER);
+
+        root.setCenter(box);
+    }
+
+    public void wizard(){
+        Text text = new Text("Pick a wizard");
+        text.setFont(Font.font(20));
+        ChoiceBox<String> prompt = new ChoiceBox<>();
+        prompt.getItems().addAll("Gandalf","Baljeet","Sabrina","Kenji");
+        Button button = new Button();
+        button.setText("Confirm");
+        button.setOnAction(e -> {
+            switch (prompt.getValue()){
+                case "Gandalf":
+                    guiEvents.add("1");
+                    break;
+                case "Baljeet":
+                    guiEvents.add("2");
+                    break;
+                case "Sabrina":
+                    guiEvents.add("3");
+                    break;
+                case "Kenji":
+                    guiEvents.add("4");
+                    break;
+            }
+            //button.setDisable(true);
+        });
+
+        HBox hBox = new HBox(prompt,button);
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.CENTER);
+        VBox box = new VBox(text,hBox);
+        box.setSpacing(5);
+        box.setAlignment(Pos.CENTER);
+
+        root.setCenter(box);
+    }
+
+    public void errorAlert(String string){
+        Alert a = new Alert(Alert.AlertType.ERROR,
+                string,
+                ButtonType.OK);
+        a.setTitle(gameTitle);
+        a.setHeaderText("Error!");
+        a.showAndWait();
+    }
+
+
+    public void gamePaneGenerator() {
         root.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setLeft(opponentsGenerator());
         //root.setLeft(otherPlayerGenerator());
