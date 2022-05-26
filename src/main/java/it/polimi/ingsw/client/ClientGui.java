@@ -146,7 +146,8 @@ public class ClientGui extends Application {
 
     private void gamePaneGenerator() {
         root.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        root.setLeft(otherPlayerGenerator());
+        root.setLeft(opponentsGenerator());
+        //root.setLeft(otherPlayerGenerator());
         root.setBottom(myPlayerGenerator());
         //Island creation
         Group table = new Group();
@@ -181,9 +182,11 @@ public class ClientGui extends Application {
         table.getChildren().addAll(cloudView);
 
         root.setCenter(table);
-        if (numberOfPlayers == 3) {
-            root.setRight(otherPlayerGenerator());
-        }
+        
+        setTop();
+    }
+
+    private void setTop() {
         Text typeOfRules;
         if (advancedRules) {
             typeOfRules = new Text("Advanced Rules");
@@ -201,7 +204,21 @@ public class ClientGui extends Application {
         root.setTop(topMenu);
     }
 
+    private VBox opponentsGenerator() {
+        VBox ans;
+        if (numberOfPlayers == 2) {
+            ans = new VBox(otherPlayerGenerator());
+        } else {
+            ans = new VBox(otherPlayerGenerator(), otherPlayerGenerator());
+        }
+        ans.setSpacing(5);
+        return ans;
+    }
+
     private VBox otherPlayerGenerator() {
+        String cssLayout = "-fx-border-color: black;\n" +
+                "-fx-border-insets: 5;\n" +
+                "-fx-border-width: 3;\n";
         Text username = new Text("Username");
         Text wizard = new Text("Wizard");
         Text color = new Text("Color");
@@ -212,6 +229,7 @@ public class ClientGui extends Application {
                 createTowerComponent(), color);
         player.setSpacing(5);
         player.setAlignment(Pos.CENTER);
+        player.setStyle(cssLayout);
         return player;
     }
 
