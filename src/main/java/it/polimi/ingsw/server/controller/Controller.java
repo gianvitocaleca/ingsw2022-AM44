@@ -34,6 +34,7 @@ public class Controller {
     -check if a player needs to earn a coin and give it to him, if possible, and proceeds to remove it from the coin reserve
      */
     private final int NUMBER_OF_STUDENTS_TO_MOVE;
+    private final int MIN_NUMBER_OF_PLAYERS = 1;
     private GameModel model;
     private MessageHandler messageHandler;
     private GameStatus currentGameStatus;
@@ -104,6 +105,7 @@ public class Controller {
     }
 
     private void sendPhaseMessage(Headers phase) {
+        checkPlayerConnected();
         if (phase.equals(Headers.action)) {
             if (currentGameStatus.getPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
                 messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
@@ -127,6 +129,42 @@ public class Controller {
             messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
+    }
+
+    private void checkPlayerConnected(){
+        if(model.getNumberOfPlayers()==3){
+            int playersConnected = networkState.getNumberOfConnectedPlayers();
+            if(!(playersConnected == model.getNumberOfPlayers())){
+                if(!networkState.isPlayerConnected(currentGameStatus.getCurrentPlayerUsername()) &&
+                    !(playersConnected == MIN_NUMBER_OF_PLAYERS)){
+                    model.setCurrentPlayerIndex(findNextPlayer(currentGameStatus.getCurrentPlayerUsername()));
+                }
+            }
+        }
+    }
+
+    private int findNextPlayer(String username){
+        boolean found = false;
+        int newCurrentPlayer = -1;
+        for(int i = model.getCurrentPlayerIndex(); i<model.getPlayers().size(); i++){
+            if(!(username.equals(model.getPlayers().get(i).getUsername())) &&
+                networkState.isPlayerConnected(model.getPlayers().get(i).getUsername())){
+                found = true;
+                newCurrentPlayer = i;
+            }
+        }
+        if(found){
+            return newCurrentPlayer;
+        }else{
+            for(int i = 0; i<model.getCurrentPlayerIndex(); i++){
+                if(!(username.equals(model.getPlayers().get(i).getUsername())) &&
+                        networkState.isPlayerConnected(model.getPlayers().get(i).getUsername())){
+                    newCurrentPlayer = i;
+                    break;
+                }
+            }
+        }
+        return newCurrentPlayer;
     }
 
     private void sendErrorMessage(String string) {

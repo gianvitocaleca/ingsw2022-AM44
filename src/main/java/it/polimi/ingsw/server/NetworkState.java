@@ -211,5 +211,9 @@ public class NetworkState {
         return socket;
     }
 
+    public int getNumberOfConnectedPlayers(){
+        return socketIDList.stream().filter(SocketID::isConnected).map(SocketID::getSocket).toList().size();
+    }
+
 }
 
