@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.server.model.enums.Creature;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -37,6 +38,9 @@ public class ClientGui extends Application {
     private BorderPane root;
     private AbstractSender client;
     private Thread senderThread;
+    private String cssLayout = "-fx-border-color: black;\n" +
+            "-fx-border-insets: 5;\n" +
+            "-fx-border-width: 3;\n";
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -152,20 +156,30 @@ public class ClientGui extends Application {
         //Island creation
         Group table = new Group();
         Image island = new Image("new_island.png");
-        List<ImageView> islandView = new ArrayList<>();
+        ImageView motherNature = new ImageView(new Image("Table/motherNature.png"));
+        motherNature.setFitWidth(20);
+        motherNature.setFitHeight(28);
+        List<StackPane> islands = new ArrayList<>();
         int numberOfIslands = 12;
+        int motherNaturePosition = 4;
         int centerX = 100;
         int centerY = 100;
         int radius = 300;
         for (int i = 0; i < numberOfIslands; i++) {
             ImageView islandImageView = new ImageView(island);
-            islandImageView.setFitWidth(103);
-            islandImageView.setFitHeight(100);
-            islandImageView.setX(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands));
-            islandImageView.setY(centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
-            islandView.add(islandImageView);
+            islandImageView.setFitWidth(134);
+            islandImageView.setFitHeight(130);
+            StackPane islandStack;
+            if (i == motherNaturePosition) {
+                islandStack = new StackPane(islandImageView, islandComponents(), motherNature);
+            } else {
+                islandStack = new StackPane(islandImageView, islandComponents());
+            }
+            islandStack.relocate(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands), centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
+            islands.add(islandStack);
         }
-        table.getChildren().addAll(islandView);
+        table.getChildren().addAll(islands);
+
 
         //Cloud creation
         Image cloud = new Image("cloud.png");
@@ -173,8 +187,8 @@ public class ClientGui extends Application {
         int cloudRadius = 100;
         for (int i = 0; i < numberOfPlayers; i++) {
             ImageView cloudImageView = new ImageView(cloud);
-            cloudImageView.setFitHeight(100);
-            cloudImageView.setFitWidth(100);
+            cloudImageView.setFitHeight(130);
+            cloudImageView.setFitWidth(130);
             cloudImageView.setX(centerX + cloudRadius * Math.cos(2 * Math.PI * i / numberOfPlayers));
             cloudImageView.setY(centerY + cloudRadius * Math.sin(2 * Math.PI * i / numberOfPlayers));
             cloudView.add(cloudImageView);
@@ -188,19 +202,38 @@ public class ClientGui extends Application {
         setTop();
     }
 
+    private Group islandComponents() {
+        Group ans = new Group();
+        List<HBox> hboxComponents = new ArrayList<>();
+        int radius = 40;
+        int numOfComponents = 6;
+        int i = 0;
+        for (Creature c : Creature.values()) {
+            HBox creature = creatureCounter(c, 0);
+            creature.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
+            hboxComponents.add(creature);
+            i++;
+        }
+        HBox tower = towerCounter(it.polimi.ingsw.server.model.enums.Color.BLACK, 0);
+        tower.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
+        hboxComponents.add(tower);
+        ans.getChildren().addAll(hboxComponents);
+        return ans;
+    }
+
     private void setRight() {
         Text charsText = new Text("Available characters");
         charsText.setFont(Font.font(20));
 
         ImageView firstChar = new ImageView(new Image("Characters/monk.jpg"));
-        firstChar.setFitWidth(100);
-        firstChar.setFitHeight(151);
+        firstChar.setFitWidth(133);
+        firstChar.setFitHeight(200);
         ImageView secondChar = new ImageView(new Image("Characters/fungaro.jpg"));
-        secondChar.setFitWidth(100);
-        secondChar.setFitHeight(151);
+        secondChar.setFitWidth(133);
+        secondChar.setFitHeight(200);
         ImageView thirdChar = new ImageView(new Image("Characters/knight.jpg"));
-        thirdChar.setFitWidth(100);
-        thirdChar.setFitHeight(151);
+        thirdChar.setFitWidth(133);
+        thirdChar.setFitHeight(200);
 
         HBox characters = new HBox(firstChar, secondChar, thirdChar);
         characters.setSpacing(5);
@@ -308,9 +341,6 @@ public class ClientGui extends Application {
     }
 
     private VBox otherPlayerGenerator() {
-        String cssLayout = "-fx-border-color: black;\n" +
-                "-fx-border-insets: 5;\n" +
-                "-fx-border-width: 3;\n";
         Text username = new Text("Username");
         username.setFont(Font.font(20));
         ImageView wizard = new ImageView(new Image("Wizards/gandalf.png"));
@@ -346,26 +376,76 @@ public class ClientGui extends Application {
                 createTowerComponent());
         player.setSpacing(5);
         player.setAlignment(Pos.CENTER);
+        player.setStyle(cssLayout);
         return player;
     }
 
+    private HBox creatureCounter(Creature creature, int num) {
+        ImageView creatureImage;
+        switch (creature) {
+            case RED_DRAGONS:
+                creatureImage = new ImageView(new Image("Table/red.png"));
+                break;
+            case YELLOW_GNOMES:
+                creatureImage = new ImageView(new Image("Table/yellow.png"));
+                break;
+            case BLUE_UNICORNS:
+                creatureImage = new ImageView(new Image("Table/blue.png"));
+                break;
+            case GREEN_FROGS:
+                creatureImage = new ImageView(new Image("Table/green.png"));
+                break;
+            case PINK_FAIRIES:
+                creatureImage = new ImageView(new Image("Table/pink.png"));
+                break;
+            default:
+                return null;
+        }
+        creatureImage.setFitWidth(20);
+        creatureImage.setFitHeight(20);
+        Text numText = new Text("" + num + "");
+        numText.setFont(Font.font(20));
+        HBox ans = new HBox(creatureImage, numText);
+        ans.setSpacing(5);
+        ans.setAlignment(Pos.CENTER);
+        return ans;
+    }
+
+    private HBox towerCounter(it.polimi.ingsw.server.model.enums.Color color, int num) {
+        ImageView towerImage;
+        switch (color) {
+            case BLACK:
+                towerImage = new ImageView(new Image("Table/black.png"));
+                break;
+            case GREY:
+                towerImage = new ImageView(new Image("Table/grey.png"));
+                break;
+            case WHITE:
+                towerImage = new ImageView(new Image("Table/white.png"));
+                break;
+            default:
+                return null;
+        }
+        towerImage.setFitWidth(20);
+        towerImage.setFitHeight(40);
+        Text numText = new Text("" + num + "");
+        numText.setFont(Font.font(20));
+        HBox ans = new HBox(towerImage, numText);
+        ans.setSpacing(5);
+        ans.setAlignment(Pos.CENTER);
+        return ans;
+    }
+
     private HBox createCreatures() {
-        Rectangle redCreature = new Rectangle(50, 50, Color.RED);
-        redCreature.setStroke(Color.BLACK);
-        redCreature.setStrokeWidth(2);
-        Rectangle greenCreature = new Rectangle(50, 50, Color.GREEN);
-        greenCreature.setStroke(Color.BLACK);
-        greenCreature.setStrokeWidth(2);
-        Rectangle yellowCreature = new Rectangle(50, 50, Color.YELLOW);
-        yellowCreature.setStroke(Color.BLACK);
-        yellowCreature.setStrokeWidth(2);
-        Rectangle blueCreature = new Rectangle(50, 50, Color.BLUE);
-        blueCreature.setStroke(Color.BLACK);
-        blueCreature.setStrokeWidth(2);
-        Rectangle pinkCreature = new Rectangle(50, 50, Color.PINK);
-        pinkCreature.setStroke(Color.BLACK);
-        pinkCreature.setStrokeWidth(2);
-        return new HBox(redCreature, greenCreature, yellowCreature, blueCreature, pinkCreature);
+        HBox ans = new HBox(
+                creatureCounter(Creature.RED_DRAGONS, 0),
+                creatureCounter(Creature.YELLOW_GNOMES, 0),
+                creatureCounter(Creature.BLUE_UNICORNS, 0),
+                creatureCounter(Creature.GREEN_FROGS, 0),
+                creatureCounter(Creature.PINK_FAIRIES, 0));
+        ans.setAlignment(Pos.CENTER);
+        ans.setSpacing(5);
+        return ans;
     }
 
     private VBox createComponentWithCreatures(String name) {
@@ -374,17 +454,14 @@ public class ClientGui extends Application {
         VBox ans = new VBox(title, createCreatures());
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
+        ans.setStyle(cssLayout);
         return ans;
     }
 
     private VBox createTowerComponent() {
         Text title = new Text("Towers");
-        ImageView towerImage = new ImageView(new Image("Table/black.png"));
-        towerImage.setFitWidth(25);
-        towerImage.setFitHeight(50);
-        Text numberOfTowers = new Text("6");
-        numberOfTowers.setFont(Font.font(30));
-        HBox towers = new HBox(towerImage, numberOfTowers);
+        title.setFont(Font.font(20));
+        HBox towers = towerCounter(it.polimi.ingsw.server.model.enums.Color.WHITE, 6);
         towers.setSpacing(10);
         towers.setAlignment(Pos.CENTER);
         VBox ans = new VBox(title, towers);
