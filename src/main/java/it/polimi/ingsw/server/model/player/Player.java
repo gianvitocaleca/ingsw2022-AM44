@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.model.player;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.server.model.studentcontainers.Entrance;
@@ -33,7 +33,7 @@ public class Player {
         this.towers = towers;
         this.lastPlayedCard = new ArrayList<>();
         assistantDeck = new ArrayList<>();
-        for (Value v : Value.values()) {
+        for (Assistants v : Assistants.values()) {
             assistantDeck.add(new Assistant(v));
         }
         professors = new ArrayList<>();

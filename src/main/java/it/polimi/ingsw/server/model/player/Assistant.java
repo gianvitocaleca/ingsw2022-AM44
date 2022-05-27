@@ -1,15 +1,15 @@
 package it.polimi.ingsw.server.model.player;
 
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 
 public class Assistant {
-    private final Value name;
+    private final Assistants name;
 
-    public Assistant(Value input){
+    public Assistant(Assistants input){
         name=input;
     }
 
-    public Value getName(){
+    public Assistants getName(){
         return name;
     }
 

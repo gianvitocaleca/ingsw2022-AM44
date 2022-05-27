@@ -12,6 +12,6 @@ class CreatureTest {
     @Test
     public void yellowGnomesCorrectValueTest() {
         String name = "Yellow Gnomes";
-        assertEquals(name, Creature.YELLOW_GNOMES.getName());
+        assertEquals(name, Creature.YELLOW_GNOMES.getImage());
     }
 }

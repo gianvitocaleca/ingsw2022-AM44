@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.Character;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.server.model.exceptions.GroupsOfIslandsException;
@@ -233,7 +233,7 @@ public class GameModelTest {
      */
     @Test
     void checkEndGameEveryAssistantsPlayed() {
-        for (int i = 0; i < Value.values().length; i++) {
+        for (int i = 0; i < Assistants.values().length; i++) {
             try {
                 gm.playAssistant(0);
                 gm.setCurrentPlayerIndex(0);

@@ -20,6 +20,8 @@ public class ShowModelPayload implements Payload {
     private int deactivators;
     private int coinReserve;
 
+    private boolean advancedRules = false;
+
     private List<CharacterInformation> characters;
     private List<Creature> monkCreatures;
     private List<Creature> princessCreatures;
@@ -63,6 +65,14 @@ public class ShowModelPayload implements Payload {
 
     public List<Player> getPlayersList() {
         return playersList;
+    }
+
+    public void setAdvancedRules(boolean advancedRules) {
+        this.advancedRules = advancedRules;
+    }
+
+    public boolean isAdvancedRules() {
+        return advancedRules;
     }
 
     public void setCharacters(List<CharacterInformation> characters) {

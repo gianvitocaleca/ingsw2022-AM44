@@ -903,6 +903,7 @@ public class GameModel implements Playable {
         ShowModelPayload showModelPayload = new ShowModelPayload(getPlayers(), getTable());
         showModelPayload.setCurrentPlayerUsername(players.get(getCurrentPlayerIndex()).getUsername());
         if (isAdvancedRules()) {
+            showModelPayload.setAdvancedRules(isAdvancedRules());
             List<CharacterInformation> characterInfos = new ArrayList<>();
             int i = 0;
             for (Character c : getCharacters()) {

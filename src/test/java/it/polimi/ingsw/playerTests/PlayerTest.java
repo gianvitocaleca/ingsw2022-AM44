@@ -6,7 +6,7 @@ import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
@@ -66,7 +66,7 @@ class PlayerTest {
         } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
         }
         Player p1 = gm.getPlayers().get(0);
-        assertEquals(p1.getLastPlayedCard().getName(), Value.CHEETAH);
+        assertEquals(p1.getLastPlayedCard().getName(), Assistants.CHEETAH);
 
     }
 

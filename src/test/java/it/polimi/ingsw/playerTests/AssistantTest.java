@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
@@ -16,12 +16,12 @@ import java.util.*;
 
 class AssistantTest {
 
-    private Value name;
+    private Assistants name;
     GameModel gm;
 
     @BeforeEach
     public void InitializeAssistant() {
-        name = Value.values()[new Random().nextInt(Value.values().length)];
+        name = Assistants.values()[new Random().nextInt(Assistants.values().length)];
     }
 
     /**
@@ -41,7 +41,7 @@ class AssistantTest {
      */
     @Test
     void getValue() {
-        for (Value val : Value.values()) {
+        for (Assistants val : Assistants.values()) {
             if (val.equals(name)) {
                 assertEquals(val.getValue(), name.getValue());
             }
@@ -53,7 +53,7 @@ class AssistantTest {
      */
     @Test
     void getMovements() {
-        for (Value val : Value.values()) {
+        for (Assistants val : Assistants.values()) {
             if (val.equals(name)) {
                 assertEquals(val.getMovements(), name.getMovements());
             }
@@ -66,7 +66,7 @@ class AssistantTest {
      */
     @Test
     void playEveryAssistant() {
-        for (int i = 0; i < Value.values().length; i++) {
+        for (int i = 0; i < Assistants.values().length; i++) {
             try {
                 gm.playAssistant(0);
             } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException e) {
