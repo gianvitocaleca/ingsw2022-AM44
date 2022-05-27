@@ -213,5 +213,8 @@ public class Player {
         this.entrance = entrance;
     }
 
-
+    public boolean hasProfessor(Creature c){
+        List <Creature> professorsCreatures = professors.stream().map(Professor::getCreature).toList();
+        return professorsCreatures.contains(c);
+    }
 }

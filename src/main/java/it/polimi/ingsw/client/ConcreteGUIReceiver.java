@@ -43,12 +43,12 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
 
     @Override
     void printModel() {
-
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache()));
     }
 
     @Override
     void planning() {
-        Platform.runLater(()-> clientGui.gamePaneGenerator());
+
     }
 
     @Override

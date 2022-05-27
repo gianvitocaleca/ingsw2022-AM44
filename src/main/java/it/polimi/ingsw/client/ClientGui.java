@@ -1,6 +1,9 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.player.Player;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -35,7 +38,7 @@ public class ClientGui extends Application {
     private BorderPane root;
     private AbstractSender client;
     private Thread senderThread;
-
+    private String MY_USERNAME;
     private Queue<String> guiEvents;
     private String cssLayout = "-fx-border-color: black;\n" +
             "-fx-border-insets: 5;\n" +
@@ -142,11 +145,9 @@ public class ClientGui extends Application {
         typeOfRulesButtons.setAlignment(Pos.CENTER);
 
         basicRules.setOnAction(e -> {
-            this.advancedRules = false;
             guiEvents.add("0");
         });
         advancedRules.setOnAction(e -> {
-            this.advancedRules = true;
             guiEvents.add("1");
         });
 
@@ -160,6 +161,7 @@ public class ClientGui extends Application {
         prompt.setMaxWidth(200);
         prompt.setOnAction(e -> {
             guiEvents.add(prompt.getCharacters().toString());
+            MY_USERNAME = prompt.getCharacters().toString().toLowerCase();
         });
 
         VBox box = new VBox(text, prompt);
@@ -246,11 +248,11 @@ public class ClientGui extends Application {
     }
 
 
-    public void gamePaneGenerator() {
+    public void gamePaneGenerator(ShowModelPayload modelCache) {
         root.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        root.setLeft(opponentsGenerator());
+        root.setLeft(opponentsGenerator(modelCache.getPlayersList()));
         //root.setLeft(otherPlayerGenerator());
-        root.setBottom(myPlayerGenerator());
+        root.setBottom(myPlayerGenerator(modelCache.getPlayersList()));
         //Island creation
         Group table = new Group();
         Image island = new Image("new_island.png");
@@ -258,8 +260,8 @@ public class ClientGui extends Application {
         motherNature.setFitWidth(20);
         motherNature.setFitHeight(28);
         List<StackPane> islands = new ArrayList<>();
-        int numberOfIslands = 12;
-        int motherNaturePosition = 4;
+        int numberOfIslands = modelCache.getIslands().size();
+        int motherNaturePosition = modelCache.getMotherNature();
         int centerX = 100;
         int centerY = 100;
         int radius = 300;
@@ -269,9 +271,9 @@ public class ClientGui extends Application {
             islandImageView.setFitHeight(130);
             StackPane islandStack;
             if (i == motherNaturePosition) {
-                islandStack = new StackPane(islandImageView, islandComponents(), motherNature);
+                islandStack = new StackPane(islandImageView, islandComponents(i,modelCache), motherNature);
             } else {
-                islandStack = new StackPane(islandImageView, islandComponents());
+                islandStack = new StackPane(islandImageView, islandComponents(i,modelCache));
             }
             islandStack.relocate(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands), centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
             islands.add(islandStack);
@@ -281,12 +283,13 @@ public class ClientGui extends Application {
 
         //Cloud creation
         Image cloud = new Image("cloud.png");
-        List<ImageView> cloudView = new ArrayList<>();
+        List<StackPane> cloudView = new ArrayList<>();
         int cloudRadius = 100;
         for (int i = 0; i < numberOfPlayers; i++) {
             ImageView cloudImageView = new ImageView(cloud);
             cloudImageView.setFitHeight(130);
             cloudImageView.setFitWidth(130);
+            StackPane cloudStack;
             cloudImageView.setX(centerX + cloudRadius * Math.cos(2 * Math.PI * i / numberOfPlayers));
             cloudImageView.setY(centerY + cloudRadius * Math.sin(2 * Math.PI * i / numberOfPlayers));
             cloudView.add(cloudImageView);
@@ -300,23 +303,56 @@ public class ClientGui extends Application {
         setTop();
     }
 
-    private Group islandComponents() {
+    private Group cloudComponents(int j, ShowModelPayload modelCache) {
         Group ans = new Group();
         List<HBox> hboxComponents = new ArrayList<>();
         int radius = 40;
         int numOfComponents = 6;
         int i = 0;
         for (Creature c : Creature.values()) {
-            HBox creature = creatureCounter(c, 0);
-            creature.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
-            hboxComponents.add(creature);
+            int num = modelCache.getIslands().get(j).getNumberOfStudentsByCreature(c);
+            if(num>0){
+                HBox creature = creatureCounter(c, num);
+                creature.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
+                hboxComponents.add(creature);
+            }
             i++;
         }
-        HBox tower = towerCounter(it.polimi.ingsw.server.model.enums.Color.BLACK, 0);
-        tower.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
-        hboxComponents.add(tower);
+        if(!isEmpty(modelCache.getIslands().get(j))){
+            HBox tower = towerCounter(modelCache.getIslands().get(j).getColorOfTowers(), modelCache.getIslands().get(j).getNumberOfTowers());
+            tower.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
+            hboxComponents.add(tower);
+        }
         ans.getChildren().addAll(hboxComponents);
         return ans;
+    }
+
+    private Group islandComponents(int j, ShowModelPayload modelCache) {
+        Group ans = new Group();
+        List<HBox> hboxComponents = new ArrayList<>();
+        int radius = 40;
+        int numOfComponents = 6;
+        int i = 0;
+        for (Creature c : Creature.values()) {
+            int num = modelCache.getIslands().get(j).getNumberOfStudentsByCreature(c);
+            if(num>0){
+                HBox creature = creatureCounter(c, num);
+                creature.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
+                hboxComponents.add(creature);
+            }
+            i++;
+        }
+        if(!isEmpty(modelCache.getIslands().get(j))){
+            HBox tower = towerCounter(modelCache.getIslands().get(j).getColorOfTowers(), modelCache.getIslands().get(j).getNumberOfTowers());
+            tower.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
+            hboxComponents.add(tower);
+        }
+        ans.getChildren().addAll(hboxComponents);
+        return ans;
+    }
+
+    private boolean isEmpty(Island i){
+        return i.getNumberOfTowers()>0;
     }
 
     private void setRight() {
@@ -427,30 +463,33 @@ public class ClientGui extends Application {
         root.setTop(topMenu);
     }
 
-    private VBox opponentsGenerator() {
+    private VBox opponentsGenerator(List<Player> players) {
+        List<VBox> generatedPlayers = new ArrayList<>();
         VBox ans;
-        if (numberOfPlayers == 2) {
-            ans = new VBox(otherPlayerGenerator());
-        } else {
-            ans = new VBox(otherPlayerGenerator(), otherPlayerGenerator());
+        for(Player p: players){
+            if(!p.getUsername().equals(MY_USERNAME)){
+                generatedPlayers.add(otherPlayerGenerator(p));
+            }
         }
+        ans = new VBox();
+        ans.getChildren().addAll(generatedPlayers);
         ans.setSpacing(5);
         return ans;
     }
 
-    private VBox otherPlayerGenerator() {
-        Text username = new Text("Username");
+    private VBox otherPlayerGenerator(Player p) {
+        Text username = new Text(p.getUsername());
         username.setFont(Font.font(20));
-        ImageView wizard = new ImageView(new Image("Wizards/gandalf.png"));
+        ImageView wizard = new ImageView(new Image(p.getWizard().getImage()));
         wizard.setFitHeight(50);
         wizard.setFitWidth(33);
         HBox playerInfo = new HBox(wizard, username);
         playerInfo.setAlignment(Pos.CENTER);
         playerInfo.setSpacing(10);
         VBox player = new VBox(playerInfo,
-                createComponentWithCreatures("Entrance"),
-                createComponentWithCreatures("Dining Room"),
-                createComponentWithCreatures("Professors"),
+                createComponentWithCreatures("Entrance",p),
+                createComponentWithCreatures("Dining Room",p),
+                createComponentWithCreatures("Professors",p),
                 createTowerComponent());
         player.setSpacing(5);
         player.setAlignment(Pos.CENTER);
@@ -458,24 +497,30 @@ public class ClientGui extends Application {
         return player;
     }
 
-    private HBox myPlayerGenerator() {
-        Text username = new Text("Username");
-        username.setFont(Font.font(20));
-        ImageView wizard = new ImageView(new Image("Wizards/gandalf.png"));
-        wizard.setFitHeight(50);
-        wizard.setFitWidth(33);
-        HBox playerInfo = new HBox(wizard, username);
-        playerInfo.setSpacing(10);
-        playerInfo.setAlignment(Pos.CENTER);
-        HBox player = new HBox(playerInfo,
-                createComponentWithCreatures("Entrance"),
-                createComponentWithCreatures("Dining Room"),
-                createComponentWithCreatures("Professors"),
-                createTowerComponent());
-        player.setSpacing(5);
-        player.setAlignment(Pos.CENTER);
-        player.setStyle(cssLayout);
-        return player;
+    private HBox myPlayerGenerator(List<Player> players) {
+        HBox player;
+        for(Player p: players){
+            if (p.getUsername().equals(MY_USERNAME)){
+                Text username = new Text(p.getUsername());
+                username.setFont(Font.font(20));
+                ImageView wizard = new ImageView(new Image(p.getWizard().getImage()));
+                wizard.setFitHeight(50);
+                wizard.setFitWidth(33);
+                HBox playerInfo = new HBox(wizard, username);
+                playerInfo.setSpacing(10);
+                playerInfo.setAlignment(Pos.CENTER);
+                player = new HBox(playerInfo,
+                        createComponentWithCreatures("Entrance",p),
+                        createComponentWithCreatures("Dining Room",p),
+                        createComponentWithCreatures("Professors",p),
+                        createTowerComponent());
+                player.setSpacing(5);
+                player.setAlignment(Pos.CENTER);
+                player.setStyle(cssLayout);
+                return player;
+            }
+        }
+        return new HBox();
     }
 
     private HBox creatureCounter(Creature creature, int num) {
@@ -509,6 +554,35 @@ public class ClientGui extends Application {
         return ans;
     }
 
+    private HBox professorsCounter(Creature creature) {
+        ImageView creatureImage;
+        switch (creature) {
+            case RED_DRAGONS:
+                creatureImage = new ImageView(new Image("Table/redProf.png"));
+                break;
+            case YELLOW_GNOMES:
+                creatureImage = new ImageView(new Image("Table/yellowProf.png"));
+                break;
+            case BLUE_UNICORNS:
+                creatureImage = new ImageView(new Image("Table/blueProf.png"));
+                break;
+            case GREEN_FROGS:
+                creatureImage = new ImageView(new Image("Table/greenProf.png"));
+                break;
+            case PINK_FAIRIES:
+                creatureImage = new ImageView(new Image("Table/pinkProf.png"));
+                break;
+            default:
+                return null;
+        }
+        creatureImage.setFitWidth(20);
+        creatureImage.setFitHeight(20);
+        HBox ans = new HBox(creatureImage);
+        ans.setSpacing(5);
+        ans.setAlignment(Pos.CENTER);
+        return ans;
+    }
+
     private HBox towerCounter(it.polimi.ingsw.server.model.enums.Color color, int num) {
         ImageView towerImage;
         switch (color) {
@@ -534,27 +608,47 @@ public class ClientGui extends Application {
         return ans;
     }
 
-    private HBox createCreatures() {
-        HBox ans = new HBox(
-                creatureCounter(Creature.RED_DRAGONS, 0),
-                creatureCounter(Creature.YELLOW_GNOMES, 0),
-                creatureCounter(Creature.BLUE_UNICORNS, 0),
-                creatureCounter(Creature.GREEN_FROGS, 0),
-                creatureCounter(Creature.PINK_FAIRIES, 0));
-        ans.setAlignment(Pos.CENTER);
-        ans.setSpacing(5);
-        return ans;
-    }
-
-    private VBox createComponentWithCreatures(String name) {
+    private VBox createComponentWithCreatures(String name, Player p) {
         Text title = new Text(name);
         title.setFont(Font.font(20));
-        VBox ans = new VBox(title, createCreatures());
+        VBox ans = new VBox(title, createCreatures(name,p));
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
         ans.setStyle(cssLayout);
         return ans;
     }
+
+    private HBox createCreatures(String name, Player p) {
+        HBox ans = new HBox();
+        List<HBox> creatureCounters = new ArrayList<>();
+        switch(name){
+            case "Entrance":
+                for(Creature c: Creature.values()){
+                    creatureCounters.add(creatureCounter(c,p.getEntrance().getNumberOfStudentsByCreature(c)));
+                }
+                break;
+            case "Dining Room":
+                for(Creature c: Creature.values()){
+                    creatureCounters.add(creatureCounter(c,p.getDiningRoom().getNumberOfStudentsByCreature(c)));
+                }
+                break;
+            case "Professors":
+                for(Creature c: Creature.values()){
+                    if(p.hasProfessor(c)){
+                        creatureCounters.add(professorsCounter(c));
+                    }
+                }
+                break;
+
+        }
+        ans.getChildren().addAll(creatureCounters);
+
+        ans.setAlignment(Pos.CENTER);
+        ans.setSpacing(5);
+        return ans;
+    }
+
+
 
     private VBox createTowerComponent() {
         Text title = new Text("Towers");
