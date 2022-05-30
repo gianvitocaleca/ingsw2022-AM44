@@ -5,8 +5,14 @@ import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import javafx.application.Application;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -32,16 +38,20 @@ public class ClientGui extends Application {
     private int numberOfPlayers = 2;
     private boolean advancedRules = false;
 
-    private String gameTitle = "Eryantis";
+    private final String gameTitle = "Eryantis";
     private Stage stage;
     private BorderPane root;
     private AbstractSender client;
     private Thread senderThread;
     private String MY_USERNAME;
     private Queue<String> guiEvents;
-    private String cssLayout = "-fx-border-color: black;\n" +
-            "-fx-border-insets: 5;\n" +
-            "-fx-border-width: 3;\n";
+    private final String cssLayout =
+            "-fx-border-color: black;\n" +
+                    "-fx-border-insets: 5;\n" +
+                    "-fx-border-width: 3;\n";
+    private final String rootLayout = "-fx-font-size: 20;";
+    private ClientState clientState;
+    private StringProperty header;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -49,6 +59,7 @@ public class ClientGui extends Application {
 
         //Pane creation
         root = new BorderPane();
+        root.setStyle(rootLayout);
 
         //Scene creation
         Scene mainScene = new Scene(root);
@@ -110,7 +121,7 @@ public class ClientGui extends Application {
         return titleBox;
     }
 
-    public void numberOfPlayers(){
+    public void numberOfPlayers() {
         //Creation number of players buttons
         Button twoPlayers = new Button("Two players");
         twoPlayers.setFont(Font.font(30));
@@ -153,7 +164,7 @@ public class ClientGui extends Application {
         root.setCenter(typeOfRulesButtons);
     }
 
-    public void loginUsername(){
+    public void loginUsername() {
         Text text = new Text("Provide your username");
         text.setFont(Font.font(20));
         TextField prompt = new TextField("");
@@ -170,15 +181,15 @@ public class ClientGui extends Application {
         root.setCenter(box);
     }
 
-    public void color(){
+    public void color() {
         Text text = new Text("Choose a color");
         text.setFont(Font.font(20));
         ChoiceBox<String> prompt = new ChoiceBox<>();
-        prompt.getItems().addAll("White","Black","Gray");
+        prompt.getItems().addAll("White", "Black", "Gray");
         Button button = new Button();
         button.setText("Confirm");
         button.setOnAction(e -> {
-            switch (prompt.getValue()){
+            switch (prompt.getValue()) {
                 case "White":
                     guiEvents.add("1");
                     break;
@@ -192,25 +203,25 @@ public class ClientGui extends Application {
             //button.setDisable(true);
         });
 
-        HBox hBox = new HBox(prompt,button);
+        HBox hBox = new HBox(prompt, button);
         hBox.setSpacing(10);
         hBox.setAlignment(Pos.CENTER);
-        VBox box = new VBox(text,hBox);
+        VBox box = new VBox(text, hBox);
         box.setSpacing(5);
         box.setAlignment(Pos.CENTER);
 
         root.setCenter(box);
     }
 
-    public void wizard(){
+    public void wizard() {
         Text text = new Text("Pick a wizard");
         text.setFont(Font.font(20));
         ChoiceBox<String> prompt = new ChoiceBox<>();
-        prompt.getItems().addAll("Gandalf","Baljeet","Sabrina","Kenji");
+        prompt.getItems().addAll("Gandalf", "Baljeet", "Sabrina", "Kenji");
         Button button = new Button();
         button.setText("Confirm");
         button.setOnAction(e -> {
-            switch (prompt.getValue()){
+            switch (prompt.getValue()) {
                 case "Gandalf":
                     guiEvents.add("1");
                     break;
@@ -227,17 +238,17 @@ public class ClientGui extends Application {
             //button.setDisable(true);
         });
 
-        HBox hBox = new HBox(prompt,button);
+        HBox hBox = new HBox(prompt, button);
         hBox.setSpacing(10);
         hBox.setAlignment(Pos.CENTER);
-        VBox box = new VBox(text,hBox);
+        VBox box = new VBox(text, hBox);
         box.setSpacing(5);
         box.setAlignment(Pos.CENTER);
 
         root.setCenter(box);
     }
 
-    public void errorAlert(String string){
+    public void errorAlert(String string) {
         Alert a = new Alert(Alert.AlertType.ERROR,
                 string,
                 ButtonType.OK);
@@ -246,15 +257,14 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
-
-    public void gamePaneGenerator(ShowModelPayload modelCache) {
+    public void gamePaneGenerator(ShowModelPayload modelCache, Headers currentHeader) {
         root.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
         root.setLeft(opponentsGenerator(modelCache.getPlayersList()));
         //root.setLeft(otherPlayerGenerator());
         root.setBottom(myPlayerGenerator(modelCache.getPlayersList()));
         //Island creation
         Group table = new Group();
-        Image island = new Image("new_island.png");
+        Image island;
         ImageView motherNature = new ImageView(new Image("Table/motherNature.png"));
         motherNature.setFitWidth(20);
         motherNature.setFitHeight(28);
@@ -265,14 +275,24 @@ public class ClientGui extends Application {
         int centerY = 100;
         int radius = 300;
         for (int i = 0; i < numberOfIslands; i++) {
+            switch (i % 3) {
+                case 1:
+                    island = new Image("island2.png");
+                    break;
+                case 2:
+                    island = new Image("island3.png");
+                    break;
+                default:
+                    island = new Image("new_island.png");
+            }
             ImageView islandImageView = new ImageView(island);
             islandImageView.setFitWidth(134);
             islandImageView.setFitHeight(130);
             StackPane islandStack;
             if (i == motherNaturePosition) {
-                islandStack = new StackPane(islandImageView, islandComponents(i,modelCache), motherNature);
+                islandStack = new StackPane(islandImageView, islandComponents(i, modelCache), motherNature);
             } else {
-                islandStack = new StackPane(islandImageView, islandComponents(i,modelCache));
+                islandStack = new StackPane(islandImageView, islandComponents(i, modelCache));
             }
             islandStack.relocate(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands), centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
             islands.add(islandStack);
@@ -286,11 +306,11 @@ public class ClientGui extends Application {
         int cloudRadius = 100;
         for (int i = 0; i < numberOfPlayers; i++) {
             ImageView cloudImageView = new ImageView(cloud);
-            cloudImageView.setFitHeight(130);
-            cloudImageView.setFitWidth(130);
+            cloudImageView.setFitHeight(140);
+            cloudImageView.setFitWidth(140);
             StackPane cloudStack;
-            cloudStack = new StackPane(cloudImageView,cloudComponents(i,modelCache));
-            cloudStack.relocate(centerX + cloudRadius * Math.cos(2 * Math.PI * i / numberOfPlayers),centerY + cloudRadius * Math.sin(2 * Math.PI * i / numberOfPlayers));
+            cloudStack = new StackPane(cloudImageView, cloudComponents(i, modelCache));
+            cloudStack.relocate(centerX + cloudRadius * Math.cos(2 * Math.PI * i / numberOfPlayers), centerY + cloudRadius * Math.sin(2 * Math.PI * i / numberOfPlayers));
             cloudView.add(cloudStack);
         }
         table.getChildren().addAll(cloudView);
@@ -306,16 +326,16 @@ public class ClientGui extends Application {
         Group ans = new Group();
         List<HBox> hboxComponents = new ArrayList<>();
         int radius = 40;
-        int numOfComponents = 6;
+        int numOfComponents = 5;
         int i = 0;
         for (Creature c : Creature.values()) {
             int num = modelCache.getClouds().get(j).getStudents().stream().filter(s -> s.getCreature().equals(c)).toList().size();
-            if(num>0){
+            if (num > 0) {
                 HBox creature = creatureCounter(c, num);
                 creature.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
                 hboxComponents.add(creature);
+                i++;
             }
-            i++;
         }
         ans.getChildren().addAll(hboxComponents);
         return ans;
@@ -324,19 +344,23 @@ public class ClientGui extends Application {
     private Group islandComponents(int j, ShowModelPayload modelCache) {
         Group ans = new Group();
         List<HBox> hboxComponents = new ArrayList<>();
-        int radius = 40;
-        int numOfComponents = 6;
+        int radius = 50;
+        int numOfComponents = 7;
         int i = 0;
         for (Creature c : Creature.values()) {
             int num = modelCache.getIslands().get(j).getNumberOfStudentsByCreature(c);
-            if(num>0){
+            if (num > 0) {
                 HBox creature = creatureCounter(c, num);
                 creature.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
                 hboxComponents.add(creature);
+                i++;
             }
-            i++;
+
         }
-        if(!isEmpty(modelCache.getIslands().get(j))){
+        HBox index = new HBox(new Text("I:" + j));
+        index.relocate(radius * Math.cos(2 * Math.PI * 6 / numOfComponents), radius * Math.sin(2 * Math.PI * 6 / numOfComponents));
+        hboxComponents.add(index);
+        if (!isEmpty(modelCache.getIslands().get(j))) {
             HBox tower = towerCounter(modelCache.getIslands().get(j).getColorOfTowers(), modelCache.getIslands().get(j).getNumberOfTowers());
             tower.relocate(radius * Math.cos(2 * Math.PI * i / numOfComponents), radius * Math.sin(2 * Math.PI * i / numOfComponents));
             hboxComponents.add(tower);
@@ -345,21 +369,43 @@ public class ClientGui extends Application {
         return ans;
     }
 
-    private boolean isEmpty(Island i){
-        return i.getNumberOfTowers()==0;
+    private boolean isEmpty(Island i) {
+        return i.getNumberOfTowers() == 0;
     }
 
     private void setRight(ShowModelPayload modelCache) {
 
         Text creatureText = new Text("Creatures");
-        creatureText.setFont(Font.font(20));
 
         ImageView creature;
         List<ImageView> creatureImages = new ArrayList<>();
-        for(Creature c : Creature.values()){
+        for (Creature c : Creature.values()) {
             creature = new ImageView(new Image(c.getImage()));
             creature.setFitWidth(100);
             creature.setFitHeight(100);
+            creature.setOnMouseClicked(e -> {
+                String creatureLetter;
+                switch (c) {
+                    case PINK_FAIRIES:
+                        creatureLetter = "P";
+                        break;
+                    case GREEN_FROGS:
+                        creatureLetter = "G";
+                        break;
+                    case BLUE_UNICORNS:
+                        creatureLetter = "B";
+                        break;
+                    case YELLOW_GNOMES:
+                        creatureLetter = "Y";
+                        break;
+                    case RED_DRAGONS:
+                        creatureLetter = "R";
+                        break;
+                    default:
+                        creatureLetter = "";
+                }
+                guiEvents.add(creatureLetter);
+            });
             creatureImages.add(creature);
         }
 
@@ -370,41 +416,53 @@ public class ClientGui extends Application {
 
 
         Text assistantsText = new Text("Available Assistants");
-        assistantsText.setFont(Font.font(20));
 
         ImageView assistant;
         List<ImageView> assistantImages = new ArrayList<>();
-        for(Assistants a : Assistants.values()){
+        for (Assistants a : Assistants.values()) {
             assistant = new ImageView(new Image(a.getAssistant()));
             assistant.setFitWidth(100);
             assistant.setFitHeight(146);
+            assistant.setOnMouseClicked(e -> {
+                guiEvents.add("" + a.ordinal());
+            });
             assistantImages.add(assistant);
         }
 
 
         HBox assistantsHigh = new HBox();
-        assistantsHigh.getChildren().addAll(assistantImages.subList(0,assistantImages.size()/2));
+        assistantsHigh.getChildren().addAll(assistantImages.subList(0, assistantImages.size() / 2));
         assistantsHigh.setSpacing(5);
 
         HBox assistantsLow = new HBox();
-        assistantsLow.getChildren().addAll(assistantImages.subList(assistantImages.size()/2,assistantImages.size()));
+        assistantsLow.getChildren().addAll(assistantImages.subList(assistantImages.size() / 2, assistantImages.size()));
         assistantsLow.setSpacing(5);
 
         VBox assistants = new VBox(assistantsHigh, assistantsLow);
         assistants.setSpacing(5);
         assistants.setAlignment(Pos.CENTER);
 
-        if(modelCache.isAdvancedRules()){
+        if (modelCache.isAdvancedRules()) {
             Text charsText = new Text("Available characters");
-            charsText.setFont(Font.font(20));
-
             ImageView character;
-            List<ImageView> characterImages = new ArrayList<>();
-            for(CharacterInformation c : modelCache.getCharacters()){
+            List<HBox> characterImages = new ArrayList<>();
+            for (CharacterInformation c : modelCache.getCharacters()) {
                 character = new ImageView(new Image(c.getName().getImage()));
                 character.setFitWidth(133);
                 character.setFitHeight(200);
-                characterImages.add(character);
+                character.setOnMouseClicked(e -> {
+                    if (modelCache.isAdvancedRules()) {
+                        guiEvents.add("PC:" + c.getIndex());
+                    }
+                });
+                HBox container = new HBox(character);
+                container.setOnMouseMoved(e -> {
+                    container.setStyle(cssLayout);
+                });
+                container.setOnMouseExited(e -> {
+                    container.setStyle("-fx-border-color:blue");
+                });
+                characterImages.add(container);
             }
 
             HBox characters = new HBox();
@@ -416,7 +474,7 @@ public class ClientGui extends Application {
             interactiveAssets.setSpacing(5);
             interactiveAssets.setAlignment(Pos.CENTER);
             root.setRight(interactiveAssets);
-        }else{
+        } else {
             VBox interactiveAssets = new VBox(creatureText, creatures, assistantsText, assistants);
             interactiveAssets.setSpacing(5);
             interactiveAssets.setAlignment(Pos.CENTER);
@@ -429,33 +487,33 @@ public class ClientGui extends Application {
         Button quit = new Button("Quit Game");
         quit.setFont(Font.font(30));
         quit.setOnAction(e -> quitStage());
-        if(modelCache.isAdvancedRules()){
-            VBox bank = createBankComponent(modelCache.getCoinReserve());
-            HBox topMenu = new HBox(bank,quit);
-            topMenu.setAlignment(Pos.CENTER);
-            topMenu.setSpacing(50);
-            root.setTop(topMenu);
-        }else{
-            HBox topMenu = new HBox(quit);
-            topMenu.setAlignment(Pos.TOP_RIGHT);
-            topMenu.setSpacing(50);
-            root.setTop(topMenu);
+        Text currentPhase = new Text();
+        header = new SimpleStringProperty(clientState.getHeaders().toString());
+        currentPhase.textProperty().bind(header);
+        currentPhase.setFill(Color.LIGHTGRAY);
+        HBox topMenu;
+        if (modelCache.isAdvancedRules()) {
+            HBox bank = createBankComponent(modelCache.getCoinReserve());
+            topMenu = new HBox(currentPhase, bank, quit);
+        } else {
+            topMenu = new HBox(currentPhase, quit);
         }
-
+        topMenu.setAlignment(Pos.TOP_RIGHT);
+        topMenu.setSpacing(50);
+        root.setTop(topMenu);
     }
 
-    private VBox createBankComponent(int i) {
+    private HBox createBankComponent(int i) {
         Text title = new Text("Coin Reserve:");
-        title.setFont(Font.font(20));
-        ImageView coin = new ImageView("strawberry.png");
-        coin.setFitWidth(100);
-        coin.setFitHeight(100);
-        Text num = new Text(""+i+"");
+        ImageView coin = new ImageView("moneta.png");
+        coin.setFitWidth(50);
+        coin.setFitHeight(50);
+        Text num = new Text("" + i + "");
         num.setFont(Font.font(30));
-        HBox coins = new HBox(coin,num);
+        HBox coins = new HBox(num, coin);
         coins.setSpacing(10);
         coins.setAlignment(Pos.CENTER);
-        VBox ans = new VBox(title, coins);
+        HBox ans = new HBox(title, coins);
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
         return ans;
@@ -464,8 +522,8 @@ public class ClientGui extends Application {
     private VBox opponentsGenerator(List<Player> players) {
         List<VBox> generatedPlayers = new ArrayList<>();
         VBox ans;
-        for(Player p: players){
-            if(!p.getUsername().equals(MY_USERNAME)){
+        for (Player p : players) {
+            if (!p.getUsername().equals(MY_USERNAME)) {
                 generatedPlayers.add(otherPlayerGenerator(p));
             }
         }
@@ -485,9 +543,9 @@ public class ClientGui extends Application {
         playerInfo.setAlignment(Pos.CENTER);
         playerInfo.setSpacing(10);
         VBox player = new VBox(playerInfo,
-                createComponentWithCreatures("Entrance",p),
-                createComponentWithCreatures("Dining Room",p),
-                createComponentWithCreatures("Professors",p),
+                createComponentWithCreatures("Entrance", p),
+                createComponentWithCreatures("Dining Room", p),
+                createComponentWithCreatures("Professors", p),
                 createTowerComponent(p));
         player.setSpacing(5);
         player.setAlignment(Pos.CENTER);
@@ -497,8 +555,8 @@ public class ClientGui extends Application {
 
     private HBox myPlayerGenerator(List<Player> players) {
         HBox player;
-        for(Player p: players){
-            if (p.getUsername().equals(MY_USERNAME)){
+        for (Player p : players) {
+            if (p.getUsername().equals(MY_USERNAME)) {
                 Text username = new Text(p.getUsername());
                 username.setFont(Font.font(20));
                 ImageView wizard = new ImageView(new Image(p.getWizard().getImage()));
@@ -508,9 +566,9 @@ public class ClientGui extends Application {
                 playerInfo.setSpacing(10);
                 playerInfo.setAlignment(Pos.CENTER);
                 player = new HBox(playerInfo,
-                        createComponentWithCreatures("Entrance",p),
-                        createComponentWithCreatures("Dining Room",p),
-                        createComponentWithCreatures("Professors",p),
+                        createComponentWithCreatures("Entrance", p),
+                        createComponentWithCreatures("Dining Room", p),
+                        createComponentWithCreatures("Professors", p),
                         createTowerComponent(p));
                 player.setSpacing(5);
                 player.setAlignment(Pos.CENTER);
@@ -609,7 +667,7 @@ public class ClientGui extends Application {
     private VBox createComponentWithCreatures(String name, Player p) {
         Text title = new Text(name);
         title.setFont(Font.font(20));
-        VBox ans = new VBox(title, createCreatures(name,p));
+        VBox ans = new VBox(title, createCreatures(name, p));
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
         ans.setStyle(cssLayout);
@@ -619,20 +677,20 @@ public class ClientGui extends Application {
     private HBox createCreatures(String name, Player p) {
         HBox ans = new HBox();
         List<HBox> creatureCounters = new ArrayList<>();
-        switch(name){
+        switch (name) {
             case "Entrance":
-                for(Creature c: Creature.values()){
-                    creatureCounters.add(creatureCounter(c,p.getEntrance().getNumberOfStudentsByCreature(c)));
+                for (Creature c : Creature.values()) {
+                    creatureCounters.add(creatureCounter(c, p.getEntrance().getNumberOfStudentsByCreature(c)));
                 }
                 break;
             case "Dining Room":
-                for(Creature c: Creature.values()){
-                    creatureCounters.add(creatureCounter(c,p.getDiningRoom().getNumberOfStudentsByCreature(c)));
+                for (Creature c : Creature.values()) {
+                    creatureCounters.add(creatureCounter(c, p.getDiningRoom().getNumberOfStudentsByCreature(c)));
                 }
                 break;
             case "Professors":
-                for(Creature c: Creature.values()){
-                    if(p.hasProfessor(c)){
+                for (Creature c : Creature.values()) {
+                    if (p.hasProfessor(c)) {
                         creatureCounters.add(professorsCounter(c));
                     }
                 }
@@ -647,14 +705,11 @@ public class ClientGui extends Application {
     }
 
 
-
     private VBox createTowerComponent(Player p) {
-        Text title = new Text("Towers");
-        title.setFont(Font.font(20));
         HBox towers = towerCounter(p.getMyColor(), p.getTowers());
         towers.setSpacing(10);
         towers.setAlignment(Pos.CENTER);
-        VBox ans = new VBox(title, towers);
+        VBox ans = new VBox(towers);
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
         return ans;
@@ -685,6 +740,10 @@ public class ClientGui extends Application {
             //close socket thread
             stage.close();
         }
+    }
+
+    public void updateClientState(ClientState cs) {
+        clientState = cs;
     }
 }
 

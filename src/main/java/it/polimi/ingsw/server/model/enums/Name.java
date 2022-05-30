@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.model.enums;
 
 public enum Name {
     HERALD(3, 1, false, true, false, false, false, "Characters/herald.jpg"),
-    KNIGHT(2, 1, false, false, false, false, false,"Characters/knight"),
+    KNIGHT(2, 1, false, false, false, false, false, "Characters/knight.jpg"),
     CENTAUR(3, 1, false, false, false, false, false, "Characters/centaur.jpg"),
     FARMER(2, 1, false, false, false, false, false, "Characters/farmer.jpg"),
     FUNGARO(3, 1, true, false, false, false, false, "Characters/fungaro.jpg"),
@@ -67,7 +67,7 @@ public enum Name {
         return image;
     }
 
-    public boolean needsParameters(){
+    public boolean needsParameters() {
         return needsSourceCreature || needsIslandIndex || needsMnMovements || needsDestination || needsDestinationCreature;
     }
 }

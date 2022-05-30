@@ -27,33 +27,34 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
                 Platform.runLater(() -> clientGui.typeOfRules());
                 break;
             case loginMessage_Username:
-                Platform.runLater(()-> clientGui.loginUsername());
+                Platform.runLater(() -> clientGui.loginUsername());
                 break;
             case loginMessage_Color:
                 Platform.runLater(() -> clientGui.color());
                 break;
             case loginMessage_Wizard:
-                Platform.runLater(()-> clientGui.wizard());
+                Platform.runLater(() -> clientGui.wizard());
                 break;
             case errorMessage:
-                Platform.runLater(()-> clientGui.errorAlert(payload.getString()));
+                Platform.runLater(() -> clientGui.errorAlert(payload.getString()));
                 break;
         }
     }
 
     @Override
     void printModel() {
-        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache()));
+        Platform.runLater(() -> clientGui.updateClientState(cs));
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache(), cs.getHeaders()));
     }
 
     @Override
     void planning() {
-
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache(), cs.getHeaders()));
     }
 
     @Override
     void action() {
-
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache(), cs.getHeaders()));
     }
 
     @Override
