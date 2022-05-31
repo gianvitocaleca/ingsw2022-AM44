@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.networkMessages.Headers;
@@ -23,6 +24,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -633,10 +636,13 @@ public class ClientGui extends Application {
             ImageView wizard = new ImageView(new Image(p.getWizard().getImage()));
             wizard.setFitHeight(33);
             wizard.setFitWidth(33);
-            HBox playerInfo = new HBox(wizard, username);
+            StackPane wizardStack = new StackPane();
+            wizardStack.getChildren().add(new Circle(25, new ImagePattern(new Image(p.getWizard().getImage()))));
+            HBox playerInfo = new HBox(wizardStack, username);
             playerInfo.setSpacing(10);
             playerInfo.setAlignment(Pos.CENTER);
             HBox player = new HBox(playerInfo,
+                    createComponentWithAssistant(p.getLastPlayedCards()),
                     createComponentWithCreatures("Entrance", p),
                     createComponentWithCreatures("Dining Room", p),
                     createComponentWithCreatures("Professors", p),
@@ -646,6 +652,22 @@ public class ClientGui extends Application {
             playerList.getChildren().add(player);
         }
         return playerList;
+    }
+
+    private VBox createComponentWithAssistant(List<Assistant> lastPlayedAssistants) {
+        Text assistantTitle = new Text("Assistant");
+        HBox assistant;
+        StackPane assistantStack = new StackPane();
+        if (lastPlayedAssistants.size() > 0) {
+            assistantStack.getChildren().add(new Circle(25, new ImagePattern(new Image(lastPlayedAssistants.get(lastPlayedAssistants.size() - 1).getName().getAssistant()))));
+        } else {
+            assistantStack.getChildren().add(new Circle(25, new ImagePattern(new Image("strawberry.png"))));
+        }
+        assistant = new HBox(assistantStack);
+        assistant.setAlignment(Pos.CENTER);
+        VBox assistantBox = new VBox(assistantTitle, assistant);
+        assistantBox.setAlignment(Pos.CENTER);
+        return assistantBox;
     }
 
     private HBox creatureCounter(Creature creature, int num) {
