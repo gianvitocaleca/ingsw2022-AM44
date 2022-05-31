@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,14 +43,26 @@ public class ControllerTest {
      */
     @BeforeEach
     public void createGame() {
+        String player1 = "Paolo";
+        SocketID socketID1 = new SocketID(1, new Socket());
+        String player2 = "Gianvito";
+        SocketID socketID2 = new SocketID(2, new Socket());
+        String player3 = "Sabrina";
+        SocketID socketID3 = new SocketID(3, new Socket());
+        NetworkState state = new NetworkState();
+        state.addSocket(socketID1);
+        state.addSocket(socketID2);
+        state.addSocket(socketID3);
+        state.setUsername(1,player1);
+        state.setUsername(2,player2);
+        state.setUsername(3,player3);
         gm = new GameModel(true,
-                new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
+                new ArrayList<>(Arrays.asList(player1, player2,player3)),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         view = new MessageHandler();
-        NetworkState state = new NetworkState();
         view.setNetworkState(state);
         controller = new Controller(gm, view, new GameStatus(GamePhases.PLANNING, false), state);
         controller.start();

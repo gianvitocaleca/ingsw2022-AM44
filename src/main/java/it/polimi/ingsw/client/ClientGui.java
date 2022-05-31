@@ -59,6 +59,8 @@ public class ClientGui extends Application {
     private final String borderUnselected = "-fx-border-color: gray; -fx-border-width: 5;";
     private final String borderSelected = "-fx-border-color: black; -fx-border-width: 5;";
     private final String noBorder = "-fx-border-color: none;";
+    private boolean selectCreature = false;
+    private boolean selectDestination = false;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -82,6 +84,8 @@ public class ClientGui extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         primaryStage.setTitle(gameTitle);
+        primaryStage.setWidth(1280d);
+        primaryStage.setHeight(720d);
         primaryStage.show();
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> {
@@ -397,7 +401,7 @@ public class ClientGui extends Application {
             creature.setFitHeight(100);
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
-                if (clientState.getHeaders().equals(Headers.action)) {
+                if (selectCreature) {
                     String creatureLetter;
                     switch (c) {
                         case PINK_FAIRIES:
@@ -838,7 +842,7 @@ public class ClientGui extends Application {
 
     private void islandButton(Pane object) {
         object.setOnMouseMoved(e -> {
-            if (clientState.isMoveMotherNature() || clientState.isMoveStudents()) {
+            if (clientState.isMoveMotherNature() || selectDestination) {
                 object.setStyle(borderSelected);
             }
         });
@@ -856,6 +860,12 @@ public class ClientGui extends Application {
         object.setOnMouseExited(e -> {
             object.setStyle(noBorder);
         });
+    }
+
+    public void setMoveStudents(){
+        if(clientState.isMoveStudents()){
+            selectCreature = true;
+        }
     }
 }
 
