@@ -9,11 +9,8 @@ import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -29,7 +26,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -61,6 +57,8 @@ public class ClientGui extends Application {
     private final String noBorder = "-fx-border-color: none;";
     private boolean selectCreature = false;
     private boolean selectDestination = false;
+    private String createdCommand="";
+    private int destinationSelected=-1;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -307,7 +305,13 @@ public class ClientGui extends Application {
             }
             islandStack.relocate(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands), centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
             islandButton(islandStack);
+            /*destinationSelected = i+1;
+            islandStack.setOnMouseClicked(e -> {
+                selectDestination=false;
+                createMoveStudentsCommand();
+            });*/
             islands.add(islandStack);
+
         }
         table.getChildren().addAll(islands);
 
@@ -335,6 +339,12 @@ public class ClientGui extends Application {
         setTop(modelCache);
     }
 
+    private void createMoveStudentsCommand(){
+        if(clientState.isMoveStudents()){
+            createdCommand+=String.valueOf(destinationSelected);
+        }
+        guiEvents.add(createdCommand);
+    }
     private Group cloudComponents(int j, ShowModelPayload modelCache) {
         Group ans = new Group();
         List<HBox> hboxComponents = new ArrayList<>();
@@ -401,29 +411,11 @@ public class ClientGui extends Application {
             creature.setFitHeight(100);
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
-                if (selectCreature) {
-                    String creatureLetter;
-                    switch (c) {
-                        case PINK_FAIRIES:
-                            creatureLetter = "P";
-                            break;
-                        case GREEN_FROGS:
-                            creatureLetter = "G";
-                            break;
-                        case BLUE_UNICORNS:
-                            creatureLetter = "B";
-                            break;
-                        case YELLOW_GNOMES:
-                            creatureLetter = "Y";
-                            break;
-                        case RED_DRAGONS:
-                            creatureLetter = "R";
-                            break;
-                        default:
-                            creatureLetter = "";
-                    }
-                    guiEvents.add(creatureLetter);
-                }
+                createdCommand = "MS:";
+                String creatureLetter = selectCreature(c);
+                //guiEvents.add(creatureLetter);
+                createdCommand+=creatureLetter;
+
             });
             container.setStyle(noBorder);
             container.setOnMouseMoved(e -> {
@@ -529,6 +521,34 @@ public class ClientGui extends Application {
             root.setRight(interactiveAssets);
         }
 
+    }
+
+    private String selectCreature(Creature c){
+        String creatureLetter="";
+        if (selectCreature) {
+            switch (c) {
+                case PINK_FAIRIES:
+                    creatureLetter = "P";
+                    break;
+                case GREEN_FROGS:
+                    creatureLetter = "G";
+                    break;
+                case BLUE_UNICORNS:
+                    creatureLetter = "B";
+                    break;
+                case YELLOW_GNOMES:
+                    creatureLetter = "Y";
+                    break;
+                case RED_DRAGONS:
+                    creatureLetter = "R";
+                    break;
+            }
+        }
+        if(!creatureLetter.equals("")){
+            selectCreature = false;
+            selectDestination = true;
+        }
+        return creatureLetter;
     }
 
     private void setTop(ShowModelPayload modelCache) {
