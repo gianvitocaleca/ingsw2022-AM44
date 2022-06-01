@@ -62,12 +62,12 @@ public abstract class AbstractReceiver extends Thread {
             case creationRequirementMessage_TypeOfRules:
             case errorMessage:
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
-                stringMessage(header,stringPayload);
+                stringMessage(header, stringPayload);
                 break;
             case planning:
                 printModel();
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
-                cs.getModelCache().setCurrentPlayerUsername(stringPayload.getString());
+                cs.getModelPayload().setCurrentPlayerUsername(stringPayload.getString());
                 if (stringPayload.getString().equals(cs.getUsername())) {
                     cs.setCurrentPlayer(true);
                     //PLANNING
@@ -83,7 +83,7 @@ public abstract class AbstractReceiver extends Thread {
                 //PRINT MODEL
                 printModel();
                 actionPayload = gson.fromJson(jsonPayload, ActionPayload.class);
-                cs.getModelCache().setCurrentPlayerUsername(actionPayload.getCurrentPlayer());
+                cs.getModelPayload().setCurrentPlayerUsername(actionPayload.getCurrentPlayer());
                 if (actionPayload.getCurrentPlayer().equals(cs.getUsername())) {
                     cs.setCurrentPlayer(true);
                     cs.setMoveStudents(actionPayload.isMoveStudents());
@@ -101,15 +101,15 @@ public abstract class AbstractReceiver extends Thread {
                 charPayload = gson.fromJson(jsonPayload, CharacterPlayedPayload.class);
                 if (cs.getCurrentPlayer() && charPayload.getCharactersName().needsParameters()) {
                     characterParameterSelection(charPayload);
-                } else if(cs.getCurrentPlayer()){
+                } else if (cs.getCurrentPlayer()) {
                     System.out.println("You have played the character: " + charPayload.getCharactersName());
-                }else{
-                    System.out.println(cs.getModelCache().getCurrentPlayerUsername() + " is playing " + charPayload.getCharactersName());
+                } else {
+                    System.out.println(cs.getModelPayload().getCurrentPlayerUsername() + " is playing " + charPayload.getCharactersName());
                 }
                 break;
             case winnerPlayer:
-                stringPayload = gson.fromJson(jsonPayload,StringPayload.class);
-                System.out.println("The winner is "+stringPayload.getString());
+                stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
+                System.out.println("The winner is " + stringPayload.getString());
                 break;
         }
     }
@@ -126,6 +126,7 @@ public abstract class AbstractReceiver extends Thread {
     }
 
     abstract void stringMessage(Headers header, StringPayload payload);
+
     abstract void printModel();
 
     abstract void planning();

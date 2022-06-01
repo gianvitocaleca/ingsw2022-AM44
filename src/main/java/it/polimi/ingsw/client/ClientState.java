@@ -1,7 +1,5 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.ModelCache;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.networkMessages.Headers;
@@ -13,7 +11,7 @@ public class ClientState {
 
     private boolean currentPlayer = true;
 
-    private ShowModelPayload modelCache;
+    private ShowModelPayload modelPayload;
 
     private boolean moveStudents = false;
     private boolean moveMotherNature = false;
@@ -46,60 +44,60 @@ public class ClientState {
     public void setShowModel(ShowModelPayload payload) {
 
         if (payload.isUpdateAll()) {
-            modelCache = payload;
+            modelPayload = payload;
         }
         if (payload.isUpdateClouds()) {
-            modelCache.setClouds(payload.getClouds());
+            modelPayload.setClouds(payload.getClouds());
         }
-        if (payload.isUpdateCoinReserve()){
-            modelCache.setCoinReserve(payload.getCoinReserve());
-            for(Player p: modelCache.getPlayersList()){
-                if (p.getUsername().equals(modelCache.getCurrentPlayerUsername())){
+        if (payload.isUpdateCoinReserve()) {
+            modelPayload.setCoinReserve(payload.getCoinReserve());
+            for (Player p : modelPayload.getPlayersList()) {
+                if (p.getUsername().equals(modelPayload.getCurrentPlayerUsername())) {
                     p.setMyCoins(payload.getCurrentPlayerCoins());
                 }
             }
         }
-        if (payload.isUpdateIslands()){
-            modelCache.setIslands(payload.getIslands());
-            modelCache.setDeactivators(payload.getDeactivators());
-            for(Player p: modelCache.getPlayersList()){
+        if (payload.isUpdateIslands()) {
+            modelPayload.setIslands(payload.getIslands());
+            modelPayload.setDeactivators(payload.getDeactivators());
+            for (Player p : modelPayload.getPlayersList()) {
                 p.setTowers(payload.getPlayerTowers(p.getUsername()));
             }
 
         }
-        if (payload.isUpdateMotherNature()){
-            modelCache.setMotherNature(payload.getMotherNature());
+        if (payload.isUpdateMotherNature()) {
+            modelPayload.setMotherNature(payload.getMotherNature());
         }
-        if (payload.isUpdatePlayersDiningRoom()){
-            modelCache.setCoinReserve(payload.getCoinReserve());
-            modelCache.setPlayersList(payload.getPlayersList());
-        }else if (payload.isUpdatePlayersEntrance()){
-            for(int i = 0; i<modelCache.getPlayersList().size(); i++){
-                modelCache.getPlayersList().get(i).setEntrance(payload.getPlayersList().get(i).getEntrance());
+        if (payload.isUpdatePlayersDiningRoom()) {
+            modelPayload.setCoinReserve(payload.getCoinReserve());
+            modelPayload.setPlayersList(payload.getPlayersList());
+        } else if (payload.isUpdatePlayersEntrance()) {
+            for (int i = 0; i < modelPayload.getPlayersList().size(); i++) {
+                modelPayload.getPlayersList().get(i).setEntrance(payload.getPlayersList().get(i).getEntrance());
             }
         }
-        if (payload.isUpdatePlayersAssistant()){
-            for(int i = 0; i<payload.getPlayersList().size();i++){
-                if(payload.getPlayersList().get(i).getUsername().equals(payload.getCurrentPlayerUsername())){
-                    modelCache.getPlayersList().get(i).setLastPlayedCards(payload.getPlayersList().get(i).getLastPlayedCards());
-                    modelCache.getPlayersList().get(i).setAssistantDeck(payload.getPlayersList().get(i).getAssistantDeck());
+        if (payload.isUpdatePlayersAssistant()) {
+            for (int i = 0; i < payload.getPlayersList().size(); i++) {
+                if (payload.getPlayersList().get(i).getUsername().equals(payload.getCurrentPlayerUsername())) {
+                    modelPayload.getPlayersList().get(i).setLastPlayedCards(payload.getPlayersList().get(i).getLastPlayedCards());
+                    modelPayload.getPlayersList().get(i).setAssistantDeck(payload.getPlayersList().get(i).getAssistantDeck());
                 }
             }
         }
-        if(payload.isUpdatePlayedCharacter()){
-            modelCache.setCoinReserve(payload.getCoinReserve());
-            for(Player p: modelCache.getPlayersList()){
-                if (p.getUsername().equals(modelCache.getCurrentPlayerUsername())){
+        if (payload.isUpdatePlayedCharacter()) {
+            modelPayload.setCoinReserve(payload.getCoinReserve());
+            for (Player p : modelPayload.getPlayersList()) {
+                if (p.getUsername().equals(modelPayload.getCurrentPlayerUsername())) {
                     p.setMyCoins(payload.getCurrentPlayerCoins());
                 }
             }
-            modelCache.setCharacters(payload.getCharacters());
+            modelPayload.setCharacters(payload.getCharacters());
         }
 
     }
 
-    public ShowModelPayload getModelCache() {
-        return modelCache;
+    public ShowModelPayload getModelPayload() {
+        return modelPayload;
     }
 
     public boolean getCurrentPlayer() {

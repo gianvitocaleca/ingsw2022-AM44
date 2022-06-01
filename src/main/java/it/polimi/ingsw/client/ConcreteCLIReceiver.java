@@ -6,12 +6,15 @@ import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.networkMessages.CharacterPlayedPayload;
 import it.polimi.ingsw.server.networkMessages.Headers;
+import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
 import it.polimi.ingsw.server.networkMessages.StringPayload;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class ConcreteCLIReceiver extends AbstractReceiver {
+
+    private ShowModelPayload modelPayload;
 
     public ConcreteCLIReceiver(Scanner socketIn, ClientState cs, PingState ps) {
         super(socketIn, cs, ps);
@@ -23,13 +26,17 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     }
 
     void printModel() {
-        System.out.print(cs.getModelCache());
+        modelPayload = cs.getModelPayload();
+        printPlayers();
+        printIslands();
+        printClouds();
+        printTable();
     }
 
     @Override
     void planning() {
         System.out.println("Which assistant do you want to play? ");
-        List<Player> playerList = cs.getModelCache().getPlayersList();
+        List<Player> playerList = cs.getModelPayload().getPlayersList();
         Player me = playerList.stream().filter(p -> p.getUsername().equals(cs.getUsername())).toList().get(0);
 
         for (int i = 0; i < me.getAssistantDeck().size(); i++) {
@@ -45,7 +52,7 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         if (cs.isMoveStudents()) {
             System.out.println(":=: Move students <MS> :=:");
             System.out.println("Specify the student creature <R,G,Y,B,P>");
-            System.out.println("Specify the destination <0," + cs.getModelCache().getIslands().size() + "> (0 is your Dinig Room, the others are the islands)");
+            System.out.println("Specify the destination <0," + cs.getModelPayload().getIslands().size() + "> (0 is your Dinig Room, the others are the islands)");
             System.out.println("For example MS:R:2");
         }
         if (cs.isMoveMotherNature()) {
@@ -56,13 +63,13 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         if (cs.isSelectCloud()) {
             System.out.println(":=: Select cloud <SC> :=:");
             System.out.println("Choose a cloud from which you want to take the new students to put in your entrance");
-            System.out.println("<0," + (cs.getModelCache().getClouds().size() - 1) + "> clouds available");
+            System.out.println("<0," + (cs.getModelPayload().getClouds().size() - 1) + "> clouds available");
             System.out.println("For example SC:1");
         }
         if (cs.isSelectCharacter()) {
             System.out.println(":=: Play character <PC> :=:");
             System.out.println("Choose a character to play");
-            cs.getModelCache().getCharacters().stream().forEach(c -> System.out.println(c.getIndex()+":"+c.getName()+":"+c.getCost()));
+            cs.getModelPayload().getCharacters().stream().forEach(c -> System.out.println(c.getIndex() + ":" + c.getName() + ":" + c.getCost()));
             System.out.println("\nFor example PC:2");
         }
     }
@@ -79,7 +86,7 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
             System.out.println("For example to swap character (C) creatures Red, Green and Blue  with " +
                     "the destination (D) creatures Blue, Yellow and Pink use the following syntax");
             System.out.println("C:R,G,B:D:B,Y,P");
-            System.out.println("Select at most "+character.getMaxMoves()+" creatures");
+            System.out.println("Select at most " + character.getMaxMoves() + " creatures");
         } else if (character.isNeedsIslandIndex()) {
             System.out.println("Which island do you want to choose?");
         } else if (character.isNeedsSourceCreature()) {
@@ -87,5 +94,33 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         } else if (character.isNeedsMnMovements()) {
             System.out.println("How many more jumps do you want Mother Nature to do?");
         }
+    }
+
+    private void printPlayers() {
+        StringBuilder players = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            if (i % 3 == 0) {
+                players.append(CliColors.FG_RED.getCode());
+                players.append("+");
+                players.append(CliColors.RST.getCode());
+            } else {
+                players.append("-");
+            }
+        }
+        for (Player p : modelPayload.getPlayersList()) {
+
+        }
+        players.append("\n");
+        System.out.println(players);
+    }
+
+    private void printIslands() {
+
+    }
+
+    private void printClouds() {
+    }
+
+    private void printTable() {
     }
 }

@@ -44,18 +44,18 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
     @Override
     void printModel() {
         Platform.runLater(() -> clientGui.updateClientState(cs));
-        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache(), cs.getHeaders()));
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelPayload(), cs.getHeaders()));
     }
 
     @Override
     void planning() {
-        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache(), cs.getHeaders()));
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelPayload(), cs.getHeaders()));
     }
 
     @Override
     void action() {
         Platform.runLater(() -> clientGui.setMoveStudents());
-        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelCache(), cs.getHeaders()));
+        Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelPayload(), cs.getHeaders()));
     }
 
     @Override

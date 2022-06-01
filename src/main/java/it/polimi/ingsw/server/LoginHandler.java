@@ -43,7 +43,19 @@ public class LoginHandler extends Thread implements EventListener {
         System.out.println("New client connected, starting to ask information");
 
         sendMessage(Headers.LOGIN, "");
-        sendMessage(Headers.loginMessage_Username, "Provide your username :");
+        sendMessage(Headers.loginMessage_Username, "" +
+                "                                                                       \n" +
+                "                                                           ,,          \n" +
+                "`7MM\"\"\"YMM                                          mm     db          \n" +
+                "  MM    `7                                          MM                 \n" +
+                "  MM   d    `7Mb,od8 `7M'   `MF',6\"Yb.  `7MMpMMMb.mmMMmm `7MM  ,pP\"Ybd \n" +
+                "  MMmmMM      MM' \"'   VA   ,V 8)   MM    MM    MM  MM     MM  8I   `\" \n" +
+                "  MM   Y  ,   MM        VA ,V   ,pm9MM    MM    MM  MM     MM  `YMMMa. \n" +
+                "  MM     ,M   MM         VVV   8M   MM    MM    MM  MM     MM  L.   I8 \n" +
+                ".JMMmmmmMMM .JMML.       ,V    `Moo9^Yo..JMML  JMML.`Mbmo.JMML.M9mmmP' \n" +
+                "                        ,V                                             \n" +
+                "                     OOb\"                                              \n\n\n" +
+                "Provide your username :");
 
         while (true) {
             username = loginState.getUsername(socketId.getSocket()).toLowerCase();
