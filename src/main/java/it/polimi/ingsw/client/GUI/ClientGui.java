@@ -56,7 +56,7 @@ public class ClientGui extends Application {
     private final String noBorder = "-fx-border-color: none;";
     private boolean selectCreature = false;
     private boolean selectDestination = false;
-    private String createdCommand="";
+    private String createdCommand = "";
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -315,7 +315,7 @@ public class ClientGui extends Application {
             StackPane cloudStack;
             cloudStack = new StackPane(cloudImageView, cloudComponents(i, modelCache));
             cloudStack.relocate(centerX + cloudRadius * Math.cos(2 * Math.PI * i / numberOfPlayers), centerY + cloudRadius * Math.sin(2 * Math.PI * i / numberOfPlayers));
-            cloudButton(cloudStack,i);
+            cloudButton(cloudStack, i);
             cloudView.add(cloudStack);
         }
         table.getChildren().addAll(cloudView);
@@ -398,7 +398,7 @@ public class ClientGui extends Application {
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
                 createdCommand += "MS:";
-                createdCommand+=selectCreature(c);
+                createdCommand += selectCreature(c);
             });
             container.setStyle(noBorder);
             container.setOnMouseMoved(e -> {
@@ -549,7 +549,7 @@ public class ClientGui extends Application {
 
         Text actionPhase = new Text();
         String text = "";
-        if(clientState.getHeaders().equals(Headers.action)){
+        if (clientState.getHeaders().equals(Headers.action)) {
             if (clientState.isMoveStudents()) {
                 text += "Move the students";
             } else if (clientState.isMoveMotherNature()) {
@@ -560,7 +560,7 @@ public class ClientGui extends Application {
             if (clientState.isSelectCharacter()) {
                 text += " or Select a Character";
             }
-        }else{
+        } else {
             text += "Select an Assistant";
         }
         actionPhase.setText(text);
@@ -737,13 +737,13 @@ public class ClientGui extends Application {
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
         ans.setStyle(cssLayout);
-        if(name.equals("Dining Room")){
-            if(p.getUsername().equals(MY_USERNAME)){
-                ans.setOnMouseMoved( e -> {
+        if (name.equals("Dining Room")) {
+            if (p.getUsername().equals(MY_USERNAME)) {
+                ans.setOnMouseMoved(e -> {
                     ans.setStyle(borderSelected);
                 });
-                ans.setOnMouseClicked( e -> {
-                    if(selectDestination){
+                ans.setOnMouseClicked(e -> {
+                    if (selectDestination) {
                         createdCommand += ":";
                         createdCommand += String.valueOf(0);
                         guiEvents.add(createdCommand);
@@ -842,30 +842,30 @@ public class ClientGui extends Application {
             object.setStyle(noBorder);
         });
         object.setOnMouseClicked(e -> {
-            if(selectDestination){
+            if (selectDestination) {
                 createdCommand += ":";
-                createdCommand += String.valueOf(i+1);
+                createdCommand += String.valueOf(i + 1);
                 guiEvents.add(createdCommand);
                 createdCommand = "";
                 selectDestination = false;
             }
-            if(clientState.isMoveMotherNature()){
-                int mnPosition = clientState.getModelCache().getMotherNature();
+            if (clientState.isMoveMotherNature()) {
+                int mnPosition = clientState.getModelPayload().getMotherNature();
                 createdCommand += "MMN:";
-                createdCommand += String.valueOf(evaluateMnJumps(mnPosition,i));
+                createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
                 guiEvents.add(createdCommand);
                 createdCommand = "";
             }
         });
     }
 
-    private int evaluateMnJumps(int mnPosition, int islandIndex){
+    private int evaluateMnJumps(int mnPosition, int islandIndex) {
         int jumps;
-        if(mnPosition<islandIndex){
-            jumps = islandIndex-mnPosition;
-        }else{
-           jumps=clientState.getModelCache().getIslands().size()-mnPosition;
-           jumps += islandIndex;
+        if (mnPosition < islandIndex) {
+            jumps = islandIndex - mnPosition;
+        } else {
+            jumps = clientState.getModelPayload().getIslands().size() - mnPosition;
+            jumps += islandIndex;
         }
         return jumps;
     }
@@ -880,11 +880,11 @@ public class ClientGui extends Application {
             object.setStyle(noBorder);
         });
         object.setOnMouseClicked(e -> {
-            if(clientState.isSelectCloud()){
-               createdCommand += "SC:";
-               createdCommand += String.valueOf(i);
-               guiEvents.add(createdCommand);
-               createdCommand = "";
+            if (clientState.isSelectCloud()) {
+                createdCommand += "SC:";
+                createdCommand += String.valueOf(i);
+                guiEvents.add(createdCommand);
+                createdCommand = "";
             }
         });
     }
