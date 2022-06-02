@@ -57,8 +57,8 @@ public class ClientGui extends Application {
     private final String noBorder = "-fx-border-color: none;";
     private boolean selectCreature = false;
     private boolean selectDestination = false;
-    private String createdCommand="";
-    private int destinationSelected=-1;
+    private String createdCommand = "";
+    private int destinationSelected = -1;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -82,8 +82,6 @@ public class ClientGui extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         primaryStage.setTitle(gameTitle);
-        primaryStage.setWidth(1280d);
-        primaryStage.setHeight(720d);
         primaryStage.show();
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> {
@@ -339,12 +337,13 @@ public class ClientGui extends Application {
         setTop(modelCache);
     }
 
-    private void createMoveStudentsCommand(){
-        if(clientState.isMoveStudents()){
-            createdCommand+=String.valueOf(destinationSelected);
+    private void createMoveStudentsCommand() {
+        if (clientState.isMoveStudents()) {
+            createdCommand += String.valueOf(destinationSelected);
         }
         guiEvents.add(createdCommand);
     }
+
     private Group cloudComponents(int j, ShowModelPayload modelCache) {
         Group ans = new Group();
         List<HBox> hboxComponents = new ArrayList<>();
@@ -414,7 +413,7 @@ public class ClientGui extends Application {
                 createdCommand = "MS:";
                 String creatureLetter = selectCreature(c);
                 //guiEvents.add(creatureLetter);
-                createdCommand+=creatureLetter;
+                createdCommand += creatureLetter;
 
             });
             container.setStyle(noBorder);
@@ -523,8 +522,8 @@ public class ClientGui extends Application {
 
     }
 
-    private String selectCreature(Creature c){
-        String creatureLetter="";
+    private String selectCreature(Creature c) {
+        String creatureLetter = "";
         if (selectCreature) {
             switch (c) {
                 case PINK_FAIRIES:
@@ -544,7 +543,7 @@ public class ClientGui extends Application {
                     break;
             }
         }
-        if(!creatureLetter.equals("")){
+        if (!creatureLetter.equals("")) {
             selectCreature = false;
             selectDestination = true;
         }
@@ -882,8 +881,8 @@ public class ClientGui extends Application {
         });
     }
 
-    public void setMoveStudents(){
-        if(clientState.isMoveStudents()){
+    public void setMoveStudents() {
+        if (clientState.isMoveStudents()) {
             selectCreature = true;
         }
     }
