@@ -58,7 +58,6 @@ public class ClientGui extends Application {
     private boolean selectCreature = false;
     private boolean selectDestination = false;
     private String createdCommand="";
-    private int destinationSelected=-1;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -304,12 +303,7 @@ public class ClientGui extends Application {
                 islandStack = new StackPane(islandImageView, islandComponents(i, modelCache));
             }
             islandStack.relocate(centerX + radius * Math.cos(2 * Math.PI * i / numberOfIslands), centerY + radius * Math.sin(2 * Math.PI * i / numberOfIslands));
-            islandButton(islandStack);
-            /*destinationSelected = i+1;
-            islandStack.setOnMouseClicked(e -> {
-                selectDestination=false;
-                createMoveStudentsCommand();
-            });*/
+            islandButton(islandStack, i);
             islands.add(islandStack);
 
         }
@@ -327,7 +321,7 @@ public class ClientGui extends Application {
             StackPane cloudStack;
             cloudStack = new StackPane(cloudImageView, cloudComponents(i, modelCache));
             cloudStack.relocate(centerX + cloudRadius * Math.cos(2 * Math.PI * i / numberOfPlayers), centerY + cloudRadius * Math.sin(2 * Math.PI * i / numberOfPlayers));
-            cloudButton(cloudStack);
+            cloudButton(cloudStack,i);
             cloudView.add(cloudStack);
         }
         table.getChildren().addAll(cloudView);
@@ -339,12 +333,6 @@ public class ClientGui extends Application {
         setTop(modelCache);
     }
 
-    private void createMoveStudentsCommand(){
-        if(clientState.isMoveStudents()){
-            createdCommand+=String.valueOf(destinationSelected);
-        }
-        guiEvents.add(createdCommand);
-    }
     private Group cloudComponents(int j, ShowModelPayload modelCache) {
         Group ans = new Group();
         List<HBox> hboxComponents = new ArrayList<>();
@@ -411,11 +399,8 @@ public class ClientGui extends Application {
             creature.setFitHeight(100);
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
-                createdCommand = "MS:";
-                String creatureLetter = selectCreature(c);
-                //guiEvents.add(creatureLetter);
-                createdCommand+=creatureLetter;
-
+                createdCommand += "MS:";
+                createdCommand+=selectCreature(c);
             });
             container.setStyle(noBorder);
             container.setOnMouseMoved(e -> {
@@ -566,15 +551,19 @@ public class ClientGui extends Application {
 
         Text actionPhase = new Text();
         String text = "";
-        if (clientState.isMoveStudents()) {
-            text += "Move the students";
-        } else if (clientState.isMoveMotherNature()) {
-            text += "Move Mother Nature";
-        } else if (clientState.isSelectCloud()) {
-            text += "Select a cloud";
-        }
-        if (clientState.isSelectCharacter()) {
-            text += " or Select a Character";
+        if(clientState.getHeaders().equals(Headers.action)){
+            if (clientState.isMoveStudents()) {
+                text += "Move the students";
+            } else if (clientState.isMoveMotherNature()) {
+                text += "Move Mother Nature";
+            } else if (clientState.isSelectCloud()) {
+                text += "Select a cloud";
+            }
+            if (clientState.isSelectCharacter()) {
+                text += " or Select a Character";
+            }
+        }else{
+            text += "Select an Assistant";
         }
         actionPhase.setText(text);
         HBox actionPhaseBox = new HBox(actionPhase);
@@ -785,6 +774,24 @@ public class ClientGui extends Application {
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
         ans.setStyle(cssLayout);
+        if(name.equals("Dining Room")){
+            if(p.getUsername().equals(MY_USERNAME)){
+                ans.setOnMouseMoved( e -> {
+                    ans.setStyle(borderSelected);
+                });
+                ans.setOnMouseClicked( e -> {
+                    if(selectDestination){
+                        createdCommand += ":";
+                        createdCommand += String.valueOf(0);
+                        guiEvents.add(createdCommand);
+                        createdCommand = "";
+                    }
+                });
+                ans.setOnMouseExited(e -> {
+                    ans.setStyle(cssLayout);
+                });
+            }
+        }
         return ans;
     }
 
@@ -860,7 +867,7 @@ public class ClientGui extends Application {
         clientState = cs;
     }
 
-    private void islandButton(Pane object) {
+    private void islandButton(Pane object, int i) {
         object.setOnMouseMoved(e -> {
             if (clientState.isMoveMotherNature() || selectDestination) {
                 object.setStyle(borderSelected);
@@ -869,9 +876,36 @@ public class ClientGui extends Application {
         object.setOnMouseExited(e -> {
             object.setStyle(noBorder);
         });
+        object.setOnMouseClicked(e -> {
+            if(selectDestination){
+                createdCommand += ":";
+                createdCommand += String.valueOf(i+1);
+                guiEvents.add(createdCommand);
+                createdCommand = "";
+                selectDestination = false;
+            }
+            if(clientState.isMoveMotherNature()){
+                int mnPosition = clientState.getModelCache().getMotherNature();
+                createdCommand += "MMN:";
+                createdCommand += String.valueOf(evaluateMnJumps(mnPosition,i));
+                guiEvents.add(createdCommand);
+                createdCommand = "";
+            }
+        });
     }
 
-    private void cloudButton(Pane object) {
+    private int evaluateMnJumps(int mnPosition, int islandIndex){
+        int jumps=0;
+        if(mnPosition<islandIndex){
+            jumps = islandIndex-mnPosition;
+        }else{
+           jumps=clientState.getModelCache().getIslands().size()-mnPosition;
+           jumps += islandIndex;
+        }
+        return jumps;
+    }
+
+    private void cloudButton(Pane object, int i) {
         object.setOnMouseMoved(e -> {
             if (clientState.isSelectCloud()) {
                 object.setStyle(borderSelected);
@@ -879,6 +913,14 @@ public class ClientGui extends Application {
         });
         object.setOnMouseExited(e -> {
             object.setStyle(noBorder);
+        });
+        object.setOnMouseClicked(e -> {
+            if(clientState.isSelectCloud()){
+               createdCommand += "SC:";
+               createdCommand += String.valueOf(i);
+               guiEvents.add(createdCommand);
+               createdCommand = "";
+            }
         });
     }
 
