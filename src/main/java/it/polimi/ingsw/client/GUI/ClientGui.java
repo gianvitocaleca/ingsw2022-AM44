@@ -258,6 +258,15 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
+    public void winnerAlert(String string) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        a.setTitle(gameTitle);
+        a.setHeaderText("Winner");
+        a.showAndWait();
+    }
+
     public void gamePaneGenerator(ShowModelPayload modelCache) {
         root.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
         //root.setLeft(opponentsGenerator(modelCache.getPlayersList()));
@@ -396,12 +405,13 @@ public class ClientGui extends Application {
             creature.setFitHeight(100);
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
-                createdCommand += "MS:";
+                createdCommand = "MS:";
+                selectCreature = true;
                 createdCommand+=selectCreature(c);
             });
             container.setStyle(noBorder);
             container.setOnMouseMoved(e -> {
-                if (clientState.getHeaders().equals(Headers.action)) {
+                if (clientState.getHeaders().equals(Headers.action)&&(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
                     container.setStyle(borderSelected);
                 }
             });
@@ -420,29 +430,43 @@ public class ClientGui extends Application {
         Text assistantsText = new Text("Available Assistants");
 
         List<HBox> assistantImages = new ArrayList<>();
-        for (Assistants a : Assistants.values()) {
-            ImageView assistant = new ImageView(new Image(a.getAssistant()));
-            assistant.setFitWidth(100);
-            assistant.setFitHeight(146);
-            HBox container = new HBox(assistant);
-            container.setStyle(borderUnselected);
-            container.setOnMouseMoved(e -> {
-                if (clientState.getHeaders().equals(Headers.planning)) {
-                    container.setStyle(borderSelected);
-                }
-            });
-            container.setOnMouseExited(e -> {
+
+
+        Optional<Player> myOptionalPlayer = modelCache.getPlayersList().stream().filter(p -> p.getUsername().equals(MY_USERNAME)).findFirst();
+        Player myPlayer;
+        if(myOptionalPlayer.isPresent()){
+            myPlayer = myOptionalPlayer.get();
+
+            for (Assistant a : myPlayer.getAssistantDeck()) {
+                ImageView assistant = new ImageView(new Image(a.getName().getAssistant()));
+                assistant.setFitWidth(100);
+                assistant.setFitHeight(146);
+                HBox container = new HBox(assistant);
                 container.setStyle(borderUnselected);
-            });
-            container.setOnMouseClicked(e -> {
-                if (clientState.getHeaders().equals(Headers.planning)) {
-                    guiEvents.add("" + a.ordinal());
-                }
-            });
-            container.setOnMousePressed(e -> {
-                container.setStyle("-fx-opacity: 0.3");
-            });
-            assistantImages.add(container);
+                container.setOnMouseMoved(e -> {
+                    if (clientState.getHeaders().equals(Headers.planning)&&(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                        container.setStyle(borderSelected);
+                    }
+                });
+                container.setOnMouseExited(e -> {
+                    container.setStyle(borderUnselected);
+                });
+                container.setOnMouseClicked(e -> {
+                    if (clientState.getHeaders().equals(Headers.planning)&&(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                        for(int i = 0; i<myPlayer.getAssistantDeck().size(); i++){
+                            if(a.getName().equals(myPlayer.getAssistantDeck().get(i).getName()))
+                                guiEvents.add("" + i);
+                        }
+
+                    }
+                });
+                container.setOnMousePressed(e -> {
+                    if(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME)){
+                        container.setStyle("-fx-opacity: 0.3");
+                    }
+                });
+                assistantImages.add(container);
+            }
         }
 
 
