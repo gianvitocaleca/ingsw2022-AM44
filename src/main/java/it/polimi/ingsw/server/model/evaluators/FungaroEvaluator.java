@@ -1,61 +1,36 @@
 package it.polimi.ingsw.server.model.evaluators;
 
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
 
-import java.util.List;
-import java.util.Optional;
-
-public class FungaroEvaluator implements InfluenceEvaluator {
-    Creature creature;
+public class FungaroEvaluator extends InfluenceEvaluator {
+    private final Creature creature;
 
     public FungaroEvaluator(Creature creature) {
         this.creature = creature;
     }
 
-    @Override
-    public void evaluateInfluence(GameModel model) throws GameEndedException {
-        Table table = model.getTable();
-        List<Player> players = model.getPlayers();
-
-        Island ci = table.getCurrentIsland();
-        if (ci.getNumberOfNoEntries() == 0) {
-            Optional<Player> hasmoreinfluece = Optional.empty();
-            int influence = 0;
-            for (Player p : players) {
-                int sum = 0;
-                //if player has professor add the relative influence
-                if (p.getProfessors().size() > 0) {
-                    for (Professor prof : p.getProfessors()) {
-                        if (!(prof.getCreature().equals(creature))) {
-                            sum += ci.getNumberOfStudentsByCreature(prof.getCreature());
+    public boolean evaluation(){
+        if(currentIsland.getNumberOfNoEntries()==0){
+            for(Player p: players){
+                currentInfluence = 0;
+                if(p.getProfessors().size()>0){
+                    for(Professor professor: p.getProfessors()){
+                        if (!(professor.getCreature().equals(creature))) {
+                            currentInfluence += currentIsland.getNumberOfStudentsByCreature(professor.getCreature());
                         }
                     }
                 }
-                //if player has towers on the island add the relative influence
-                if (ci.getNumberOfTowers() > 0 &&
-                        p.getMyColor().equals(ci.getColorOfTowers())) {
-                    sum += ci.getNumberOfTowers();
-                }
-                //if player has more influence update
-                if (sum > influence) {
-                    hasmoreinfluece = Optional.of(p);
-                    influence = sum;
-                }
+                evaluateTowers(p);
+                influences.add(currentInfluence);
+                influencesPerUsername.put(currentInfluence,p.getUsername());
             }
-            //if the player who has more influence has changed
-            if (hasmoreinfluece.isPresent()) {
-                model.conquerIsland(hasmoreinfluece.get());
-            }
-
-        } else {
-            ci.removeNoEntry();
+            return true;
+        }else{
+            currentIsland.removeNoEntry();
+            table.setCurrentIsland(currentIsland);
+            return false;
         }
-
     }
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.characters;
 
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.Playable;
 

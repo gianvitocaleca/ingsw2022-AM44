@@ -1,7 +1,7 @@
 package it.polimi.ingsw.evaluatorsTest;
 
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.BehaviorCharacter;
 import it.polimi.ingsw.server.model.characters.Character;

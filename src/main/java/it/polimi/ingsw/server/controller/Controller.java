@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
@@ -20,7 +20,11 @@ import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.networkMessages.*;
-import it.polimi.ingsw.server.viewProxy.MessageHandler;
+import it.polimi.ingsw.server.networkMessages.payloads.ActionPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
+import it.polimi.ingsw.server.handlers.MessageHandler;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,17 +1,21 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.viewProxy.MessageHandler;
+import it.polimi.ingsw.server.controller.events.CloseConnectionEvent;
+import it.polimi.ingsw.server.enums.ServerPhases;
+import it.polimi.ingsw.server.handlers.CreationHandler;
+import it.polimi.ingsw.server.handlers.GameHandler;
+import it.polimi.ingsw.server.handlers.LoginHandler;
+import it.polimi.ingsw.server.receiver.MessageReceiverServer;
+import it.polimi.ingsw.server.handlers.MessageHandler;
+import it.polimi.ingsw.server.states.CreationState;
+import it.polimi.ingsw.server.states.LoginState;
+import it.polimi.ingsw.server.states.NetworkState;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 
 public class SocketReceiverServer {
 
@@ -69,7 +73,7 @@ public class SocketReceiverServer {
                     //create a new object, and link it to the id
                     socketId = new SocketID(id, socket);
                     if (networkState.getNumberOfConnectedSocket() >= networkState.getNumberOfPlayers()) {
-                        socket.close();
+                        messageHandler.eventPerformed(new CloseConnectionEvent(socket));
                         System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
                     } else {
                         //add the new object to the status list

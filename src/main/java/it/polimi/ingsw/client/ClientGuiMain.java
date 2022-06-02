@@ -1,8 +1,7 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.GUI.ClientGui;
 import javafx.application.Application;
-
-import java.io.IOException;
 
 
 public class ClientGuiMain {

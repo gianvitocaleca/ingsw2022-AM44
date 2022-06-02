@@ -1,11 +1,9 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.ModelCache;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.networkMessages.Headers;
-import it.polimi.ingsw.server.networkMessages.ShowModelPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 
 public class ClientState {
     private Headers headers;
@@ -19,12 +17,35 @@ public class ClientState {
     private boolean moveMotherNature = false;
     private boolean selectCloud;
     private boolean selectCharacter;
-
+    private boolean setDisconnection;
+    private boolean disconnection;
     private Name currentPlayedCharacter;
 
 
     public ClientState() {
         this.headers = Headers.creationRequirementMessage;
+        this.setDisconnection = false;
+        this.disconnection = false;
+    }
+
+    public void setDisconnection(Headers header){
+        synchronized (this){
+            if(header.equals(Headers.closeConnection)){
+                disconnection = true;
+            }
+            setDisconnection = true;
+        }
+    }
+
+    public boolean getDisconnection(){
+        while(!setDisconnection){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return disconnection;
     }
 
     public Headers getHeaders() {
