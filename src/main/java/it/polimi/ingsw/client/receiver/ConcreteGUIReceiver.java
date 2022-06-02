@@ -39,6 +39,10 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
                 break;
             case errorMessage:
                 Platform.runLater(() -> clientGui.errorAlert(payload.getString()));
+                Platform.runLater(() -> clientGui.setMoveStudents());
+                break;
+            case winnerPlayer:
+                Platform.runLater(()-> clientGui.winnerAlert(payload.getString()));
                 break;
         }
     }
