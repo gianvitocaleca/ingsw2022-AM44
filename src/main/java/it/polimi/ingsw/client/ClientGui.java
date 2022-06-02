@@ -81,8 +81,8 @@ public class ClientGui extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         primaryStage.setTitle(gameTitle);
-        primaryStage.setWidth(1280d);
-        primaryStage.setHeight(720d);
+        //primaryStage.setWidth(1280d);
+        //primaryStage.setHeight(720d);
         primaryStage.show();
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> {
