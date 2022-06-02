@@ -1,54 +1,26 @@
 package it.polimi.ingsw.server.model.evaluators;
 
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
 
-import java.util.List;
-import java.util.Optional;
+public class KnightEvaluator extends InfluenceEvaluator {
 
-public class KnightEvaluator implements InfluenceEvaluator {
-    @Override
-    public void evaluateInfluence(GameModel model) throws GameEndedException {
-        Table table = model.getTable();
-        List<Player> players = model.getPlayers();
-
-        Island ci = table.getCurrentIsland();
-        if (ci.getNumberOfNoEntries() == 0) {
-            Optional<Player> hasMoreInfluence = Optional.empty();
-            int influence = 0;
-            for (Player p : players) {
-                int sum = 0;
-                //add +2 to influence of knight card to current player
+    public boolean evaluation(){
+        if(currentIsland.getNumberOfNoEntries()==0){
+            for(Player p: players){
+                currentInfluence = 0;
                 if (p.equals(players.get(model.getCurrentPlayerIndex()))) {
-                    sum += 2;
+                    currentInfluence += 2;
                 }
-                //if player has professor add the relative influence
-                if (p.getProfessors().size() > 0) {
-                    for (Professor prof : p.getProfessors()) {
-                        sum += ci.getNumberOfStudentsByCreature(prof.getCreature());
-                    }
-                }
-                //if player has towers on the island add the relative influence
-                if (ci.getNumberOfTowers() > 0 &&
-                        p.getMyColor().equals(ci.getColorOfTowers())) {
-                    sum += ci.getNumberOfTowers();
-                }
-                //if player has more influence update
-                if (sum > influence) {
-                    hasMoreInfluence = Optional.of(p);
-                    influence = sum;
-                }
+                evaluateProfessors(p);
+                evaluateTowers(p);
+                influences.add(currentInfluence);
+                influencesPerUsername.put(currentInfluence,p.getUsername());
             }
-            //if the player who has more influence has changed
-            if (hasMoreInfluence.isPresent()) {
-                model.conquerIsland(hasMoreInfluence.get());
-            }
-        } else {
-            ci.removeNoEntry();
+            return true;
+        }else{
+            currentIsland.removeNoEntry();
+            table.setCurrentIsland(currentIsland);
+            return false;
         }
 
     }

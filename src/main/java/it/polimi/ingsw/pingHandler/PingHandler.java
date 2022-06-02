@@ -1,11 +1,11 @@
 package it.polimi.ingsw.pingHandler;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.Message;
-import it.polimi.ingsw.server.networkMessages.StringPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
 
 import java.io.IOException;
 import java.io.PrintWriter;

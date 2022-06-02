@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.sender.AbstractSender;
+import it.polimi.ingsw.client.sender.ConcreteCLISender;
+
 import java.io.IOException;
 
 public class ClientCliMain {

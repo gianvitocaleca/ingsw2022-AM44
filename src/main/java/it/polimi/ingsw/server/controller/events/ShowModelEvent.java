@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.events;
 
-import it.polimi.ingsw.server.networkMessages.Payload;
+import it.polimi.ingsw.server.networkMessages.payloads.Payload;
 
 import java.util.EventObject;
 

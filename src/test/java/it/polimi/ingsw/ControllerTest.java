@@ -1,11 +1,11 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
@@ -17,9 +17,8 @@ import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.Cloud;
 import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.students.Student;
-import it.polimi.ingsw.server.viewProxy.MessageHandler;
+import it.polimi.ingsw.server.handlers.MessageHandler;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.net.Socket;
