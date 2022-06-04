@@ -1,8 +1,10 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.player.Professor;
+import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
@@ -24,6 +26,11 @@ public class CliPrinter {
     private final String bottomLeft = "╚";
     private final String bottomRight = "╝";
     private final String bottomMiddle = "╩";
+    private final String leftIndex = "[";
+    private final String rightIndex = "]";
+    private final String tower = "♜";
+    private final String motherNature = "♟";
+    private final String noEntry = "⃠";
     private final String username = "Username";
     private final String wizard = "Wizard";
     private final String coins = "Coins";
@@ -34,9 +41,11 @@ public class CliPrinter {
     private final String towers = "Towers";
     private final String noAssistant = "none";
     private final int realCreatureStringLength = 11;
+    private final int islandStringLength = 16;
     private StringBuilder top;
     private StringBuilder titles;
     private StringBuilder middle;
+    private StringBuilder secondMiddle;
     private StringBuilder contents;
     private StringBuilder bottom;
 
@@ -193,5 +202,103 @@ public class CliPrinter {
         stringBuilder.append(counter.get(Creature.PINK_FAIRIES));
         stringBuilder.append(CliColors.RST.getCode());
         stringBuilder.append(space);
+    }
+
+    public void printIslands(ShowModelPayload modelPayload) {
+        top = new StringBuilder();
+        middle = new StringBuilder();
+        secondMiddle = new StringBuilder();
+        bottom = new StringBuilder();
+
+        int j = 0;
+        int motherNaturePosition = modelPayload.getMotherNature();
+        for (Island i : modelPayload.getIslands()) {
+            if (motherNaturePosition == j) {
+                createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), true, createCreatureString(i));
+            } else {
+                createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), false, createCreatureString(i));
+            }
+            if ((j + 1) == (modelPayload.getIslands().size() / 2) + (modelPayload.getIslands().size() % 2)
+                    || (j + 1) == modelPayload.getIslands().size()) {
+                System.out.println(top);
+                System.out.println(middle);
+                System.out.println(secondMiddle);
+                System.out.println(bottom);
+                top = new StringBuilder();
+                middle = new StringBuilder();
+                secondMiddle = new StringBuilder();
+                bottom = new StringBuilder();
+            }
+            j++;
+        }
+
+    }
+
+    private void createIsland(int index, int towers, Color color, int noEntry, boolean hasMotherNature, String creatures) {
+        top.append(topLeft);
+        middle.append(vertical);
+        middle.append(space);
+        secondMiddle.append(vertical);
+        secondMiddle.append(space);
+        bottom.append(bottomLeft);
+
+        for (int i = 0; i < islandStringLength; i++) {
+            top.append(horizontal);
+            bottom.append(horizontal);
+        }
+
+        middle.append(leftIndex);
+        middle.append(index);
+        if (index < 10) {
+            middle.append(space);
+        }
+        middle.append(rightIndex);
+        middle.append(space);
+        switch (color) {
+            case WHITE:
+                middle.append(CliColors.FG_WHITE.getCode());
+                break;
+            case BLACK:
+                middle.append(CliColors.FG_BLACK.getCode());
+                break;
+            case GREY:
+                middle.append(CliColors.FG_GRAY.getCode());
+                break;
+            default:
+                middle.append(CliColors.FG_RED.getCode());
+                break;
+        }
+        middle.append(tower);
+        middle.append(CliColors.RST.getCode());
+        middle.append(space);
+        middle.append(towers);
+        middle.append(space);
+        if (hasMotherNature) {
+            middle.append(motherNature);
+        } else {
+            middle.append(space);
+        }
+        middle.append(space);
+        if (noEntry > 0) {
+            middle.append(this.noEntry);
+            middle.append(space);
+            middle.append(noEntry);
+        } else {
+            middle.append(space);
+            middle.append(space);
+            middle.append(space);
+        }
+        middle.append(space);
+        middle.append(vertical);
+
+        secondMiddle.append(creatures);
+        secondMiddle.append(space);
+        secondMiddle.append(space);
+        secondMiddle.append(space);
+        secondMiddle.append(space);
+        secondMiddle.append(vertical);
+
+        top.append(topRight);
+        bottom.append(bottomRight);
     }
 }

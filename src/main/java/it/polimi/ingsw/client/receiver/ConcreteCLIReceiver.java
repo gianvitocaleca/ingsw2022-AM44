@@ -106,7 +106,7 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
 
 
     private void printIslands() {
-
+        printer.printIslands(cs.getModelPayload());
     }
 
     private void printClouds() {

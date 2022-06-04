@@ -17,7 +17,8 @@ public enum CliColors {
     FG_YELLOW("\u001b[33m"),
     FG_BLUE("\u001b[34m"),
     FG_PINK("\u001b[35m"),
-    FG_WHITE("\u001b[37m"),
+    FG_GRAY("\u001b[38;5;250m"),
+    FG_WHITE("\u001b[97m"),
 
     BOLD("\u001b[1m"),
     DIM("\u001b[2m"),
