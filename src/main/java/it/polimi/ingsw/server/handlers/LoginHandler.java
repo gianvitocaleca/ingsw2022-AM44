@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.handlers;
 
+import it.polimi.ingsw.client.CliColors;
 import it.polimi.ingsw.server.states.CreationState;
 import it.polimi.ingsw.server.states.LoginState;
 import it.polimi.ingsw.server.states.NetworkState;
@@ -46,7 +47,7 @@ public class LoginHandler extends Thread implements EventListener {
         System.out.println("New client connected, starting to ask information");
 
         sendMessage(Headers.LOGIN, "");
-        sendMessage(Headers.loginMessage_Username, "" +
+        sendMessage(Headers.loginMessage_Username, CliColors.FG_TITLE.getCode() +
                 "                                                                       \n" +
                 "                                                           ,,          \n" +
                 "`7MM\"\"\"YMM                                          mm     db          \n" +
@@ -58,7 +59,7 @@ public class LoginHandler extends Thread implements EventListener {
                 ".JMMmmmmMMM .JMML.       ,V    `Moo9^Yo..JMML  JMML.`Mbmo.JMML.M9mmmP' \n" +
                 "                        ,V                                             \n" +
                 "                     OOb\"                                              \n\n\n" +
-                "Provide your username :");
+                CliColors.RST.getCode() + "Provide your username :");
 
         while (true) {
             username = loginState.getUsername(socketId.getSocket()).toLowerCase();

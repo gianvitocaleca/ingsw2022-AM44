@@ -31,10 +31,13 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
 
     void printModel() {
         modelPayload = cs.getModelPayload();
+        System.out.println(CliColors.ERASE_SCREEN.getCode());
         printPlayers();
         printIslands();
         printClouds();
-        printTable();
+        if (modelPayload.isAdvancedRules()) {
+            printTable();
+        }
     }
 
     @Override
@@ -110,8 +113,10 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     }
 
     private void printClouds() {
+        printer.printClouds(cs.getModelPayload());
     }
 
     private void printTable() {
+        printer.printTable(cs.getModelPayload());
     }
 }
