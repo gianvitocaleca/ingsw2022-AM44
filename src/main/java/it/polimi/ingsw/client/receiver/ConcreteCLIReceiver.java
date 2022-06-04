@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.receiver;
 
 import it.polimi.ingsw.client.CliColors;
+import it.polimi.ingsw.client.CliPrinter;
 import it.polimi.ingsw.client.ClientState;
 import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.model.enums.Name;
@@ -17,6 +18,7 @@ import java.util.Scanner;
 public class ConcreteCLIReceiver extends AbstractReceiver {
 
     private ShowModelPayload modelPayload;
+    private final CliPrinter printer = new CliPrinter();
 
     public ConcreteCLIReceiver(Scanner socketIn, ClientState cs, PingState ps) {
         super(socketIn, cs, ps);
@@ -99,22 +101,9 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     }
 
     private void printPlayers() {
-        StringBuilder players = new StringBuilder();
-        for (int i = 0; i < 100; i++) {
-            if (i % 3 == 0) {
-                players.append(CliColors.FG_RED.getCode());
-                players.append("+");
-                players.append(CliColors.RST.getCode());
-            } else {
-                players.append("-");
-            }
-        }
-        for (Player p : modelPayload.getPlayersList()) {
-
-        }
-        players.append("\n");
-        System.out.println(players);
+        printer.printPlayers(cs.getModelPayload());
     }
+
 
     private void printIslands() {
 
