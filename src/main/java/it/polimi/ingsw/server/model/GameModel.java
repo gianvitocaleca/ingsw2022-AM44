@@ -94,6 +94,10 @@ public class GameModel implements Playable {
     @Override
     public void evaluateInfluence() throws GameEndedException {
         evaluator.evaluateInfluence(this);
+        //if GroupsOfIslandsException, checkNeighborIsland returns false
+        if(!table.checkNeighborIsland()){
+            throw new GameEndedException();
+        }
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdateIslands();
         payload.setUpdateMotherNature();
@@ -504,15 +508,8 @@ public class GameModel implements Playable {
     public boolean moveMotherNature(int jumps) throws GameEndedException {
         if (checkJumps(jumps)) {
             int j = jumps + postmanMovements;
-            if (!(table.moveMotherNature(j))) {
-                if (checkEndGame()) {
-                    System.out.println("Sto lanciando un eccezione");
-                    throw new GameEndedException();
-                }
-                ;
-            } else {
-                evaluateInfluence();
-            }
+            table.moveMotherNature(j);
+            evaluateInfluence();
             return true;
         }
         return false;

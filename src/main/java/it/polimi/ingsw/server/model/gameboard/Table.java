@@ -91,13 +91,9 @@ public class Table {
         return true;
     }
 
-    public boolean moveMotherNature(int jumps) {
+    public void moveMotherNature(int jumps) {
         int mnFuturePos = (motherNature.getCurrentIsland() + jumps) % (islands.size());
         setMotherNaturePosition(mnFuturePos);
-        if (!checkNeighborIsland()) {
-            return false;
-        }
-        return true;
     }
 
     public boolean checkNeighborIsland() {
