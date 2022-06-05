@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FarmerTest {
@@ -34,7 +35,7 @@ public class FarmerTest {
     }
 
     /**
-     * This tests that when the Farmer character is played, the model uses the correct version of check professor method
+     * This tests that when the Farmer character is played, the model uses the correct version of check professor method.
      */
     @Test
     public void checkProfessorFarmerTest(){
@@ -69,7 +70,15 @@ public class FarmerTest {
 
         gm.checkProfessor();
 
-        assertTrue(gm.getPlayers().get(1).getProfessors().size()==0);
+        assertEquals(0, gm.getPlayers().get(1).getProfessors().size());
         assertTrue(gm.getPlayers().get(0).getProfessors().size()==1 && gm.getPlayers().get(0).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
+        room = new DiningRoom(9);
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        players.get(1).setDiningRoom(room);
+        gm.checkProfessor();
+        assertEquals(0, gm.getPlayers().get(0).getProfessors().size());
+        assertTrue(gm.getPlayers().get(1).getProfessors().size()==1 && gm.getPlayers().get(1).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
     }
 }

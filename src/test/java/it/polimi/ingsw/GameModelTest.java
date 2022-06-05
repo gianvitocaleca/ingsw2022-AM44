@@ -370,4 +370,25 @@ public class GameModelTest {
         assertTrue(gm.getPlayers().get(0).getProfessors().size() == 0);
         assertTrue(gm.getPlayers().get(1).getProfessors().size() == 1 && gm.getPlayers().get(1).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
     }
+    /**
+    This test verifies that a player with the same number of students of one other player can't conquer
+    the professor.
+     */
+    @Test
+    public void checkProfessorWithSameStudentsInDiningRoom(){
+        List<Player> players = gm.getPlayers();
+
+        DiningRoom room = new DiningRoom(9);
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        players.get(0).setDiningRoom(room);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(0).getCreature(), Creature.RED_DRAGONS);
+        players.get(1).setDiningRoom(room);
+        gm.checkProfessor();
+        assertEquals(0, gm.getPlayers().get(1).getProfessors().size());
+        assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
+
+    }
 }

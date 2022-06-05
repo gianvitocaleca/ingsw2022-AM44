@@ -824,6 +824,7 @@ public class GameModel implements Playable {
                 }
             }
         }
+        isFarmer = false;
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdatePlayersDiningRoom();
         payload.setUpdatePlayersEntrance();
