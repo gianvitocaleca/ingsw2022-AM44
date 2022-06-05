@@ -12,29 +12,30 @@ import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CliPrinter {
     private final String space = " ";
-    private final String horizontal = CliColors.FG_BORDER.getCode() + "═" + CliColors.RST.getCode();
-    private final String vertical = CliColors.FG_BORDER.getCode() + "║" + CliColors.RST.getCode();
-    private final String topLeft = CliColors.FG_BORDER.getCode() + "╔" + CliColors.RST.getCode();
-    private final String topRight = CliColors.FG_BORDER.getCode() + "╗" + CliColors.RST.getCode();
-    private final String topMiddle = CliColors.FG_BORDER.getCode() + "╦" + CliColors.RST.getCode();
-    private final String middleLeft = CliColors.FG_BORDER.getCode() + "╠" + CliColors.RST.getCode();
-    private final String middleRight = CliColors.FG_BORDER.getCode() + "╣" + CliColors.RST.getCode();
-    private final String middleMiddle = CliColors.FG_BORDER.getCode() + "╬" + CliColors.RST.getCode();
-    private final String bottomLeft = CliColors.FG_BORDER.getCode() + "╚" + CliColors.RST.getCode();
-    private final String bottomRight = CliColors.FG_BORDER.getCode() + "╝" + CliColors.RST.getCode();
-    private final String bottomMiddle = CliColors.FG_BORDER.getCode() + "╩" + CliColors.RST.getCode();
+    private String horizontal = "═";
+    private String vertical = "║";
+    private String topLeft = "╔";
+    private String topRight = "╗";
+    private String topMiddle = "╦";
+    private String middleLeft = "╠";
+    private String middleRight = "╣";
+    private String middleMiddle = "╬";
+    private String bottomLeft = "╚";
+    private String bottomRight = "╝";
+    private String bottomMiddle = "╩";
     private final String leftIndex = "[";
     private final String rightIndex = "]";
-    private final String tower = "♜";
-    private final String motherNature = CliColors.FG_MN.getCode() + "♟" + CliColors.RST.getCode();
-    private final String noEntry = CliColors.FG_RED.getCode() + "⃠" + CliColors.RST.getCode();
-    private final String cloud = CliColors.FG_CYAN.getCode() + "☁" + CliColors.RST.getCode();
+    private String tower = "t";
+    private String motherNature = "m";
+    private String noEntry = "n";
+    private String cloud = "c";
     private final String cost = "Cost";
     private final String username = "Username";
     private final String wizard = "Wizard";
@@ -45,8 +46,8 @@ public class CliPrinter {
     private final String lastAssistant = "Last Assistant";
     private final String towers = "Towers";
     private final String noAssistant = "none";
-    private final int realCreatureStringLength = 11;
-    private final int islandStringLength = 16;
+    private int realCreatureStringLength = 16;
+    private int islandStringLength = 18;
     private final int cloudStringLength = 5;
     private final int characterStringLength = 3;
     private final int costStringLength = 8;
@@ -56,6 +57,28 @@ public class CliPrinter {
     private StringBuilder secondMiddle;
     private StringBuilder contents;
     private StringBuilder bottom;
+
+    public CliPrinter() {
+        if (!OS.isWindows()) {
+            horizontal = CliColors.FG_BORDER.getCode() + horizontal + CliColors.RST.getCode();
+            vertical = CliColors.FG_BORDER.getCode() + vertical + CliColors.RST.getCode();
+            topLeft = CliColors.FG_BORDER.getCode() + topLeft + CliColors.RST.getCode();
+            topRight = CliColors.FG_BORDER.getCode() + topRight + CliColors.RST.getCode();
+            topMiddle = CliColors.FG_BORDER.getCode() + topMiddle + CliColors.RST.getCode();
+            middleLeft = CliColors.FG_BORDER.getCode() + middleLeft + CliColors.RST.getCode();
+            middleRight = CliColors.FG_BORDER.getCode() + middleRight + CliColors.RST.getCode();
+            middleMiddle = CliColors.FG_BORDER.getCode() + middleMiddle + CliColors.RST.getCode();
+            bottomLeft = CliColors.FG_BORDER.getCode() + bottomLeft + CliColors.RST.getCode();
+            bottomRight = CliColors.FG_BORDER.getCode() + bottomRight + CliColors.RST.getCode();
+            bottomMiddle = CliColors.FG_BORDER.getCode() + bottomMiddle + CliColors.RST.getCode();
+            tower = "♜";
+            motherNature = CliColors.FG_MN.getCode() + "♟" + CliColors.RST.getCode();
+            noEntry = CliColors.FG_RED.getCode() + "⃠" + CliColors.RST.getCode();
+            cloud = CliColors.FG_CYAN.getCode() + "☁" + CliColors.RST.getCode();
+            realCreatureStringLength = 11;
+            islandStringLength = 16;
+        }
+    }
 
     public void printPlayers(ShowModelPayload modelPayload) {
         for (Player p : modelPayload.getPlayersList()) {
@@ -167,7 +190,11 @@ public class CliPrinter {
             counter.put(c, counter.get(c) + 1);
         }
 
-        creatureStringFormatter(creatureString, counter);
+        if (OS.isWindows()) {
+            creatureStringFormatterWin(creatureString, counter);
+        } else {
+            creatureStringFormatter(creatureString, counter);
+        }
 
         return creatureString.toString();
     }
@@ -182,7 +209,11 @@ public class CliPrinter {
             counter.put(c, counter.get(c) + 1);
         }
 
-        creatureStringFormatter(creatureString, counter);
+        if (OS.isWindows()) {
+            creatureStringFormatterWin(creatureString, counter);
+        } else {
+            creatureStringFormatter(creatureString, counter);
+        }
 
         return creatureString.toString();
     }
@@ -198,7 +229,12 @@ public class CliPrinter {
             counter.put(c, counter.get(c) + 1);
         }
 
-        creatureStringFormatter(professorString, counter);
+        if (OS.isWindows()) {
+            creatureStringFormatterWin(professorString, counter);
+        } else {
+            creatureStringFormatter(professorString, counter);
+        }
+
 
         return professorString.toString();
     }
@@ -225,6 +261,42 @@ public class CliPrinter {
         stringBuilder.append(counter.get(Creature.PINK_FAIRIES));
         stringBuilder.append(CliColors.RST.getCode());
         stringBuilder.append(space);
+    }
+
+    private void creatureStringFormatterWin(StringBuilder stringBuilder, Map<Creature, Integer> counter) {
+        stringBuilder.append(space);
+        stringBuilder.append(creatureToCli(Creature.RED_DRAGONS));
+        stringBuilder.append(counter.get(Creature.RED_DRAGONS));
+        stringBuilder.append(space);
+        stringBuilder.append(creatureToCli(Creature.YELLOW_GNOMES));
+        stringBuilder.append(counter.get(Creature.YELLOW_GNOMES));
+        stringBuilder.append(space);
+        stringBuilder.append(creatureToCli(Creature.BLUE_UNICORNS));
+        stringBuilder.append(counter.get(Creature.BLUE_UNICORNS));
+        stringBuilder.append(space);
+        stringBuilder.append(creatureToCli(Creature.GREEN_FROGS));
+        stringBuilder.append(counter.get(Creature.GREEN_FROGS));
+        stringBuilder.append(space);
+        stringBuilder.append(creatureToCli(Creature.PINK_FAIRIES));
+        stringBuilder.append(counter.get(Creature.PINK_FAIRIES));
+        stringBuilder.append(space);
+    }
+
+    private String creatureToCli(Creature creature) {
+        switch (creature) {
+            case RED_DRAGONS:
+                return "R";
+            case YELLOW_GNOMES:
+                return "Y";
+            case BLUE_UNICORNS:
+                return "B";
+            case GREEN_FROGS:
+                return "G";
+            case PINK_FAIRIES:
+                return "P";
+            default:
+                return "";
+        }
     }
 
     public void printIslands(ShowModelPayload modelPayload) {
@@ -277,22 +349,26 @@ public class CliPrinter {
         }
         middle.append(rightIndex);
         middle.append(space);
-        switch (color) {
-            case WHITE:
-                middle.append(CliColors.FG_WHITE.getCode());
-                break;
-            case BLACK:
-                middle.append(CliColors.FG_BLACK.getCode());
-                break;
-            case GREY:
-                middle.append(CliColors.FG_GRAY.getCode());
-                break;
-            default:
-                middle.append(CliColors.FG_RED.getCode());
-                break;
+        if (OS.isWindows()) {
+            middle.append(colorToCli(color));
+        } else {
+            switch (color) {
+                case WHITE:
+                    middle.append(CliColors.FG_WHITE.getCode());
+                    break;
+                case BLACK:
+                    middle.append(CliColors.FG_BLACK.getCode());
+                    break;
+                case GREY:
+                    middle.append(CliColors.FG_GRAY.getCode());
+                    break;
+                default:
+                    middle.append(CliColors.FG_RED.getCode());
+                    break;
+            }
+            middle.append(tower);
+            middle.append(CliColors.RST.getCode());
         }
-        middle.append(tower);
-        middle.append(CliColors.RST.getCode());
         middle.append(space);
         middle.append(towers);
         middle.append(space);
@@ -310,19 +386,39 @@ public class CliPrinter {
             middle.append(space);
             middle.append(space);
             middle.append(space);
+
+        }
+        if (OS.isWindows()) {
+            middle.append(space);
+            middle.append(space);
         }
         middle.append(space);
         middle.append(vertical);
 
         secondMiddle.append(creatures);
-        secondMiddle.append(space);
-        secondMiddle.append(space);
-        secondMiddle.append(space);
+        if (!OS.isWindows()) {
+            secondMiddle.append(space);
+            secondMiddle.append(space);
+            secondMiddle.append(space);
+        }
         secondMiddle.append(space);
         secondMiddle.append(vertical);
 
         top.append(topRight);
         bottom.append(bottomRight);
+    }
+
+    private String colorToCli(Color color) {
+        switch (color) {
+            case WHITE:
+                return "W";
+            case BLACK:
+                return "B";
+            case GREY:
+                return "G";
+            default:
+                return "";
+        }
     }
 
     public void printClouds(ShowModelPayload modelPayload) {

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.handlers;
 
 import it.polimi.ingsw.client.CliColors;
+import it.polimi.ingsw.client.OS;
 import it.polimi.ingsw.server.states.CreationState;
 import it.polimi.ingsw.server.states.LoginState;
 import it.polimi.ingsw.server.states.NetworkState;
@@ -23,12 +24,28 @@ public class LoginHandler extends Thread implements EventListener {
     private EventListenerList listeners = new EventListenerList();
     private CreationState cs;
 
+    private String title =
+            "                                                                       \n" +
+                    "                                                           ,,          \n" +
+                    "`7MM\"\"\"YMM                                          mm     db          \n" +
+                    "  MM    `7                                          MM                 \n" +
+                    "  MM   d    `7Mb,od8 `7M'   `MF',6\"Yb.  `7MMpMMMb.mmMMmm `7MM  ,pP\"Ybd \n" +
+                    "  MMmmMM      MM' \"'   VA   ,V 8)   MM    MM    MM  MM     MM  8I   `\" \n" +
+                    "  MM   Y  ,   MM        VA ,V   ,pm9MM    MM    MM  MM     MM  `YMMMa. \n" +
+                    "  MM     ,M   MM         VVV   8M   MM    MM    MM  MM     MM  L.   I8 \n" +
+                    ".JMMmmmmMMM .JMML.       ,V    `Moo9^Yo..JMML  JMML.`Mbmo.JMML.M9mmmP' \n" +
+                    "                        ,V                                             \n" +
+                    "                     OOb\"                                              \n\n\n";
+
     public LoginHandler(NetworkState networkState, SocketID socketId, MessageHandler listener, LoginState loginState, CreationState cs) {
         this.networkState = networkState;
         this.socketId = socketId;
         this.listeners.add(MessageHandler.class, listener);
         this.loginState = loginState;
         this.cs = cs;
+        if (!OS.isWindows()) {
+            title = CliColors.FG_TITLE.getCode() + title + CliColors.RST.getCode();
+        }
     }
 
     public boolean isMySocket(Socket socket) {
@@ -47,19 +64,7 @@ public class LoginHandler extends Thread implements EventListener {
         System.out.println("New client connected, starting to ask information");
 
         sendMessage(Headers.LOGIN, "");
-        sendMessage(Headers.loginMessage_Username, CliColors.FG_TITLE.getCode() +
-                "                                                                       \n" +
-                "                                                           ,,          \n" +
-                "`7MM\"\"\"YMM                                          mm     db          \n" +
-                "  MM    `7                                          MM                 \n" +
-                "  MM   d    `7Mb,od8 `7M'   `MF',6\"Yb.  `7MMpMMMb.mmMMmm `7MM  ,pP\"Ybd \n" +
-                "  MMmmMM      MM' \"'   VA   ,V 8)   MM    MM    MM  MM     MM  8I   `\" \n" +
-                "  MM   Y  ,   MM        VA ,V   ,pm9MM    MM    MM  MM     MM  `YMMMa. \n" +
-                "  MM     ,M   MM         VVV   8M   MM    MM    MM  MM     MM  L.   I8 \n" +
-                ".JMMmmmmMMM .JMML.       ,V    `Moo9^Yo..JMML  JMML.`Mbmo.JMML.M9mmmP' \n" +
-                "                        ,V                                             \n" +
-                "                     OOb\"                                              \n\n\n" +
-                CliColors.RST.getCode() + "Provide your username :");
+        sendMessage(Headers.loginMessage_Username, title + "Provide your username :");
 
         while (true) {
             username = loginState.getUsername(socketId.getSocket()).toLowerCase();

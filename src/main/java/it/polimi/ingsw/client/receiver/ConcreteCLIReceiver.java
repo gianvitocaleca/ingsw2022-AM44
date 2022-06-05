@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.receiver;
 import it.polimi.ingsw.client.CliColors;
 import it.polimi.ingsw.client.CliPrinter;
 import it.polimi.ingsw.client.ClientState;
+import it.polimi.ingsw.client.OS;
 import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Assistant;
@@ -31,7 +32,9 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
 
     void printModel() {
         modelPayload = cs.getModelPayload();
-        System.out.println(CliColors.ERASE_SCREEN.getCode());
+        if (!OS.isWindows()) {
+            System.out.println(CliColors.ERASE_SCREEN.getCode());
+        }
         printPlayers();
         printIslands();
         printClouds();
