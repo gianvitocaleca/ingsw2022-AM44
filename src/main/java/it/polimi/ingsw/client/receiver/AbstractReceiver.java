@@ -119,7 +119,7 @@ public abstract class AbstractReceiver extends Thread {
                 break;
             case winnerPlayer:
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
-                System.out.println("The winner is " + stringPayload.getString());
+                stringMessage(Headers.winnerPlayer,stringPayload);
                 break;
         }
     }

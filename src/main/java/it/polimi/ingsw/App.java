@@ -37,7 +37,7 @@ public class App {
                             if (address.equals(args[2])) {
                                 clientStart(args, loopback);
                             } else {
-                                List<String> providedAddress = Arrays.stream(args[2].split(".")).toList();
+                                List<String> providedAddress = Arrays.stream(args[2].split("\\.")).toList();
                                 if (providedAddress.size() != 4) {
                                     System.out.println("Please provide a valid address!");
                                     return;

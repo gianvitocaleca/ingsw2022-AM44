@@ -16,4 +16,5 @@ public enum Creature {
     public String getImage() {
         return image;
     }
+
 }
