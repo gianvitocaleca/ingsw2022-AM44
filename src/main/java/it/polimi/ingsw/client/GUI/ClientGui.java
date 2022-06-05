@@ -918,6 +918,9 @@ public class ClientGui extends Application {
             selectCreature = true;
         }
     }
+
+    public void characterNeedsSourceCreaturesAndDestination() {
+    }
 }
 
 

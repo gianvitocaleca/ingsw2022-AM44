@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.receiver;
 import it.polimi.ingsw.client.GUI.ClientGui;
 import it.polimi.ingsw.client.ClientState;
 import it.polimi.ingsw.pingHandler.PingState;
+import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.networkMessages.payloads.CharacterPlayedPayload;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
@@ -66,6 +67,10 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
 
     @Override
     void characterParameterSelection(CharacterPlayedPayload cpp) {
-
+        Name character = cpp.getCharactersName();
+        cs.setCurrentPlayedCharacter(character);
+        if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
+            Platform.runLater(() -> clientGui.characterNeedsSourceCreaturesAndDestination());
+        }
     }
 }
