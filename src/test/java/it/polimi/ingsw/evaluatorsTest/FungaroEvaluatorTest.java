@@ -1,7 +1,8 @@
 package it.polimi.ingsw.evaluatorsTest;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.BehaviorCharacter;
 import it.polimi.ingsw.server.model.characters.Character;
@@ -49,7 +50,7 @@ public class FungaroEvaluatorTest {
      * when calculating the influence for every player
      */
     @Test
-    void fungaroEvaluatorTest() throws GameEndedException {
+    void fungaroEvaluatorTest() throws GameEndedException, UnplayableEffectException {
         int yellowCounter = 0, redCounter = 0, blueCounter = 0, greenCounter = 0, pinkCounter = 0;
         StudentBucket bucket = gm.getBucket();
 

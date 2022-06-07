@@ -1,8 +1,9 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.Postman;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Name;
@@ -34,7 +35,7 @@ public class PostmanTest {
      * This tests that when the postman card is played, motherNature moves of jumps+postmanMovements positions
      */
     @Test
-    public void postmanTest() throws GameEndedException {
+    public void postmanTest() throws GameEndedException, UnplayableEffectException {
         int numberOfPostmanJumps = 2;
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
                 0, numberOfPostmanJumps, new ArrayList<>());
@@ -79,7 +80,7 @@ public class PostmanTest {
      * This tests that when a wrong value for the postmanMovements is provided, the game will not execute the moveMotherNature method
      */
     @Test
-    public void setWrongPostmanMovementsTest() throws GameEndedException {
+    public void setWrongPostmanMovementsTest() throws GameEndedException, UnplayableEffectException {
         CharactersParametersPayload Postman = new CharactersParametersPayload(new ArrayList<>(),
                 0, 200, new ArrayList<>());
 

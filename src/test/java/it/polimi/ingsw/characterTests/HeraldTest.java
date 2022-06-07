@@ -1,8 +1,9 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.characters.Herald;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
@@ -42,7 +43,7 @@ public class HeraldTest {
      * This test verifies that herald has the correct behaviour.
      */
     @Test
-    void heraldEffectTest() throws GameEndedException {
+    void heraldEffectTest() throws GameEndedException, UnplayableEffectException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
         CharactersParametersPayload herald = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new ArrayList<>());
         List<Professor> profes = new ArrayList<>();

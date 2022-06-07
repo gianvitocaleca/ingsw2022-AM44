@@ -1,8 +1,12 @@
 package it.polimi.ingsw.server.model.characters;
 
-import it.polimi.ingsw.server.networkMessages.CharactersParametersPayload;
+import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.Playable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Herbalist implements Character {
     private Name name;
@@ -41,16 +45,28 @@ public class Herbalist implements Character {
 
     @Override
     public int getCost() {
-        return name.getCost()+updatedCost;
+        int cost = name.getCost();
+        if(updatedCost>0) cost++;
+        return cost;
     }
 
     @Override
     public boolean hasCoin() {
-        return (updatedCost==1);
+        return (updatedCost == 1);
     }
 
     @Override
     public void setUpdatedCost() {
-        updatedCost=1;
+        updatedCost++;
+    }
+
+    @Override
+    public void unsetUpdatedCost() {
+        updatedCost--;
+    }
+
+    @Override
+    public List<Student> getStudents() {
+        return new ArrayList<>();
     }
 }

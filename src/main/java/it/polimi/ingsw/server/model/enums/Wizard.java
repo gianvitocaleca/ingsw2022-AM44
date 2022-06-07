@@ -1,5 +1,15 @@
 package it.polimi.ingsw.server.model.enums;
 
 public enum Wizard {
-    GANDALF, BALJEET, SABRINA, WRONG, KENJI
+    GANDALF("Wizards/gandalf2.jpg"), BALJEET("Wizards/baljeet2.jpg"), SABRINA("Wizards/sabrina2.jpg"), KENJI("Wizards/kenji2.jpg"), WRONG("none");
+
+    private final String image;
+
+    Wizard(String string) {
+        this.image = string;
+    }
+
+    public String getImage() {
+        return image;
+    }
 }

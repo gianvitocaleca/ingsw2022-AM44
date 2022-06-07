@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.model.player;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
 import it.polimi.ingsw.server.model.studentcontainers.Entrance;
@@ -12,7 +12,6 @@ import java.util.*;
 
 public class Player {
 
-    private final int diningRoomCapacity = 9;
     private final String username;
     private Entrance entrance;
     private DiningRoom diningRoom;
@@ -33,12 +32,12 @@ public class Player {
         this.towers = towers;
         this.lastPlayedCard = new ArrayList<>();
         assistantDeck = new ArrayList<>();
-        for (Value v : Value.values()) {
+        for (Assistants v : Assistants.values()) {
             assistantDeck.add(new Assistant(v));
         }
         professors = new ArrayList<>();
         this.entrance = entrance;
-        this.diningRoom = new DiningRoom(diningRoomCapacity);
+        this.diningRoom = new DiningRoom();
     }
 
     public String getUsername() {
@@ -108,7 +107,7 @@ public class Player {
 
     public DiningRoom getDiningRoom() {
 
-        DiningRoom temp = new DiningRoom(diningRoom.getCapacity());
+        DiningRoom temp = new DiningRoom();
         temp.addStudents(diningRoom.getStudents());
 
         return temp;
@@ -213,5 +212,8 @@ public class Player {
         this.entrance = entrance;
     }
 
-
+    public boolean hasProfessor(Creature c){
+        List <Creature> professorsCreatures = professors.stream().map(Professor::getCreature).toList();
+        return professorsCreatures.contains(c);
+    }
 }

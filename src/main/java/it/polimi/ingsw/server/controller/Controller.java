@@ -1,7 +1,8 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.NetworkState;
+import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
@@ -20,7 +21,11 @@ import it.polimi.ingsw.server.model.studentcontainers.Entrance;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.networkMessages.*;
-import it.polimi.ingsw.server.viewProxy.MessageHandler;
+import it.polimi.ingsw.server.networkMessages.payloads.ActionPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
+import it.polimi.ingsw.server.handlers.MessageHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,7 @@ public class Controller {
     -check if a player needs to earn a coin and give it to him, if possible, and proceeds to remove it from the coin reserve
      */
     private final int NUMBER_OF_STUDENTS_TO_MOVE;
+    private final int MIN_NUMBER_OF_PLAYERS = 1;
     private GameModel model;
     private MessageHandler messageHandler;
     private GameStatus currentGameStatus;
@@ -104,6 +110,7 @@ public class Controller {
     }
 
     private void sendPhaseMessage(Headers phase) {
+        checkPlayerConnected();
         if (phase.equals(Headers.action)) {
             if (currentGameStatus.getPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
                 messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
@@ -127,6 +134,42 @@ public class Controller {
             messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
+    }
+
+    private void checkPlayerConnected(){
+        if(model.getNumberOfPlayers()==3){
+            int playersConnected = networkState.getNumberOfConnectedPlayers();
+            if(!(playersConnected == model.getNumberOfPlayers())){
+                if(!networkState.isPlayerConnected(currentGameStatus.getCurrentPlayerUsername()) &&
+                    !(playersConnected == MIN_NUMBER_OF_PLAYERS)){
+                    model.setCurrentPlayerIndex(findNextPlayer(currentGameStatus.getCurrentPlayerUsername()));
+                }
+            }
+        }
+    }
+
+    private int findNextPlayer(String username){
+        boolean found = false;
+        int newCurrentPlayer = -1;
+        for(int i = model.getCurrentPlayerIndex(); i<model.getPlayers().size(); i++){
+            if(!(username.equals(model.getPlayers().get(i).getUsername())) &&
+                networkState.isPlayerConnected(model.getPlayers().get(i).getUsername())){
+                found = true;
+                newCurrentPlayer = i;
+            }
+        }
+        if(found){
+            return newCurrentPlayer;
+        }else{
+            for(int i = 0; i<model.getCurrentPlayerIndex(); i++){
+                if(!(username.equals(model.getPlayers().get(i).getUsername())) &&
+                        networkState.isPlayerConnected(model.getPlayers().get(i).getUsername())){
+                    newCurrentPlayer = i;
+                    break;
+                }
+            }
+        }
+        return newCurrentPlayer;
     }
 
     private void sendErrorMessage(String string) {
@@ -226,6 +269,7 @@ public class Controller {
             if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
                 currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
                 currentGameStatus.setNumberOfStudentsMoved(0);
+                model.resetFarmer();
             }
         }
         return true;
@@ -317,6 +361,9 @@ public class Controller {
                 if (model.checkEndGame()) {
                     sendWinnerPlayerMessage(model.findWinner());
                 }
+            } catch (UnplayableEffectException e) {
+                sendErrorMessage("You can't play that character");
+                sendPhaseMessage(Headers.action);
             }
 
         } else {
@@ -333,6 +380,8 @@ public class Controller {
             if (model.checkEndGame()) {
                 sendWinnerPlayerMessage(model.findWinner());
             }
+        } catch (UnplayableEffectException e) {
+            throw new RuntimeException(e);
         }
 
     }

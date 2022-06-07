@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.characters.Character;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Value;
+import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
 import it.polimi.ingsw.server.model.exceptions.GroupsOfIslandsException;
@@ -233,7 +233,7 @@ public class GameModelTest {
      */
     @Test
     void checkEndGameEveryAssistantsPlayed() {
-        for (int i = 0; i < Value.values().length; i++) {
+        for (int i = 0; i < Assistants.values().length; i++) {
             try {
                 gm.playAssistant(0);
                 gm.setCurrentPlayerIndex(0);
@@ -351,7 +351,7 @@ public class GameModelTest {
 
         List<Player> players = gm.getPlayers();
 
-        DiningRoom room = new DiningRoom(9);
+        DiningRoom room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(0).setDiningRoom(room);
         gm.setPlayers(players);
@@ -360,7 +360,7 @@ public class GameModelTest {
         assertTrue(gm.getPlayers().get(0).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
 
         players = gm.getPlayers();
-        room = new DiningRoom(9);
+        room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(1).setDiningRoom(room);
@@ -369,5 +369,45 @@ public class GameModelTest {
         gm.checkProfessor();
         assertTrue(gm.getPlayers().get(0).getProfessors().size() == 0);
         assertTrue(gm.getPlayers().get(1).getProfessors().size() == 1 && gm.getPlayers().get(1).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
+    }
+    /**
+    This test verifies that a player with the same number of students of one other player can't conquer
+    the professor.
+     */
+    @Test
+    public void checkProfessorWithSameStudentsInDiningRoom(){
+        List<Player> players = gm.getPlayers();
+
+        DiningRoom room = new DiningRoom();
+        room.addStudent(new Student(Creature.RED_DRAGONS));
+        players.get(0).setDiningRoom(room);
+        gm.setCurrentPlayerIndex(0);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(0).getCreature(), Creature.RED_DRAGONS);
+        players.get(1).setDiningRoom(room);
+        gm.setCurrentPlayerIndex(1);
+        gm.checkProfessor();
+        assertEquals(0, gm.getPlayers().get(1).getProfessors().size());
+        assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
+        room.addStudent(new Student(Creature.YELLOW_GNOMES));
+        room.addStudent(new Student(Creature.YELLOW_GNOMES));
+        players.get(0).setDiningRoom(room);
+        gm.setCurrentPlayerIndex(0);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertEquals(2, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(1).getCreature(), Creature.YELLOW_GNOMES);
+        DiningRoom diningRoom = new DiningRoom();
+        diningRoom.addStudent(new Student(Creature.YELLOW_GNOMES));
+        diningRoom.addStudent(new Student(Creature.YELLOW_GNOMES));
+        players.get(1).setDiningRoom(diningRoom);
+        gm.setCurrentPlayerIndex(1);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertEquals(2, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(1).getCreature(), Creature.YELLOW_GNOMES);
+
     }
 }

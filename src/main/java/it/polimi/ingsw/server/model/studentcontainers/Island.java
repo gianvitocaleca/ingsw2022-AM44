@@ -66,13 +66,4 @@ public class Island extends StudentContainer {
                 " NumberOfTowers: " + this.numberOfTowers + " " + this.getCapacity();
     }
 
-    public int getNumberOfStudentsByCreature(Creature creature) {
-        int sum = 0;
-        for (Student s : getStudents()) {
-            if (s.getCreature().equals(creature)) {
-                sum++;
-            }
-        }
-        return sum;
-    }
 }

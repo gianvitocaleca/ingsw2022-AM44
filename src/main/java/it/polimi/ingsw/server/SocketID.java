@@ -3,7 +3,7 @@ package it.polimi.ingsw.server;
 import java.net.Socket;
 
 public class SocketID {
-    int id;
+    private int id;
     private Socket socket;
     private PlayerInfo playerInfo;
     private boolean isConnected;
