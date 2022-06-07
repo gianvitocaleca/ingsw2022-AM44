@@ -257,6 +257,8 @@ public class GameModel implements Playable {
         isFarmer = true;
     }
 
+    public void resetFarmer(){ isFarmer = false; }
+
     @Override
     public boolean setHeraldIsland(int indexIsland) throws GameEndedException {
         if (indexIsland < table.getIslands().size()) {
@@ -732,6 +734,10 @@ public class GameModel implements Playable {
         for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
             characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
+        //DA TOGLIERE
+        characterList.remove(0);
+        characterList.add(ccc.createCharacter(Name.FARMER,this));
+        //TOGLILO!!
         return characterList;
     }
 
@@ -824,7 +830,6 @@ public class GameModel implements Playable {
                 }
             }
         }
-        isFarmer = false;
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdatePlayersDiningRoom();
         payload.setUpdatePlayersEntrance();

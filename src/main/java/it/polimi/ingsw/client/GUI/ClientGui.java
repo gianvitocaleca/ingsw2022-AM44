@@ -934,10 +934,14 @@ public class ClientGui extends Application {
     }
 
     public void characterNeedsSourceCreaturesAndDestination() {
+        String string = "Select a creature and then an island";
         guiPhases = GUIPhases.SELECT_CREATURE_FOR_CHARACTER;
-    }
-    public void chooseADestinationIsland(){
-
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        a.setTitle(gameTitle);
+        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.showAndWait();
     }
 }
 
