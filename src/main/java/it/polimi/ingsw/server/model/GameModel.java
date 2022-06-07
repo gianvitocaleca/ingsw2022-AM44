@@ -734,10 +734,6 @@ public class GameModel implements Playable {
         for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
             characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
-        //DA TOGLIERE
-        characterList.remove(0);
-        characterList.add(ccc.createCharacter(Name.FARMER,this));
-        //TOGLILO!!
         return characterList;
     }
 
