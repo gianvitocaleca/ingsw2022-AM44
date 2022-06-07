@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.ClientState;
 import it.polimi.ingsw.client.sender.AbstractSender;
 import it.polimi.ingsw.client.sender.ConcreteGUISender;
 import it.polimi.ingsw.server.CharacterInformation;
-import it.polimi.ingsw.server.model.enums.Assistants;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
@@ -12,6 +11,7 @@ import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -54,12 +54,12 @@ public class ClientGui extends Application {
     private final String borderUnselected = "-fx-border-color: gray; -fx-border-width: 5;";
     private final String borderSelected = "-fx-border-color: black; -fx-border-width: 5;";
     private final String noBorder = "-fx-border-color: none;";
-    private boolean selectCreature = false;
-    private boolean selectDestination = false;
+    private GUIPhases guiPhases = GUIPhases.SELECT_CREATURE;
     private String createdCommand = "";
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
         stage = primaryStage;
 
         //Pane creation
@@ -399,34 +399,7 @@ public class ClientGui extends Application {
 
         Text creatureText = new Text("Creatures");
 
-        List<HBox> creatureImages = new ArrayList<>();
-        for (Creature c : Creature.values()) {
-            ImageView creature = new ImageView(new Image(c.getImage()));
-            creature.setFitWidth(100);
-            creature.setFitHeight(100);
-            HBox container = new HBox(creature);
-            container.setOnMouseClicked(e -> {
-                createdCommand = "MS:";
-                selectCreature = true;
-                createdCommand+=selectCreature(c);
-            });
-            container.setStyle(noBorder);
-            container.setOnMouseMoved(e -> {
-                if (clientState.getHeaders().equals(Headers.action)&&(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
-                    container.setStyle(borderSelected);
-                }
-            });
-            container.setOnMouseExited(e -> {
-                container.setStyle(noBorder);
-            });
-            creatureImages.add(container);
-        }
-
-        HBox creatures = new HBox();
-        creatures.getChildren().addAll(creatureImages);
-        creatures.setSpacing(5);
-        creatures.setAlignment(Pos.CENTER);
-
+        HBox creatures = createCreaturesComponent();
 
         Text assistantsText = new Text("Available Assistants");
 
@@ -532,7 +505,7 @@ public class ClientGui extends Application {
 
     private String selectCreature(Creature c) {
         String creatureLetter = "";
-        if (selectCreature) {
+        if (guiPhases == GUIPhases.SELECT_CREATURE) {
             switch (c) {
                 case PINK_FAIRIES:
                     creatureLetter = "P";
@@ -551,12 +524,49 @@ public class ClientGui extends Application {
                     break;
             }
         }
-        if (!creatureLetter.equals("")) {
-            selectCreature = false;
-            selectDestination = true;
-        }
+
         return creatureLetter;
     }
+
+    private HBox createCreaturesComponent(){
+
+        List<HBox> creatureImages = new ArrayList<>();
+        for (Creature c : Creature.values()) {
+            ImageView creature = new ImageView(new Image(c.getImage()));
+            creature.setFitWidth(100);
+            creature.setFitHeight(100);
+            HBox container = new HBox(creature);
+            container.setOnMouseClicked(e -> {
+                if(guiPhases==GUIPhases.SELECT_CREATURE){
+                    createdCommand = "MS:";
+                    createdCommand+=selectCreature(c);
+                    guiPhases = GUIPhases.SELECT_DESTINATION;
+                }else if(guiPhases == GUIPhases.SELECT_CREATURE_FOR_CHARACTER){
+                    createdCommand = "C:";
+                    createdCommand+=selectCreature(c);
+                    guiPhases = GUIPhases.SELECT_DESTINATION_ISLAND;
+                }
+
+            });
+            container.setStyle(noBorder);
+            container.setOnMouseMoved(e -> {
+                if (clientState.getHeaders().equals(Headers.action)&&(clientState.getModelPayload().getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                    container.setStyle(borderSelected);
+                }
+            });
+            container.setOnMouseExited(e -> {
+                container.setStyle(noBorder);
+            });
+            creatureImages.add(container);
+        }
+
+        HBox creatures = new HBox();
+        creatures.getChildren().addAll(creatureImages);
+        creatures.setSpacing(5);
+        creatures.setAlignment(Pos.CENTER);
+        return creatures;
+    }
+
 
     private void setTop(ShowModelPayload modelCache) {
         Button quit = new Button("Quit Game");
@@ -767,7 +777,7 @@ public class ClientGui extends Application {
                     ans.setStyle(borderSelected);
                 });
                 ans.setOnMouseClicked(e -> {
-                    if (selectDestination) {
+                    if (guiPhases == GUIPhases.SELECT_DESTINATION) {
                         createdCommand += ":";
                         createdCommand += String.valueOf(0);
                         guiEvents.add(createdCommand);
@@ -858,7 +868,7 @@ public class ClientGui extends Application {
 
     private void islandButton(Pane object, int i) {
         object.setOnMouseMoved(e -> {
-            if (clientState.isMoveMotherNature() || selectDestination) {
+            if (clientState.isMoveMotherNature() || guiPhases == GUIPhases.SELECT_DESTINATION) {
                 object.setStyle(borderSelected);
             }
         });
@@ -866,17 +876,21 @@ public class ClientGui extends Application {
             object.setStyle(noBorder);
         });
         object.setOnMouseClicked(e -> {
-            if (selectDestination) {
+            if (guiPhases == GUIPhases.SELECT_DESTINATION) {
                 createdCommand += ":";
                 createdCommand += String.valueOf(i + 1);
                 guiEvents.add(createdCommand);
                 createdCommand = "";
-                selectDestination = false;
-            }
-            if (clientState.isMoveMotherNature()) {
+                guiPhases = GUIPhases.END;
+            }else if (clientState.isMoveMotherNature()) {
                 int mnPosition = clientState.getModelPayload().getMotherNature();
                 createdCommand += "MMN:";
                 createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
+                guiEvents.add(createdCommand);
+                createdCommand = "";
+            }else if(guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND){
+                createdCommand += ":I:";
+                createdCommand += String.valueOf(i + 1);
                 guiEvents.add(createdCommand);
                 createdCommand = "";
             }
@@ -915,11 +929,19 @@ public class ClientGui extends Application {
 
     public void setMoveStudents() {
         if (clientState.isMoveStudents()) {
-            selectCreature = true;
+            guiPhases = GUIPhases.SELECT_CREATURE;
         }
     }
 
     public void characterNeedsSourceCreaturesAndDestination() {
+        String string = "Select a creature and then an island";
+        guiPhases = GUIPhases.SELECT_CREATURE_FOR_CHARACTER;
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        a.setTitle(gameTitle);
+        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.showAndWait();
     }
 }
 

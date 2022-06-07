@@ -156,6 +156,8 @@ public class GameModel implements Playable {
         isFarmer = true;
     }
 
+    public void resetFarmer(){ isFarmer = false; }
+
     @Override
     public boolean setHeraldIsland(int indexIsland) throws GameEndedException {
         if (indexIsland < table.getIslands().size()) {
@@ -565,7 +567,6 @@ public class GameModel implements Playable {
                 }
             }
         }
-        isFarmer = false;
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdatePlayersDiningRoom();
         payload.setUpdatePlayersEntrance();

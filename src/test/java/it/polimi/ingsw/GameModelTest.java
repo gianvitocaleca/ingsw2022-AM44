@@ -381,14 +381,33 @@ public class GameModelTest {
         DiningRoom room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(0).setDiningRoom(room);
+        gm.setCurrentPlayerIndex(0);
         gm.setPlayers(players);
         gm.checkProfessor();
         assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
         assertEquals(gm.getPlayers().get(0).getProfessors().get(0).getCreature(), Creature.RED_DRAGONS);
         players.get(1).setDiningRoom(room);
+        gm.setCurrentPlayerIndex(1);
         gm.checkProfessor();
         assertEquals(0, gm.getPlayers().get(1).getProfessors().size());
         assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
+        room.addStudent(new Student(Creature.YELLOW_GNOMES));
+        room.addStudent(new Student(Creature.YELLOW_GNOMES));
+        players.get(0).setDiningRoom(room);
+        gm.setCurrentPlayerIndex(0);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertEquals(2, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(1).getCreature(), Creature.YELLOW_GNOMES);
+        DiningRoom diningRoom = new DiningRoom(9);
+        diningRoom.addStudent(new Student(Creature.YELLOW_GNOMES));
+        diningRoom.addStudent(new Student(Creature.YELLOW_GNOMES));
+        players.get(1).setDiningRoom(diningRoom);
+        gm.setCurrentPlayerIndex(1);
+        gm.setPlayers(players);
+        gm.checkProfessor();
+        assertEquals(2, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(1).getCreature(), Creature.YELLOW_GNOMES);
 
     }
 }
