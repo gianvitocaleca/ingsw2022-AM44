@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.characters;
 
-import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;

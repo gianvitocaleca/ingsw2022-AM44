@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
@@ -43,7 +44,7 @@ class ThiefTest {
      * Checks if the student bucket correctly updated
      */
     @Test
-    void thiefEffectTest() throws GameEndedException {
+    void thiefEffectTest() throws GameEndedException, UnplayableEffectException {
         StudentBucket sb = gm.getBucket();
         //map to record the old dining rooms
         Map<String, DiningRoom> oldDiningRooms = new HashMap<>();

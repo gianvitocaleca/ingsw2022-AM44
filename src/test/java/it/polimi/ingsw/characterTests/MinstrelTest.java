@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
@@ -58,7 +59,7 @@ public class MinstrelTest {
      * Swaps students between current player entrance and dining room
      */
     @Test
-    void minstrelTest() throws GameEndedException {
+    void minstrelTest() throws GameEndedException, UnplayableEffectException {
 
         List<Player> players;
         StudentBucket bucket = gm.getBucket();

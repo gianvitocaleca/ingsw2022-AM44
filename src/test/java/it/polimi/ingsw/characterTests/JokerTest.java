@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
@@ -55,7 +56,7 @@ public class JokerTest {
      * Swaps students between Joker character and player entrance
      */
     @Test
-    void JokerTest() throws GameEndedException {
+    void JokerTest() throws GameEndedException, UnplayableEffectException {
 
 
         gm.playCharacter(characterToPlayIndex);
@@ -87,7 +88,7 @@ public class JokerTest {
     }
 
     @Test
-    void WrongJokerTest() throws GameEndedException {
+    void WrongJokerTest() throws GameEndedException, UnplayableEffectException {
 
         gm.playCharacter(characterToPlayIndex);
 

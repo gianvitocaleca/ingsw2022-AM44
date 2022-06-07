@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
@@ -57,7 +58,7 @@ public class PrincessTest {
      * This tests that the princess effect works correctly swapping students between source and destination
      */
     @Test
-    void princessEffectTest() throws GameEndedException {
+    void princessEffectTest() throws GameEndedException, UnplayableEffectException {
         gm.playCharacter(characterToPlayIndex);
 
 

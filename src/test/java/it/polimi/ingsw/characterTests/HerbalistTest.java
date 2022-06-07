@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
@@ -41,7 +42,7 @@ public class HerbalistTest {
      * This test verifies that herbalist's effect has the correct behaviour
      */
     @Test
-    void herbalistEffectTest() throws GameEndedException {
+    void herbalistEffectTest() throws GameEndedException, UnplayableEffectException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
 
         CharactersParametersPayload herbalist = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new ArrayList<>());

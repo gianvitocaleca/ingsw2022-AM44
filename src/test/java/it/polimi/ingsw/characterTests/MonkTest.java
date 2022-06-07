@@ -1,5 +1,6 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
@@ -58,7 +59,7 @@ public class MonkTest {
      * This tests that the monk effect is correctly executed, swapping the correct students between source and destination
      */
     @Test
-    void monkEffectTest() throws GameEndedException {
+    void monkEffectTest() throws GameEndedException, UnplayableEffectException {
 
         gm.playCharacter(characterToPlayIndex);
 

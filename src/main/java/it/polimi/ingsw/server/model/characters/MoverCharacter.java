@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.characters;
 
-import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.Playable;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
