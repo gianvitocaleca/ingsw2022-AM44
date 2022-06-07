@@ -351,7 +351,7 @@ public class GameModelTest {
 
         List<Player> players = gm.getPlayers();
 
-        DiningRoom room = new DiningRoom(9);
+        DiningRoom room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(0).setDiningRoom(room);
         gm.setPlayers(players);
@@ -360,7 +360,7 @@ public class GameModelTest {
         assertTrue(gm.getPlayers().get(0).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
 
         players = gm.getPlayers();
-        room = new DiningRoom(9);
+        room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(1).setDiningRoom(room);
@@ -378,7 +378,7 @@ public class GameModelTest {
     public void checkProfessorWithSameStudentsInDiningRoom(){
         List<Player> players = gm.getPlayers();
 
-        DiningRoom room = new DiningRoom(9);
+        DiningRoom room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(0).setDiningRoom(room);
         gm.setPlayers(players);

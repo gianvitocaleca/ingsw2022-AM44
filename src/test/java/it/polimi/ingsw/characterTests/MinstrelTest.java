@@ -1,9 +1,9 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MinstrelTest {
 
-    GameModel gm;
+    private GameModel gm;
+    private final int characterToPlayIndex = 0;
+    private final int maxNumberOfStudentsToSwap = 2;
 
 
     /**
@@ -38,6 +40,18 @@ public class MinstrelTest {
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
+
+        gm.getCharacters().remove(characterToPlayIndex);
+        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.MINSTREL,gm,0));
+
+        List<Player> players = gm.getPlayers();
+        Player currPlayer = players.get(gm.getCurrentPlayerIndex());
+        //give coins to the current player in order to play the character
+        for (int i = 0; i < Name.MINSTREL.getCost(); i++) {
+            currPlayer.addCoin();
+        }
+
+        gm.setPlayers(players);
     }
 
     /**
@@ -45,52 +59,39 @@ public class MinstrelTest {
      */
     @Test
     void minstrelTest() throws GameEndedException {
-        //create the Character
-        MoverCharacter minstrel = new MoverCharacter(Name.MINSTREL, gm);
+
+        List<Player> players;
         StudentBucket bucket = gm.getBucket();
-        //put the character in first position
-        gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, minstrel);
-        //play the first character
-        List<Player> players = gm.getPlayers();
-        players.get(gm.getCurrentPlayerIndex()).addCoin();
-        gm.setPlayers(players);
-        gm.playCharacter(0);
 
-        int maxNumberOfStudentsToSwap = 2;
-
+        gm.playCharacter(characterToPlayIndex);
 
         //populate the current player dining room with random students
+        players = gm.getPlayers();
+        DiningRoom d = players.get(gm.getCurrentPlayerIndex()).getDiningRoom();
+
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
             try {
-
-                players = gm.getPlayers();
-
-                DiningRoom d = players.get(gm.getCurrentPlayerIndex()).getDiningRoom();
                 d.addStudent(bucket.generateStudent());
-                players.get(gm.getCurrentPlayerIndex()).setDiningRoom(d);
-
-                gm.setPlayers(players);
-
-
             } catch (StudentsOutOfStockException ignore) {
             }
         }
+
+        players.get(gm.getCurrentPlayerIndex()).setDiningRoom(d);
+        gm.setPlayers(players);
         gm.setBucket(bucket);
+
         //old students in entrance
         List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
         List<Creature> oldEntranceCreatures = new ArrayList<>();
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
-            Student s = studentsInEntrance.get(i);
-            oldEntranceCreatures.add(s.getCreature());
+            oldEntranceCreatures.add(studentsInEntrance.get(i).getCreature());
         }
 
         //old students in dining room
         List<Student> studentsInDiningRoom = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents();
         List<Creature> oldDiningRoomCreatures = new ArrayList<>();
         for (int i = 0; i < maxNumberOfStudentsToSwap; i++) {
-            Student s = studentsInDiningRoom.get(i);
-            oldDiningRoomCreatures.add(s.getCreature());
+            oldDiningRoomCreatures.add(studentsInDiningRoom.get(i).getCreature());
         }
 
         int oldCounter = 0;
@@ -99,8 +100,8 @@ public class MinstrelTest {
         }
 
         //creates the parameters for the character effect
-        CharactersParametersPayload minstrelParameters = new CharactersParametersPayload(oldEntranceCreatures,
-                0, 0, oldDiningRoomCreatures);
+        CharactersParametersPayload minstrelParameters = new CharactersParametersPayload(oldDiningRoomCreatures,
+                0, 0, oldEntranceCreatures);
         //play character effect
         gm.effect(minstrelParameters);
 

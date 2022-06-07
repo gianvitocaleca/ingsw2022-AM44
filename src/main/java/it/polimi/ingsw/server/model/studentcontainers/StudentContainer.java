@@ -6,7 +6,7 @@ import it.polimi.ingsw.server.model.students.Student;
 import java.util.*;
 
 public abstract class StudentContainer {
-    private final List<Student> students;
+    protected List<Student> students;
     private final int capacity;
 
     /**
@@ -29,12 +29,15 @@ public abstract class StudentContainer {
         students.add(student);
     }
 
+    public void setStudents(List<Student> students){
+        this.students = students;
+    }
+
     public Student removeStudent(Creature creature){
         Student temp = students.stream().filter(s -> s.getCreature()==creature).findFirst().orElse(null);
         students.remove(temp);
         return temp;
     }
-
 
     public int getCapacity(){
         return capacity;
@@ -48,5 +51,9 @@ public abstract class StudentContainer {
         }
         return temp;
 
+    }
+
+    public int getNumberOfStudentsByCreature(Creature c){
+        return getStudents().stream().filter(s -> s.getCreature().equals(c)).toList().size();
     }
 }

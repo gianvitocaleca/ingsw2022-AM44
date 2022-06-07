@@ -12,7 +12,6 @@ import java.util.*;
 
 public class Player {
 
-    private final int diningRoomCapacity = 9;
     private final String username;
     private Entrance entrance;
     private DiningRoom diningRoom;
@@ -38,7 +37,7 @@ public class Player {
         }
         professors = new ArrayList<>();
         this.entrance = entrance;
-        this.diningRoom = new DiningRoom(diningRoomCapacity);
+        this.diningRoom = new DiningRoom();
     }
 
     public String getUsername() {
@@ -108,7 +107,7 @@ public class Player {
 
     public DiningRoom getDiningRoom() {
 
-        DiningRoom temp = new DiningRoom(diningRoom.getCapacity());
+        DiningRoom temp = new DiningRoom();
         temp.addStudents(diningRoom.getStudents());
 
         return temp;

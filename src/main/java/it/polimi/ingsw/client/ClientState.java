@@ -114,6 +114,9 @@ public class ClientState {
                     p.setMyCoins(payload.getCurrentPlayerCoins());
                 }
             }
+            modelPayload.setMonkCreatures(payload.getMonkCreatures());
+            modelPayload.setPrincessCreatures(payload.getPrincessCreatures());
+            modelPayload.setJokerCreatures(payload.getJokerCreatures());
             modelPayload.setCharacters(payload.getCharacters());
         }
 

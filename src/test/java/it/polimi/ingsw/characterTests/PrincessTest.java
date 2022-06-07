@@ -1,10 +1,10 @@
 package it.polimi.ingsw.characterTests;
 
+import it.polimi.ingsw.server.model.characters.MoverCharacter;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.characters.Character;
-import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
@@ -23,7 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PrincessTest {
 
-    GameModel gm;
+    private GameModel gm;
+    private final int characterToPlayIndex = 0;
+    private final int PRINCESS_CAPACITY = 4;
+    private final int islandDestinationIndex = 1;
 
 
     /**
@@ -36,29 +39,9 @@ public class PrincessTest {
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
-    }
 
-    /**
-     * This tests that the princess effect works correctly swapping students between source and destination
-     */
-    @Test
-    void princessEffectTest() throws GameEndedException {
-        int maxStudentsInPrincess = 4;
-        int characterToPlayIndex = 0;
-
-        List<Name> chars = gm.getCharacters().stream().map(Character::getName).toList();
-        if (!chars.contains(Name.PRINCESS)) {
-            //create the character and put it in first position
-            gm.getCharacters().remove(characterToPlayIndex);
-            gm.getCharacters().add(characterToPlayIndex, new ConcreteCharacterCreator().createCharacter(Name.PRINCESS, gm));
-            gm.populateMoverCharacter();
-        } else {
-            for (int i = 0; i < gm.getCharacters().size(); i++) {
-                if (gm.getCharacters().get(i).getName().equals(Name.PRINCESS)) {
-                    characterToPlayIndex = i;
-                }
-            }
-        }
+        gm.getCharacters().remove(characterToPlayIndex);
+        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.PRINCESS,gm,PRINCESS_CAPACITY));
 
         List<Player> players = gm.getPlayers();
         Player currPlayer = players.get(gm.getCurrentPlayerIndex());
@@ -68,12 +51,18 @@ public class PrincessTest {
         }
 
         gm.setPlayers(players);
+    }
 
+    /**
+     * This tests that the princess effect works correctly swapping students between source and destination
+     */
+    @Test
+    void princessEffectTest() throws GameEndedException {
         gm.playCharacter(characterToPlayIndex);
 
 
         //necessary students and creatures from the character and the entrance
-        List<Student> studentsInPrincess = gm.getTable().getPrincess().getStudents();
+        List<Student> studentsInPrincess = ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents();
         List<Creature> oldPrincessCreatures = new ArrayList<>();
         for (Student s : studentsInPrincess) {
             oldPrincessCreatures.add(s.getCreature());
@@ -81,7 +70,7 @@ public class PrincessTest {
         List<Creature> studentToRemoveFromPrincess = new ArrayList<>();
         studentToRemoveFromPrincess.add(oldPrincessCreatures.get(0));
         List<Creature> creaturesInPrincessAfterRemoval = new ArrayList<>();
-        for (int i = 1; i < maxStudentsInPrincess; i++) {
+        for (int i = 1; i < PRINCESS_CAPACITY; i++) {
             creaturesInPrincessAfterRemoval.add(oldPrincessCreatures.get(i));
         }
 
@@ -97,14 +86,14 @@ public class PrincessTest {
         //play character effect
         gm.effect(princessParameters);
         //the number of students should be the same as before
-        assertEquals(maxStudentsInPrincess, gm.getTable().getPrincess().getStudents().size());
+        assertEquals(PRINCESS_CAPACITY, ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
         //the number of students should increase by one
         assertEquals(oldDiningRoomCreatures.size() + studentToRemoveFromPrincess.size(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents().size());
 
         //get the new creatures in the character and the dining room
         List<Creature> newPrincessCreatures = new ArrayList<>();
-        for (Student s : gm.getTable().getPrincess().getStudents()) {
+        for (Student s : ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents()) {
             newPrincessCreatures.add(s.getCreature());
         }
         List<Creature> newDiningRoomCreatures = new ArrayList<>();

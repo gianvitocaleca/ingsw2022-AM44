@@ -1,9 +1,13 @@
 package it.polimi.ingsw.server.model.characters;
 
+import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.Playable;
 import it.polimi.ingsw.server.model.evaluators.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BehaviorCharacter implements Character {
 
@@ -53,7 +57,9 @@ public class BehaviorCharacter implements Character {
 
     @Override
     public int getCost() {
-        return name.getCost() + updatedCost;
+        int cost = name.getCost();
+        if(updatedCost>0) cost++;
+        return cost;
     }
 
     @Override
@@ -63,7 +69,16 @@ public class BehaviorCharacter implements Character {
 
     @Override
     public void setUpdatedCost() {
-        updatedCost = 1;
+        updatedCost++;
     }
 
+    @Override
+    public void unsetUpdatedCost() {
+        updatedCost--;
+    }
+
+    @Override
+    public List<Student> getStudents() {
+        return new ArrayList<>();
+    }
 }

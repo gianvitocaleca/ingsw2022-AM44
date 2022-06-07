@@ -13,14 +13,13 @@ public class Table {
     public static final int TOTAL_COINS_ADVANCED_RULES = 20;
     public static final int MAX_GENERATED_STUDENTS = 130;
     public static final int MIN_NUMBER_OF_ISLANDS = 3;
-    public static final int MOVER_CAPACITY = 4;
-    public static final int JOKER_CAPACITY = 6;
     final int NUMBER_OF_ISLANDS = 12;
-
-
     private List<Island> islands = new ArrayList<>();
     private List<Cloud> clouds = new ArrayList<>();
     private MotherNature motherNature;
+    private int deactivators = 0;
+    private StudentBucket bucket;
+    private int coinReserve = 0;
 
     public StudentBucket getBucket() {
         StudentBucket temp = new StudentBucket();
@@ -28,20 +27,9 @@ public class Table {
         return temp;
     }
 
-    private int deactivators = 0;
-
-    private StudentBucket bucket;
-
     public void setBucket(StudentBucket bucket) {
         this.bucket = bucket;
     }
-
-
-    private StudentContainer monk = new Monk(MOVER_CAPACITY);
-    private StudentContainer princess = new Princess(MOVER_CAPACITY);
-    private StudentContainer joker = new Joker(JOKER_CAPACITY);
-
-    private int coinReserve = 0;
 
     /**
      * The constructor makes a new table with provided parameters
@@ -218,11 +206,8 @@ public class Table {
         return motherNature.getCurrentIsland() == 0 ? islands.size() - 1 : motherNature.getCurrentIsland() - 1;
     }
 
-    public int pos;
-
     private int getNextIslandPosition() {
-        pos = motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
-        return pos;
+        return motherNature.getCurrentIsland() == islands.size() - 1 ? 0 : motherNature.getCurrentIsland() + 1;
     }
 
     public MotherNature getMotherNature() {
@@ -276,21 +261,9 @@ public class Table {
         }
     }
 
-    public StudentContainer getMonk() {
-        StudentContainer temp = new Monk(monk.getCapacity());
-        temp.addStudents(monk.getStudents());
-        return temp;
-    }
-
     public Island getPrevIsland() {
         Island i = islands.get(getPrevIslandPosition());
         Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
-        return temp;
-    }
-
-    public StudentContainer getPrincess() {
-        StudentContainer temp = new Princess(princess.getCapacity());
-        temp.addStudents(princess.getStudents());
         return temp;
     }
 
@@ -298,12 +271,6 @@ public class Table {
         int prevPos = getPrevIslandPosition();
         islands.remove(prevPos);
         islands.add(prevPos, island);
-    }
-
-    public StudentContainer getJoker() {
-        StudentContainer temp = new Joker(joker.getCapacity());
-        temp.addStudents(joker.getStudents());
-        return temp;
     }
 
     public List<Cloud> getClouds() {
@@ -316,10 +283,6 @@ public class Table {
         return temp;
     }
 
-    public boolean setMonk(StudentContainer monk) {
-        this.monk = monk;
-        return true;
-    }
 
     public void setIslands(List<Island> islands) {
         this.islands = islands;
@@ -337,17 +300,6 @@ public class Table {
         this.coinReserve = coinReserve;
     }
 
-    public boolean setPrincess(StudentContainer princess) {
-        this.princess = princess;
-        return true;
-    }
-
-    public boolean setJoker(StudentContainer joker) {
-        //this.joker = joker;
-        this.joker = new Joker(6);
-        this.joker.addStudents(joker.getStudents());
-        return true;
-    }
 
     public boolean setMotherNaturePosition(int index) {
         motherNature.setCurrentIsland(index);

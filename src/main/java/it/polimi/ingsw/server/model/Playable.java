@@ -3,6 +3,8 @@ package it.polimi.ingsw.server.model;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.evaluators.InfluenceEvaluator;
+import it.polimi.ingsw.server.model.gameboard.Table;
+import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.model.students.StudentBucket;
 
@@ -13,17 +15,25 @@ public interface Playable {
 
     void evaluateInfluence() throws GameEndedException;
 
+    List<Player> getPlayers();
+
+    int getCurrentPlayerIndex();
+
+    void setPlayers(List<Player> players);
+
+    Table getTable();
+
+    void setTable(Table table);
+
+    void setLastRound(boolean value);
+
+    void coinGiver();
+
+    void checkProfessor();
+
     void setPostmanMovements(int numberOfSteps);
 
-    void thiefEffect(Creature creature);
-
     boolean moveStudents(StudentContainer source, StudentContainer destination, List<Creature> creature);
-
-    boolean princessEffect(List<Creature> sourceCreatures);
-
-    boolean minstrelEffect(List<Creature> entranceCreatures, List<Creature> diningRoomCreatures);
-
-    boolean jokerEffect(List<Creature> sourceCreature, List<Creature> destinationCreature);
 
     void setInfluenceEvaluator(InfluenceEvaluator evaluator);
 
@@ -33,13 +43,12 @@ public interface Playable {
 
     boolean checkEndGame();
 
-    public int getDeactivators();
+    int getDeactivators();
 
-    public boolean setDeactivators(int deactivators);
+    boolean setDeactivators(int deactivators);
 
     StudentBucket getBucket();
 
     void setBucket(StudentBucket bucket);
 
-    boolean monkEffect(List<Creature> sourceCreatures, int islandIndex);
 }

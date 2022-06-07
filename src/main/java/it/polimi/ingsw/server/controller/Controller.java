@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
@@ -359,6 +360,9 @@ public class Controller {
                 if (model.checkEndGame()) {
                     sendWinnerPlayerMessage(model.findWinner());
                 }
+            } catch (UnplayableEffectException e) {
+                sendErrorMessage("You can't play that character");
+                sendPhaseMessage(Headers.action);
             }
 
         } else {
@@ -375,6 +379,8 @@ public class Controller {
             if (model.checkEndGame()) {
                 sendWinnerPlayerMessage(model.findWinner());
             }
+        } catch (UnplayableEffectException e) {
+            throw new RuntimeException(e);
         }
 
     }

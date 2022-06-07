@@ -8,8 +8,5 @@ public class Entrance extends StudentContainer {
         super(capacity);
     }
 
-    public int getNumberOfStudentsByCreature(Creature c){
-        return getStudents().stream().filter(s -> s.getCreature().equals(c)).toList().size();
-    }
 
 }

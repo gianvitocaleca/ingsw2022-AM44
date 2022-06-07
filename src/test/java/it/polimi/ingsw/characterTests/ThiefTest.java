@@ -3,7 +3,7 @@ package it.polimi.ingsw.characterTests;
 import it.polimi.ingsw.server.model.exceptions.GameEndedException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.characters.MoverCharacter;
+import it.polimi.ingsw.server.model.characters.Thief;
 import it.polimi.ingsw.server.model.enums.Color;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
@@ -52,7 +52,7 @@ class ThiefTest {
         //populates the players dining rooms and saves them
         List<Player> players = new ArrayList<>(gm.getPlayers());
         for (Player p : players) {
-            DiningRoom playerDR = new DiningRoom(numberOfStudentsByCreature);
+            DiningRoom playerDR = new DiningRoom();
             List<Student> newStudents = new ArrayList<>();
             for (int j = 0; j < 10; j++) {
                 try {
@@ -75,7 +75,7 @@ class ThiefTest {
         CharactersParametersPayload thief = new CharactersParametersPayload(uni, 0, 0, new ArrayList<>());
         //puts the thief as first character
         gm.getCharacters().remove(0);
-        gm.getCharacters().add(0, new MoverCharacter(Name.THIEF, gm));
+        gm.getCharacters().add(0, new Thief(Name.THIEF, gm));
 
         //plays the character
         assertTrue(gm.playCharacter(0));

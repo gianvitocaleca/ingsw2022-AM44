@@ -42,7 +42,7 @@ public class FarmerTest {
 
         List<Player> players = gm.getPlayers();
 
-        DiningRoom room = new DiningRoom(9);
+        DiningRoom room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(0).setDiningRoom(room);
         gm.setPlayers(players);
@@ -50,7 +50,7 @@ public class FarmerTest {
 
 
         players = gm.getPlayers();
-        room = new DiningRoom(9);
+        room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(1).setDiningRoom(room);
@@ -59,7 +59,7 @@ public class FarmerTest {
         gm.checkProfessor();
 
         players = gm.getPlayers();
-        room = new DiningRoom(9);
+        room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         room.addStudent(new Student(Creature.RED_DRAGONS));
         players.get(0).setDiningRoom(room);
@@ -72,7 +72,7 @@ public class FarmerTest {
 
         assertEquals(0, gm.getPlayers().get(1).getProfessors().size());
         assertTrue(gm.getPlayers().get(0).getProfessors().size()==1 && gm.getPlayers().get(0).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
-        room = new DiningRoom(9);
+        room = new DiningRoom();
         room.addStudent(new Student(Creature.RED_DRAGONS));
         room.addStudent(new Student(Creature.RED_DRAGONS));
         room.addStudent(new Student(Creature.RED_DRAGONS));
