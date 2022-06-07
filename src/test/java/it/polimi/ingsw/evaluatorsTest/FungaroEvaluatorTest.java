@@ -19,6 +19,7 @@ import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,8 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FungaroEvaluatorTest {
     GameModel gm;
@@ -75,6 +75,7 @@ public class FungaroEvaluatorTest {
 
         }
 
+
         table.setIslands(islands);
         gm.setTable(table);
 
@@ -120,23 +121,22 @@ public class FungaroEvaluatorTest {
         mn.setCurrentIsland(0);
         table.setMotherNature(mn);
         gm.setTable(table);
-
         gm.evaluateInfluence();
 
-        //dovrebbe vincere con giallo ma non vince
+        //should win with yellow but doesn't win
         if (yellowCounter + redCounter > greenCounter + blueCounter && yellowCounter + redCounter > pinkCounter) {
-            if (redCounter < greenCounter + blueCounter && redCounter < pinkCounter) {
-                assertFalse(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
+            if (redCounter < greenCounter + blueCounter && redCounter < pinkCounter && greenCounter+blueCounter != pinkCounter) {
+                assertNotEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(0).getMyColor());
             }
         }
 
         if (redCounter > greenCounter + blueCounter && redCounter > pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(0).getMyColor()));
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(0).getMyColor());
         } else if (greenCounter + blueCounter > redCounter && greenCounter + blueCounter > pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(1).getMyColor()));
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(1).getMyColor());
 
         } else if (pinkCounter > redCounter && greenCounter + blueCounter < pinkCounter) {
-            assertTrue(gm.getTable().getIslands().get(0).getColorOfTowers().equals(gm.getPlayers().get(2).getMyColor()));
+            assertEquals(gm.getTable().getIslands().get(0).getColorOfTowers(), gm.getPlayers().get(2).getMyColor());
         }
     }
 }
