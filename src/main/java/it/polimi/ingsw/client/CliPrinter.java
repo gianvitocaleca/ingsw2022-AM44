@@ -51,6 +51,7 @@ public class CliPrinter {
     private final int cloudStringLength = 5;
     private final int characterStringLength = 3;
     private final int costStringLength = 8;
+    private int islandStringPadding = 2;
     private StringBuilder top;
     private StringBuilder titles;
     private StringBuilder middle;
@@ -77,6 +78,7 @@ public class CliPrinter {
             cloud = CliColors.FG_CYAN.getCode() + "☁" + CliColors.RST.getCode();
             realCreatureStringLength = 11;
             islandStringLength = 16;
+            islandStringPadding = 3;
         }
     }
 
@@ -189,7 +191,13 @@ public class CliPrinter {
         for (Creature c : creatures) {
             counter.put(c, counter.get(c) + 1);
         }
-
+        for (Creature c : Creature.values()) {
+            if (counter.get(c) > 9) {
+                if (islandStringPadding != 0) {
+                    islandStringPadding--;
+                }
+            }
+        }
         if (OS.isWindows()) {
             creatureStringFormatterWin(creatureString, counter);
         } else {
@@ -334,7 +342,9 @@ public class CliPrinter {
         middle.append(vertical);
         middle.append(space);
         secondMiddle.append(vertical);
-        secondMiddle.append(space);
+        if (OS.isWindows() && islandStringPadding > 0) {
+            secondMiddle.append(space);
+        }
         bottom.append(bottomLeft);
 
         for (int i = 0; i < islandStringLength; i++) {
@@ -397,11 +407,13 @@ public class CliPrinter {
 
         secondMiddle.append(creatures);
         if (!OS.isWindows()) {
-            secondMiddle.append(space);
-            secondMiddle.append(space);
+            for (int i = 0; i < islandStringPadding; i++) {
+                secondMiddle.append(space);
+            }
+        }
+        if (OS.isWindows() && islandStringPadding > 1) {
             secondMiddle.append(space);
         }
-        secondMiddle.append(space);
         secondMiddle.append(vertical);
 
         top.append(topRight);

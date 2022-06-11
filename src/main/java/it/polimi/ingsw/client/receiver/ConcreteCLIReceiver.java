@@ -27,6 +27,9 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
 
     @Override
     void stringMessage(Headers header, StringPayload payload) {
+        if (header.equals(Headers.winnerPlayer)) {
+            System.out.print(payload.getString() + "has won the game!");
+        }
         System.out.println(payload.getString());
     }
 
