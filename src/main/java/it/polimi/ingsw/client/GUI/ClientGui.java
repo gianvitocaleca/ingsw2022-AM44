@@ -11,7 +11,6 @@ import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -26,34 +25,25 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
 
+import static it.polimi.ingsw.client.GUI.GuiAssets.*;
+import static it.polimi.ingsw.client.GUI.GuiCss.*;
+
 public class ClientGui extends Application {
     private static String address;
     private static int port;
-    private final Color backgroundColor = Color.rgb(131, 187, 218);
     private int numberOfPlayers = 2;
-    private final String gameTitle = "Eryantis";
     private Stage stage;
     private BorderPane root;
     private AbstractSender client;
     private String MY_USERNAME;
     private Queue<String> guiEvents;
-    private final String cssLayout =
-            "-fx-border-color: black;\n" +
-                    "-fx-border-insets: 5;\n" +
-                    "-fx-border-width: 3;\n";
-    private final String rootLayout = "-fx-font-size: 20;";
     private ClientState clientState;
-    private final String borderUnselected = "-fx-border-color: gray; -fx-border-width: 5;";
-    private final String borderSelected = "-fx-border-color: black; -fx-border-width: 5;";
-    private final String noBorder = "-fx-border-color: none;";
     private GUIPhases guiPhases = GUIPhases.SELECT_CREATURE;
     private String createdCommand = "";
 
@@ -64,7 +54,7 @@ public class ClientGui extends Application {
 
         //Pane creation
         root = new BorderPane();
-        root.setStyle(rootLayout);
+        root.setStyle(bodyFont);
 
         //Scene creation
         Scene mainScene = new Scene(root);
@@ -93,8 +83,8 @@ public class ClientGui extends Application {
         root.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         //first buttons to appear
         //Join button
-        Button join = new Button("Join");
-        join.setFont(Font.font(30));
+        Button join = new Button(joinButton);
+        join.setStyle(headerFont);
         join.setOnAction(e -> {
             //Start the sender component
             startSender();
@@ -117,7 +107,7 @@ public class ClientGui extends Application {
 
     private VBox gameTitle() {
         Text title = new Text(gameTitle);
-        title.setFont(Font.font("Papyrus", FontWeight.LIGHT, 160));
+        title.setFont(titleFont);
         title.setFill(Color.DARKVIOLET);
         title.setStroke(Color.LIGHTGOLDENRODYELLOW);
         title.setStrokeWidth(1);
@@ -128,21 +118,20 @@ public class ClientGui extends Application {
 
     public void numberOfPlayers() {
         //Creation number of players buttons
-        Button twoPlayers = new Button("Two players");
-        twoPlayers.setFont(Font.font(30));
-        Button threePlayers = new Button("Three players");
-        threePlayers.setFont(Font.font(30));
+        Button twoPlayers = new Button(twoPlayersButton);
+        Button threePlayers = new Button(threePlayersButton);
         HBox numOfPlayersButtons = new HBox(twoPlayers, threePlayers);
+        numOfPlayersButtons.setStyle(headerFont);
         numOfPlayersButtons.setSpacing(5);
         numOfPlayersButtons.setAlignment(Pos.CENTER);
 
         twoPlayers.setOnAction(e -> {
             this.numberOfPlayers = 2;
-            guiEvents.add("2");
+            guiEvents.add(String.valueOf(this.numberOfPlayers));
         });
         threePlayers.setOnAction(e -> {
             this.numberOfPlayers = 3;
-            guiEvents.add("3");
+            guiEvents.add(String.valueOf(this.numberOfPlayers));
         });
 
         root.setCenter(numOfPlayersButtons);
@@ -151,27 +140,26 @@ public class ClientGui extends Application {
     public void typeOfRules() {
 
         //Creation type of rules buttons
-        Button basicRules = new Button("Basic Rules");
-        basicRules.setFont(Font.font(30));
-        Button advancedRules = new Button("Advanced Rules");
-        advancedRules.setFont(Font.font(30));
+        Button basicRules = new Button(basicRulesButton);
+        Button advancedRules = new Button(advancedRulesButton);
         HBox typeOfRulesButtons = new HBox(basicRules, advancedRules);
+        typeOfRulesButtons.setStyle(headerFont);
         typeOfRulesButtons.setSpacing(5);
         typeOfRulesButtons.setAlignment(Pos.CENTER);
 
         basicRules.setOnAction(e -> {
-            guiEvents.add("0");
+            guiEvents.add(basicRulesCode);
         });
         advancedRules.setOnAction(e -> {
-            guiEvents.add("1");
+            guiEvents.add(advancedRulesCode);
         });
 
         root.setCenter(typeOfRulesButtons);
     }
 
     public void loginUsername() {
-        Text text = new Text("Provide your username");
-        text.setFont(Font.font(20));
+        Text text = new Text(provideUsernameText);
+        text.setStyle(bodyFont);
         TextField prompt = new TextField("");
         prompt.setMaxWidth(200);
         prompt.setOnAction(e -> {
@@ -188,20 +176,20 @@ public class ClientGui extends Application {
 
     public void color() {
         Text text = new Text("Choose a color");
-        text.setFont(Font.font(20));
+        text.setStyle(bodyFont);
         ChoiceBox<String> prompt = new ChoiceBox<>();
-        prompt.getItems().addAll("White", "Black", "Gray");
+        prompt.getItems().addAll(whiteColorText, blackColorText, greyColorText);
         Button button = new Button();
         button.setText("Confirm");
         button.setOnAction(e -> {
             switch (prompt.getValue()) {
-                case "White":
+                case whiteColorText:
                     guiEvents.add("1");
                     break;
-                case "Black":
+                case blackColorText:
                     guiEvents.add("2");
                     break;
-                case "Gray":
+                case greyColorText:
                     guiEvents.add("3");
                     break;
             }
@@ -213,7 +201,7 @@ public class ClientGui extends Application {
 
     public void wizard() {
         Text text = new Text("Pick a wizard");
-        text.setFont(Font.font(20));
+        text.setStyle(bodyFont);
         ChoiceBox<String> prompt = new ChoiceBox<>();
         prompt.getItems().addAll("Gandalf", "Baljeet", "Sabrina", "Kenji");
         Button button = new Button();
@@ -362,7 +350,7 @@ public class ClientGui extends Application {
 
         }
         Text index = new Text("I:" + j);
-        index.setFont(Font.font(20));
+        index.setStyle(bodyFont);
         HBox indexBox = new HBox(index);
         index.relocate(radius * Math.cos(2 * Math.PI * 6 / numOfComponents), radius * Math.sin(2 * Math.PI * 6 / numOfComponents));
         hBoxComponents.add(indexBox);
@@ -408,7 +396,7 @@ public class ClientGui extends Application {
 
         Optional<Player> myOptionalPlayer = modelCache.getPlayersList().stream().filter(p -> p.getUsername().equals(MY_USERNAME)).findFirst();
         Player myPlayer;
-        if(myOptionalPlayer.isPresent()){
+        if (myOptionalPlayer.isPresent()) {
             myPlayer = myOptionalPlayer.get();
 
             for (Assistant a : myPlayer.getAssistantDeck()) {
@@ -418,7 +406,7 @@ public class ClientGui extends Application {
                 HBox container = new HBox(assistant);
                 container.setStyle(borderUnselected);
                 container.setOnMouseMoved(e -> {
-                    if (clientState.getHeaders().equals(Headers.planning)&&(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                    if (clientState.getHeaders().equals(Headers.planning) && (modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
                         container.setStyle(borderSelected);
                     }
                 });
@@ -426,17 +414,17 @@ public class ClientGui extends Application {
                     container.setStyle(borderUnselected);
                 });
                 container.setOnMouseClicked(e -> {
-                    if (clientState.getHeaders().equals(Headers.planning)&&(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
-                        for(int i = 0; i<myPlayer.getAssistantDeck().size(); i++){
-                            if(a.getName().equals(myPlayer.getAssistantDeck().get(i).getName()))
+                    if (clientState.getHeaders().equals(Headers.planning) && (modelCache.getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                        for (int i = 0; i < myPlayer.getAssistantDeck().size(); i++) {
+                            if (a.getName().equals(myPlayer.getAssistantDeck().get(i).getName()))
                                 guiEvents.add("" + i);
                         }
 
                     }
                 });
                 container.setOnMousePressed(e -> {
-                    if(modelCache.getCurrentPlayerUsername().equals(MY_USERNAME)){
-                        container.setStyle("-fx-opacity: 0.3");
+                    if (modelCache.getCurrentPlayerUsername().equals(MY_USERNAME)) {
+                        container.setStyle(lowOpacity);
                     }
                 });
                 assistantImages.add(container);
@@ -528,7 +516,7 @@ public class ClientGui extends Application {
         return creatureLetter;
     }
 
-    private HBox createCreaturesComponent(){
+    private HBox createCreaturesComponent() {
 
         List<HBox> creatureImages = new ArrayList<>();
         for (Creature c : Creature.values()) {
@@ -537,20 +525,20 @@ public class ClientGui extends Application {
             creature.setFitHeight(100);
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
-                if(guiPhases==GUIPhases.SELECT_CREATURE){
+                if (guiPhases == GUIPhases.SELECT_CREATURE) {
                     createdCommand = "MS:";
-                    createdCommand+=selectCreature(c);
+                    createdCommand += selectCreature(c);
                     guiPhases = GUIPhases.SELECT_DESTINATION;
-                }else if(guiPhases == GUIPhases.SELECT_CREATURE_FOR_CHARACTER){
+                } else if (guiPhases == GUIPhases.SELECT_CREATURE_FOR_CHARACTER) {
                     createdCommand = "C:";
-                    createdCommand+=selectCreature(c);
+                    createdCommand += selectCreature(c);
                     guiPhases = GUIPhases.SELECT_DESTINATION_ISLAND;
                 }
 
             });
             container.setStyle(noBorder);
             container.setOnMouseMoved(e -> {
-                if (clientState.getHeaders().equals(Headers.action)&&(clientState.getModelPayload().getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                if (clientState.getHeaders().equals(Headers.action) && (clientState.getModelPayload().getCurrentPlayerUsername().equals(MY_USERNAME))) {
                     container.setStyle(borderSelected);
                 }
             });
@@ -570,7 +558,7 @@ public class ClientGui extends Application {
 
     private void setTop(ShowModelPayload modelCache) {
         Button quit = new Button("Quit Game");
-        quit.setFont(Font.font(30));
+        quit.setStyle(headerFont);
         quit.setOnAction(e -> quitStage());
 
         Text currentPhase = new Text();
@@ -630,7 +618,7 @@ public class ClientGui extends Application {
         coin.setFitWidth(50);
         coin.setFitHeight(50);
         Text num = new Text("" + i + "");
-        num.setFont(Font.font(30));
+        num.setStyle(headerFont);
         HBox coins = new HBox(num, coin);
         coins.setSpacing(10);
         coins.setAlignment(Pos.CENTER);
@@ -758,7 +746,7 @@ public class ClientGui extends Application {
 
     private HBox counterText(int num, ImageView towerImage) {
         Text numText = new Text("" + num + "");
-        numText.setFont(Font.font(20));
+        numText.setStyle(bodyFont);
         HBox ans = new HBox(towerImage, numText);
         ans.setSpacing(5);
         ans.setAlignment(Pos.CENTER);
@@ -770,7 +758,7 @@ public class ClientGui extends Application {
         VBox ans = new VBox(title, createCreatures(name, p));
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(5);
-        ans.setStyle(cssLayout);
+        ans.setStyle(defaultComponentLayout);
         if (name.equals("Dining Room")) {
             if (p.getUsername().equals(MY_USERNAME)) {
                 ans.setOnMouseMoved(e -> {
@@ -785,7 +773,7 @@ public class ClientGui extends Application {
                     }
                 });
                 ans.setOnMouseExited(e -> {
-                    ans.setStyle(cssLayout);
+                    ans.setStyle(defaultComponentLayout);
                 });
             }
         }
@@ -882,13 +870,13 @@ public class ClientGui extends Application {
                 guiEvents.add(createdCommand);
                 createdCommand = "";
                 guiPhases = GUIPhases.END;
-            }else if (clientState.isMoveMotherNature()) {
+            } else if (clientState.isMoveMotherNature()) {
                 int mnPosition = clientState.getModelPayload().getMotherNature();
                 createdCommand += "MMN:";
                 createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
                 guiEvents.add(createdCommand);
                 createdCommand = "";
-            }else if(guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND){
+            } else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
                 createdCommand += ":I:";
                 createdCommand += String.valueOf(i + 1);
                 guiEvents.add(createdCommand);

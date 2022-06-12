@@ -51,6 +51,7 @@ public class CliPrinter {
     private final int characterStringLength = 3;
     private final int costStringLength = 8;
     private int islandStringPadding = 2;
+    private int tempStringPadding;
     private StringBuilder top;
     private StringBuilder titles;
     private StringBuilder middle;
@@ -80,8 +81,9 @@ public class CliPrinter {
             cloud = CliColors.FG_CYAN.getCode() + "☁" + CliColors.RST.getCode();
             realCreatureStringLength = 11;
             islandStringLength = 16;
-            islandStringPadding = 3;
+            islandStringPadding = 5;
         }
+        tempStringPadding = islandStringPadding;
     }
 
     /**
@@ -201,7 +203,7 @@ public class CliPrinter {
      * @return is the string ready to be printed
      */
     private String createCreatureString(StudentContainer container) {
-
+        tempStringPadding = islandStringPadding;
         StringBuilder creatureString = new StringBuilder();
         Map<Creature, Integer> counter = new HashMap<>();
         for (Creature c : Creature.values()) {
@@ -213,8 +215,8 @@ public class CliPrinter {
         }
         for (Creature c : Creature.values()) {
             if (counter.get(c) > 9) {
-                if (islandStringPadding != 0) {
-                    islandStringPadding--;
+                if (tempStringPadding != 0) {
+                    tempStringPadding--;
                 }
             }
         }
@@ -368,11 +370,7 @@ public class CliPrinter {
         int j = 0;
         int motherNaturePosition = modelPayload.getMotherNature();
         for (Island i : modelPayload.getIslands()) {
-            if (motherNaturePosition == j) {
-                createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), true, createCreatureString(i));
-            } else {
-                createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), false, createCreatureString(i));
-            }
+            createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), (motherNaturePosition == j), createCreatureString(i));
             if ((j + 1) == (modelPayload.getIslands().size() / 2) + (modelPayload.getIslands().size() % 2)
                     || (j + 1) == modelPayload.getIslands().size()) {
                 System.out.println(top);
@@ -397,7 +395,7 @@ public class CliPrinter {
         middle.append(vertical);
         middle.append(space);
         secondMiddle.append(vertical);
-        if (OS.isWindows() && islandStringPadding > 0) {
+        if (OS.isWindows() && tempStringPadding > 0) {
             secondMiddle.append(space);
         }
         bottom.append(bottomLeft);
@@ -462,11 +460,11 @@ public class CliPrinter {
 
         secondMiddle.append(creatures);
         if (!OS.isWindows()) {
-            for (int i = 0; i < islandStringPadding; i++) {
+            for (int i = 0; i < tempStringPadding; i++) {
                 secondMiddle.append(space);
             }
         }
-        if (OS.isWindows() && islandStringPadding > 1) {
+        if (OS.isWindows() && tempStringPadding > 1) {
             secondMiddle.append(space);
         }
         secondMiddle.append(vertical);
