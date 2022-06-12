@@ -13,8 +13,10 @@ public class ServerPingHandler extends PingHandler implements Runnable {
         if(!ps.isReceived()){
             noAnswers++;
             if(noAnswers==maxNoAnswers){
-                ns.disconnectPlayer(socketID.getId());
-                System.out.println("Disconnected player "+socketID.getId()+" ,number of connected players: "+ns.getNumberOfConnectedSocket());
+                if(socketID.isConnected()){
+                    ns.disconnectPlayer(socketID.getId());
+                    System.out.println("Disconnected player "+socketID.getId()+" ,number of connected players: "+ns.getNumberOfConnectedSocket());
+                }
                 return true;
             }
         }else{

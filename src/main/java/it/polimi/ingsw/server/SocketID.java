@@ -8,11 +8,14 @@ public class SocketID {
     private PlayerInfo playerInfo;
     private boolean isConnected;
 
+    private boolean needsReplacement;
+
     public SocketID(int id, Socket socket) {
         this.id = id;
         this.socket = socket;
         this.isConnected = true;
-        playerInfo = new PlayerInfo();
+        this.playerInfo = new PlayerInfo();
+        this.needsReplacement = true;
     }
 
     public int getId() {
@@ -31,10 +34,6 @@ public class SocketID {
         return isConnected;
     }
 
-    public void setPlayerInfo(PlayerInfo playerInfo) {
-        this.playerInfo = playerInfo;
-    }
-
     public void setConnected(boolean connected) {
         isConnected = connected;
     }
@@ -43,4 +42,19 @@ public class SocketID {
         this.socket = socket;
     }
 
+    public boolean isNeedsReplacement() throws InterruptedException {
+        synchronized (this){
+            while(!needsReplacement){
+                this.wait();
+            }
+        }
+        return true;
+    }
+
+    public void setNeedsReplacement(boolean needsReplacement) {
+        synchronized (this){
+            this.needsReplacement = needsReplacement;
+            notifyAll();
+        }
+    }
 }

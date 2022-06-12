@@ -54,12 +54,17 @@ public class MessageReceiverServer extends Thread {
             try {
                 String line = in.nextLine();
                 pingState.setReceived(true);
-                if (!networkState.getServerPhase().equals(ServerPhases.GAME) || isCurrent()) {
-                    MessageReceivedEvent evt = new MessageReceivedEvent(this, line);
-                    for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
-                        event.eventPerformed(evt, socketId.getSocket());
+                if(socketId.isConnected()){
+                    if (!networkState.getServerPhase().equals(ServerPhases.GAME) || isCurrent()) {
+                        MessageReceivedEvent evt = new MessageReceivedEvent(this, line);
+                        for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
+                            event.eventPerformed(evt, socketId.getSocket());
+                        }
                     }
+                }else{
+                    break;  
                 }
+
             } catch (NoSuchElementException ignore) {
                 if (pingState.isCloseConnection()) {
                     break;

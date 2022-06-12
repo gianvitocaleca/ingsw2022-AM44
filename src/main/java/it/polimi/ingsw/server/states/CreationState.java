@@ -7,7 +7,6 @@ public class CreationState {
     private boolean set = false;
     private int advancedRules;
     private GamePhases phase;
-    private Boolean creationPhaseEnded = false;
 
     public CreationState() {
         this.numberOfPlayers = 0;
@@ -61,19 +60,4 @@ public class CreationState {
         this.phase = phase;
     }
 
-    public void getCreationPhaseEnded() {
-        synchronized (this) {
-            while (!creationPhaseEnded) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-    }
-
-    public synchronized void setCreationPhaseEnded() {
-        this.creationPhaseEnded = true;
-        this.notifyAll();
-    }
 }

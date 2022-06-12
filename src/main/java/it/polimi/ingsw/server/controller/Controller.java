@@ -66,7 +66,7 @@ public class Controller {
 
     }
 
-    public void start() {
+    public void startController() {
         updateCurrentPlayer();
 
         ShowModelPayload modelUpdate = model.showModelPayloadCreator();
@@ -175,12 +175,14 @@ public class Controller {
     private void sendErrorMessage(String string) {
         int id = 0;
         for (SocketID socketID : networkState.getSocketIDList()) {
-            if (socketID.getPlayerInfo().getUsername().equals(
-                    model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())) {
-                id = socketID.getId();
+            if(socketID.isConnected()){
+                if (socketID.getPlayerInfo().getUsername().equals(
+                        model.getPlayers().get(model.getCurrentPlayerIndex()).getUsername())) {
+                    id = socketID.getId();
+                }
             }
+
         }
-        System.out.println(string);
         messageHandler.eventPerformed(new StringEvent(this, string, Headers.errorMessage,
                 networkState.getSocketByID(id)));
     }
