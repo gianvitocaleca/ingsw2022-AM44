@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.handlers;
 
+import it.polimi.ingsw.server.SocketID;
+import it.polimi.ingsw.server.enums.ServerPhases;
 import it.polimi.ingsw.server.states.CreationState;
 import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
@@ -12,9 +14,9 @@ public class CreationHandler extends Thread{
     private NetworkState networkState;
     private EventListenerList listeners = new EventListenerList();
     private CreationState cs;
-    private int socketID;
+    private SocketID socketID;
 
-    public CreationHandler(NetworkState networkState, MessageHandler messageHandler,CreationState cs, int socketID) {
+    public CreationHandler(NetworkState networkState, MessageHandler messageHandler, CreationState cs, SocketID socketID) {
         this.networkState = networkState;
         listeners.add(MessageHandler.class, messageHandler);
         this.cs = cs;
@@ -23,6 +25,13 @@ public class CreationHandler extends Thread{
 
     @Override
     public void run() {
+        numberOfPlayers();
+        rulesType();
+        networkState.setServerPhase(ServerPhases.LOGIN);
+        socketID.setNeedsReplacement(true);
+    }
+
+    private void numberOfPlayers(){
         sendMessage(Headers.creationRequirementMessage_NumberOfPlayers, "Select the number of players [2 or 3]:");
         while(true) {
             int number = cs.getNumberOfPlayers();
@@ -34,11 +43,13 @@ public class CreationHandler extends Thread{
                 cs.reset();
                 System.out.println("Number of players: " + number);
                 cs.setPhase(GamePhases.CREATION_RULES);
-                sendMessage(Headers.creationRequirementMessage_TypeOfRules, "Choose the rules type [0 standard|1 advanced]:");
                 break;
             }
         }
+    }
 
+    private void rulesType(){
+        sendMessage(Headers.creationRequirementMessage_TypeOfRules, "Choose the rules type [0 standard|1 advanced]:");
         while(true){
             int number = cs.getAdvancedRules();
             if (number != 0 && number != 1) {
@@ -49,15 +60,13 @@ public class CreationHandler extends Thread{
                     networkState.setAdvancedRules(true);
                     cs.reset();
                 }
-                cs.setCreationPhaseEnded();
-                networkState.setCreationPhaseEnded(true);
                 break;
             }
         }
     }
 
     public void sendMessage(Headers header, String string) {
-        StringEvent evt = new StringEvent(this, string, header, networkState.getSocketByID(socketID));
+        StringEvent evt = new StringEvent(this, string, header, socketID.getSocket());
         for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
             event.eventPerformed(evt);
         }

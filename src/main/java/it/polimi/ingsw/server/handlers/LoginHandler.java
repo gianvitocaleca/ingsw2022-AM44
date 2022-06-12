@@ -48,22 +48,17 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
-    public boolean isMySocket(Socket socket) {
-        return this.socketId.getSocket().equals(socket);
-    }
-
     @Override
     public void run() {
-        //waits for the creation of the game
-        cs.getCreationPhaseEnded();
-
-        String username;
-        Color color;
-        Wizard wizard;
-
-        System.out.println("New client connected, starting to ask information");
-
         sendMessage(Headers.LOGIN, "");
+        usernameProvider();
+        colorProvider();
+        wizardProvider();
+        networkState.setLoginPhaseEnded();
+    }
+
+    private void usernameProvider(){
+        String username;
         sendMessage(Headers.loginMessage_Username, title + "Provide your username :");
 
         while (true) {
@@ -78,7 +73,10 @@ public class LoginHandler extends Thread implements EventListener {
                 break;
             }
         }
+    }
 
+    private void colorProvider(){
+        Color color;
         sendMessage(Headers.loginMessage_Color, "Choose a color : 1 White 2 Black 3 Gray");
 
         while (true) {
@@ -95,6 +93,10 @@ public class LoginHandler extends Thread implements EventListener {
                 break;
             }
         }
+    }
+
+    private void wizardProvider(){
+        Wizard wizard;
 
         sendMessage(Headers.loginMessage_Wizard, "Choose a wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji ");
 
@@ -113,9 +115,6 @@ public class LoginHandler extends Thread implements EventListener {
                 break;
             }
         }
-
-        networkState.setLoginPhaseEnded();
-
     }
 
     public void sendMessage(Headers header, String message) {
@@ -124,7 +123,5 @@ public class LoginHandler extends Thread implements EventListener {
             event.eventPerformed(evt);
         }
     }
-
-
 }
 

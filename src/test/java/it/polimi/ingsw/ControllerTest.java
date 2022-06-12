@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.server.enums.ServerPhases;
 import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Controller;
@@ -48,7 +49,7 @@ public class ControllerTest {
         SocketID socketID2 = new SocketID(2, new Socket());
         String player3 = "Sabrina";
         SocketID socketID3 = new SocketID(3, new Socket());
-        NetworkState state = new NetworkState();
+        NetworkState state = new NetworkState(ServerPhases.READY);
         state.addSocket(socketID1);
         state.addSocket(socketID2);
         state.addSocket(socketID3);
@@ -61,10 +62,9 @@ public class ControllerTest {
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
-        view = new MessageHandler();
-        view.setNetworkState(state);
+        view = new MessageHandler(state);
         controller = new Controller(gm, view, new GameStatus(GamePhases.PLANNING, false), state);
-        controller.start();
+        controller.startController();
     }
 
     /**

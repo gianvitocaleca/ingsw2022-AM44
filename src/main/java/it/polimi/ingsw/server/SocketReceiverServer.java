@@ -18,96 +18,102 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SocketReceiverServer {
-
+    private static NetworkState networkState;
+    private static MessageHandler messageHandler;
+    private static LoginState loginState;
+    private static CreationState creationState;
+    private static int id = 100;
+    private final GameStatus gameStatus;
     private final int port;
-    private final NetworkState networkState;
     private ServerSocket serverSocket;
-    private Socket socket;
-    private MessageHandler messageHandler;
-    private int id = 100;
-
-    private boolean gameStarted = false;
 
     public SocketReceiverServer(int port) {
         this.port = port;
-        this.networkState = new NetworkState();
-
+        networkState = new NetworkState(ServerPhases.READY);
+        messageHandler = new MessageHandler(networkState);
+        loginState = new LoginState();
+        messageHandler.setLoginState(loginState);
+        creationState = new CreationState();
+        messageHandler.setCreationState(creationState);
+        this.gameStatus = new GameStatus(GamePhases.PLANNING, false);
     }
 
     public void startServer() throws IOException {
-        //It creates a new socket for every new connection
-        //It disconnects the unnecessary sockets
-
         try {
             serverSocket = new ServerSocket(port);
+            System.out.println("Socket Receiver ready");
         } catch (IOException e) {
-            System.err.println(e.getMessage()); //port not available
+            System.err.println(e.getMessage());
             return;
         }
 
-        //the converts message objects to string and vice-versa.
-        messageHandler = new MessageHandler();
-
-        networkState.setServerPhase(ServerPhases.READY);
-
-        System.out.println("Socket Receiver ready");
-
-        messageHandler.setNetworkState(networkState);
-
-        LoginState loginState = new LoginState();
-        messageHandler.setLoginState(loginState);
-        CreationState cs = new CreationState();
-        messageHandler.setCreationState(cs);
-
-        GameStatus gameStatus = new GameStatus(GamePhases.PLANNING, false);
-        GameHandler gameHandler = new GameHandler(networkState, gameStatus, messageHandler);
-        Thread gameHandlerThread = new Thread(gameHandler);
+        Thread gameHandlerThread = new Thread(new GameHandler(networkState, gameStatus, messageHandler));
         gameHandlerThread.start();
 
-        while (true) {
-            try {
-                SocketID socketId;
-                do {
-                    //accept the incoming connection socket
-                    socket = serverSocket.accept();
-                    //create a new object, and link it to the id
-                    socketId = new SocketID(id, socket);
-                    if (networkState.getNumberOfConnectedSocket() >= networkState.getNumberOfPlayers()) {
-                        messageHandler.eventPerformed(new CloseConnectionEvent(socket));
-                        System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
-                    } else {
-                        //add the new object to the status list
-                        networkState.addSocket(socketId);
-                        System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket());
-                        Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
-                        t2.start();
-
-                        switch (networkState.getServerPhase()) {
-                            case READY:
-                                networkState.setServerPhase(ServerPhases.LOGIN);
-                                System.out.println("Starting Creation");
-                                //class that
-                                CreationHandler creator = new CreationHandler(networkState, messageHandler, cs, id);
-                                creator.start();
-                            case LOGIN:
-                                System.out.println("Starting Login for player " + id);
-                                LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, cs);
-                                Thread t = new Thread(login);
-                                t.start();
-                            case GAME:
-                                System.out.println("Game started for player " + id);
-                        }
-
-                        id++;
-                    }
-                } while (!networkState.getServerPhase().equals(ServerPhases.GAME));
-
-            } catch (IOException e) {
-                break;
-            }
-        }
+        acceptConnections();
 
         serverSocket.close();
+    }
+
+    private void acceptConnections() throws IOException {
+        SocketID socketId;
+        while(true){
+            Socket socket = serverSocket.accept();
+            //create a new object, and link it to the id
+            socketId = new SocketID(id, socket);
+            networkState.addSocket(socketId);
+            System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket());
+            Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
+            t2.start();
+            SocketID finalSocketId = socketId;
+            Thread clientHandler = new Thread(()->clientHandler(finalSocketId));
+            clientHandler.start();
+            id++;
+        }
+
+    }
+
+    private void clientHandler(SocketID socketId){
+        boolean isKicked = false;
+        while (!isKicked){
+            try {
+                if(socketId.isNeedsReplacement()){
+                    System.out.println(networkState.getServerPhase());
+                    switch (networkState.getServerPhase()) {
+                        case READY:
+                            networkState.setServerPhase(ServerPhases.CREATION);
+                            System.out.println("Starting Creation");
+                            socketId.setNeedsReplacement(false);
+                            CreationHandler creator = new CreationHandler(networkState, messageHandler, creationState, socketId);
+                            creator.start();
+                            break;
+                        case WAITING:
+                            networkState.reconnectPlayer(socketId);
+                            System.out.println("Re-connected player");
+                            //showmodel per il player nuovo.
+                            break;
+                        case LOGIN:
+                            if(networkState.getNumberOfConnectedSocket()<= networkState.getNumberOfPlayers()){
+                                System.out.println("Starting Login for player " + id);
+                                socketId.setNeedsReplacement(false);
+                                LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, creationState);
+                                Thread t = new Thread(login);
+                                t.start();
+                                break;
+                            }
+                        case CREATION:
+                        case GAME:
+                            messageHandler.eventPerformed(new CloseConnectionEvent(socketId.getSocket()));
+                            networkState.disconnectSocketId(socketId.getId());
+                            System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
+                            isKicked = true;
+                    }
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 
 }

@@ -34,7 +34,7 @@ public class GameHandler implements Runnable{
                 color, wizards);
         messageHandler.setNetworkState(networkState);
         Controller controller = new Controller(model, messageHandler, gameStatus, networkState);
-        controller.start();
+        controller.startController();
         System.out.println("Game is starting");
     }
 }

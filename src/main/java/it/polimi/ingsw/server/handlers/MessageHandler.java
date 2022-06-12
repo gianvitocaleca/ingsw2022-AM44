@@ -35,8 +35,9 @@ public class MessageHandler implements EventListener {
     private CreationState creationState;
 
 
-    public MessageHandler() {
+    public MessageHandler(NetworkState state) {
         gson = new Gson();
+        setNetworkState(state);
     }
 
     public void setLoginState(LoginState loginState) {

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.states;
 
 import it.polimi.ingsw.server.PlayerInfo;
+import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.enums.ServerPhases;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.model.enums.Color;
@@ -18,18 +19,15 @@ public class NetworkState {
     private int loginPhaseEnded = 0;
     private boolean creationPhaseEnded = false;
 
-    public NetworkState() {
+    public NetworkState(ServerPhases phase) {
         socketIDList = new ArrayList<>();
         this.numberOfPlayers = 1;
         this.advancedRules = false;
+        setServerPhase(phase);
     }
 
     public synchronized boolean isCreationPhaseEnded() {
         return creationPhaseEnded;
-    }
-
-    public synchronized void setCreationPhaseEnded(boolean creationPhaseEnded) {
-        this.creationPhaseEnded = creationPhaseEnded;
     }
 
     public synchronized void setLoginPhaseEnded() {
@@ -53,16 +51,6 @@ public class NetworkState {
 
     public List<SocketID> getSocketIDList() {
         return socketIDList;
-    }
-
-    public List<SocketID> getDisconnectedSocketIDs(){
-        List<SocketID> temp = new ArrayList<>();
-        for(SocketID s : socketIDList){
-            if(!s.isConnected()){
-                temp.add(s);
-            }
-        }
-        return temp;
     }
 
     public List<PlayerInfo> getConnectedPlayerInfo(){
@@ -119,15 +107,6 @@ public class NetworkState {
         return false;
     }
 
-    public synchronized boolean isUsernameTaken(String username) {
-        for (SocketID s : socketIDList) {
-            if (s.getPlayerInfo().getUsername().equals(username)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public synchronized int getNumberOfConnectedSocket() {
         return socketIDList.stream().filter(SocketID::isConnected).toList().size();
     }
@@ -162,14 +141,30 @@ public class NetworkState {
                 s.setConnected(false);
             }
         }
-        if(!(serverPhase.equals(ServerPhases.LOGIN))){
-            serverPhase=ServerPhases.WAITING;
-        }else{
-            if(!isCreationPhaseEnded()){
-                setServerPhase(ServerPhases.READY);
+       if(serverPhase.equals(ServerPhases.GAME)){
+           serverPhase = ServerPhases.WAITING;
+       }
+
+    }
+
+    public synchronized void disconnectSocketId(int id) {
+        for (SocketID s : socketIDList) {
+            if (s.getId()==id) {
+               socketIDList.remove(s);
             }
         }
+    }
 
+    public synchronized void reconnectPlayer(SocketID socketID){
+        for (SocketID s : socketIDList) {
+            if (!s.isConnected()) {
+                s.setSocket(socketID.getSocket());
+                s.setConnected(true);
+            }
+        }
+        if(getNumberOfConnectedSocket()==numberOfPlayers){
+            serverPhase = ServerPhases.GAME;
+        }
     }
 
     public synchronized void addSocket(SocketID socketID) {

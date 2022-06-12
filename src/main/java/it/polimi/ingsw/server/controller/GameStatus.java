@@ -10,7 +10,7 @@ public class GameStatus {
     private boolean waitingForParameters = false;
     private String currentPlayerUsername;
     private int numberOfStudentsMoved = 0;
-    private boolean advancedRules = false;
+    private boolean advancedRules;
 
     public GameStatus(GamePhases phase, boolean advancedRules) {
         this.phase = phase;
