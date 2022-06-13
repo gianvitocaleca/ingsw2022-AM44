@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
+import it.polimi.ingsw.server.controller.Listeners.ReconnectionListener;
+import it.polimi.ingsw.server.model.exceptions.*;
 import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
@@ -11,9 +11,6 @@ import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
-import it.polimi.ingsw.server.model.exceptions.CloudAlreadySelectedException;
-import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
 import it.polimi.ingsw.server.model.gameboard.Table;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
@@ -44,6 +41,7 @@ public class Controller {
     private MessageHandler messageHandler;
     private GameStatus currentGameStatus;
     private boolean currentPlayerPlayedCharacter = false;
+    private boolean gamePaused = false;
 
     private NetworkState networkState;
 
@@ -56,6 +54,7 @@ public class Controller {
 
         this.messageHandler.addListener(new ActionPhaseListener(this));
         this.messageHandler.addListener(new PlanningPhaseListener(this));
+        this.messageHandler.addListener(new ReconnectionListener(this));
         this.model.addListener(messageHandler);
 
         currentGameStatus = gameStatus;
@@ -66,7 +65,7 @@ public class Controller {
 
     }
 
-    public void startController() {
+    public void startController() throws PausedException {
         updateCurrentPlayer();
 
         ShowModelPayload modelUpdate = model.showModelPayloadCreator();
@@ -86,6 +85,23 @@ public class Controller {
         }
     }
 
+    public void reconnection(SocketID socketID){
+        ShowModelPayload showModelPayload = model.showModelPayloadCreator();
+        showModelPayload.setUpdateAll();
+        messageHandler.eventPerformed(new ShowModelEvent(this,showModelPayload),socketID);
+    }
+
+    public void resumeGame(){
+        if(messageHandler.resumeGame()){
+            try {
+                updateCurrentPlayer();
+                sendPhaseMessage(currentGameStatus.getPhase().getHeader());
+            } catch (PausedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     /**
      * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
      * the winner of the game
@@ -99,10 +115,24 @@ public class Controller {
         return false;
     }
 
-    private void updateCurrentPlayer() {
-        Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
-        currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
-        currentPlayerPlayedCharacter = false;
+    private void updateCurrentPlayer() throws PausedException {
+        if(networkState.getNumberOfConnectedSocket()>1){
+            Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
+            while(!networkState.isPlayerConnected(curr.getUsername())){
+                boolean isLast = model.getCurrentPlayerIndex()==model.getNumberOfPlayers()-1;
+                model.findNextPlayer();
+                if (isLast && currentGameStatus.getPhase().equals(GamePhases.PLANNING)){
+                    currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
+                }else if(isLast){
+                    currentGameStatus.setPhase(GamePhases.PLANNING);
+                }
+            }
+            currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
+            currentPlayerPlayedCharacter = false;
+        }else{
+            messageHandler.pauseGame();
+            throw new PausedException();
+        }
     }
 
     private void sendWinnerPlayerMessage(Player winner) {
@@ -110,7 +140,6 @@ public class Controller {
     }
 
     private void sendPhaseMessage(Headers phase) {
-        checkPlayerConnected();
         if (phase.equals(Headers.action)) {
             if (currentGameStatus.getPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
                 messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
@@ -209,16 +238,25 @@ public class Controller {
             if (!(model.playAssistant(indexOfAssistant))) {
                 sendErrorMessage("Non existent assistant, play another one");
             } else {
-                updateCurrentPlayer();
-                sendPhaseMessage(Headers.planning);
+                try{
+                    updateCurrentPlayer();
+                    sendPhaseMessage(currentGameStatus.getPhase().getHeader());
+                }catch (PausedException e){
+                    System.out.println("Game paused");
+                }
             }
         } catch (AssistantAlreadyPlayedException a) {
             sendErrorMessage("Already played assistant, play another one");
         } catch (PlanningPhaseEndedException p) {
             model.establishRoundOrder();
             currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
-            updateCurrentPlayer();
-            sendPhaseMessage(Headers.action);
+            try {
+                updateCurrentPlayer();
+                sendPhaseMessage(currentGameStatus.getPhase().getHeader());
+            } catch (PausedException e){
+                System.out.println("Game paused");
+            }
+
         } catch (GameEndedException e) {
             if (model.checkEndGame()) {
                 sendWinnerPlayerMessage(model.findWinner());
@@ -307,13 +345,23 @@ public class Controller {
                 if (currentPlayerIndex == model.getNumberOfPlayers() - 1) {
                     if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(GamePhases.PLANNING);
-                        updateCurrentPlayer();
-                        sendPhaseMessage(Headers.planning);
+                        try{
+                            updateCurrentPlayer();
+                            sendPhaseMessage(currentGameStatus.getPhase().getHeader());
+                        }catch (PausedException e){
+                            System.out.println("Game paused");
+                        }
+
                     }
                 } else {
                     currentGameStatus.setPhase(GamePhases.ACTION_STUDENTSMOVEMENT);
-                    updateCurrentPlayer();
-                    sendPhaseMessage(Headers.action);
+                    try {
+                        updateCurrentPlayer();
+                        sendPhaseMessage(currentGameStatus.getPhase().getHeader());
+                    }catch (PausedException e){
+                        System.out.println("Game paused");
+                    }
+
                 }
             }
         } catch (CloudAlreadySelectedException e) {

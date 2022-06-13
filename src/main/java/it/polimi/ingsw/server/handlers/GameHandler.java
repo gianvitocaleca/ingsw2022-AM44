@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.handlers;
 
+import it.polimi.ingsw.server.enums.ServerPhases;
+import it.polimi.ingsw.server.model.exceptions.PausedException;
 import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.PlayerInfo;
 import it.polimi.ingsw.server.controller.Controller;
@@ -34,7 +36,12 @@ public class GameHandler implements Runnable{
                 color, wizards);
         messageHandler.setNetworkState(networkState);
         Controller controller = new Controller(model, messageHandler, gameStatus, networkState);
-        controller.startController();
-        System.out.println("Game is starting");
+        try {
+            controller.startController();
+            System.out.println("Game is starting");
+        } catch (PausedException e) {
+            System.out.println("Game Aborted because of no players");
+        }
+
     }
 }

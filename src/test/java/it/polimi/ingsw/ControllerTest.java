@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.server.enums.ServerPhases;
+import it.polimi.ingsw.server.model.exceptions.PausedException;
 import it.polimi.ingsw.server.states.NetworkState;
 import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Controller;
@@ -42,7 +43,7 @@ public class ControllerTest {
      * This create a new GameModel instance to use in every test
      */
     @BeforeEach
-    public void createGame() {
+    public void createGame() throws PausedException {
         String player1 = "Paolo";
         SocketID socketID1 = new SocketID(1, new Socket());
         String player2 = "Gianvito";

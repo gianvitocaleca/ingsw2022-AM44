@@ -1,14 +1,26 @@
 package it.polimi.ingsw.server.controller.enums;
 
+import it.polimi.ingsw.server.networkMessages.Headers;
+
 public enum GamePhases {
-    CREATION_NUMBER_OF_PLAYERS,
-    CREATION_RULES,
-    LOGIN_USERNAME,
-    LOGIN_COLOR,
-    LOGIN_WIZARD,
-    PLANNING,
-    ACTION_STUDENTSMOVEMENT,
-    ACTION_MOVEMOTHERNATURE,
-    ACTION_CLOUDCHOICE,
-    ACTION_PLAYED_CHARACTER
+    CREATION_NUMBER_OF_PLAYERS(Headers.creationRequirementMessage_NumberOfPlayers),
+    CREATION_RULES(Headers.creationRequirementMessage_TypeOfRules),
+    LOGIN_USERNAME(Headers.loginMessage_Username),
+    LOGIN_COLOR(Headers.loginMessage_Color),
+    LOGIN_WIZARD(Headers.loginMessage_Wizard),
+    PLANNING(Headers.planning),
+    ACTION_STUDENTSMOVEMENT(Headers.action),
+    ACTION_MOVEMOTHERNATURE(Headers.action),
+    ACTION_CLOUDCHOICE(Headers.action),
+    ACTION_PLAYED_CHARACTER(Headers.action);
+
+    Headers header;
+
+    GamePhases(Headers header) {
+        this.header = header;
+    }
+
+    public Headers getHeader() {
+        return header;
+    }
 }

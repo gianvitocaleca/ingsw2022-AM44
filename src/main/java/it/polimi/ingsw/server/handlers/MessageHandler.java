@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.polimi.ingsw.server.SocketID;
 import it.polimi.ingsw.server.controller.Listeners.ActionPhaseListener;
 import it.polimi.ingsw.server.controller.Listeners.PlanningPhaseListener;
+import it.polimi.ingsw.server.controller.Listeners.ReconnectionListener;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.events.*;
 import it.polimi.ingsw.server.model.enums.Color;
@@ -33,6 +35,7 @@ public class MessageHandler implements EventListener {
 
     private LoginState loginState;
     private CreationState creationState;
+    private boolean gamePaused = false;
 
 
     public MessageHandler(NetworkState state) {
@@ -55,6 +58,9 @@ public class MessageHandler implements EventListener {
 
     public void addListener(PlanningPhaseListener listener) {
         listeners.add(PlanningPhaseListener.class, listener);
+    }
+    public void addListener(ReconnectionListener listener) {
+        listeners.add(ReconnectionListener.class, listener);
     }
 
     public void addListener(ActionPhaseListener listener) {
@@ -89,6 +95,11 @@ public class MessageHandler implements EventListener {
     public void eventPerformed(BroadcastEvent evt) {
         message = gson.toJson(new Message(evt.getHeader(), new StringPayload(evt.getMessage())));
         mss.sendBroadcastMessage(message);
+    }
+
+    public void eventPerformed(ShowModelEvent evt,SocketID socketID){
+        message = gson.toJson(new Message(Headers.showModelMessage,evt.getPayload()));
+        mss.sendMessage(message, socketID.getSocket());
     }
 
     public synchronized void eventPerformed(MessageReceivedEvent evt, Socket sourceSocket) {
@@ -164,6 +175,7 @@ public class MessageHandler implements EventListener {
     }
 
     public void creationMessageReceiver(int num) {
+        if(gamePaused) return;
         if (creationState.getPhase().equals(GamePhases.CREATION_NUMBER_OF_PLAYERS)) {
             creationState.setNumberOfPlayers(num);
         } else if (creationState.getPhase().equals(GamePhases.CREATION_RULES)) {
@@ -172,6 +184,7 @@ public class MessageHandler implements EventListener {
     }
 
     public void loginMessageReceiver(Socket socket, LoginPayload loginPayload, GamePhases gamePhases) {
+        if(gamePaused) return;
         switch (gamePhases) {
             case LOGIN_USERNAME:
                 loginState.setUsername(socket, loginPayload.getString());
@@ -229,33 +242,54 @@ public class MessageHandler implements EventListener {
     }
 
     public void playAssistantReceiver(PlanningEvent evt) {
+        if(gamePaused) return;
         for (PlanningPhaseListener event : listeners.getListeners(PlanningPhaseListener.class)) {
             event.eventPerformed(evt);
         }
     }
 
     public void playCharacterReceiver(PlayCharacterEvent evt) {
+        if(gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
             event.eventPerformed(evt);
         }
     }
 
     public void characterParametersReceiver(CharacterParametersEvent evt) {
+        if(gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
             event.eventPerformed(evt);
         }
     }
 
     public void moveStudentsReceiver(MoveStudentsEvent evt) {
+        if(gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
             event.eventPerformed(evt);
         }
     }
 
     public void integerEventReceiver(IntegerEvent evt) {
+        if(gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
             event.eventPerformed(evt);
         }
     }
 
+    public void userReconnectedReceiver(ReconnectedEvent evt){
+        for (ReconnectionListener event : listeners.getListeners(ReconnectionListener.class)) {
+            event.eventPerformed(evt);
+        }
+    }
+
+    public void pauseGame() {
+        this.gamePaused = true;
+    }
+    public boolean resumeGame() {
+        if(gamePaused){
+            gamePaused = false;
+            return true;
+        }
+        return false;
+    }
 }

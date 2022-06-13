@@ -1,24 +1,24 @@
 package it.polimi.ingsw.server.controller.events;
 
-import it.polimi.ingsw.server.networkMessages.payloads.Payload;
+import it.polimi.ingsw.server.SocketID;
 
 import java.util.EventObject;
 
-public class ShowModelEvent extends EventObject {
+public class ReconnectedEvent extends EventObject {
 
-    private Payload payload;
+    private SocketID socketID;
     /**
      * Constructs a prototypical Event.
      *
      * @param source the object on which the Event initially occurred
      * @throws IllegalArgumentException if source is null
      */
-    public ShowModelEvent(Object source, Payload payload) {
+    public ReconnectedEvent(Object source,SocketID socketID) {
         super(source);
-        this.payload=payload;
+        this.socketID = socketID;
     }
 
-    public Payload getPayload() {
-        return payload;
+    public SocketID getSocketID() {
+        return socketID;
     }
 }

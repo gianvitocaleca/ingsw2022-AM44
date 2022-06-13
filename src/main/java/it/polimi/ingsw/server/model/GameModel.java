@@ -200,17 +200,21 @@ public class GameModel implements Playable {
         table.setClouds(clouds);
         players.get(currentPlayerIndex).setEntrance(currentPlayerEntrance);
 
-        if (currentPlayerIndex < numberOfPlayers - 1) {
-            currentPlayerIndex++;
-        } else {
-            currentPlayerIndex = 0;
-        }
+        findNextPlayer();
         postmanMovements = 0;
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdateClouds();
         payload.setUpdatePlayersEntrance();
         showModel(payload);
         return true;
+    }
+
+    public void findNextPlayer(){
+        if (currentPlayerIndex < numberOfPlayers - 1) {
+            currentPlayerIndex++;
+        } else {
+            currentPlayerIndex = 0;
+        }
     }
 
     public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException, GameEndedException {
@@ -235,11 +239,13 @@ public class GameModel implements Playable {
         ShowModelPayload modelUpdate = showModelPayloadCreator();
         modelUpdate.setUpdatePlayersAssistant();
         showModel(modelUpdate);
-        if (currentPlayerIndex < numberOfPlayers - 1) {
-            currentPlayerIndex++;
-        } else {
-            if (players.get(currentPlayerIndex).getAssistantDeck().size() == 0) {
-                throw new GameEndedException();
+
+        findNextPlayer();
+        if(currentPlayerIndex==0){
+            for(Player p: players){
+                if (p.getAssistantDeck().size() == 0) {
+                    throw new GameEndedException();
+                }
             }
             throw new PlanningPhaseEndedException();
         }

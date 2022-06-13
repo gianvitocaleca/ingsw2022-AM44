@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.server.controller.GameStatus;
 import it.polimi.ingsw.server.controller.enums.GamePhases;
 import it.polimi.ingsw.server.controller.events.CloseConnectionEvent;
+import it.polimi.ingsw.server.controller.events.ReconnectedEvent;
 import it.polimi.ingsw.server.enums.ServerPhases;
 import it.polimi.ingsw.server.handlers.CreationHandler;
 import it.polimi.ingsw.server.handlers.GameHandler;
@@ -90,7 +91,7 @@ public class SocketReceiverServer {
                         case WAITING:
                             networkState.reconnectPlayer(socketId);
                             System.out.println("Re-connected player");
-                            //showmodel per il player nuovo.
+                            messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketId));
                             break;
                         case LOGIN:
                             if(networkState.getNumberOfConnectedSocket()<= networkState.getNumberOfPlayers()){
@@ -103,7 +104,7 @@ public class SocketReceiverServer {
                             }
                         case CREATION:
                         case GAME:
-                            messageHandler.eventPerformed(new CloseConnectionEvent(socketId.getSocket()));
+                            messageHandler.eventPerformed(new CloseConnectionEvent(this,socketId.getSocket()));
                             networkState.disconnectSocketId(socketId.getId());
                             System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
                             isKicked = true;
