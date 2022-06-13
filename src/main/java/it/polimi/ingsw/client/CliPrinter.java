@@ -12,7 +12,6 @@ import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.server.model.students.Student;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,8 @@ public class CliPrinter {
     private final int cloudStringLength = 5;
     private final int characterStringLength = 3;
     private final int costStringLength = 8;
+    private int islandStringPadding = 2;
+    private int tempStringPadding;
     private StringBuilder top;
     private StringBuilder titles;
     private StringBuilder middle;
@@ -58,6 +59,9 @@ public class CliPrinter {
     private StringBuilder contents;
     private StringBuilder bottom;
 
+    /**
+     * Changes the characters and colors based on the OS
+     */
     public CliPrinter() {
         if (!OS.isWindows()) {
             horizontal = CliColors.FG_BORDER.getCode() + horizontal + CliColors.RST.getCode();
@@ -77,9 +81,16 @@ public class CliPrinter {
             cloud = CliColors.FG_CYAN.getCode() + "☁" + CliColors.RST.getCode();
             realCreatureStringLength = 11;
             islandStringLength = 16;
+            islandStringPadding = 5;
         }
+        tempStringPadding = islandStringPadding;
     }
 
+    /**
+     * Prints a box with the title and content for every player
+     *
+     * @param modelPayload is used to determine the contents
+     */
     public void printPlayers(ShowModelPayload modelPayload) {
         for (Player p : modelPayload.getPlayersList()) {
             top = new StringBuilder();
@@ -108,6 +119,13 @@ public class CliPrinter {
         }
     }
 
+    /**
+     * Creates a section for the player
+     *
+     * @param givenTitle   is the section's title
+     * @param givenContent is the section's content
+     * @param section      determines the section position
+     */
     private void createPlayerSection(String givenTitle, String givenContent, Section section) {
         boolean longerTitle = givenTitle.length() > givenContent.length();
 
@@ -178,8 +196,14 @@ public class CliPrinter {
 
     }
 
+    /**
+     * Creates a string that contains the number of creatures
+     *
+     * @param container is where the creatures are
+     * @return is the string ready to be printed
+     */
     private String createCreatureString(StudentContainer container) {
-
+        tempStringPadding = islandStringPadding;
         StringBuilder creatureString = new StringBuilder();
         Map<Creature, Integer> counter = new HashMap<>();
         for (Creature c : Creature.values()) {
@@ -189,7 +213,13 @@ public class CliPrinter {
         for (Creature c : creatures) {
             counter.put(c, counter.get(c) + 1);
         }
-
+        for (Creature c : Creature.values()) {
+            if (counter.get(c) > 9) {
+                if (tempStringPadding != 0) {
+                    tempStringPadding--;
+                }
+            }
+        }
         if (OS.isWindows()) {
             creatureStringFormatterWin(creatureString, counter);
         } else {
@@ -199,6 +229,12 @@ public class CliPrinter {
         return creatureString.toString();
     }
 
+    /**
+     * Creates a string that contains the number of creatures
+     *
+     * @param creatures is the list of creatures
+     * @return is the string ready to be printed
+     */
     private String createCreatureString(List<Creature> creatures) {
         StringBuilder creatureString = new StringBuilder();
         Map<Creature, Integer> counter = new HashMap<>();
@@ -218,6 +254,12 @@ public class CliPrinter {
         return creatureString.toString();
     }
 
+    /**
+     * Creates a string that contains the professors of the player
+     *
+     * @param professors is the list of professors
+     * @return is the string ready to be printed
+     */
     private String createProfessorString(List<Professor> professors) {
         StringBuilder professorString = new StringBuilder();
         Map<Creature, Integer> counter = new HashMap<>();
@@ -239,6 +281,12 @@ public class CliPrinter {
         return professorString.toString();
     }
 
+    /**
+     * Formats the string with colors
+     *
+     * @param stringBuilder where the string is being built
+     * @param counter       the map that contains the creatures counter
+     */
     private void creatureStringFormatter(StringBuilder stringBuilder, Map<Creature, Integer> counter) {
         stringBuilder.append(space);
         stringBuilder.append(CliColors.FG_RED.getCode());
@@ -263,6 +311,12 @@ public class CliPrinter {
         stringBuilder.append(space);
     }
 
+    /**
+     * Formats the string with letters
+     *
+     * @param stringBuilder where the string is being built
+     * @param counter       the map that contains the creatures counter
+     */
     private void creatureStringFormatterWin(StringBuilder stringBuilder, Map<Creature, Integer> counter) {
         stringBuilder.append(space);
         stringBuilder.append(creatureToCli(Creature.RED_DRAGONS));
@@ -282,6 +336,9 @@ public class CliPrinter {
         stringBuilder.append(space);
     }
 
+    /**
+     * Matches the creature with a letter
+     */
     private String creatureToCli(Creature creature) {
         switch (creature) {
             case RED_DRAGONS:
@@ -299,6 +356,11 @@ public class CliPrinter {
         }
     }
 
+    /**
+     * Prints all the islands inside their own box
+     *
+     * @param modelPayload is used to determine the contents
+     */
     public void printIslands(ShowModelPayload modelPayload) {
         top = new StringBuilder();
         middle = new StringBuilder();
@@ -308,11 +370,7 @@ public class CliPrinter {
         int j = 0;
         int motherNaturePosition = modelPayload.getMotherNature();
         for (Island i : modelPayload.getIslands()) {
-            if (motherNaturePosition == j) {
-                createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), true, createCreatureString(i));
-            } else {
-                createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), false, createCreatureString(i));
-            }
+            createIsland(j + 1, i.getNumberOfTowers(), i.getColorOfTowers(), i.getNumberOfNoEntries(), (motherNaturePosition == j), createCreatureString(i));
             if ((j + 1) == (modelPayload.getIslands().size() / 2) + (modelPayload.getIslands().size() % 2)
                     || (j + 1) == modelPayload.getIslands().size()) {
                 System.out.println(top);
@@ -329,12 +387,17 @@ public class CliPrinter {
 
     }
 
+    /**
+     * Creates the box of the island with its contents
+     */
     private void createIsland(int index, int towers, Color color, int noEntry, boolean hasMotherNature, String creatures) {
         top.append(topLeft);
         middle.append(vertical);
         middle.append(space);
         secondMiddle.append(vertical);
-        secondMiddle.append(space);
+        if (OS.isWindows() && tempStringPadding > 0) {
+            secondMiddle.append(space);
+        }
         bottom.append(bottomLeft);
 
         for (int i = 0; i < islandStringLength; i++) {
@@ -397,17 +460,22 @@ public class CliPrinter {
 
         secondMiddle.append(creatures);
         if (!OS.isWindows()) {
-            secondMiddle.append(space);
-            secondMiddle.append(space);
+            for (int i = 0; i < tempStringPadding; i++) {
+                secondMiddle.append(space);
+            }
+        }
+        if (OS.isWindows() && tempStringPadding > 1) {
             secondMiddle.append(space);
         }
-        secondMiddle.append(space);
         secondMiddle.append(vertical);
 
         top.append(topRight);
         bottom.append(bottomRight);
     }
 
+    /**
+     * Matches the color with a letter
+     */
     private String colorToCli(Color color) {
         switch (color) {
             case WHITE:
@@ -421,6 +489,11 @@ public class CliPrinter {
         }
     }
 
+    /**
+     * Prints all the clouds inside their own box
+     *
+     * @param modelPayload is used to determine the contents
+     */
     public void printClouds(ShowModelPayload modelPayload) {
         top = new StringBuilder();
         middle = new StringBuilder();
@@ -436,6 +509,9 @@ public class CliPrinter {
         System.out.println(bottom);
     }
 
+    /**
+     * Creates the box of the cloud with its contents
+     */
     private void createCloud(int index, String creatures) {
         top.append(topLeft);
         middle.append(vertical);
@@ -470,6 +546,11 @@ public class CliPrinter {
         bottom.append(bottomRight);
     }
 
+    /**
+     * Prints all the characters and their information
+     *
+     * @param modelPayload is used to determine the contents
+     */
     public void printTable(ShowModelPayload modelPayload) {
         top = new StringBuilder();
         middle = new StringBuilder();
@@ -484,6 +565,9 @@ public class CliPrinter {
         System.out.println(bottom);
     }
 
+    /**
+     * Creates the box of the character with its contents
+     */
     private void createCharacter(int index, Name name, int cost, ShowModelPayload modelPayload) {
         top.append(topLeft);
         middle.append(vertical);
