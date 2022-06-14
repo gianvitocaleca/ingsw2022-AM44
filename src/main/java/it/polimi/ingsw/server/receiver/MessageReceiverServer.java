@@ -32,13 +32,14 @@ public class MessageReceiverServer extends Thread {
     private final int pingTime = 10000;
     private final int maxNoAnswers = 4;
 
-    public MessageReceiverServer(SocketID socketId, MessageHandler listener, GameStatus gameStatus, NetworkState networkState) {
+    public MessageReceiverServer(SocketID socketId, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
         this.socketId = socketId;
-        listeners.add(MessageHandler.class, listener);
+        listeners.add(MessageHandler.class, messageHandler);
         this.gameStatus = gameStatus;
         this.networkState = networkState;
         pingState = new PingState();
         serverPingHandler = new ServerPingHandler(pingState, networkState, socketId, pingTime, maxNoAnswers);
+        serverPingHandler.addListener(messageHandler);
         try {
             in = new Scanner(socketId.getSocket().getInputStream());
         } catch (IOException e) {

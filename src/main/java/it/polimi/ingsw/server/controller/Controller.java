@@ -115,7 +115,7 @@ public class Controller {
         return false;
     }
 
-    private void updateCurrentPlayer() throws PausedException {
+    public void updateCurrentPlayer() throws PausedException {
         if(networkState.getNumberOfConnectedSocket()>1){
             Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
             while(!networkState.isPlayerConnected(curr.getUsername())){
@@ -139,7 +139,7 @@ public class Controller {
         messageHandler.eventPerformed(new BroadcastEvent(this, winner.getUsername(), Headers.winnerPlayer));
     }
 
-    private void sendPhaseMessage(Headers phase) {
+    public void sendPhaseMessage(Headers phase) {
         if (phase.equals(Headers.action)) {
             if (currentGameStatus.getPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
                 messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
@@ -163,18 +163,6 @@ public class Controller {
             messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
-    }
-
-    private void checkPlayerConnected(){
-        if(model.getNumberOfPlayers()==3){
-            int playersConnected = networkState.getNumberOfConnectedPlayers();
-            if(!(playersConnected == model.getNumberOfPlayers())){
-                if(!networkState.isPlayerConnected(currentGameStatus.getCurrentPlayerUsername()) &&
-                    !(playersConnected == MIN_NUMBER_OF_PLAYERS)){
-                    model.setCurrentPlayerIndex(findNextPlayer(currentGameStatus.getCurrentPlayerUsername()));
-                }
-            }
-        }
     }
 
     private int findNextPlayer(String username){

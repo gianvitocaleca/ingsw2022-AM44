@@ -53,26 +53,25 @@ public abstract class AbstractReceiver extends Thread {
         ActionPayload actionPayload;
         CharacterPlayedPayload charPayload;
         ReconnectionPayload reconnectionPayload;
+        cs.setDisconnection(header);
 
         switch (header) {
             case closeConnection:
                 System.out.println("Connection refused");
-                cs.setDisconnection(header);
             case showModelMessage:
                 setShowModel(gson.fromJson(jsonPayload, ShowModelPayload.class));
                 break;
             case loginMessage_Username:
-                cs.setDisconnection(header);
             case loginMessage_Color:
             case loginMessage_Wizard:
             case creationRequirementMessage_NumberOfPlayers:
-                cs.setDisconnection(header);
             case creationRequirementMessage_TypeOfRules:
             case errorMessage:
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 stringMessage(header, stringPayload);
                 break;
             case planning:
+                System.out.println("Sono l'abstract rec e sono in planning");
                 printModel();
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 cs.getModelPayload().setCurrentPlayerUsername(stringPayload.getString());
@@ -122,6 +121,7 @@ public abstract class AbstractReceiver extends Thread {
             case reconnection:
                 reconnectionPayload = gson.fromJson(jsonPayload, ReconnectionPayload.class);
                 reconnectPlayer(reconnectionPayload);
+                System.out.println("Mi sono riconnesso e il mio username è : " +reconnectionPayload.getUsername() );
         }
     }
 

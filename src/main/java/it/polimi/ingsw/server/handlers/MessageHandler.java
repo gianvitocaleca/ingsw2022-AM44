@@ -289,6 +289,12 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    public void eventPerformed(DisconnectionEvent evt){
+        for (ReconnectionListener event : listeners.getListeners(ReconnectionListener.class)) {
+            event.eventPerformed(evt);
+        }
+    }
+
     public void pauseGame() {
         this.gamePaused = true;
     }

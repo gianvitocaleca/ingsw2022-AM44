@@ -17,6 +17,7 @@ import it.polimi.ingsw.server.states.NetworkState;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Optional;
 
 public class SocketReceiverServer {
     private static NetworkState networkState;
@@ -89,9 +90,14 @@ public class SocketReceiverServer {
                             creator.start();
                             break;
                         case WAITING:
-                            networkState.reconnectPlayer(socketId);
+                            Optional<SocketID> socketIDOptional = networkState.reconnectPlayer(socketId);
                             System.out.println("Re-connected player");
-                            messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketId, socketId.getPlayerInfo().getUsername() ));
+                            if(socketIDOptional.isPresent()){
+                                messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketIDOptional.get()));
+                                socketId.setNeedsReplacement(false);
+                            }else{
+                                System.out.println("Tried to reconnect when all players are present.");
+                            }
                             break;
                         case LOGIN:
                             if(networkState.getNumberOfConnectedSocket()<= networkState.getNumberOfPlayers()){

@@ -4,16 +4,17 @@ import it.polimi.ingsw.server.SocketID;
 
 import java.util.EventObject;
 
-public class ReconnectedEvent extends EventObject {
+public class DisconnectionEvent extends EventObject {
 
     private SocketID socketID;
+
     /**
      * Constructs a prototypical Event.
      *
      * @param source the object on which the Event initially occurred
      * @throws IllegalArgumentException if source is null
      */
-    public ReconnectedEvent(Object source,SocketID socketID) {
+    public DisconnectionEvent(Object source, SocketID socketID) {
         super(source);
         this.socketID = socketID;
     }
@@ -21,5 +22,4 @@ public class ReconnectedEvent extends EventObject {
     public SocketID getSocketID() {
         return socketID;
     }
-    public String getUsername(){ return socketID.getPlayerInfo().getUsername(); }
 }

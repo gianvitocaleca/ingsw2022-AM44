@@ -144,23 +144,23 @@ public class NetworkState {
     }
 
     public synchronized void disconnectSocketId(int id) {
-        for (SocketID s : socketIDList) {
-            if (s.getId()==id) {
-               socketIDList.remove(s);
-            }
-        }
+        socketIDList.removeIf(s -> s.getId() == id);
     }
 
-    public synchronized void reconnectPlayer(SocketID socketID){
+    public synchronized Optional<SocketID> reconnectPlayer(SocketID socketID){
+        Optional<SocketID> socketIDOptional = Optional.empty();
         for (SocketID s : socketIDList) {
             if (!s.isConnected()) {
                 s.setSocket(socketID.getSocket());
                 s.setConnected(true);
+                if(getNumberOfConnectedSocket()==numberOfPlayers){
+                    serverPhase = ServerPhases.GAME;
+                }
+                socketIDOptional = Optional.of(s);
             }
         }
-        if(getNumberOfConnectedSocket()==numberOfPlayers){
-            serverPhase = ServerPhases.GAME;
-        }
+        disconnectSocketId(socketID.getId());
+        return socketIDOptional;
     }
 
     public synchronized void addSocket(SocketID socketID) {
