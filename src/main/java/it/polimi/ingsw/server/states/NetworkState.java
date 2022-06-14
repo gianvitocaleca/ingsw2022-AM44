@@ -26,10 +26,6 @@ public class NetworkState {
         setServerPhase(phase);
     }
 
-    public synchronized boolean isCreationPhaseEnded() {
-        return creationPhaseEnded;
-    }
-
     public synchronized void setLoginPhaseEnded() {
         loginPhaseEnded++;
         this.notifyAll();

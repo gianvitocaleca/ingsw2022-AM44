@@ -7,10 +7,7 @@ import com.google.gson.JsonParser;
 import it.polimi.ingsw.client.ClientState;
 import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.networkMessages.*;
-import it.polimi.ingsw.server.networkMessages.payloads.ActionPayload;
-import it.polimi.ingsw.server.networkMessages.payloads.CharacterPlayedPayload;
-import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
-import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
+import it.polimi.ingsw.server.networkMessages.payloads.*;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -55,6 +52,7 @@ public abstract class AbstractReceiver extends Thread {
         StringPayload stringPayload;
         ActionPayload actionPayload;
         CharacterPlayedPayload charPayload;
+        ReconnectionPayload reconnectionPayload;
 
         switch (header) {
             case closeConnection:
@@ -121,7 +119,19 @@ public abstract class AbstractReceiver extends Thread {
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 stringMessage(Headers.winnerPlayer,stringPayload);
                 break;
+            case reconnection:
+                reconnectionPayload = gson.fromJson(jsonPayload, ReconnectionPayload.class);
+                reconnectPlayer(reconnectionPayload);
         }
+    }
+
+    /**
+     * This method sets the username of the client after a reconnection.
+     * The client knows his username in this way.
+     * @param reconnectionPayload is the object that contains information about client's username.
+     */
+    private void reconnectPlayer(ReconnectionPayload reconnectionPayload){
+        cs.setUsername(reconnectionPayload.getUsername());
     }
 
     private void setHeader(Headers header) {

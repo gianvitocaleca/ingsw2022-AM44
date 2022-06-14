@@ -16,5 +16,6 @@ public enum Headers {
     showModelMessage,
     creationRequirementMessage_NumberOfPlayers,
     creationRequirementMessage_TypeOfRules,
-    closeConnection
+    closeConnection,
+    reconnection
 }

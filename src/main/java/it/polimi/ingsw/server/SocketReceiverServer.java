@@ -91,7 +91,7 @@ public class SocketReceiverServer {
                         case WAITING:
                             networkState.reconnectPlayer(socketId);
                             System.out.println("Re-connected player");
-                            messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketId));
+                            messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketId, socketId.getPlayerInfo().getUsername() ));
                             break;
                         case LOGIN:
                             if(networkState.getNumberOfConnectedSocket()<= networkState.getNumberOfPlayers()){

@@ -276,7 +276,14 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * This method is used to inform controller about the new client and the client about his username.
+     * The client has to set the username, he hasn't chosen.
+     * @param evt contains information about the socket of the new client and his username.
+     */
     public void userReconnectedReceiver(ReconnectedEvent evt){
+        message = gson.toJson(new Message(Headers.reconnection,new ReconnectionPayload(evt.getUsername())));
+        mss.sendMessage(message, evt.getSocketID().getSocket());
         for (ReconnectionListener event : listeners.getListeners(ReconnectionListener.class)) {
             event.eventPerformed(evt);
         }
