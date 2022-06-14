@@ -70,7 +70,11 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
         Name character = cpp.getCharactersName();
         cs.setCurrentPlayedCharacter(character);
         if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
-            clientGui.characterNeedsSourceCreaturesAndDestination();
+            Platform.runLater(() -> clientGui.characterNeedsSourceCreaturesAndDestination());
+        }else if(character.isNeedsIslandIndex()){
+            Platform.runLater(() -> clientGui.characterNeedsIslandIndex());
+        }else if(character.isNeedsMnMovements()){
+            Platform.runLater(() -> clientGui.characterNeedsMMNMovements());
         }
     }
 }

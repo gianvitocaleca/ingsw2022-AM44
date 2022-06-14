@@ -1071,25 +1071,38 @@ public class ClientGui extends Application {
             object.setStyle(noBorder);
         });
         object.setOnMouseClicked(e -> {
-            if (guiPhases == GUIPhases.SELECT_DESTINATION) {
-                createdCommand += commandSeparator;
-                createdCommand += String.valueOf(i + 1);
-                guiEvents.add(createdCommand);
-                createdCommand = "";
-                guiPhases = GUIPhases.END;
-            } else if (clientState.isMoveMotherNature()) {
-                int mnPosition = clientState.getModelPayload().getMotherNature();
-                createdCommand += moveMotherNatureCode;
-                createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
-                guiEvents.add(createdCommand);
-                createdCommand = "";
-            } else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
-                createdCommand += selectDestinationIslandCode;
-                createdCommand += String.valueOf(i + 1);
-                guiEvents.add(createdCommand);
-                createdCommand = "";
-            }
+            createIslandCommand(i);
         });
+    }
+
+    /**
+     * This method creates the right command to send to the server according to the gui's phase.
+     * @param i the index of the island chosen
+     */
+    private void createIslandCommand(int i){
+        if (guiPhases == GUIPhases.SELECT_DESTINATION) {
+            createdCommand += commandSeparator;
+            createdCommand += String.valueOf(i + 1);
+            guiEvents.add(createdCommand);
+            createdCommand = "";
+        } else if (clientState.isMoveMotherNature()) {
+            int mnPosition = clientState.getModelPayload().getMotherNature();
+            createdCommand += moveMotherNatureCode;
+            createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
+            guiEvents.add(createdCommand);
+            createdCommand = "";
+        } else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
+            createdCommand += selectDestinationIslandCode;
+            createdCommand += String.valueOf(i + 1);
+            guiEvents.add(createdCommand);
+            createdCommand = "";
+        }else if(GUIPhases.SELECT_ISLAND == guiPhases){
+            createdCommand += String.valueOf(i+1);
+            guiEvents.add(createdCommand);
+            createdCommand = "";
+        }
+        guiPhases = GUIPhases.END;
+
     }
 
     /**
@@ -1153,6 +1166,31 @@ public class ClientGui extends Application {
         a.setTitle(gameTitle);
         a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
         a.showAndWait();
+    }
+
+    public void characterNeedsIslandIndex(){
+        String string = "Select an island";
+        guiPhases = GUIPhases.SELECT_ISLAND;
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        a.setTitle(gameTitle);
+        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.showAndWait();
+    }
+
+    public void characterNeedsMMNMovements(){
+        int defaultChoice = 0;
+        List<Integer> numToChoose = new ArrayList<>();
+        for(int i=0 ; i<= clientState.getCurrentPlayedCharacter().getMaxMoves(); i++){
+            numToChoose.add(i);
+        }
+        String string = "Select the number of steps you want mother nature to do.";
+        ChoiceDialog<Integer> choiceDialog = new ChoiceDialog(defaultChoice,numToChoose);
+        createdCommand += String.valueOf(choiceDialog.getSelectedItem());
+        choiceDialog.setHeaderText(string);
+        choiceDialog.setTitle("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        choiceDialog.showAndWait();
     }
 }
 
