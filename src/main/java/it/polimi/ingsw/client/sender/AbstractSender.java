@@ -23,7 +23,7 @@ public abstract class AbstractSender {
     protected ClientState cs;
     protected Gson gson;
     protected PingState ps;
-    protected final int pingTime = 5000;
+    protected final int pingTime = 500;
     protected final int maxNoAnswers = 4;
     protected Socket socket;
     protected PrintWriter socketOut;
