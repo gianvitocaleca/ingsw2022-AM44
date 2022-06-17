@@ -45,6 +45,7 @@ public class GuiAssets {
     public static final String diningRoomHeaderText = "Dining Room";
     public static final String professorsHeaderText = "Professors";
     public static final String assistantHeaderText = "Assistant";
+    public static final String coinHeaderText = "Coins";
     public static String whiteColorCode = "1";
     public static String blackColorCode = "2";
     public static String greyColorCode = "3";
@@ -82,4 +83,5 @@ public class GuiAssets {
     public static int islandContentComponents = 7;
     public static int cloudContentRadius = 40;
     public static int cloudContentComponents = 5;
+    public static int noErrorCode = 0;
 }

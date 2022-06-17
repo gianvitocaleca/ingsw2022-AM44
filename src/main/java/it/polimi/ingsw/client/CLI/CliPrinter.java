@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.CLI;
 
 import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.model.enums.Color;

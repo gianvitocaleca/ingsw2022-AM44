@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.handlers;
 
-import it.polimi.ingsw.client.CliColors;
-import it.polimi.ingsw.client.OS;
+import it.polimi.ingsw.client.CLI.CliColors;
+import it.polimi.ingsw.client.CLI.OS;
 import it.polimi.ingsw.server.states.CreationState;
 import it.polimi.ingsw.server.states.LoginState;
 import it.polimi.ingsw.server.states.NetworkState;
@@ -12,7 +12,6 @@ import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.networkMessages.*;
 
 import javax.swing.event.EventListenerList;
-import java.net.Socket;
 import java.util.EventListener;
 
 public class LoginHandler extends Thread implements EventListener {
@@ -57,7 +56,7 @@ public class LoginHandler extends Thread implements EventListener {
         networkState.setLoginPhaseEnded();
     }
 
-    private void usernameProvider(){
+    private void usernameProvider() {
         String username;
         sendMessage(Headers.loginMessage_Username, title + "Provide your username :");
 
@@ -75,7 +74,7 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
-    private void colorProvider(){
+    private void colorProvider() {
         Color color;
         sendMessage(Headers.loginMessage_Color, "Choose a color : 1 White 2 Black 3 Gray");
 
@@ -95,7 +94,7 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
-    private void wizardProvider(){
+    private void wizardProvider() {
         Wizard wizard;
 
         sendMessage(Headers.loginMessage_Wizard, "Choose a wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji ");

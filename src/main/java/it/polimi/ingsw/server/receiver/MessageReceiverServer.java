@@ -29,7 +29,7 @@ public class MessageReceiverServer extends Thread {
     private PingState pingState;
     private Scanner in;
 
-    private final int pingTime = 10000;
+    private final int pingTime = 1000;
     private final int maxNoAnswers = 4;
 
     public MessageReceiverServer(SocketID socketId, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
@@ -55,15 +55,15 @@ public class MessageReceiverServer extends Thread {
             try {
                 String line = in.nextLine();
                 pingState.setReceived(true);
-                if(socketId.isConnected()){
+                if (socketId.isConnected()) {
                     if (!networkState.getServerPhase().equals(ServerPhases.GAME) || isCurrent()) {
                         MessageReceivedEvent evt = new MessageReceivedEvent(this, line);
                         for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
                             event.eventPerformed(evt, socketId.getSocket());
                         }
                     }
-                }else{
-                    break;  
+                } else {
+                    break;
                 }
 
             } catch (NoSuchElementException ignore) {

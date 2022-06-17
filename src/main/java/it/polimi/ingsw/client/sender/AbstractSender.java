@@ -25,11 +25,20 @@ public abstract class AbstractSender {
     protected PingState ps;
     protected final int pingTime = 5000;
     protected final int maxNoAnswers = 4;
-
     protected Socket socket;
-
     protected PrintWriter socketOut;
     protected final String error = "error";
+    protected final String moveStudentsText = "ms";
+    protected final String moveMotherNatureText = "mmn";
+    protected final String selectCloudText = "sc";
+    protected final String playCharacterText = "pc";
+    protected final String commandSeparator = "-";
+    protected final String selectCreatureText = "c";
+    protected final String selectIslandText = "i";
+    protected final String selectDestinationText = "d";
+    protected final String creatureSeparator = ",";
+    protected final String quitCommandText = "quit";
+
 
     public AbstractSender(String ip, int port) {
         this.ip = ip;
@@ -52,6 +61,9 @@ public abstract class AbstractSender {
 
     protected String encodeMessage(String string) {
         if (string == null) return error;
+        if (string.equalsIgnoreCase(quitCommandText)) {
+            System.exit(0);
+        }
         if (!cs.getCurrentPlayer()) {
             System.out.println("You are not the current player! Please wait");
             return error;
@@ -66,25 +78,25 @@ public abstract class AbstractSender {
             }
         }
         if (cs.getHeaders().equals(Headers.action)) {
-            List<String> result = Arrays.stream(string.split(":")).toList();
+            List<String> result = Arrays.stream(string.split(commandSeparator)).toList();
             if (result.size() > 0) {
-                switch (result.get(0).toUpperCase()) {
-                    case "MS":
+                switch (result.get(0).toLowerCase()) {
+                    case moveStudentsText:
                         if (cs.isMoveStudents() && result.size() == 3) {
                             return createMoveStudentMessage(result);
                         }
                         break;
-                    case "MMN":
+                    case moveMotherNatureText:
                         if (cs.isMoveMotherNature() && result.size() == 2) {
                             return createMessage(result, true, false, false);
                         }
                         break;
-                    case "SC":
+                    case selectCloudText:
                         if (cs.isSelectCloud() && result.size() == 2) {
                             return createMessage(result, false, true, false);
                         }
                         break;
-                    case "PC":
+                    case playCharacterText:
                         if (cs.isSelectCharacter() && result.size() == 2) {
                             return createMessage(result, false, false, true);
                         }
@@ -94,7 +106,7 @@ public abstract class AbstractSender {
             return badGuysHandler();
         }
         if (cs.getHeaders().equals(Headers.characterPlayed)) {
-            List<String> result = Arrays.stream(string.split(":")).toList();
+            List<String> result = Arrays.stream(string.split(commandSeparator)).toList();
             if (result.size() == 1) {
                 int selectedNumber;
                 try {
@@ -114,10 +126,10 @@ public abstract class AbstractSender {
             } else if (result.size() == 4) {
                 switch (cs.getCurrentPlayedCharacter()) {
                     case MONK:
-                        if (result.get(0).equals("C")) {
+                        if (result.get(0).equalsIgnoreCase(selectCreatureText)) {
                             Optional<Creature> creature = creatureFromCli(result.get(1));
                             if (creature.isPresent()) {
-                                if (result.get(2).equals("I")) {
+                                if (result.get(2).equalsIgnoreCase(selectIslandText)) {
                                     int providedInteger;
                                     try {
                                         providedInteger = Integer.parseInt(result.get(3));
@@ -147,9 +159,9 @@ public abstract class AbstractSender {
     }
 
     private String createSwapMessage(List<String> result, int maxMoves) {
-        if (result.get(0).equals("C") && result.get(2).equals("D")) {
-            List<String> sourceCreatures = Arrays.stream(result.get(1).split(",")).toList();
-            List<String> destinationCreatures = Arrays.stream(result.get(3).split(",")).toList();
+        if (result.get(0).equalsIgnoreCase(selectCreatureText) && result.get(2).equalsIgnoreCase(selectDestinationText)) {
+            List<String> sourceCreatures = Arrays.stream(result.get(1).split(creatureSeparator)).toList();
+            List<String> destinationCreatures = Arrays.stream(result.get(3).split(creatureSeparator)).toList();
             if (sourceCreatures.size() == destinationCreatures.size() && sourceCreatures.size() <= maxMoves) {
                 List<Creature> sC = new ArrayList<>();
                 List<Creature> dC = new ArrayList<>();

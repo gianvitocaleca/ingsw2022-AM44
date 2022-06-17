@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.CLI;
 
 public enum CliColors {
     ERASE_SCREEN("\u001b[H\u001b[2J"),

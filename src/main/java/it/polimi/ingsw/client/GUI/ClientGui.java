@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.sender.AbstractSender;
 import it.polimi.ingsw.client.sender.ConcreteGUISender;
 import it.polimi.ingsw.server.CharacterInformation;
 import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.model.studentcontainers.Island;
@@ -588,13 +589,23 @@ public class ClientGui extends Application {
      */
     private HBox charactersGenerator() {
         ImageView character;
-        List<HBox> characterImages = new ArrayList<>();
+        List<VBox> characterImages = new ArrayList<>();
         for (CharacterInformation c : modelCache.getCharacters()) {
             character = new ImageView(new Image(c.getName().getImage()));
             character.setFitWidth(characterWidth);
             character.setFitHeight(characterHeight);
             character.setStyle(borderUnselected);
-            HBox container = new HBox(character);
+            VBox container = new VBox(character);
+            container.setAlignment(Pos.CENTER);
+            if (c.getName().equals(Name.JOKER)) {
+                container.getChildren().add(createCharacterCreature(modelCache.getJokerCreatures()));
+            }
+            if (c.getName().equals(Name.MONK)) {
+                container.getChildren().add(createCharacterCreature(modelCache.getMonkCreatures()));
+            }
+            if (c.getName().equals(Name.PRINCESS)) {
+                container.getChildren().add(createCharacterCreature(modelCache.getPrincessCreatures()));
+            }
             container.setOnMouseClicked(e -> {
                 if (clientState.isSelectCharacter()) {
                     guiEvents.add(playCharacterCode + c.getIndex());
@@ -617,6 +628,31 @@ public class ClientGui extends Application {
         characters.setSpacing(smallSpacing);
         characters.setAlignment(Pos.CENTER);
         return characters;
+    }
+
+    /**
+     * Creates the creature counter container for a character
+     *
+     * @param creatures is the list of creatures of the given character
+     * @return is the creature counter container
+     */
+    private HBox createCharacterCreature(List<Creature> creatures) {
+        List<HBox> creatureCounters = new ArrayList<>();
+        Map<Creature, Integer> counter = new HashMap<>();
+        HBox ans = new HBox();
+        for (Creature c : Creature.values()) {
+            counter.put(c, 0);
+        }
+        for (Creature c : creatures) {
+            counter.put(c, counter.get(c) + 1);
+        }
+        for (Creature c : Creature.values()) {
+            creatureCounters.add(creatureCounter(c, counter.get(c)));
+        }
+        ans.getChildren().addAll(creatureCounters);
+        ans.setAlignment(Pos.CENTER);
+        ans.setSpacing(smallSpacing);
+        return ans;
     }
 
     /**
@@ -809,17 +845,46 @@ public class ClientGui extends Application {
             HBox playerInfo = new HBox(wizardStack, username);
             playerInfo.setSpacing(mediumSpacing);
             playerInfo.setAlignment(Pos.CENTER);
-            HBox player = new HBox(playerInfo,
-                    createComponentWithAssistant(p.getLastPlayedCards()),
-                    createComponentWithCreatures(entranceHeaderText, p),
-                    createComponentWithCreatures(diningRoomHeaderText, p),
-                    createComponentWithCreatures(professorsHeaderText, p),
-                    createTowerComponent(p));
+            HBox player;
+            if (modelCache.isAdvancedRules()) {
+                player = new HBox(playerInfo,
+                        createComponentWithAssistant(p.getLastPlayedCards()),
+                        createComponentWithCreatures(entranceHeaderText, p),
+                        createComponentWithCreatures(diningRoomHeaderText, p),
+                        createComponentWithCreatures(professorsHeaderText, p),
+                        createCoinComponent(p.getMyCoins()),
+                        createTowerComponent(p));
+            } else {
+                player = new HBox(playerInfo,
+                        createComponentWithAssistant(p.getLastPlayedCards()),
+                        createComponentWithCreatures(entranceHeaderText, p),
+                        createComponentWithCreatures(diningRoomHeaderText, p),
+                        createComponentWithCreatures(professorsHeaderText, p),
+                        createTowerComponent(p));
+            }
+
             player.setSpacing(smallSpacing);
             player.setAlignment(Pos.CENTER);
             playerList.getChildren().add(player);
         }
         return playerList;
+    }
+
+    /**
+     * @param coins is the player's number of coins
+     * @return is the coin and header container
+     */
+    private VBox createCoinComponent(int coins) {
+        Text coinTitle = new Text(coinHeaderText);
+        Text coinValue = new Text(String.valueOf(coins));
+        coinTitle.setStyle(bodyFont);
+        coinTitle.setStyle(borderInsets);
+        coinValue.setStyle(bodyFont);
+        VBox coinBox = new VBox(coinTitle, coinValue);
+        coinBox.setAlignment(Pos.CENTER);
+        coinBox.setSpacing(smallSpacing);
+        coinBox.setStyle(defaultComponentLayout);
+        return coinBox;
     }
 
     /**
@@ -1023,6 +1088,7 @@ public class ClientGui extends Application {
         VBox ans = new VBox(towers);
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(smallSpacing);
+        ans.setStyle(defaultComponentLayout);
         return ans;
     }
 
@@ -1045,6 +1111,7 @@ public class ClientGui extends Application {
             //send quit message
             //close socket thread
             stage.close();
+            System.exit(noErrorCode);
         }
     }
 
@@ -1077,9 +1144,10 @@ public class ClientGui extends Application {
 
     /**
      * This method creates the right command to send to the server according to the gui's phase.
+     *
      * @param i the index of the island chosen
      */
-    private void createIslandCommand(int i){
+    private void createIslandCommand(int i) {
         if (guiPhases == GUIPhases.SELECT_DESTINATION) {
             createdCommand += commandSeparator;
             createdCommand += String.valueOf(i + 1);
@@ -1096,8 +1164,8 @@ public class ClientGui extends Application {
             createdCommand += String.valueOf(i + 1);
             guiEvents.add(createdCommand);
             createdCommand = "";
-        }else if(GUIPhases.SELECT_ISLAND == guiPhases){
-            createdCommand += String.valueOf(i+1);
+        } else if (GUIPhases.SELECT_ISLAND == guiPhases) {
+            createdCommand += String.valueOf(i + 1);
             guiEvents.add(createdCommand);
             createdCommand = "";
         }
@@ -1168,7 +1236,7 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
-    public void characterNeedsIslandIndex(){
+    public void characterNeedsIslandIndex() {
         String string = "Select an island";
         guiPhases = GUIPhases.SELECT_ISLAND;
         Alert a = new Alert(Alert.AlertType.INFORMATION,
@@ -1179,14 +1247,14 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
-    public void characterNeedsMMNMovements(){
+    public void characterNeedsMMNMovements() {
         int defaultChoice = 0;
         List<Integer> numToChoose = new ArrayList<>();
-        for(int i=0 ; i<= clientState.getCurrentPlayedCharacter().getMaxMoves(); i++){
+        for (int i = 0; i <= clientState.getCurrentPlayedCharacter().getMaxMoves(); i++) {
             numToChoose.add(i);
         }
         String string = "Select the number of steps you want mother nature to do.";
-        ChoiceDialog<Integer> choiceDialog = new ChoiceDialog(defaultChoice,numToChoose);
+        ChoiceDialog<Integer> choiceDialog = new ChoiceDialog(defaultChoice, numToChoose);
         createdCommand += String.valueOf(choiceDialog.getSelectedItem());
         choiceDialog.setHeaderText(string);
         choiceDialog.setTitle("Use Effect of : " + clientState.getCurrentPlayedCharacter());
