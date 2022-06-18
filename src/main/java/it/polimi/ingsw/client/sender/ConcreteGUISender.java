@@ -10,11 +10,14 @@ import java.net.Socket;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class ConcreteGUISender extends AbstractSender{
+import static it.polimi.ingsw.Commands.error;
+
+public class ConcreteGUISender extends AbstractSender {
 
     private Queue<String> guiEvents;
     private String inputLine;
     private ClientGui clientGui;
+
     public ConcreteGUISender(String ip, int port, ClientGui clientGui, Queue guiEvents) {
         super(ip, port);
         this.guiEvents = guiEvents;

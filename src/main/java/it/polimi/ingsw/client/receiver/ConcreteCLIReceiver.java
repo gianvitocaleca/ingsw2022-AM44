@@ -13,6 +13,8 @@ import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
 
+import static it.polimi.ingsw.Commands.*;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -63,27 +65,28 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     void action() {
         System.out.println(":=: Allowed actions in this turn :=:");
         if (cs.isMoveStudents()) {
-            System.out.println(":=: Move students <MS> :=:");
-            System.out.println("Specify the student creature <R,G,Y,B,P>");
+            System.out.println(":=: Move students <" + moveStudentsCode + "> :=:");
+            System.out.println("Specify the student creature <" +
+                    redCreatureText + "," + greenCreatureText + "," + blueCreatureText + "," + yellowCreatureText + "," + pinkCreatureText + ">");
             System.out.println("Specify the destination <0," + cs.getModelPayload().getIslands().size() + "> (0 is your Dinig Room, the others are the islands)");
-            System.out.println("For example MS:R:2");
+            System.out.println("For example " + moveStudentsCode + commandSeparator + redCreatureText + commandSeparator + "2");
         }
         if (cs.isMoveMotherNature()) {
-            System.out.println(":=: Move mother nature <MMN> :=:");
+            System.out.println(":=: Move mother nature <" + moveMotherNatureCode + "> :=:");
             System.out.println("Specify the number of jumps you want to make");
-            System.out.println("For example MMN:3");
+            System.out.println("For example " + moveMotherNatureCode + commandSeparator + "3");
         }
         if (cs.isSelectCloud()) {
-            System.out.println(":=: Select cloud <SC> :=:");
+            System.out.println(":=: Select cloud <" + selectCloudCode + "> :=:");
             System.out.println("Choose a cloud from which you want to take the new students to put in your entrance");
             System.out.println("<0," + (cs.getModelPayload().getClouds().size() - 1) + "> clouds available");
-            System.out.println("For example SC:1");
+            System.out.println("For example " + selectCloudCode + commandSeparator + "1");
         }
         if (cs.isSelectCharacter()) {
-            System.out.println(":=: Play character <PC> :=:");
+            System.out.println(":=: Play character <" + playCharacterCode + "> :=:");
             System.out.println("Choose a character to play");
             cs.getModelPayload().getCharacters().stream().forEach(c -> System.out.println(c.getIndex() + ":" + c.getName() + ":" + c.getCost()));
-            System.out.println("\nFor example PC:2");
+            System.out.println("\nFor example " + playCharacterCode + commandSeparator + "2");
         }
     }
 
@@ -93,12 +96,13 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         cs.setCurrentPlayedCharacter(character);
         if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
             System.out.println("Choose the creature from the character card and the destination Island on which to put it");
-            System.out.println("C:G:I:7");
+            System.out.println(selectCreatureText + commandSeparator + greenCreatureText + commandSeparator + selectIslandText + commandSeparator + "7");
         } else if (character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()) {
             System.out.println("Which creatures from the character card and the destination do you want to swap?");
-            System.out.println("For example to swap character (C) creatures Red, Green and Blue  with " +
-                    "the destination (D) creatures Blue, Yellow and Pink use the following syntax");
-            System.out.println("C:R,G,B:D:B,Y,P");
+            System.out.println("For example to swap character (" + selectCreatureText + ") creatures Red, Green and Blue  with " +
+                    "the destination (" + selectDestinationText + ") creatures Blue, Yellow and Pink use the following syntax");
+            System.out.println(selectCreatureText + commandSeparator + redCreatureText + creatureSeparator + greenCreatureText + creatureSeparator + blueCreatureText +
+                    commandSeparator + selectDestinationText + commandSeparator + blueCreatureText + creatureSeparator + yellowCreatureText + creatureSeparator + pinkCreatureText);
             System.out.println("Select at most " + character.getMaxMoves() + " creatures");
         } else if (character.isNeedsIslandIndex()) {
             System.out.println("Which island do you want to choose?");

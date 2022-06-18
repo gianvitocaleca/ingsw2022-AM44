@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.polimi.ingsw.TextAssets.*;
+
 public class CliPrinter {
     private final String space = " ";
     private String horizontal = "═";
@@ -35,16 +37,6 @@ public class CliPrinter {
     private String motherNature = "m";
     private String noEntry = "n";
     private String cloud = "c";
-    private final String cost = "Cost";
-    private final String username = "Username";
-    private final String wizard = "Wizard";
-    private final String coins = "Coins";
-    private final String entrance = "Entrance";
-    private final String diningRoom = "Dining Room";
-    private final String professors = "Professors";
-    private final String lastAssistant = "Last Assistant";
-    private final String towers = "Towers";
-    private final String noAssistant = "none";
     private int realCreatureStringLength = 16;
     private int islandStringLength = 18;
     private final int cloudStringLength = 5;
@@ -98,18 +90,18 @@ public class CliPrinter {
             middle = new StringBuilder();
             contents = new StringBuilder();
             bottom = new StringBuilder();
-            createPlayerSection(username, p.getUsername(), Section.FIRST);
-            createPlayerSection(wizard, p.getWizard().toString(), Section.MIDDLE);
-            createPlayerSection(coins, String.valueOf(p.getMyCoins()), Section.MIDDLE);
-            createPlayerSection(entrance, createCreatureString(p.getEntrance()), Section.MIDDLE);
-            createPlayerSection(diningRoom, createCreatureString(p.getDiningRoom()), Section.MIDDLE);
-            createPlayerSection(professors, createProfessorString(p.getProfessors()), Section.MIDDLE);
+            createPlayerSection(usernameHeaderText, p.getUsername(), Section.FIRST);
+            createPlayerSection(wizardHeaderText, p.getWizard().toString(), Section.MIDDLE);
+            createPlayerSection(coinHeaderText, String.valueOf(p.getMyCoins()), Section.MIDDLE);
+            createPlayerSection(entranceHeaderText, createCreatureString(p.getEntrance()), Section.MIDDLE);
+            createPlayerSection(diningRoomHeaderText, createCreatureString(p.getDiningRoom()), Section.MIDDLE);
+            createPlayerSection(professorsHeaderText, createProfessorString(p.getProfessors()), Section.MIDDLE);
             if (p.getLastPlayedCards().size() > 0) {
-                createPlayerSection(lastAssistant, p.getLastPlayedCard().toString(), Section.MIDDLE);
+                createPlayerSection(assistantHeaderText, p.getLastPlayedCard().toString(), Section.MIDDLE);
             } else {
-                createPlayerSection(lastAssistant, noAssistant, Section.MIDDLE);
+                createPlayerSection(assistantHeaderText, noAssistant, Section.MIDDLE);
             }
-            createPlayerSection(towers, String.valueOf(p.getTowers()), Section.LAST);
+            createPlayerSection(towersHeaderText, String.valueOf(p.getTowers()), Section.LAST);
             System.out.println(top);
             System.out.println(titles);
             System.out.println(middle);
@@ -141,7 +133,7 @@ public class CliPrinter {
 
         contents.append(space);
 
-        if (givenTitle.equals(entrance) || givenTitle.equals(diningRoom) || givenTitle.equals(professors)) {
+        if (givenTitle.equals(entranceHeaderText) || givenTitle.equals(diningRoomHeaderText) || givenTitle.equals(professorsHeaderText)) {
             for (int i = 0; i < Math.max(givenTitle.length(), realCreatureStringLength) + 2; i++) {
                 top.append(horizontal);
                 middle.append(horizontal);
@@ -599,7 +591,7 @@ public class CliPrinter {
         }
 
         middle.append(space);
-        middle.append(this.cost);
+        middle.append(costContentText);
         middle.append(space);
         middle.append(cost);
         middle.append(space);

@@ -4,21 +4,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import static it.polimi.ingsw.Commands.*;
+
 public class GuiAssets {
-    public static final String whiteColorText = "White";
-    public static final String firstWizardText = "Gandalf";
-    public static final String blackColorText = "Black";
-    public static final String secondWizardText = "Baljeet";
-    public static final String greyColorText = "Grey";
-    public static final String thirdWizardText = "Sabrina";
-    public static final String fourthWizardText = "Kenji";
-    public static final String pinkCreatureText = "P";
-    public static final String redCreatureText = "R";
-    public static final String greenCreatureText = "G";
-    public static final String blueCreatureText = "B";
-    public static final String yellowCreatureText = "Y";
-    public static final String moveStudentsCode = "MS:";
-    public static final String selectCreatureCode = "C:";
+
+    public static final String selectCreatureCode = selectCreatureText + commandSeparator;
     public static String gameTitle = "Eryantis";
     public static Color backgroundColor = Color.rgb(131, 187, 218);
     public static Font titleFont = Font.font("Papyrus", FontWeight.LIGHT, 160);
@@ -26,9 +16,7 @@ public class GuiAssets {
     public static String twoPlayersButton = "Two Players";
     public static String threePlayersButton = "Three Players";
     public static String basicRulesButton = "Basic Rules";
-    public static String basicRulesCode = "0";
     public static String advancedRulesButton = "Advanced Rules";
-    public static String advancedRulesCode = "1";
     public static String provideUsernameText = "Provide your username";
     public static final String currentPhasePrefix = "The current game phase is: ";
     public static final String moveStudentsText = "Move the students";
@@ -36,23 +24,7 @@ public class GuiAssets {
     public static final String selectCloudText = "Select a cloud";
     public static final String chooseCharacterText = " or Select a Character";
     public static final String selectAssistantText = "Select an Assistant";
-    public static final String commandSeparator = ":";
-    public static final String moveMotherNatureCode = "MMN:";
-    public static final String selectDestinationIslandCode = ":I:";
-    public static final String selectCloudCode = "SC:";
-    public static final String playCharacterCode = "PC:";
-    public static final String entranceHeaderText = "Entrance";
-    public static final String diningRoomHeaderText = "Dining Room";
-    public static final String professorsHeaderText = "Professors";
-    public static final String assistantHeaderText = "Assistant";
-    public static final String coinHeaderText = "Coins";
-    public static String whiteColorCode = "1";
-    public static String blackColorCode = "2";
-    public static String greyColorCode = "3";
-    public static String firstWizardCode = "1";
-    public static String secondWizardCode = "2";
-    public static String thirdWizardCode = "3";
-    public static String fourthWizardCode = "4";
+    public static final String selectDestinationIslandCode = commandSeparator + selectIslandText + commandSeparator;
     public static int smallSpacing = 5;
     public static int mediumSpacing = 10;
     public static int motherNatureHeight = 28;

@@ -14,6 +14,9 @@ import it.polimi.ingsw.server.networkMessages.*;
 import javax.swing.event.EventListenerList;
 import java.util.EventListener;
 
+import static it.polimi.ingsw.Commands.*;
+import static it.polimi.ingsw.TextAssets.*;
+
 public class LoginHandler extends Thread implements EventListener {
     private NetworkState networkState;
     private SocketID socketId;
@@ -76,18 +79,18 @@ public class LoginHandler extends Thread implements EventListener {
 
     private void colorProvider() {
         Color color;
-        sendMessage(Headers.loginMessage_Color, "Choose a color : 1 White 2 Black 3 Gray");
+        String colors = whiteColorCode + " " + whiteColorText + " " + blackColorCode + " " + blackColorText + " " + greyColorCode + " " + greyColorText;
+        sendMessage(Headers.loginMessage_Color, "Choose a color : " + colors);
 
         while (true) {
             color = loginState.getColor(socketId.getSocket());
             if (color.equals(Color.WRONG)) {
                 loginState.removeColor(socketId.getSocket());
-                sendMessage(Headers.errorMessage, "The chosen color doesn't exist, try again : " +
-                        "1 White 2 Black 3 Gray");
+                sendMessage(Headers.errorMessage, "The chosen color doesn't exist, try again : " + colors);
             } else if (!networkState.setColor(socketId.getId(), color)) {
                 loginState.removeColor(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The color : " + color + " is already taken!" +
-                        "Provide a different color : 1 White 2 Black 3 Gray");
+                        "Provide a different color : " + colors);
             } else {
                 break;
             }
@@ -96,20 +99,20 @@ public class LoginHandler extends Thread implements EventListener {
 
     private void wizardProvider() {
         Wizard wizard;
-
-        sendMessage(Headers.loginMessage_Wizard, "Choose a wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji ");
+        String wizards = firstWizardCode + " " + firstWizardText + " " + secondWizardCode + " " + secondWizardText +
+                " " + thirdWizardCode + " " + thirdWizardText + " " + fourthWizardCode + " " + fourthWizardText;
+        sendMessage(Headers.loginMessage_Wizard, "Choose a wizard : " + wizards);
 
         while (true) {
             wizard = loginState.getWizard(socketId.getSocket());
             if (wizard.equals(Wizard.WRONG)) {
                 loginState.removeWizard(socketId.getSocket());
-                sendMessage(Headers.errorMessage, "The chosen wizard doesn't exist, try again : " +
-                        "1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");
+                sendMessage(Headers.errorMessage, "The chosen wizard doesn't exist, try again : " + wizards);
 
             } else if (!networkState.setWizard(socketId.getId(), wizard)) {
                 loginState.removeWizard(socketId.getSocket());
                 sendMessage(Headers.errorMessage, "The wizard : " + wizard + " is already taken!" +
-                        "Provide a different wizard : 1 Gandalf 2 Baljeet 3 Sabrina 4 Kenji");
+                        "Provide a different wizard : " + wizards);
             } else {
                 break;
             }

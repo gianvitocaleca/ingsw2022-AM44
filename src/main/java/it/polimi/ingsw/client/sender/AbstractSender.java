@@ -12,10 +12,15 @@ import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPaylo
 import it.polimi.ingsw.server.networkMessages.payloads.PlanningAnswerPayload;
 import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
 
+import static it.polimi.ingsw.Commands.*;
+import static it.polimi.ingsw.TextAssets.badTextMessage;
+import static it.polimi.ingsw.TextAssets.whyTextMessage;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
+
 
 public abstract class AbstractSender {
     protected String ip;
@@ -27,17 +32,6 @@ public abstract class AbstractSender {
     protected final int maxNoAnswers = 4;
     protected Socket socket;
     protected PrintWriter socketOut;
-    protected final String error = "error";
-    protected final String moveStudentsText = "ms";
-    protected final String moveMotherNatureText = "mmn";
-    protected final String selectCloudText = "sc";
-    protected final String playCharacterText = "pc";
-    protected final String commandSeparator = "-";
-    protected final String selectCreatureText = "c";
-    protected final String selectIslandText = "i";
-    protected final String selectDestinationText = "d";
-    protected final String creatureSeparator = ",";
-    protected final String quitCommandText = "quit";
 
 
     public AbstractSender(String ip, int port) {
@@ -81,22 +75,22 @@ public abstract class AbstractSender {
             List<String> result = Arrays.stream(string.split(commandSeparator)).toList();
             if (result.size() > 0) {
                 switch (result.get(0).toLowerCase()) {
-                    case moveStudentsText:
+                    case moveStudentsCode:
                         if (cs.isMoveStudents() && result.size() == 3) {
                             return createMoveStudentMessage(result);
                         }
                         break;
-                    case moveMotherNatureText:
+                    case moveMotherNatureCode:
                         if (cs.isMoveMotherNature() && result.size() == 2) {
                             return createMessage(result, true, false, false);
                         }
                         break;
-                    case selectCloudText:
+                    case selectCloudCode:
                         if (cs.isSelectCloud() && result.size() == 2) {
                             return createMessage(result, false, true, false);
                         }
                         break;
-                    case playCharacterText:
+                    case playCharacterCode:
                         if (cs.isSelectCharacter() && result.size() == 2) {
                             return createMessage(result, false, false, true);
                         }
@@ -191,19 +185,19 @@ public abstract class AbstractSender {
     private Optional<Creature> creatureFromCli(String provided) {
         Optional<Creature> ans = Optional.empty();
         switch (provided) {
-            case "R":
+            case redCreatureText:
                 ans = Optional.of(Creature.RED_DRAGONS);
                 break;
-            case "G":
+            case greenCreatureText:
                 ans = Optional.of(Creature.GREEN_FROGS);
                 break;
-            case "B":
+            case blueCreatureText:
                 ans = Optional.of(Creature.BLUE_UNICORNS);
                 break;
-            case "Y":
+            case yellowCreatureText:
                 ans = Optional.of(Creature.YELLOW_GNOMES);
                 break;
-            case "P":
+            case pinkCreatureText:
                 ans = Optional.of(Creature.PINK_FAIRIES);
                 break;
             default:
@@ -213,7 +207,7 @@ public abstract class AbstractSender {
     }
 
     private String createMoveStudentMessage(List<String> result) {
-        Optional<Creature> selection = creatureFromCli(result.get(1).toUpperCase());
+        Optional<Creature> selection = creatureFromCli(result.get(1).toLowerCase());
         if (selection.isEmpty()) {
             return badGuysHandler();
         }
@@ -222,8 +216,7 @@ public abstract class AbstractSender {
         try {
             providedDestination = Integer.parseInt(result.get(2));
         } catch (NumberFormatException ignore) {
-            System.out.println("Why did you do it!");
-            System.out.println("(ง •̀_•́)ง");
+            System.out.println(whyTextMessage);
             return error;
         }
         if (providedDestination == 0) {
@@ -239,8 +232,7 @@ public abstract class AbstractSender {
         try {
             providedIndex = Integer.parseInt(result.get(1));
         } catch (NumberFormatException ignore) {
-            System.out.println("Why did you do it!");
-            System.out.println("(ง •̀_•́)ง");
+            System.out.println(whyTextMessage);
             return error;
         }
         return gson.toJson(new Message(cs.getHeaders(), new ActionAnswerPayload(false, isMMN, isSC,
@@ -271,8 +263,7 @@ public abstract class AbstractSender {
     }
 
     private String badGuysHandler() {
-        System.out.println("Bad syntax!");
-        System.out.println("(╯°□°）╯$ $ $");
+        System.out.println(badTextMessage);
         return error;
     }
 

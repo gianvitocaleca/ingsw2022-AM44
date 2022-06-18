@@ -32,6 +32,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
 
+import static it.polimi.ingsw.Commands.*;
+import static it.polimi.ingsw.TextAssets.*;
 import static it.polimi.ingsw.client.GUI.GuiAssets.*;
 import static it.polimi.ingsw.client.GUI.GuiCss.*;
 
@@ -696,7 +698,7 @@ public class ClientGui extends Application {
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
                 if (guiPhases == GUIPhases.SELECT_CREATURE) {
-                    createdCommand = moveStudentsCode;
+                    createdCommand = moveStudentsCode + commandSeparator;
                     createdCommand += creatureCode(c);
                     guiPhases = GUIPhases.SELECT_DESTINATION;
                 } else if (guiPhases == GUIPhases.SELECT_CREATURE_FOR_CHARACTER) {
@@ -845,22 +847,15 @@ public class ClientGui extends Application {
             HBox playerInfo = new HBox(wizardStack, username);
             playerInfo.setSpacing(mediumSpacing);
             playerInfo.setAlignment(Pos.CENTER);
-            HBox player;
+            HBox player = new HBox();
+            player.getChildren().addAll(playerInfo,
+                    createComponentWithAssistant(p.getLastPlayedCards()),
+                    createComponentWithCreatures(entranceHeaderText, p),
+                    createComponentWithCreatures(diningRoomHeaderText, p),
+                    createComponentWithCreatures(professorsHeaderText, p),
+                    createTowerComponent(p));
             if (modelCache.isAdvancedRules()) {
-                player = new HBox(playerInfo,
-                        createComponentWithAssistant(p.getLastPlayedCards()),
-                        createComponentWithCreatures(entranceHeaderText, p),
-                        createComponentWithCreatures(diningRoomHeaderText, p),
-                        createComponentWithCreatures(professorsHeaderText, p),
-                        createCoinComponent(p.getMyCoins()),
-                        createTowerComponent(p));
-            } else {
-                player = new HBox(playerInfo,
-                        createComponentWithAssistant(p.getLastPlayedCards()),
-                        createComponentWithCreatures(entranceHeaderText, p),
-                        createComponentWithCreatures(diningRoomHeaderText, p),
-                        createComponentWithCreatures(professorsHeaderText, p),
-                        createTowerComponent(p));
+                player.getChildren().add(createCoinComponent(p.getMyCoins()));
             }
 
             player.setSpacing(smallSpacing);
@@ -1155,7 +1150,7 @@ public class ClientGui extends Application {
             createdCommand = "";
         } else if (clientState.isMoveMotherNature()) {
             int mnPosition = clientState.getModelPayload().getMotherNature();
-            createdCommand += moveMotherNatureCode;
+            createdCommand += moveMotherNatureCode + commandSeparator;
             createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
             guiEvents.add(createdCommand);
             createdCommand = "";
@@ -1205,7 +1200,7 @@ public class ClientGui extends Application {
         });
         object.setOnMouseClicked(e -> {
             if (clientState.isSelectCloud()) {
-                createdCommand += selectCloudCode;
+                createdCommand += selectCloudCode + commandSeparator;
                 createdCommand += String.valueOf(i);
                 guiEvents.add(createdCommand);
                 createdCommand = "";
