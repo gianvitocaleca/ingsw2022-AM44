@@ -598,6 +598,8 @@ public class ClientGui extends Application {
             character.setFitHeight(characterHeight);
             character.setStyle(borderUnselected);
             VBox container = new VBox(character);
+            Tooltip tooltip = new Tooltip(CharactersTooltips.getToolTip(c.getName()));
+            Tooltip.install(container, tooltip);
             container.setAlignment(Pos.CENTER);
             if (c.getName().equals(Name.JOKER)) {
                 container.getChildren().add(createCharacterCreature(modelCache.getJokerCreatures()));
@@ -610,7 +612,7 @@ public class ClientGui extends Application {
             }
             container.setOnMouseClicked(e -> {
                 if (clientState.isSelectCharacter()) {
-                    guiEvents.add(playCharacterCode + c.getIndex());
+                    guiEvents.add(playCharacterCode + commandSeparator + c.getIndex());
                 }
             });
             container.setStyle(borderUnselected);
