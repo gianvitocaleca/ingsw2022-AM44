@@ -39,7 +39,8 @@ public abstract class AbstractReceiver extends Thread {
                 }
             }
         }
-
+        System.out.println("No server connection");
+        System.exit(0);
     }
 
     private void translateMessage(String socketLine) {

@@ -546,22 +546,36 @@ public class GameModel implements Playable {
                 }
 
             }
+            if(professorOwner.isPresent()){
+                Player profOwner = professorOwner.get();
+                for (Player p : players) {
+
+                    if (isFarmer && players.get(currentPlayerIndex).getUsername().equals(p.getUsername())) {
+                        if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >=
+                                profOwner.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                            profOwner = p;
+                        }
+                    } else if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
+                            profOwner.getDiningRoom().getNumberOfStudentsByCreature(c)) {
+                        profOwner = p;
+                    }
+                }
+                profOwner.addProfessor(professorOwner.get().removeProfessor(c));
+            }else{
+                String playerToGiveProfessorUsername = findWhoHasMoreStudents(c);
+                for(Player p : players){
+                    if(p.getUsername().equals(playerToGiveProfessorUsername) && p.getDiningRoom().getNumberOfStudentsByCreature(c) > 0){
+                        p.addProfessor(new Professor(c));
+                        break;
+                    }
+                }
+
+            }
 
             //find who has more students of creature c
-            Player hasMoreStudents = players.get(0);
-            for (Player p : players) {
+            //Player hasMoreStudents = players.get(0);
 
-                if (isFarmer && players.get(currentPlayerIndex).getUsername().equals(p.getUsername())) {
-                    if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >=
-                            hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
-                        hasMoreStudents = p;
-                    }
-                } else if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >
-                        hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c)) {
-                    hasMoreStudents = p;
-                }
-            }
-            if (professorOwner.isPresent()) {
+            /*if (professorOwner.isPresent()) {
                 if (!(professorOwner.get().getUsername().equals(hasMoreStudents.getUsername()))) {
 
                     hasMoreStudents.addProfessor(professorOwner.get().removeProfessor(c));
@@ -571,13 +585,23 @@ public class GameModel implements Playable {
                 if (hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c) > 0) {
                     hasMoreStudents.addProfessor(new Professor(c));
                 }
-            }
+            }*/
         }
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdatePlayersDiningRoom();
         payload.setUpdatePlayersEntrance();
         payload.setUpdateIslands();
         showModel(payload);
+    }
+
+    private String findWhoHasMoreStudents(Creature c) {
+        List<Player> playerList = getPlayers();
+        Collections.sort(playerList, (p1, p2) -> {
+            if (p1.getDiningRoom().getNumberOfStudentsByCreature(c) < p2.getDiningRoom().getNumberOfStudentsByCreature(c)) return -1;
+            else if (p1.getDiningRoom().getNumberOfStudentsByCreature(c) > p2.getDiningRoom().getNumberOfStudentsByCreature(c)) return 1;
+            else return 0;
+        });
+        return playerList.get(numberOfPlayers-1).getUsername();
     }
 
     private boolean hasProfessor(int indexOfPlayer, Creature c) {

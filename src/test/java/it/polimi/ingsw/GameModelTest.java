@@ -356,8 +356,8 @@ public class GameModelTest {
         players.get(0).setDiningRoom(room);
         gm.setPlayers(players);
         gm.checkProfessor();
-        assertTrue(gm.getPlayers().get(0).getProfessors().size() == 1);
-        assertTrue(gm.getPlayers().get(0).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
+        assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(0).getCreature(), Creature.RED_DRAGONS);
 
         players = gm.getPlayers();
         room = new DiningRoom();
@@ -367,7 +367,7 @@ public class GameModelTest {
 
         gm.setPlayers(players);
         gm.checkProfessor();
-        assertTrue(gm.getPlayers().get(0).getProfessors().size() == 0);
+        assertEquals(0, gm.getPlayers().get(0).getProfessors().size());
         assertTrue(gm.getPlayers().get(1).getProfessors().size() == 1 && gm.getPlayers().get(1).getProfessors().get(0).getCreature().equals(Creature.RED_DRAGONS));
     }
     /**
@@ -391,14 +391,16 @@ public class GameModelTest {
         gm.checkProfessor();
         assertEquals(0, gm.getPlayers().get(1).getProfessors().size());
         assertEquals(1, gm.getPlayers().get(0).getProfessors().size());
-        room.addStudent(new Student(Creature.YELLOW_GNOMES));
-        room.addStudent(new Student(Creature.YELLOW_GNOMES));
-        players.get(0).setDiningRoom(room);
+        DiningRoom room1 = new DiningRoom();
+        room1.addStudent(new Student(Creature.RED_DRAGONS));
+        room1.addStudent(new Student(Creature.YELLOW_GNOMES));
+        room1.addStudent(new Student(Creature.YELLOW_GNOMES));
+        players.get(0).setDiningRoom(room1);
         gm.setCurrentPlayerIndex(0);
         gm.setPlayers(players);
         gm.checkProfessor();
         assertEquals(2, gm.getPlayers().get(0).getProfessors().size());
-        assertEquals(gm.getPlayers().get(0).getProfessors().get(1).getCreature(), Creature.YELLOW_GNOMES);
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(0).getCreature(), Creature.YELLOW_GNOMES);
         DiningRoom diningRoom = new DiningRoom();
         diningRoom.addStudent(new Student(Creature.YELLOW_GNOMES));
         diningRoom.addStudent(new Student(Creature.YELLOW_GNOMES));
@@ -407,7 +409,7 @@ public class GameModelTest {
         gm.setPlayers(players);
         gm.checkProfessor();
         assertEquals(2, gm.getPlayers().get(0).getProfessors().size());
-        assertEquals(gm.getPlayers().get(0).getProfessors().get(1).getCreature(), Creature.YELLOW_GNOMES);
+        assertEquals(gm.getPlayers().get(0).getProfessors().get(0).getCreature(), Creature.YELLOW_GNOMES);
 
     }
 }
