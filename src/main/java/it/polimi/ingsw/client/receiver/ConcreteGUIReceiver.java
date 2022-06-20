@@ -71,10 +71,14 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
         cs.setCurrentPlayedCharacter(character);
         if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
             Platform.runLater(() -> clientGui.characterNeedsSourceCreaturesAndDestination());
-        }else if(character.isNeedsIslandIndex()){
+        }else if(character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()){
+            Platform.runLater(() -> clientGui.characterNeedsSwapCreatures());
+        } else if(character.isNeedsIslandIndex()){
             Platform.runLater(() -> clientGui.characterNeedsIslandIndex());
         }else if(character.isNeedsMnMovements()){
             Platform.runLater(() -> clientGui.characterNeedsMMNMovements());
+        }else if(character.isNeedsSourceCreature()){
+            Platform.runLater(() -> clientGui.characterNeedsSourceCreature());
         }
     }
 }

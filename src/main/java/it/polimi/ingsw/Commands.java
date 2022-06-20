@@ -26,4 +26,7 @@ public class Commands {
     public static String fourthWizardCode = "4";
     public static String basicRulesCode = "0";
     public static String advancedRulesCode = "1";
+    public static final String firstPostmanCode = "0";
+    public static final String secondPostmanCode = "1";
+    public static final String thirdPostmanCode = "2";
 }

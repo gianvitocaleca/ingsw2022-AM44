@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.GUI;
 
+import it.polimi.ingsw.Commands;
 import it.polimi.ingsw.client.ClientState;
 import it.polimi.ingsw.client.sender.AbstractSender;
 import it.polimi.ingsw.client.sender.ConcreteGUISender;
@@ -49,6 +50,7 @@ public class ClientGui extends Application {
     private ClientState clientState;
     private GUIPhases guiPhases = GUIPhases.SELECT_CREATURE;
     private String createdCommand = "";
+    private int creaturesToSwap = 1;
     private ShowModelPayload modelCache;
 
     /**
@@ -707,6 +709,18 @@ public class ClientGui extends Application {
                     createdCommand = selectCreatureCode;
                     createdCommand += creatureCode(c);
                     guiPhases = GUIPhases.SELECT_DESTINATION_ISLAND;
+                }else if(guiPhases == GUIPhases.SELECT_SOURCE_CREATURE){
+                    createdCommand += creatureCode(c);
+                    guiEvents.add(createdCommand);
+                    createdCommand = "";
+                }else if(guiPhases == GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP){
+                    if(creaturesToSwap<= clientState.getCurrentPlayedCharacter().getMaxMoves()){
+                      createdCommand += creatureCode(c);
+                      if(creaturesToSwap%clientState.getCurrentPlayedCharacter().getMaxMoves() != 0){
+                          createdCommand += creatureSeparator;
+                      }
+                      creaturesToSwap ++;
+                    }
                 }
 
             });
@@ -1245,17 +1259,88 @@ public class ClientGui extends Application {
     }
 
     public void characterNeedsMMNMovements() {
-        int defaultChoice = 0;
-        List<Integer> numToChoose = new ArrayList<>();
-        for (int i = 0; i <= clientState.getCurrentPlayedCharacter().getMaxMoves(); i++) {
-            numToChoose.add(i);
-        }
-        String string = "Select the number of steps you want mother nature to do.";
-        ChoiceDialog<Integer> choiceDialog = new ChoiceDialog(defaultChoice, numToChoose);
-        createdCommand += String.valueOf(choiceDialog.getSelectedItem());
-        choiceDialog.setHeaderText(string);
-        choiceDialog.setTitle("Use Effect of : " + clientState.getCurrentPlayedCharacter());
-        choiceDialog.showAndWait();
+        Text text = new Text("Select the number of steps you want mother nature to do.");
+        text.setStyle(bodyFont);
+        guiPhases = GUIPhases.SELECT_MMN_MOVEMENTS;
+        ChoiceBox<String> prompt = new ChoiceBox<>();
+        prompt.getItems().addAll(firstPostmanCode, secondPostmanCode, thirdPostmanCode);
+        Button button = new Button();
+        button.setText("Confirm");
+        button.setOnAction(e -> {
+            switch(prompt.getValue()){
+                case firstPostmanCode:
+                    createdCommand += firstPostmanCode;
+                    break;
+                case secondPostmanCode:
+                    createdCommand += secondPostmanCode;
+                    break;
+                case thirdPostmanCode:
+                    createdCommand += thirdPostmanCode;
+                    break;
+            }
+            guiEvents.add(createdCommand);
+            guiPhases = GUIPhases.END;
+            createdCommand = "";
+        });
+        HBox postmanSelection = new HBox(text,prompt,button);
+        root.setBottom(postmanSelection);
+    }
+
+    public void characterNeedsSourceCreature() {
+        String string = "Select a source creature";
+        guiPhases = GUIPhases.SELECT_SOURCE_CREATURE;
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        a.setTitle(gameTitle);
+        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.showAndWait();
+    }
+
+    public void characterNeedsSwapCreatures() {
+        String string = "Select at most " + clientState.getCurrentPlayedCharacter().getMaxMoves()
+                + " creatures from character";
+        guiPhases = GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP;
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        createdCommand += selectCreatureText + commandSeparator;
+        a.setHeaderText("Use the effect of : "+ clientState.getCurrentPlayedCharacter());
+        a.setTitle(gameTitle);
+        a.showAndWait();
+        createSwapButton(true);
+    }
+
+    private void createSwapButton(boolean isFirstSelection){
+        Button button = new Button();
+        button.setText("Confirm the selected creatures");
+        button.setOnAction(e -> {
+            if(isFirstSelection){
+                createdCommand += commandSeparator + selectDestinationText + commandSeparator;
+                creaturesToSwap = 1;
+                createAlertForSwapCommand();
+            }else{
+                guiEvents.add(createdCommand);
+                createdCommand = "";
+                guiPhases = GUIPhases.END;
+                root.setBottom(new HBox());
+                creaturesToSwap = 1;
+            }
+
+        });
+        HBox postmanSelection = new HBox(button);
+        root.setBottom(postmanSelection);
+    }
+
+    private void createAlertForSwapCommand() {
+        String string = "Select creatures from destination";
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                string,
+                ButtonType.OK);
+        createSwapButton(false);
+        a.setHeaderText("Use the effect of : "+ clientState.getCurrentPlayedCharacter());
+        a.setTitle(gameTitle);
+        a.showAndWait();
     }
 }
 
