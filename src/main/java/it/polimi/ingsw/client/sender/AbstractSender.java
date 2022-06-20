@@ -259,7 +259,7 @@ public abstract class AbstractSender {
         List<Creature> creatureList = new ArrayList<>();
         creatureList.add(creature);
         return gson.toJson(new Message(cs.getHeaders(),
-                new CharactersParametersPayload(creatureList, island, 0, new ArrayList<>())));
+                new CharactersParametersPayload(creatureList, island-1, 0, new ArrayList<>())));
     }
 
     private String badGuysHandler() {

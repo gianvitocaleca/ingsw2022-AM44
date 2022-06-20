@@ -149,9 +149,11 @@ public class NetworkState {
 
     public synchronized Optional<SocketID> reconnectPlayer(SocketID socketID){
         Optional<SocketID> socketIDOptional = Optional.empty();
-        for (SocketID s : socketIDList) {
+        for(int i=0; i<socketIDList.size();i++){
+            SocketID s = socketIDList.get(i);
             if (!s.isConnected()) {
                 s.setSocket(socketID.getSocket());
+                s.setId(socketID.getId());
                 s.setConnected(true);
                 if(getNumberOfConnectedSocket()==numberOfPlayers){
                     serverPhase = ServerPhases.GAME;
@@ -159,7 +161,7 @@ public class NetworkState {
                 socketIDOptional = Optional.of(s);
             }
         }
-        disconnectSocketId(socketID.getId());
+        socketIDList.remove(socketID);
         return socketIDOptional;
     }
 
