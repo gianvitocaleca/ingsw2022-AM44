@@ -38,7 +38,7 @@ public class GameModel implements Playable {
     public static final int TWO_PLAYERS_CAPACITY = 7;
     public static final int TWO_PLAYERS_NUMBER_OF_TOWERS = 8;
     public static final int THREE_PLAYERS_NUMBER_OF_TOWERS = 6;
-    public static final int ADVANCED_RULES_STARTING_COINS = 1;
+    public static final int ADVANCED_RULES_STARTING_COINS = 50;
     private Table table;
     private final int numberOfPlayers;
     private List<Player> players;
@@ -482,7 +482,9 @@ public class GameModel implements Playable {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
         List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
-        for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
+        names.remove(Name.HERALD);
+        characterList.add(ccc.createCharacter(Name.HERALD,this));
+        for (int i = 1; i < NUMBER_OF_CHARACTERS; i++) {
             characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
         return characterList;
@@ -549,8 +551,8 @@ public class GameModel implements Playable {
             if(professorOwner.isPresent()){
                 Player profOwner = professorOwner.get();
                 for (Player p : players) {
-
                     if (isFarmer && players.get(currentPlayerIndex).getUsername().equals(p.getUsername())) {
+                        System.out.println("Entrato nel calcolo farmer");
                         if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >=
                                 profOwner.getDiningRoom().getNumberOfStudentsByCreature(c)) {
                             profOwner = p;
@@ -571,21 +573,6 @@ public class GameModel implements Playable {
                 }
 
             }
-
-            //find who has more students of creature c
-            //Player hasMoreStudents = players.get(0);
-
-            /*if (professorOwner.isPresent()) {
-                if (!(professorOwner.get().getUsername().equals(hasMoreStudents.getUsername()))) {
-
-                    hasMoreStudents.addProfessor(professorOwner.get().removeProfessor(c));
-                }
-
-            } else {
-                if (hasMoreStudents.getDiningRoom().getNumberOfStudentsByCreature(c) > 0) {
-                    hasMoreStudents.addProfessor(new Professor(c));
-                }
-            }*/
         }
         ShowModelPayload payload = showModelPayloadCreator();
         payload.setUpdatePlayersDiningRoom();
@@ -653,21 +640,18 @@ public class GameModel implements Playable {
             temp = characters.get(playedCharacter).effect(answer);
         } catch (UnplayableEffectException e) {
             //get character cost (it already handles the updated cost)
+            characters.get(playedCharacter).unsetUpdatedCost();
             int toAddCoins = characters.get(playedCharacter).getCost();
             //player pays for the character
             for(int i=0; i<toAddCoins;i++){
                 players.get(currentPlayerIndex).addCoin();
                 table.removeCoin();
             }
-            characters.get(playedCharacter).unsetUpdatedCost();
             throw new UnplayableEffectException();
         }
         if (temp) {
             ShowModelPayload payload = showModelPayloadCreator();
-            payload.setUpdatePlayedCharacter();
-            payload.setUpdateIslands();
-            payload.setUpdatePlayersEntrance();
-            payload.setUpdatePlayersDiningRoom();
+            payload.setUpdateAll();
             showModel(payload);
         }
         return temp;

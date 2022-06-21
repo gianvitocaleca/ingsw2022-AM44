@@ -35,7 +35,10 @@ public abstract class InfluenceEvaluator {
                     }
                 }
             }
+        }else{
+            model.setTable(table);
         }
+
     }
 
     abstract boolean evaluation();

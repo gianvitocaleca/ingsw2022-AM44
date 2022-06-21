@@ -89,6 +89,7 @@ public abstract class AbstractReceiver extends Thread {
                 break;
             case action:
                 //PRINT MODEL
+                System.out.println("Mi è arrivato un messaggio di fase azione");
                 printModel();
                 actionPayload = gson.fromJson(jsonPayload, ActionPayload.class);
                 cs.getModelPayload().setCurrentPlayerUsername(actionPayload.getCurrentPlayer());

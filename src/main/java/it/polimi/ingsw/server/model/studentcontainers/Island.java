@@ -31,6 +31,7 @@ public class Island extends StudentContainer {
 
     public void removeNoEntry() {
         numberOfNoEntries -= 1;
+        System.out.println("ho tolto la no entry all'isola corrente");
     }
 
     /**
