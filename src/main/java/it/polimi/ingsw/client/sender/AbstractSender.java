@@ -119,7 +119,8 @@ public abstract class AbstractSender {
                     if (cs.getCurrentPlayedCharacter().equals(Name.HERBALIST) ||
                             cs.getCurrentPlayedCharacter().equals(Name.HERALD)) {
                         return createCharIntMessage(selectedNumber-1);
-                    }else if(cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)){
+                    }else if(
+                    cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)){
                         return createCharIntMessage(selectedNumber);
                     }
                 } catch (NumberFormatException ignore) {

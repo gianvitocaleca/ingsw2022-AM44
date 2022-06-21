@@ -15,6 +15,7 @@ public class ClientGuiMain {
     public static void start(String address, int port) {
         ClientGui.setAddress(address);
         ClientGui.setPort(port);
+        System.setProperty("glass.win.uiScale", "150%");
         Application.launch(ClientGui.class);
     }
 
