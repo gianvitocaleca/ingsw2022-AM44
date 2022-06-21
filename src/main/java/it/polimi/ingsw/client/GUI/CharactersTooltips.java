@@ -3,6 +3,12 @@ package it.polimi.ingsw.client.GUI;
 import it.polimi.ingsw.server.model.enums.Name;
 
 public class CharactersTooltips {
+    /**
+     * Gets the correct tooltip text for each character
+     *
+     * @param name is the given character
+     * @return is the tooltip string
+     */
     public static String getToolTip(Name name) {
         switch (name) {
             case PRINCESS:

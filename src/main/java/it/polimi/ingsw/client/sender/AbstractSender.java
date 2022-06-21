@@ -42,6 +42,11 @@ public abstract class AbstractSender {
         socket = new Socket();
     }
 
+    /**
+     * Starts the client handler thread
+     *
+     * @throws IOException
+     */
     public void startClient() throws IOException {
         cs = new ClientState();
         socket = new Socket(ip, port);
@@ -53,6 +58,12 @@ public abstract class AbstractSender {
 
     abstract void play(Socket socket);
 
+    /**
+     * Converts the input string into the matching json format.
+     *
+     * @param string is the user input
+     * @return is the json formatted text
+     */
     protected String encodeMessage(String string) {
         if (string == null) return error;
         if (string.equalsIgnoreCase(quitCommandText)) {
@@ -181,7 +192,12 @@ public abstract class AbstractSender {
         }
     }
 
-
+    /**
+     * Converts the provided string into the correct creature
+     *
+     * @param provided is the input string
+     * @return is the matching creature
+     */
     private Optional<Creature> creatureFromCli(String provided) {
         Optional<Creature> ans = Optional.empty();
         switch (provided) {
@@ -206,6 +222,12 @@ public abstract class AbstractSender {
         return ans;
     }
 
+    /**
+     * Used to convert the given input into the correct json format.
+     *
+     * @param result is the input already split by the separator
+     * @return is the formatted output
+     */
     private String createMoveStudentMessage(List<String> result) {
         Optional<Creature> selection = creatureFromCli(result.get(1).toLowerCase());
         if (selection.isEmpty()) {
@@ -227,6 +249,15 @@ public abstract class AbstractSender {
                         false, isDiningRoomDestination, selection.get(), providedDestination - 1)));
     }
 
+    /**
+     * Used to convert the given input into the correct json format.
+     *
+     * @param result is the input already split by the separator
+     * @param isMMN  if mother nature movement was allowed
+     * @param isSC   if selection of cloud was allowed
+     * @param isPC   if selection of character was allowed
+     * @return is the formatted output
+     */
     private String createMessage(List<String> result, boolean isMMN, boolean isSC, boolean isPC) {
         int providedIndex;
         try {
@@ -259,7 +290,7 @@ public abstract class AbstractSender {
         List<Creature> creatureList = new ArrayList<>();
         creatureList.add(creature);
         return gson.toJson(new Message(cs.getHeaders(),
-                new CharactersParametersPayload(creatureList, island-1, 0, new ArrayList<>())));
+                new CharactersParametersPayload(creatureList, island - 1, 0, new ArrayList<>())));
     }
 
     private String badGuysHandler() {

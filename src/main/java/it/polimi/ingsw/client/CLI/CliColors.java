@@ -37,10 +37,16 @@ public enum CliColors {
 
     private final String code;
 
+    /**
+     * @param code is the escape sequence
+     */
     CliColors(String code) {
         this.code = code;
     }
 
+    /**
+     * @return is the escape sequence
+     */
     public String getCode() {
         return code;
     }

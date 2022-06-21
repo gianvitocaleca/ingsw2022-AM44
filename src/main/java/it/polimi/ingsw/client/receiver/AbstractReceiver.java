@@ -43,6 +43,12 @@ public abstract class AbstractReceiver extends Thread {
         System.exit(0);
     }
 
+    /**
+     * Converts the string into the matching payload and calls the method.
+     * The matching is header based.
+     *
+     * @param socketLine is the message from the server
+     */
     private void translateMessage(String socketLine) {
         JsonObject jsonTree = JsonParser.parseString(socketLine).getAsJsonObject();
         JsonElement jsonHeader = jsonTree.get("header");
@@ -118,12 +124,12 @@ public abstract class AbstractReceiver extends Thread {
                 break;
             case winnerPlayer:
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
-                stringMessage(Headers.winnerPlayer,stringPayload);
+                stringMessage(Headers.winnerPlayer, stringPayload);
                 break;
             case reconnection:
                 reconnectionPayload = gson.fromJson(jsonPayload, ReconnectionPayload.class);
                 reconnectPlayer(reconnectionPayload);
-                System.out.println("Mi sono riconnesso e il mio username è : " +reconnectionPayload.getUsername() );
+                System.out.println("Mi sono riconnesso e il mio username è : " + reconnectionPayload.getUsername());
         }
     }
 

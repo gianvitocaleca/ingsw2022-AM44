@@ -35,13 +35,18 @@ public class ConcreteGUISender extends AbstractSender {
         play(socket);
     }
 
+    /**
+     * Starts to listen for user inputs from a queue, until the connection is closed
+     *
+     * @param socket
+     */
     @Override
     void play(Socket socket) {
         while (!ps.isCloseConnection()) {
             String result;
             do {
                 inputLine = guiEvents.poll();
-                if(inputLine!=null){
+                if (inputLine != null) {
                     System.out.println(inputLine);
 
                 }
@@ -56,13 +61,14 @@ public class ConcreteGUISender extends AbstractSender {
                 break;
             }
         }
+        /*
         while (!ps.isCloseConnection()) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
+        }*/
         socketOut.close();
         try {
             socket.close();

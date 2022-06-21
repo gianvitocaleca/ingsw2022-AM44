@@ -21,6 +21,12 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
         this.clientGui = clientGui;
     }
 
+    /**
+     * Calls the runLater method to update JFX graphics
+     *
+     * @param header  is the given payload header
+     * @param payload is the given payload, which contains the updated information
+     */
     @Override
     void stringMessage(Headers header, StringPayload payload) {
         switch (header) {
@@ -44,46 +50,65 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
                 Platform.runLater(() -> clientGui.setMoveStudents());
                 break;
             case winnerPlayer:
-                Platform.runLater(()-> clientGui.winnerAlert(payload.getString()));
+                Platform.runLater(() -> clientGui.winnerAlert(payload.getString()));
                 break;
         }
     }
 
+    /**
+     * Updates the game pane
+     */
     @Override
     void printModel() {
         Platform.runLater(() -> clientGui.updateClientState(cs));
         Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelPayload()));
     }
 
+    /**
+     * Updates the game pane, during planning phase
+     */
     @Override
     void planning() {
         Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelPayload()));
     }
 
+    /**
+     * Updates the game pane, during action phase
+     */
     @Override
     void action() {
         Platform.runLater(() -> clientGui.setMoveStudents());
         Platform.runLater(() -> clientGui.gamePaneGenerator(cs.getModelPayload()));
     }
 
+    /**
+     * Calls different methods based on the type of character played
+     *
+     * @param cpp is the payload with the character played
+     */
     @Override
     void characterParameterSelection(CharacterPlayedPayload cpp) {
         Name character = cpp.getCharactersName();
         cs.setCurrentPlayedCharacter(character);
         if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
             Platform.runLater(() -> clientGui.characterNeedsSourceCreaturesAndDestination());
-        }else if(character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()){
+        } else if (character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()) {
             Platform.runLater(() -> clientGui.characterNeedsSwapCreatures());
-        } else if(character.isNeedsIslandIndex()){
+        } else if (character.isNeedsIslandIndex()) {
             Platform.runLater(() -> clientGui.characterNeedsIslandIndex());
-        }else if(character.isNeedsMnMovements()){
+        } else if (character.isNeedsMnMovements()) {
             Platform.runLater(() -> clientGui.characterNeedsMMNMovements());
-        }else if(character.isNeedsSourceCreature()){
+        } else if (character.isNeedsSourceCreature()) {
             Platform.runLater(() -> clientGui.characterNeedsSourceCreature());
         }
     }
 
-    void reconnectPlayer(ReconnectionPayload reconnectionPayload){
+    /**
+     * Used to update the player username when reconnection happens
+     *
+     * @param reconnectionPayload is the payload with the username information
+     */
+    void reconnectPlayer(ReconnectionPayload reconnectionPayload) {
         cs.setUsername(reconnectionPayload.getUsername());
         clientGui.setMY_USERNAME(reconnectionPayload.getUsername());
     }

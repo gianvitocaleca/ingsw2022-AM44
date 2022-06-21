@@ -14,8 +14,9 @@ public class ConcreteCLISender extends AbstractSender {
     private final String error = "error";
 
     public ConcreteCLISender(String ip, int port) {
-        super(ip,port);
+        super(ip, port);
     }
+
 
     @Override
     public void startClient() throws IOException {
@@ -28,8 +29,14 @@ public class ConcreteCLISender extends AbstractSender {
         play(socket);
     }
 
+    /**
+     * Starts to listen for player inputs, until the connection is closed
+     * The command is formatted if it's allowed and correct.
+     *
+     * @param socket
+     */
     public void play(Socket socket) {
-        if(!cs.getDisconnection()){
+        if (!cs.getDisconnection()) {
             while (!ps.isCloseConnection()) {
                 String result;
                 do {

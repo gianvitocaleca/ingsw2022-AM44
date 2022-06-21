@@ -28,6 +28,12 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         super(socketIn, cs, ps);
     }
 
+    /**
+     * Prints the payload content,
+     *
+     * @param header  the given payload header
+     * @param payload the given payload
+     */
     @Override
     void stringMessage(Headers header, StringPayload payload) {
         if (header.equals(Headers.winnerPlayer)) {
@@ -36,6 +42,10 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         System.out.println(payload.getString());
     }
 
+    /**
+     * Prints the payload to the standard output.
+     */
+    @Override
     void printModel() {
         modelPayload = cs.getModelPayload();
         if (!OS.isWindows()) {
@@ -49,6 +59,9 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         }
     }
 
+    /**
+     * Prints the information for the player during the planning phase
+     */
     @Override
     void planning() {
         System.out.println("Which assistant do you want to play? ");
@@ -62,6 +75,9 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         }
     }
 
+    /**
+     * Prints the information for the player during the action phase
+     */
     @Override
     void action() {
         System.out.println(":=: Allowed actions in this turn :=:");
@@ -91,6 +107,11 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         }
     }
 
+    /**
+     * Prints the information for the player during the character parameter selection phase
+     *
+     * @param cpp is the payload that contains the character parameters selection information
+     */
     @Override
     void characterParameterSelection(CharacterPlayedPayload cpp) {
         Name character = cpp.getCharactersName();
@@ -117,25 +138,38 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     /**
      * This method sets the username of the client after a reconnection.
      * The client knows his username in this way.
+     *
      * @param reconnectionPayload is the object that contains information about client's username.
      */
-    void reconnectPlayer(ReconnectionPayload reconnectionPayload){
+    void reconnectPlayer(ReconnectionPayload reconnectionPayload) {
         cs.setUsername(reconnectionPayload.getUsername());
     }
 
+    /**
+     * Prints the player's information on the standard output
+     */
     private void printPlayers() {
         printer.printPlayers(cs.getModelPayload());
     }
 
 
+    /**
+     * Prints the island's information on the standard output
+     */
     private void printIslands() {
         printer.printIslands(cs.getModelPayload());
     }
 
+    /**
+     * Prints the cloud's information on the standard output
+     */
     private void printClouds() {
         printer.printClouds(cs.getModelPayload());
     }
 
+    /**
+     * Prints the table's information on the standard output
+     */
     private void printTable() {
         printer.printTable(cs.getModelPayload());
     }

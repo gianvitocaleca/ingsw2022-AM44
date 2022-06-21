@@ -210,7 +210,10 @@ public class ClientGui extends Application {
         root.setCenter(box);
     }
 
-    public void setMY_USERNAME(String username){
+    /**
+     * @param username is the username to be set
+     */
+    public void setMY_USERNAME(String username) {
         MY_USERNAME = username;
     }
 
@@ -663,6 +666,12 @@ public class ClientGui extends Application {
         return characters;
     }
 
+    /**
+     * Creates the no entry container for the characters
+     *
+     * @param noEntry is the number of no entries to show
+     * @return is the number of no entries and image container
+     */
     private HBox createNoEntryCharacter(int noEntry) {
         HBox deactivators = new HBox();
         ImageView deactivatorImage = new ImageView(new Image("noEntry.png"));
@@ -1199,19 +1208,19 @@ public class ClientGui extends Application {
     private void createIslandCommand(int i) {
         if (guiPhases == GUIPhases.SELECT_DESTINATION) {
             createdCommand += commandSeparator;
-            createdCommand += String.valueOf(i+1);
+            createdCommand += String.valueOf(i + 1);
             guiEvents.add(createdCommand);
             createdCommand = "";
-        }else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
+        } else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
             createdCommand += selectDestinationIslandCode;
-            createdCommand += String.valueOf(i+1);
+            createdCommand += String.valueOf(i + 1);
             guiEvents.add(createdCommand);
             createdCommand = "";
         } else if (GUIPhases.SELECT_ISLAND == guiPhases) {
             createdCommand += String.valueOf(i);
             guiEvents.add(createdCommand);
             createdCommand = "";
-        }else if (clientState.isMoveMotherNature()) {
+        } else if (clientState.isMoveMotherNature()) {
             int mnPosition = clientState.getModelPayload().getMotherNature();
             createdCommand += moveMotherNatureCode + commandSeparator;
             createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
@@ -1285,6 +1294,9 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
+    /**
+     * Shows the alert to the player to inform the character behaviour
+     */
     public void characterNeedsIslandIndex() {
         String string = "Select an island";
         guiPhases = GUIPhases.SELECT_ISLAND;
@@ -1296,6 +1308,10 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
+    /**
+     * Shows the alert to the player to inform the character behaviour.
+     * Creates the confirm button for the provided selection.
+     */
     public void characterNeedsMMNMovements() {
         Text text = new Text("Select the number of steps you want mother nature to do.");
         text.setStyle(bodyFont);
@@ -1325,6 +1341,9 @@ public class ClientGui extends Application {
         root.setBottom(postmanSelection);
     }
 
+    /**
+     * Shows the alert to the player to inform the character behaviour
+     */
     public void characterNeedsSourceCreature() {
         String string = "Select a source creature";
         guiPhases = GUIPhases.SELECT_SOURCE_CREATURE;
@@ -1336,6 +1355,10 @@ public class ClientGui extends Application {
         a.showAndWait();
     }
 
+    /**
+     * Shows the alert to the player to inform the character behaviour.
+     * Creates the swap button.
+     */
     public void characterNeedsSwapCreatures() {
         String string = "Select at most " + clientState.getCurrentPlayedCharacter().getMaxMoves()
                 + " creatures from character";
@@ -1350,6 +1373,11 @@ public class ClientGui extends Application {
         createSwapButton(true);
     }
 
+    /**
+     * Creates the swap button.
+     *
+     * @param isFirstSelection distinguishes between first and second selection phase
+     */
     private void createSwapButton(boolean isFirstSelection) {
         Button button = new Button();
         button.setText("Confirm the selected creatures");
@@ -1371,6 +1399,9 @@ public class ClientGui extends Application {
         root.setBottom(postmanSelection);
     }
 
+    /**
+     * Creates the second alert for the swap character
+     */
     private void createAlertForSwapCommand() {
         String string = "Select creatures from destination";
         Alert a = new Alert(Alert.AlertType.INFORMATION,
