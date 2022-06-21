@@ -1174,7 +1174,7 @@ public class ClientGui extends Application {
             guiEvents.add(createdCommand);
             createdCommand = "";
         } else if (GUIPhases.SELECT_ISLAND == guiPhases) {
-            createdCommand += String.valueOf(i);
+            createdCommand += String.valueOf(i+1);
             guiEvents.add(createdCommand);
             createdCommand = "";
         }else if (clientState.isMoveMotherNature()) {

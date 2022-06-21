@@ -482,9 +482,11 @@ public class GameModel implements Playable {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
         List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
-        names.remove(Name.HERALD);
-        characterList.add(ccc.createCharacter(Name.HERALD,this));
-        for (int i = 1; i < NUMBER_OF_CHARACTERS; i++) {
+        names.remove(Name.CENTAUR);
+        names.remove(Name.FUNGARO);
+        characterList.add(ccc.createCharacter(Name.CENTAUR,this));
+        characterList.add(ccc.createCharacter(Name.FUNGARO,this));
+        for (int i = 2; i < NUMBER_OF_CHARACTERS; i++) {
             characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
         return characterList;
