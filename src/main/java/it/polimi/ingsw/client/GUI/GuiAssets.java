@@ -56,6 +56,6 @@ public class GuiAssets {
     public static int islandContentRadius = 55;
     public static int islandContentComponents = 7;
     public static int cloudContentRadius = 40;
-    public static int cloudContentComponents = 5;
+    public static int cloudContentComponents = 3;
     public static int noErrorCode = 0;
 }

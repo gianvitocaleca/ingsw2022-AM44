@@ -504,8 +504,8 @@ public class ClientGui extends Application {
             HBox creature = creatureCounter(c, num);
             if (creature != null) {
                 creature.relocate(
-                        getCoordinatesX(0, radius, i, numOfComponents),
-                        getCoordinatesY(0, radius, i, numOfComponents));
+                        getCoordinatesX(5, radius, i, numOfComponents),
+                        getCoordinatesY(5, radius, i, numOfComponents));
             }
             hBoxComponents.add(creature);
             i++;
