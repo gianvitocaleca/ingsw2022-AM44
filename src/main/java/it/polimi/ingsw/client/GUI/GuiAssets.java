@@ -10,7 +10,7 @@ public class GuiAssets {
 
     public static final String selectCreatureCode = selectCreatureText + commandSeparator;
     public static String gameTitle = "Eryantis";
-    public static Color backgroundColor = Color.rgb(131, 187, 218);
+    public static Color backgroundColor = Color.rgb(123, 185, 230);
     public static Font titleFont = Font.font("Papyrus", FontWeight.LIGHT, 160);
     public static String joinButton = "Join";
     public static String twoPlayersButton = "Two Players";
@@ -46,12 +46,14 @@ public class GuiAssets {
     public static int playerRadius = 25;
     public static int playerContentHeight = 20;
     public static int playerContentWidth = 20;
+    public static int tableTowerWidth = 15;
+    public static int tableTowerHeight = tableTowerWidth * 2;
     public static int centerX = 100;
     public static int centerY = 100;
     public static int islandRadius = 300;
     public static int cloudRadius = 100;
-    public static int islandContentCenter = 0;
-    public static int islandContentRadius = 50;
+    public static int islandContentCenter = 15;
+    public static int islandContentRadius = 55;
     public static int islandContentComponents = 7;
     public static int cloudContentRadius = 40;
     public static int cloudContentComponents = 5;

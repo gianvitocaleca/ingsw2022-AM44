@@ -361,7 +361,7 @@ public class ClientGui extends Application {
                     island = new Image("island3.png");
                     break;
                 default:
-                    island = new Image("new_island.png");
+                    island = new Image("island1.png");
             }
             ImageView islandImageView = new ImageView(island);
             islandImageView.setFitWidth(islandWidth);
@@ -777,7 +777,7 @@ public class ClientGui extends Application {
                 }
             });
             container.setOnMouseExited(e -> {
-                container.setStyle(noBorder);
+                container.setStyle(borderUnselected);
             });
             creatureImages.add(container);
         }
@@ -1048,8 +1048,8 @@ public class ClientGui extends Application {
             default:
                 return null;
         }
-        towerImage.setFitWidth(playerContentWidth);
-        towerImage.setFitHeight(playerContentHeight * 2);
+        towerImage.setFitWidth(tableTowerWidth);
+        towerImage.setFitHeight(tableTowerHeight);
         return counterText(num, towerImage);
     }
 
@@ -1217,7 +1217,7 @@ public class ClientGui extends Application {
             guiEvents.add(createdCommand);
             createdCommand = "";
         } else if (GUIPhases.SELECT_ISLAND == guiPhases) {
-            createdCommand += String.valueOf(i+1);
+            createdCommand += String.valueOf(i + 1);
             guiEvents.add(createdCommand);
             createdCommand = "";
         } else if (clientState.isMoveMotherNature()) {
@@ -1361,7 +1361,7 @@ public class ClientGui extends Application {
      */
     public void characterNeedsSwapCreatures() {
         String string = "Select at most " + clientState.getCurrentPlayedCharacter().getMaxMoves()
-                + " creatures from character";
+                + " creatures from the source";
         guiPhases = GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP;
         Alert a = new Alert(Alert.AlertType.INFORMATION,
                 string,
