@@ -211,6 +211,10 @@ public class ClientGui extends Application {
         root.setCenter(box);
     }
 
+    public void setMY_USERNAME(String username){
+        MY_USERNAME = username;
+    }
+
     /**
      * Creates the Choice Box to select the player's color
      */
