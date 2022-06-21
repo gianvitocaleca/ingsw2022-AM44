@@ -106,8 +106,9 @@ public abstract class AbstractSender {
                 try {
                     selectedNumber = Integer.parseInt(result.get(0));
                     if (cs.getCurrentPlayedCharacter().equals(Name.HERBALIST) ||
-                            cs.getCurrentPlayedCharacter().equals(Name.HERALD) ||
-                            cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)) {
+                            cs.getCurrentPlayedCharacter().equals(Name.HERALD)) {
+                        return createCharIntMessage(selectedNumber-1);
+                    }else if(cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)){
                         return createCharIntMessage(selectedNumber);
                     }
                 } catch (NumberFormatException ignore) {
