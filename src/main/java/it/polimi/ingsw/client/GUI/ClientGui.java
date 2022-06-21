@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.GUI;
 
-import it.polimi.ingsw.Commands;
 import it.polimi.ingsw.client.ClientState;
 import it.polimi.ingsw.client.sender.AbstractSender;
 import it.polimi.ingsw.client.sender.ConcreteGUISender;
@@ -449,18 +448,39 @@ public class ClientGui extends Application {
             i = componentsDisposition(hBoxComponents, islandContentRadius, islandContentComponents, i, c, num);
 
         }
-        if (!hasNoTowers(modelCache.getIslands().get(j))) {
+        if (hasTowers(modelCache.getIslands().get(j))) {
             HBox tower = towerCounter(modelCache.getIslands().get(j).getColorOfTowers(), modelCache.getIslands().get(j).getNumberOfTowers());
             if (tower != null) {
-
                 tower.relocate(
                         getCoordinatesX(islandContentCenter, islandContentRadius, i, islandContentComponents),
                         getCoordinatesY(islandContentCenter, islandContentRadius, i, islandContentComponents));
             }
             hBoxComponents.add(tower);
         }
+        i++;
+        if (hasNoEntry(modelCache.getIslands().get(j))) {
+            ImageView noEntryImage = new ImageView(new Image("noEntry.png"));
+            noEntryImage.setFitHeight(playerContentHeight);
+            noEntryImage.setFitWidth(playerContentWidth);
+            HBox noEntry = counterText(modelCache.getIslands().get(j).getNumberOfNoEntries(), noEntryImage);
+            noEntry.relocate(
+                    getCoordinatesX(islandContentCenter, islandContentRadius, i, islandContentComponents),
+                    getCoordinatesY(islandContentCenter, islandContentRadius, i, islandContentComponents));
+            hBoxComponents.add(noEntry);
+        }
         ans.getChildren().addAll(hBoxComponents);
         return ans;
+    }
+
+    /**
+     * @param island
+     * @return is true if the island has one or more noEntry
+     */
+    private boolean hasNoEntry(Island island) {
+        if (island.getNumberOfNoEntries() > 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -492,8 +512,8 @@ public class ClientGui extends Application {
      * @param i the island
      * @return
      */
-    private boolean hasNoTowers(Island i) {
-        return i.getNumberOfTowers() == 0;
+    private boolean hasTowers(Island i) {
+        return i.getNumberOfTowers() > 0;
     }
 
     /**
@@ -612,6 +632,9 @@ public class ClientGui extends Application {
             if (c.getName().equals(Name.PRINCESS)) {
                 container.getChildren().add(createCharacterCreature(modelCache.getPrincessCreatures()));
             }
+            if (c.getName().equals(Name.HERBALIST)) {
+                container.getChildren().add(createNoEntryCharacter(modelCache.getDeactivators()));
+            }
             container.setOnMouseClicked(e -> {
                 if (clientState.isSelectCharacter()) {
                     guiEvents.add(playCharacterCode + commandSeparator + c.getIndex());
@@ -634,6 +657,17 @@ public class ClientGui extends Application {
         characters.setSpacing(smallSpacing);
         characters.setAlignment(Pos.CENTER);
         return characters;
+    }
+
+    private HBox createNoEntryCharacter(int noEntry) {
+        HBox deactivators = new HBox();
+        ImageView deactivatorImage = new ImageView(new Image("noEntry.png"));
+        deactivatorImage.setFitWidth(playerContentWidth);
+        deactivatorImage.setFitHeight(playerContentHeight);
+        Text deactivatorNumber = new Text(String.valueOf(noEntry));
+        deactivatorNumber.setStyle(bodyFont);
+        deactivators.getChildren().addAll(deactivatorImage, deactivatorNumber);
+        return deactivators;
     }
 
     /**
@@ -709,17 +743,17 @@ public class ClientGui extends Application {
                     createdCommand = selectCreatureCode;
                     createdCommand += creatureCode(c);
                     guiPhases = GUIPhases.SELECT_DESTINATION_ISLAND;
-                }else if(guiPhases == GUIPhases.SELECT_SOURCE_CREATURE){
+                } else if (guiPhases == GUIPhases.SELECT_SOURCE_CREATURE) {
                     createdCommand += creatureCode(c);
                     guiEvents.add(createdCommand);
                     createdCommand = "";
-                }else if(guiPhases == GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP){
-                    if(creaturesToSwap<= clientState.getCurrentPlayedCharacter().getMaxMoves()){
-                      createdCommand += creatureCode(c);
-                      if(creaturesToSwap%clientState.getCurrentPlayedCharacter().getMaxMoves() != 0){
-                          createdCommand += creatureSeparator;
-                      }
-                      creaturesToSwap ++;
+                } else if (guiPhases == GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP) {
+                    if (creaturesToSwap <= clientState.getCurrentPlayedCharacter().getMaxMoves()) {
+                        createdCommand += creatureCode(c);
+                        if (creaturesToSwap % clientState.getCurrentPlayedCharacter().getMaxMoves() != 0) {
+                            createdCommand += creatureSeparator;
+                        }
+                        creaturesToSwap++;
                     }
                 }
 
@@ -1267,7 +1301,7 @@ public class ClientGui extends Application {
         Button button = new Button();
         button.setText("Confirm");
         button.setOnAction(e -> {
-            switch(prompt.getValue()){
+            switch (prompt.getValue()) {
                 case firstPostmanCode:
                     createdCommand += firstPostmanCode;
                     break;
@@ -1282,7 +1316,7 @@ public class ClientGui extends Application {
             guiPhases = GUIPhases.END;
             createdCommand = "";
         });
-        HBox postmanSelection = new HBox(text,prompt,button);
+        HBox postmanSelection = new HBox(text, prompt, button);
         root.setBottom(postmanSelection);
     }
 
@@ -1305,21 +1339,21 @@ public class ClientGui extends Application {
                 string,
                 ButtonType.OK);
         createdCommand += selectCreatureText + commandSeparator;
-        a.setHeaderText("Use the effect of : "+ clientState.getCurrentPlayedCharacter());
+        a.setHeaderText("Use the effect of : " + clientState.getCurrentPlayedCharacter());
         a.setTitle(gameTitle);
         a.showAndWait();
         createSwapButton(true);
     }
 
-    private void createSwapButton(boolean isFirstSelection){
+    private void createSwapButton(boolean isFirstSelection) {
         Button button = new Button();
         button.setText("Confirm the selected creatures");
         button.setOnAction(e -> {
-            if(isFirstSelection){
+            if (isFirstSelection) {
                 createdCommand += commandSeparator + selectDestinationText + commandSeparator;
                 creaturesToSwap = 1;
                 createAlertForSwapCommand();
-            }else{
+            } else {
                 guiEvents.add(createdCommand);
                 createdCommand = "";
                 guiPhases = GUIPhases.END;
@@ -1338,7 +1372,7 @@ public class ClientGui extends Application {
                 string,
                 ButtonType.OK);
         createSwapButton(false);
-        a.setHeaderText("Use the effect of : "+ clientState.getCurrentPlayedCharacter());
+        a.setHeaderText("Use the effect of : " + clientState.getCurrentPlayedCharacter());
         a.setTitle(gameTitle);
         a.showAndWait();
     }

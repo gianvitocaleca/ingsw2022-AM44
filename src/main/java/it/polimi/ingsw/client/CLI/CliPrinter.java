@@ -43,6 +43,7 @@ public class CliPrinter {
     private final int characterStringLength = 3;
     private final int costStringLength = 8;
     private int islandStringPadding = 2;
+    private int noEntryStringLength = 5;
     private int tempStringPadding;
     private StringBuilder top;
     private StringBuilder titles;
@@ -69,7 +70,7 @@ public class CliPrinter {
             bottomMiddle = CliColors.FG_BORDER.getCode() + bottomMiddle + CliColors.RST.getCode();
             tower = "♜";
             motherNature = CliColors.FG_MN.getCode() + "♟" + CliColors.RST.getCode();
-            noEntry = CliColors.FG_RED.getCode() + "⃠" + CliColors.RST.getCode();
+            noEntry = CliColors.FG_RED.getCode() + "⊘" + CliColors.RST.getCode();
             cloud = CliColors.FG_CYAN.getCode() + "☁" + CliColors.RST.getCode();
             realCreatureStringLength = 11;
             islandStringLength = 16;
@@ -404,28 +405,38 @@ public class CliPrinter {
         }
         middle.append(rightIndex);
         middle.append(space);
-        if (OS.isWindows()) {
-            middle.append(colorToCli(color));
-        } else {
-            switch (color) {
-                case WHITE:
-                    middle.append(CliColors.FG_WHITE.getCode());
-                    break;
-                case BLACK:
-                    middle.append(CliColors.FG_BLACK.getCode());
-                    break;
-                case GREY:
-                    middle.append(CliColors.FG_GRAY.getCode());
-                    break;
-                default:
-                    middle.append(CliColors.FG_RED.getCode());
-                    break;
+        if (towers > 0) {
+            if (OS.isWindows()) {
+                middle.append(colorToCli(color));
+            } else {
+                switch (color) {
+                    case WHITE:
+                        middle.append(CliColors.FG_WHITE.getCode());
+                        break;
+                    case BLACK:
+                        middle.append(CliColors.FG_BLACK.getCode());
+                        break;
+                    case GREY:
+                        middle.append(CliColors.FG_GRAY.getCode());
+                        break;
+                    default:
+                        middle.append(CliColors.FG_RED.getCode());
+                        break;
+                }
+                middle.append(tower);
+                middle.append(CliColors.RST.getCode());
             }
-            middle.append(tower);
-            middle.append(CliColors.RST.getCode());
+        } else {
+            middle.append(space);
         }
+
         middle.append(space);
-        middle.append(towers);
+        if (towers > 0) {
+            middle.append(towers);
+        } else {
+            middle.append(space);
+        }
+
         middle.append(space);
         if (hasMotherNature) {
             middle.append(motherNature);
@@ -624,6 +635,25 @@ public class CliPrinter {
             middle.append(vertical);
             bottom.append(bottomRight);
 
+        } else if (name.equals(Name.HERBALIST)) {
+            top.append(topMiddle);
+            middle.append(vertical);
+            bottom.append(bottomMiddle);
+
+            for (int i = 0; i < noEntryStringLength; i++) {
+                top.append(horizontal);
+                bottom.append(horizontal);
+            }
+
+            middle.append(space);
+            middle.append(noEntry);
+            middle.append(space);
+            middle.append(modelPayload.getDeactivators());
+            middle.append(space);
+
+            top.append(topRight);
+            middle.append(vertical);
+            bottom.append(bottomRight);
         } else {
             top.append(topRight);
             middle.append(vertical);

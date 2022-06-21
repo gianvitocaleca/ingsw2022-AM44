@@ -51,6 +51,7 @@ public class GameModel implements Playable {
     private final boolean advancedRules;
     private boolean lastRound = false;
     private final EventListenerList listeners;
+
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         this.listeners = new EventListenerList();
         this.advancedRules = advancedRules;
@@ -63,6 +64,7 @@ public class GameModel implements Playable {
         postmanMovements = 0;
         playedCharacter = -1;
     }
+
     @Override
     public void addNoEntry(int indexOfIsland) {
         List<Island> islands = table.getIslands();
@@ -81,7 +83,7 @@ public class GameModel implements Playable {
     public void evaluateInfluence() throws GameEndedException {
         evaluator.evaluateInfluence(this);
         //if GroupsOfIslandsException, checkNeighborIsland returns false
-        if(!table.checkNeighborIsland()){
+        if (!table.checkNeighborIsland()) {
             throw new GameEndedException();
         }
         ShowModelPayload payload = showModelPayloadCreator();
@@ -156,7 +158,9 @@ public class GameModel implements Playable {
         isFarmer = true;
     }
 
-    public void resetFarmer(){ isFarmer = false; }
+    public void resetFarmer() {
+        isFarmer = false;
+    }
 
     @Override
     public boolean setHeraldIsland(int indexIsland) throws GameEndedException {
@@ -209,7 +213,7 @@ public class GameModel implements Playable {
         return true;
     }
 
-    public void findNextPlayer(){
+    public void findNextPlayer() {
         if (currentPlayerIndex < numberOfPlayers - 1) {
             currentPlayerIndex++;
         } else {
@@ -241,8 +245,8 @@ public class GameModel implements Playable {
         showModel(modelUpdate);
 
         findNextPlayer();
-        if(currentPlayerIndex==0){
-            for(Player p: players){
+        if (currentPlayerIndex == 0) {
+            for (Player p : players) {
                 if (p.getAssistantDeck().size() == 0) {
                     throw new GameEndedException();
                 }
@@ -441,6 +445,7 @@ public class GameModel implements Playable {
     public int getPlayedCharacter() {
         return playedCharacter;
     }
+
     private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
         List<Player> newPlayers = new ArrayList<>();
         if (!advancedRules) {
@@ -546,7 +551,7 @@ public class GameModel implements Playable {
                 }
 
             }
-            if(professorOwner.isPresent()){
+            if (professorOwner.isPresent()) {
                 Player profOwner = professorOwner.get();
                 for (Player p : players) {
 
@@ -561,10 +566,10 @@ public class GameModel implements Playable {
                     }
                 }
                 profOwner.addProfessor(professorOwner.get().removeProfessor(c));
-            }else{
+            } else {
                 String playerToGiveProfessorUsername = findWhoHasMoreStudents(c);
-                for(Player p : players){
-                    if(p.getUsername().equals(playerToGiveProfessorUsername) && p.getDiningRoom().getNumberOfStudentsByCreature(c) > 0){
+                for (Player p : players) {
+                    if (p.getUsername().equals(playerToGiveProfessorUsername) && p.getDiningRoom().getNumberOfStudentsByCreature(c) > 0) {
                         p.addProfessor(new Professor(c));
                         break;
                     }
@@ -597,11 +602,13 @@ public class GameModel implements Playable {
     private String findWhoHasMoreStudents(Creature c) {
         List<Player> playerList = getPlayers();
         Collections.sort(playerList, (p1, p2) -> {
-            if (p1.getDiningRoom().getNumberOfStudentsByCreature(c) < p2.getDiningRoom().getNumberOfStudentsByCreature(c)) return -1;
-            else if (p1.getDiningRoom().getNumberOfStudentsByCreature(c) > p2.getDiningRoom().getNumberOfStudentsByCreature(c)) return 1;
+            if (p1.getDiningRoom().getNumberOfStudentsByCreature(c) < p2.getDiningRoom().getNumberOfStudentsByCreature(c))
+                return -1;
+            else if (p1.getDiningRoom().getNumberOfStudentsByCreature(c) > p2.getDiningRoom().getNumberOfStudentsByCreature(c))
+                return 1;
             else return 0;
         });
-        return playerList.get(numberOfPlayers-1).getUsername();
+        return playerList.get(numberOfPlayers - 1).getUsername();
     }
 
     private boolean hasProfessor(int indexOfPlayer, Creature c) {
@@ -655,7 +662,7 @@ public class GameModel implements Playable {
             //get character cost (it already handles the updated cost)
             int toAddCoins = characters.get(playedCharacter).getCost();
             //player pays for the character
-            for(int i=0; i<toAddCoins;i++){
+            for (int i = 0; i < toAddCoins; i++) {
                 players.get(currentPlayerIndex).addCoin();
                 table.removeCoin();
             }
@@ -687,27 +694,29 @@ public class GameModel implements Playable {
             showModelPayload.setAdvancedRules(isAdvancedRules());
             List<CharacterInformation> characterInfos = new ArrayList<>();
             List<Creature> creatureList;
-            for (int i = 0; i<characters.size(); i++) {
+            for (int i = 0; i < characters.size(); i++) {
                 Character c = characters.get(i);
                 characterInfos.add(new CharacterInformation(c.getName(), c.getCost(), i));
-                if(c.getName().equals(Name.JOKER)){
+                if (c.getName().equals(Name.JOKER)) {
                     creatureList = new ArrayList<>();
                     for (Student s : c.getStudents()) {
                         creatureList.add(s.getCreature());
                     }
                     showModelPayload.setJokerCreatures(creatureList);
-                }else if(c.getName().equals(Name.PRINCESS)){
+                } else if (c.getName().equals(Name.PRINCESS)) {
                     creatureList = new ArrayList<>();
                     for (Student s : c.getStudents()) {
                         creatureList.add(s.getCreature());
                     }
                     showModelPayload.setPrincessCreatures(creatureList);
-                }else if(c.getName().equals(Name.MONK)){
+                } else if (c.getName().equals(Name.MONK)) {
                     creatureList = new ArrayList<>();
                     for (Student s : c.getStudents()) {
                         creatureList.add(s.getCreature());
                     }
                     showModelPayload.setMonkCreatures(creatureList);
+                } else if (c.getName().equals(Name.HERBALIST)) {
+                    showModelPayload.setDeactivators(getDeactivators());
                 }
             }
             showModelPayload.setCharacters(characterInfos);
@@ -719,6 +728,7 @@ public class GameModel implements Playable {
     public void addListener(MessageHandler listener) {
         listeners.add(MessageHandler.class, listener);
     }
+
     public boolean isAdvancedRules() {
         return advancedRules;
     }
