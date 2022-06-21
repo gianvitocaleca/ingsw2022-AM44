@@ -38,7 +38,7 @@ public class GameModel implements Playable {
     public static final int TWO_PLAYERS_CAPACITY = 7;
     public static final int TWO_PLAYERS_NUMBER_OF_TOWERS = 8;
     public static final int THREE_PLAYERS_NUMBER_OF_TOWERS = 6;
-    public static final int ADVANCED_RULES_STARTING_COINS = 50;
+    public static final int ADVANCED_RULES_STARTING_COINS = 1;
     private Table table;
     private final int numberOfPlayers;
     private List<Player> players;
