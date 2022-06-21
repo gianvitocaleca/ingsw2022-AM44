@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
 import it.polimi.ingsw.server.networkMessages.payloads.CharacterPlayedPayload;
 import it.polimi.ingsw.server.networkMessages.Headers;
+import it.polimi.ingsw.server.networkMessages.payloads.ReconnectionPayload;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
 
@@ -111,6 +112,15 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
         } else if (character.isNeedsMnMovements()) {
             System.out.println("How many more jumps do you want Mother Nature to do?");
         }
+    }
+
+    /**
+     * This method sets the username of the client after a reconnection.
+     * The client knows his username in this way.
+     * @param reconnectionPayload is the object that contains information about client's username.
+     */
+    void reconnectPlayer(ReconnectionPayload reconnectionPayload){
+        cs.setUsername(reconnectionPayload.getUsername());
     }
 
     private void printPlayers() {

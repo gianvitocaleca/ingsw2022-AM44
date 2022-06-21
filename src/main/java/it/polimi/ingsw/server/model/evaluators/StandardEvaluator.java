@@ -18,6 +18,7 @@ public class StandardEvaluator extends InfluenceEvaluator {
             currentIsland.removeNoEntry();
             table.setCurrentIsland(currentIsland);
             return false;
+
         }
     }
 

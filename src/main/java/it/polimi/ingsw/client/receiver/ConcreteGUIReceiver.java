@@ -6,6 +6,7 @@ import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.networkMessages.payloads.CharacterPlayedPayload;
 import it.polimi.ingsw.server.networkMessages.Headers;
+import it.polimi.ingsw.server.networkMessages.payloads.ReconnectionPayload;
 import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
 import javafx.application.Platform;
 
@@ -80,5 +81,10 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
         }else if(character.isNeedsSourceCreature()){
             Platform.runLater(() -> clientGui.characterNeedsSourceCreature());
         }
+    }
+
+    void reconnectPlayer(ReconnectionPayload reconnectionPayload){
+        cs.setUsername(reconnectionPayload.getUsername());
+        clientGui.setMY_USERNAME(reconnectionPayload.getUsername());
     }
 }

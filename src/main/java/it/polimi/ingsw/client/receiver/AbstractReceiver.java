@@ -89,6 +89,7 @@ public abstract class AbstractReceiver extends Thread {
                 break;
             case action:
                 //PRINT MODEL
+                System.out.println("Mi è arrivato un messaggio di fase azione");
                 printModel();
                 actionPayload = gson.fromJson(jsonPayload, ActionPayload.class);
                 cs.getModelPayload().setCurrentPlayerUsername(actionPayload.getCurrentPlayer());
@@ -126,14 +127,7 @@ public abstract class AbstractReceiver extends Thread {
         }
     }
 
-    /**
-     * This method sets the username of the client after a reconnection.
-     * The client knows his username in this way.
-     * @param reconnectionPayload is the object that contains information about client's username.
-     */
-    private void reconnectPlayer(ReconnectionPayload reconnectionPayload){
-        cs.setUsername(reconnectionPayload.getUsername());
-    }
+    abstract void reconnectPlayer(ReconnectionPayload reconnectionPayload);
 
     private void setHeader(Headers header) {
         if (!header.equals(Headers.ping) && !header.equals(Headers.errorMessage) &&

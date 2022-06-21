@@ -28,13 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
-    /*
-    Controller must:
-    -reset the standard evaluator at the end of every ActionPhase
-    -reset postmanMovements at the end of the ActionPhase
-    -do all resets with a proper reset method in GameModel
-    -check if a player needs to earn a coin and give it to him, if possible, and proceeds to remove it from the coin reserve
-     */
     private final int NUMBER_OF_STUDENTS_TO_MOVE;
     private final int MIN_NUMBER_OF_PLAYERS = 1;
     private GameModel model;
@@ -392,6 +385,7 @@ public class Controller {
                 if (model.effect(parameters)) {
                     currentGameStatus.toggleWaitingForParameters();
                     sendPhaseMessage(Headers.action);
+                    System.out.println("Ho mandato il messaggio di fase dopo aver giocato un personaggio");
                 } else {
                     sendErrorMessage("Wrong Parameters");
                 }

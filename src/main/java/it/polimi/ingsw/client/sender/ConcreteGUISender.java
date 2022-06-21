@@ -41,6 +41,10 @@ public class ConcreteGUISender extends AbstractSender {
             String result;
             do {
                 inputLine = guiEvents.poll();
+                if(inputLine!=null){
+                    System.out.println(inputLine);
+
+                }
                 result = encodeMessage(inputLine);
             } while (result.equals(error));
             socketOut.println(result);

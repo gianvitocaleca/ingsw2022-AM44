@@ -210,6 +210,10 @@ public class ClientGui extends Application {
         root.setCenter(box);
     }
 
+    public void setMY_USERNAME(String username){
+        MY_USERNAME = username;
+    }
+
     /**
      * Creates the Choice Box to select the player's color
      */
@@ -701,24 +705,23 @@ public class ClientGui extends Application {
      */
     private String creatureCode(Creature c) {
         String creatureLetter = "";
-        if (guiPhases == GUIPhases.SELECT_CREATURE) {
-            switch (c) {
-                case PINK_FAIRIES:
-                    creatureLetter = pinkCreatureText;
-                    break;
-                case GREEN_FROGS:
-                    creatureLetter = greenCreatureText;
-                    break;
-                case BLUE_UNICORNS:
-                    creatureLetter = blueCreatureText;
-                    break;
-                case YELLOW_GNOMES:
-                    creatureLetter = yellowCreatureText;
-                    break;
-                case RED_DRAGONS:
-                    creatureLetter = redCreatureText;
-                    break;
-            }
+
+        switch (c) {
+            case PINK_FAIRIES:
+                creatureLetter = pinkCreatureText;
+                break;
+            case GREEN_FROGS:
+                creatureLetter = greenCreatureText;
+                break;
+            case BLUE_UNICORNS:
+                creatureLetter = blueCreatureText;
+                break;
+            case YELLOW_GNOMES:
+                creatureLetter = yellowCreatureText;
+                break;
+            case RED_DRAGONS:
+                creatureLetter = redCreatureText;
+                break;
         }
 
         return creatureLetter;
@@ -735,7 +738,7 @@ public class ClientGui extends Application {
             creature.setFitHeight(creatureHeight);
             HBox container = new HBox(creature);
             container.setOnMouseClicked(e -> {
-                if (guiPhases == GUIPhases.SELECT_CREATURE) {
+                if (guiPhases == GUIPhases.SELECT_CREATURE || guiPhases == GUIPhases.SELECT_DESTINATION) {
                     createdCommand = moveStudentsCode + commandSeparator;
                     createdCommand += creatureCode(c);
                     guiPhases = GUIPhases.SELECT_DESTINATION;
@@ -1077,6 +1080,7 @@ public class ClientGui extends Application {
                         createdCommand += String.valueOf(0);
                         guiEvents.add(createdCommand);
                         createdCommand = "";
+                        guiPhases = GUIPhases.END;
                     }
                 });
                 ans.setOnMouseExited(e -> {
@@ -1195,22 +1199,22 @@ public class ClientGui extends Application {
     private void createIslandCommand(int i) {
         if (guiPhases == GUIPhases.SELECT_DESTINATION) {
             createdCommand += commandSeparator;
-            createdCommand += String.valueOf(i + 1);
+            createdCommand += String.valueOf(i+1);
             guiEvents.add(createdCommand);
             createdCommand = "";
-        } else if (clientState.isMoveMotherNature()) {
-            int mnPosition = clientState.getModelPayload().getMotherNature();
-            createdCommand += moveMotherNatureCode + commandSeparator;
-            createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
-            guiEvents.add(createdCommand);
-            createdCommand = "";
-        } else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
+        }else if (guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND) {
             createdCommand += selectDestinationIslandCode;
-            createdCommand += String.valueOf(i + 1);
+            createdCommand += String.valueOf(i+1);
             guiEvents.add(createdCommand);
             createdCommand = "";
         } else if (GUIPhases.SELECT_ISLAND == guiPhases) {
-            createdCommand += String.valueOf(i + 1);
+            createdCommand += String.valueOf(i);
+            guiEvents.add(createdCommand);
+            createdCommand = "";
+        }else if (clientState.isMoveMotherNature()) {
+            int mnPosition = clientState.getModelPayload().getMotherNature();
+            createdCommand += moveMotherNatureCode + commandSeparator;
+            createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
             guiEvents.add(createdCommand);
             createdCommand = "";
         }
@@ -1315,6 +1319,7 @@ public class ClientGui extends Application {
             guiEvents.add(createdCommand);
             guiPhases = GUIPhases.END;
             createdCommand = "";
+            root.setBottom(new HBox());
         });
         HBox postmanSelection = new HBox(text, prompt, button);
         root.setBottom(postmanSelection);
