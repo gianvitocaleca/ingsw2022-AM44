@@ -16,7 +16,6 @@ public class Herbalist implements Character {
     public Herbalist(Name name, Playable model) {
         this.name = name;
         this.model = model;
-        this.model.setDeactivators(4);
     }
 
     @Override

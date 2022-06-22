@@ -17,7 +17,7 @@ public class Table {
     private List<Island> islands = new ArrayList<>();
     private List<Cloud> clouds = new ArrayList<>();
     private MotherNature motherNature;
-    private int deactivators = 0;
+    private int deactivators;
     private StudentBucket bucket;
     private int coinReserve = 0;
 
@@ -38,7 +38,7 @@ public class Table {
      * @param advancedRules   is the boolean to set advancedRules
      */
     public Table(int numberOfPlayers, boolean advancedRules) {
-
+        deactivators = 0;
         bucket = new StudentBucket();
 
         for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
@@ -126,7 +126,7 @@ public class Table {
     }
 
     public int getDeactivators() {
-        return deactivators;
+        return this.deactivators;
     }
 
 

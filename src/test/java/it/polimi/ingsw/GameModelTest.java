@@ -311,7 +311,6 @@ public class GameModelTest {
      */
     @Test
     void playCharacterTest() {
-
         gm = new GameModel(true,
                 new ArrayList<>(Arrays.asList("Paolo", "Gianvito", "Sabrina")),
                 3,

@@ -381,6 +381,7 @@ public class GameModel implements Playable {
         temp.setClouds(table.getClouds());
         temp.setCoinReserve(table.getCoinReserve());
         temp.setIslands(table.getIslands());
+        temp.setDeactivators(table.getDeactivators());
         return temp;
     }
 
@@ -487,9 +488,7 @@ public class GameModel implements Playable {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
         List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
-        names.remove(Name.HERBALIST);
-        characterList.add(ccc.createCharacter(Name.HERBALIST, this));
-        for (int i = 1; i < NUMBER_OF_CHARACTERS; i++) {
+        for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
             characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
         }
         return characterList;
@@ -557,7 +556,6 @@ public class GameModel implements Playable {
                 Player profOwner = professorOwner.get();
                 for (Player p : players) {
                     if (isFarmer && players.get(currentPlayerIndex).getUsername().equals(p.getUsername())) {
-                        System.out.println("Entrato nel calcolo farmer");
                         if (p.getDiningRoom().getNumberOfStudentsByCreature(c) >=
                                 profOwner.getDiningRoom().getNumberOfStudentsByCreature(c)) {
                             profOwner = p;
