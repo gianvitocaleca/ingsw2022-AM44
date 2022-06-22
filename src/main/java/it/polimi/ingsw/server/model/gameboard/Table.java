@@ -64,17 +64,18 @@ public class Table {
         List<Cloud> newClouds = getClouds();
 
         for (Cloud c : newClouds) {
-            newStudentsOnCloud = new ArrayList<>();
-            for (int i = 0; i < c.getCapacity(); i++) {
-                try {
-                    newStudentsOnCloud.add(bucket.generateStudent());
-                } catch (StudentsOutOfStockException ex) {
-                    return false;
+            if(c.getStudents().size()==0){
+                newStudentsOnCloud = new ArrayList<>();
+                for (int i = 0; i < c.getCapacity(); i++) {
+                    try {
+                        newStudentsOnCloud.add(bucket.generateStudent());
+                    } catch (StudentsOutOfStockException ex) {
+                        return false;
+                    }
                 }
+                c.addStudents(newStudentsOnCloud);
             }
-            c.addStudents(newStudentsOnCloud);
         }
-
         setClouds(newClouds);
         return true;
     }
