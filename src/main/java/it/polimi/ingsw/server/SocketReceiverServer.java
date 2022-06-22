@@ -63,7 +63,8 @@ public class SocketReceiverServer {
             Socket socket = serverSocket.accept();
             //create a new object, and link it to the id
             socketId = new SocketID(id, socket);
-            System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket()+1);
+            int numberofclients = networkState.getNumberOfConnectedSocket()+1;
+            System.out.println("Client " + id + " connected, number of clients " + numberofclients);
             Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
             t2.start();
             SocketID finalSocketId = socketId;
