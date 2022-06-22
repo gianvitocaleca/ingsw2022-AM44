@@ -11,7 +11,7 @@ import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HerbalistTest {
 
@@ -56,8 +57,7 @@ public class HerbalistTest {
         players.get(gm.getCurrentPlayerIndex()).addCoin();
         players.get(gm.getCurrentPlayerIndex()).addCoin();
         gm.setPlayers(players);
-
-        gm.playCharacter(0);
+        assertTrue(gm.playCharacter(0));
         gm.effect(herbalist);
         assertEquals(gm.getTable().getIslands().get(islandIndex).getNumberOfNoEntries(), 1);
     }
