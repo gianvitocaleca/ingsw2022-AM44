@@ -63,8 +63,7 @@ public class SocketReceiverServer {
             Socket socket = serverSocket.accept();
             //create a new object, and link it to the id
             socketId = new SocketID(id, socket);
-            networkState.addSocket(socketId);
-            System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket());
+            System.out.println("Client " + id + " connected, number of clients " + networkState.getNumberOfConnectedSocket()+1);
             Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
             t2.start();
             SocketID finalSocketId = socketId;
@@ -77,12 +76,13 @@ public class SocketReceiverServer {
 
     private void clientHandler(SocketID socketId){
         boolean isKicked = false;
-        while (!isKicked){
+        while (!isKicked||socketId.isConnected()){
             try {
                 if(socketId.isNeedsReplacement()){
                     System.out.println(networkState.getServerPhase());
                     switch (networkState.getServerPhase()) {
                         case READY:
+                            networkState.addSocket(socketId);
                             networkState.setServerPhase(ServerPhases.CREATION);
                             System.out.println("Starting Creation");
                             socketId.setNeedsReplacement(false);
@@ -90,17 +90,17 @@ public class SocketReceiverServer {
                             creator.start();
                             break;
                         case WAITING:
-                            Optional<SocketID> socketIDOptional = networkState.reconnectPlayer(socketId);
-                            System.out.println("Re-connected player");
-                            if(socketIDOptional.isPresent()){
-                                messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketIDOptional.get()));
+                            if(networkState.reconnectPlayer(socketId)){
+                                System.out.println("Re-connected player "+socketId.getPlayerInfo().getUsername());
+                                messageHandler.userReconnectedReceiver(new ReconnectedEvent(this,socketId));
                                 socketId.setNeedsReplacement(false);
                             }else{
-                                System.out.println("Tried to reconnect when all players are present.");
+                                System.out.println("Re-connection failed");
                             }
                             break;
                         case LOGIN:
                             if(networkState.getNumberOfConnectedSocket()<= networkState.getNumberOfPlayers()){
+                                networkState.addSocket(socketId);
                                 System.out.println("Starting Login for player " + id);
                                 socketId.setNeedsReplacement(false);
                                 LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, creationState);
@@ -111,7 +111,6 @@ public class SocketReceiverServer {
                         case CREATION:
                         case GAME:
                             messageHandler.eventPerformed(new CloseConnectionEvent(this,socketId.getSocket()));
-                            networkState.disconnectSocketId(socketId.getId());
                             System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
                             isKicked = true;
                     }

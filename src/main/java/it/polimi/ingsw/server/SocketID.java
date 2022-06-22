@@ -30,6 +30,10 @@ public class SocketID {
         return playerInfo;
     }
 
+    public void setPlayerInfo(PlayerInfo playerInfo) {
+        this.playerInfo = playerInfo;
+    }
+
     public boolean isConnected() {
         return isConnected;
     }

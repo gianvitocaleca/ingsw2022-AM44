@@ -147,27 +147,29 @@ public class NetworkState {
         socketIDList.removeIf(s -> s.getId() == id);
     }
 
-    public synchronized Optional<SocketID> reconnectPlayer(SocketID socketID){
-        Optional<SocketID> socketIDOptional = Optional.empty();
+    public synchronized boolean reconnectPlayer(SocketID socketID){
+
         for(int i=0; i<socketIDList.size();i++){
             SocketID s = socketIDList.get(i);
             if (!s.isConnected()) {
-                s.setSocket(socketID.getSocket());
-                s.setId(socketID.getId());
-                s.setConnected(true);
+                socketID.setPlayerInfo(s.getPlayerInfo());
+                socketIDList.remove(i);
+                socketIDList.add(socketID);
                 if(getNumberOfConnectedSocket()==numberOfPlayers){
                     serverPhase = ServerPhases.GAME;
                 }
-                socketIDOptional = Optional.of(s);
+                break;
             }
         }
-        socketIDList.remove(socketID);
-        return socketIDOptional;
+        return true;
     }
 
     public synchronized void addSocket(SocketID socketID) {
-        socketIDList.add(socketID);
+        if(!socketIDList.contains(socketID)){
+            socketIDList.add(socketID);
+        }
     }
+
 
     public synchronized List<Socket> getActiveSockets() {
         return socketIDList.stream().filter(SocketID::isConnected).map(s -> s.getSocket()).toList();
