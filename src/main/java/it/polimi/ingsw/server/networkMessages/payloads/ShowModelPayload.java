@@ -20,6 +20,7 @@ public class ShowModelPayload implements Payload {
     private int deactivators;
     private int coinReserve;
 
+
     private boolean advancedRules = false;
 
     private List<CharacterInformation> characters;
@@ -36,6 +37,7 @@ public class ShowModelPayload implements Payload {
     private boolean updateMotherNature = false;
     private boolean updateCoinReserve = false; //myCoins, coinReserve
     private boolean updatePlayedCharacter = false;
+    private boolean reconnection = false;
 
 
     public ShowModelPayload(List<Player> playersList, Table table) {
@@ -50,7 +52,13 @@ public class ShowModelPayload implements Payload {
         this.princessCreatures = new ArrayList<>();
         this.characters = new ArrayList<>();
     }
+    public void setReconnection(){
+        reconnection = true;
+    }
 
+    public boolean getReconnection(){
+        return reconnection;
+    }
     public String getCurrentPlayerUsername() {
         return currentPlayerUsername;
     }

@@ -297,6 +297,7 @@ public class MessageHandler implements EventListener {
 
     public void pauseGame() {
         this.gamePaused = true;
+        eventPerformed(new BroadcastEvent(this,"Game paused",Headers.errorMessage));
     }
     public boolean resumeGame() {
         if(gamePaused){

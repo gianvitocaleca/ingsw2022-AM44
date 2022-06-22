@@ -81,6 +81,7 @@ public class Controller {
     public void reconnection(SocketID socketID){
         ShowModelPayload showModelPayload = model.showModelPayloadCreator();
         showModelPayload.setUpdateAll();
+        showModelPayload.setReconnection();
         messageHandler.eventPerformed(new ShowModelEvent(this,showModelPayload),socketID);
     }
 
@@ -123,9 +124,17 @@ public class Controller {
             currentGameStatus.setCurrentPlayerUsername(curr.getUsername());
             currentPlayerPlayedCharacter = false;
         }else{
-            messageHandler.pauseGame();
-            throw new PausedException();
+            pauseGame();
         }
+    }
+
+    public void pauseGame() throws PausedException {
+        messageHandler.pauseGame();
+        throw new PausedException();
+    }
+
+    public boolean isMoreThanTwoPlayers(){
+        return model.getNumberOfPlayers()>2;
     }
 
     private void sendWinnerPlayerMessage(Player winner) {

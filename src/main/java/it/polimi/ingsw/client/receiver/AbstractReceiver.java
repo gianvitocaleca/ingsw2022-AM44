@@ -144,6 +144,9 @@ public abstract class AbstractReceiver extends Thread {
 
     private void setShowModel(ShowModelPayload payload) {
         cs.setShowModel(payload);
+        if(payload.getReconnection()){
+            printModel();
+        }
     }
 
     abstract void stringMessage(Headers header, StringPayload payload);

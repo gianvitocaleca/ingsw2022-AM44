@@ -28,6 +28,12 @@ public class ReconnectionListener implements EventListener {
             } catch (PausedException e) {
                 System.out.println("Game paused.");
             }
+        }else if(!controller.isMoreThanTwoPlayers()){
+            try {
+                controller.pauseGame();
+            } catch (PausedException e) {
+                System.out.println("Game paused.");
+            }
         }
     }
 }
