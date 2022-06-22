@@ -12,10 +12,12 @@ public class Herbalist implements Character {
     private Name name;
     private Playable model;
     private int updatedCost = 0;
+    private final int DEACTIVATORS_DEFAULT = 4;
 
     public Herbalist(Name name, Playable model) {
         this.name = name;
         this.model = model;
+        this.model.setDeactivators(DEACTIVATORS_DEFAULT);
     }
 
     @Override

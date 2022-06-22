@@ -12,14 +12,10 @@ public class ClientGuiMain {
      * @param address
      * @param port
      */
-    public static void start(String address, int port) {
+    public static void start(String address, int port, String scale) {
         ClientGui.setAddress(address);
         ClientGui.setPort(port);
-        System.setProperty("glass.win.uiScale", "150%");
+        System.setProperty("glass.win.uiScale", scale);
         Application.launch(ClientGui.class);
-    }
-
-    public static void main(String[] args) {
-        start("127.0.0.1", 1337);
     }
 }

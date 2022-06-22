@@ -8,7 +8,6 @@ public class ConcreteCharacterCreator implements CharacterCreator {
     private final int JOKER_CAPACITY = 6;
     private final int PRINCESS_MONK_CAPACITY = 4;
     private final int MINSTREL_CAPACITY = 0;
-    private final int DEACTIVATORS_DEFAULT = 4;
 
     /**
      * Factory for characters
@@ -25,7 +24,6 @@ public class ConcreteCharacterCreator implements CharacterCreator {
             }else if (name.equals(Name.MAGICPOSTMAN)){
                 return new Postman(name, model);
             }else if (name.equals(Name.HERBALIST)){
-                model.setDeactivators(DEACTIVATORS_DEFAULT);
                 return new Herbalist(name, model);
             } else if (name.equals(Name.THIEF)){
                 return new Thief(name, model);

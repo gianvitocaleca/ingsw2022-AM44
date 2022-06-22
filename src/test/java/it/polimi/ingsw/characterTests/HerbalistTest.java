@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.enums.Wizard;
 import it.polimi.ingsw.server.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class HerbalistTest {
     /**
      * This test verifies that herbalist's effect has the correct behaviour
      */
-    @Test
+    @RepeatedTest(100)
     void herbalistEffectTest() throws GameEndedException, UnplayableEffectException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
 

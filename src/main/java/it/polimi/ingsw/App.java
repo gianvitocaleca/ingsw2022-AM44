@@ -21,6 +21,7 @@ public class App {
     private static boolean isGui = false;
 
     private static int defaultPort = 1337;
+    private static String defaultScale = "100%";
 
     public static void main(String[] args) {
 
@@ -93,6 +94,7 @@ public class App {
 
     private static void clientStart(String[] args, String address) {
         int providedPort = defaultPort;
+        String scale = defaultScale;
         if (args.length > 3) {
             switch (args[3]) {
                 case port:
@@ -110,8 +112,17 @@ public class App {
         } else {
             System.out.println("Starting on default port :" + defaultPort);
         }
+        if(args.length > 4){
+            try{
+                Integer.parseInt(args[4]);
+                scale = args[4]+"%";
+            }catch (NumberFormatException ignore) {
+                System.out.println("Provide a valid scale");
+                return;
+            }
+        }
         if (isGui) {
-            ClientGuiMain.start(address, providedPort);
+            ClientGuiMain.start(address, providedPort,scale);
         } else {
             ClientCliMain.start(address, providedPort);
         }
