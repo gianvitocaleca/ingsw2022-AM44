@@ -203,7 +203,7 @@ public class GameModel implements Playable {
         moveStudents(clouds.get(indexOfCloud), currentPlayerEntrance, creatures);
         table.setClouds(clouds);
         players.get(currentPlayerIndex).setEntrance(currentPlayerEntrance);
-
+        isFarmer = false;
         findNextPlayer();
         postmanMovements = 0;
         ShowModelPayload payload = showModelPayloadCreator();

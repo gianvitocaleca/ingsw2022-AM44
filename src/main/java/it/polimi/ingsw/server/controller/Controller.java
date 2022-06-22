@@ -290,7 +290,6 @@ public class Controller {
             if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
                 currentGameStatus.setPhase(GamePhases.ACTION_MOVEMOTHERNATURE);
                 currentGameStatus.setNumberOfStudentsMoved(0);
-                model.resetFarmer();
             }
         }
         return true;
