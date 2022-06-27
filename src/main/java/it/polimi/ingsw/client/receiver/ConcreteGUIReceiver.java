@@ -99,10 +99,12 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
             clientGui.setGuiPhases(GUIPhases.SELECT_CREATURE_FOR_CHARACTER);
             Platform.runLater(() -> characterNeedsSourceCreaturesAndDestination(cs));
         } else if (character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()) {
-            clientGui.setGuiPhases(GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP);
-            clientGui.addCreatedCommand(selectCreatureText + commandSeparator);
-            Platform.runLater(() -> clientGui.createSwapButton(true));
-            Platform.runLater(() -> characterNeedsSwapCreatures(cs));
+            Platform.runLater(() -> {
+                clientGui.setGuiPhases(GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP);
+                clientGui.addCreatedCommand(selectCreatureText + commandSeparator);
+                clientGui.createSwapButton(true);
+                characterNeedsSwapCreatures(cs);
+            });
         } else if (character.isNeedsIslandIndex()) {
             clientGui.setGuiPhases(GUIPhases.SELECT_ISLAND);
             Platform.runLater(() -> characterNeedsIslandIndex(cs));

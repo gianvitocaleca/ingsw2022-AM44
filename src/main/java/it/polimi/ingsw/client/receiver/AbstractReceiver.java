@@ -78,7 +78,6 @@ public abstract class AbstractReceiver extends Thread {
                 stringMessage(header, stringPayload);
                 break;
             case planning:
-                System.out.println("Sono l'abstract rec e sono in planning");
                 printModel();
                 stringPayload = gson.fromJson(jsonPayload, StringPayload.class);
                 cs.getModelPayload().setCurrentPlayerUsername(stringPayload.getString());
@@ -95,7 +94,6 @@ public abstract class AbstractReceiver extends Thread {
                 break;
             case action:
                 //PRINT MODEL
-                System.out.println("Mi è arrivato un messaggio di fase azione");
                 printModel();
                 actionPayload = gson.fromJson(jsonPayload, ActionPayload.class);
                 cs.getModelPayload().setCurrentPlayerUsername(actionPayload.getCurrentPlayer());
@@ -144,7 +142,7 @@ public abstract class AbstractReceiver extends Thread {
 
     private void setShowModel(ShowModelPayload payload) {
         cs.setShowModel(payload);
-        if(payload.getReconnection()){
+        if (payload.getReconnection()) {
             printModel();
         }
     }

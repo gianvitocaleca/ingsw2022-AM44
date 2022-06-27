@@ -8,12 +8,9 @@ import it.polimi.ingsw.server.model.enums.Creature;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.model.player.Assistant;
 import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
 import it.polimi.ingsw.server.networkMessages.Headers;
 import it.polimi.ingsw.server.networkMessages.payloads.ShowModelPayload;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -23,7 +20,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -35,8 +31,10 @@ import java.util.*;
 import static it.polimi.ingsw.Commands.*;
 import static it.polimi.ingsw.TextAssets.*;
 import static it.polimi.ingsw.client.GUI.GuiAssets.*;
+import static it.polimi.ingsw.client.GUI.GuiComponents.*;
 import static it.polimi.ingsw.client.GUI.GuiCss.*;
 import static it.polimi.ingsw.client.GUI.GuiAlerts.*;
+import static it.polimi.ingsw.client.GUI.GuiMethods.*;
 
 public class ClientGui extends Application {
     private static String address;
@@ -134,22 +132,6 @@ public class ClientGui extends Application {
             }
         });
         senderThread.start();
-    }
-
-    /**
-     * Creates the title of the game
-     *
-     * @return is the Box containing the title
-     */
-    private VBox gameTitle() {
-        Text title = new Text(gameTitle);
-        title.setFont(titleFont);
-        title.setFill(Color.DARKVIOLET);
-        title.setStroke(Color.LIGHTGOLDENRODYELLOW);
-        title.setStrokeWidth(1);
-        VBox titleBox = new VBox(title);
-        titleBox.setAlignment(Pos.CENTER);
-        return titleBox;
     }
 
     /**
@@ -378,28 +360,6 @@ public class ClientGui extends Application {
     }
 
     /**
-     * @param center       the X coordinate of the center of the polygon
-     * @param radius       of the polygon
-     * @param index        the vertex position on the regular polygon
-     * @param totalIndexes the number of total vertices in the polygon
-     * @return the X coordinate of a vertex in the regular polygon
-     */
-    private double getCoordinatesX(int center, int radius, int index, int totalIndexes) {
-        return center + radius * Math.cos(2 * Math.PI * index / totalIndexes);
-    }
-
-    /**
-     * @param center       the Y coordinate of the center of the polygon
-     * @param radius       of the polygon
-     * @param index        the vertex position on the regular polygon
-     * @param totalIndexes the number of total vertices in the polygon
-     * @return the Y coordinate of a vertex in the regular polygon
-     */
-    private double getCoordinatesY(int center, int radius, int index, int totalIndexes) {
-        return center + radius * Math.sin(2 * Math.PI * index / totalIndexes);
-    }
-
-    /**
      * @param j is the index of the cloud
      * @return is the circle of components in a cloud
      */
@@ -452,49 +412,6 @@ public class ClientGui extends Application {
         return ans;
     }
 
-    /**
-     * @param island
-     * @return is true if the island has one or more noEntry
-     */
-    private boolean hasNoEntry(Island island) {
-        if (island.getNumberOfNoEntries() > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @param hBoxComponents  is the list of boxes to populate with content
-     * @param radius
-     * @param numOfComponents
-     * @param i
-     * @param c
-     * @param num
-     * @return is the next component index
-     */
-    private int componentsDisposition(List<HBox> hBoxComponents, int radius, int numOfComponents, int i, Creature c, int num) {
-        if (num > 0) {
-            HBox creature = creatureCounter(c, num);
-            if (creature != null) {
-                creature.relocate(
-                        getCoordinatesX(5, radius, i, numOfComponents),
-                        getCoordinatesY(5, radius, i, numOfComponents));
-            }
-            hBoxComponents.add(creature);
-            i++;
-        }
-        return i;
-    }
-
-    /**
-     * Used to verify if an island has no towers
-     *
-     * @param i the island
-     * @return
-     */
-    private boolean hasTowers(Island i) {
-        return i.getNumberOfTowers() > 0;
-    }
 
     /**
      * Sets the creatures, the assistants and the characters on the right of the pane
@@ -640,76 +557,6 @@ public class ClientGui extends Application {
     }
 
     /**
-     * Creates the no entry container for the characters
-     *
-     * @param noEntry is the number of no entries to show
-     * @return is the number of no entries and image container
-     */
-    private HBox createNoEntryCharacter(int noEntry) {
-        HBox deactivators = new HBox();
-        ImageView deactivatorImage = new ImageView(new Image("noEntry.png"));
-        deactivatorImage.setFitWidth(playerContentWidth);
-        deactivatorImage.setFitHeight(playerContentHeight);
-        Text deactivatorNumber = new Text(String.valueOf(noEntry));
-        deactivatorNumber.setStyle(bodyFont);
-        deactivators.getChildren().addAll(deactivatorImage, deactivatorNumber);
-        return deactivators;
-    }
-
-    /**
-     * Creates the creature counter container for a character
-     *
-     * @param creatures is the list of creatures of the given character
-     * @return is the creature counter container
-     */
-    private HBox createCharacterCreature(List<Creature> creatures) {
-        List<HBox> creatureCounters = new ArrayList<>();
-        Map<Creature, Integer> counter = new HashMap<>();
-        HBox ans = new HBox();
-        for (Creature c : Creature.values()) {
-            counter.put(c, 0);
-        }
-        for (Creature c : creatures) {
-            counter.put(c, counter.get(c) + 1);
-        }
-        for (Creature c : Creature.values()) {
-            creatureCounters.add(creatureCounter(c, counter.get(c)));
-        }
-        ans.getChildren().addAll(creatureCounters);
-        ans.setAlignment(Pos.CENTER);
-        ans.setSpacing(smallSpacing);
-        return ans;
-    }
-
-    /**
-     * @param c is the given creature
-     * @return is the corresponding string
-     */
-    private String creatureCode(Creature c) {
-        String creatureLetter = "";
-
-        switch (c) {
-            case PINK_FAIRIES:
-                creatureLetter = pinkCreatureText;
-                break;
-            case GREEN_FROGS:
-                creatureLetter = greenCreatureText;
-                break;
-            case BLUE_UNICORNS:
-                creatureLetter = blueCreatureText;
-                break;
-            case YELLOW_GNOMES:
-                creatureLetter = yellowCreatureText;
-                break;
-            case RED_DRAGONS:
-                creatureLetter = redCreatureText;
-                break;
-        }
-
-        return creatureLetter;
-    }
-
-    /**
      * @return is the list of creatures used by the player to make actions
      */
     private HBox createCreaturesComponent() {
@@ -743,9 +590,9 @@ public class ClientGui extends Application {
                 }
 
             });
-            container.setStyle(noBorder);
+            container.setStyle(borderUnselected);
             container.setOnMouseMoved(e -> {
-                if (clientState.getHeaders().equals(Headers.action) && (clientState.getModelPayload().getCurrentPlayerUsername().equals(MY_USERNAME))) {
+                if (!clientState.getHeaders().equals(Headers.planning) && (clientState.getModelPayload().getCurrentPlayerUsername().equals(MY_USERNAME))) {
                     container.setStyle(borderSelected);
                 }
             });
@@ -770,98 +617,22 @@ public class ClientGui extends Application {
         quit.setStyle(headerFont);
         quit.setOnAction(e -> quitStage(stage));
 
-        HBox currentPhaseBox = createCurrentPhaseBox();
+        HBox currentPhaseBox = createCurrentPhaseBox(clientState);
 
-        HBox actionPhaseBox = createActionPhaseBox();
+        HBox actionPhaseBox = createActionPhaseBox(clientState);
 
-        HBox currentPlayerBox = createCurrentPlayerBox();
+        HBox currentPlayerBox = createCurrentPlayerBox(modelCache, MY_USERNAME);
 
         HBox topMenu;
         if (modelCache.isAdvancedRules()) {
-            HBox bank = createBankComponent();
+            HBox bank = createBankComponent(modelCache.getCoinReserve());
             topMenu = new HBox(currentPlayerBox, actionPhaseBox, currentPhaseBox, bank, quit);
         } else {
             topMenu = new HBox(currentPlayerBox, actionPhaseBox, currentPhaseBox, quit);
         }
-        topMenu.setAlignment(Pos.TOP_RIGHT);
+        topMenu.setAlignment(Pos.CENTER);
         topMenu.setSpacing(50);
         root.setTop(topMenu);
-    }
-
-    /**
-     * @return is the current phase container box
-     */
-    private HBox createCurrentPhaseBox() {
-        Text currentPhase = new Text();
-        StringProperty header = new SimpleStringProperty(clientState.getHeaders().toString());
-        currentPhase.textProperty().bind(header);
-        currentPhase.setStyle(borderInsets);
-        Text currentPrePhase = new Text(currentPhasePrefix);
-        HBox currentPhaseBox = new HBox(currentPrePhase, currentPhase);
-        currentPhaseBox.setAlignment(Pos.CENTER);
-        return currentPhaseBox;
-    }
-
-    /**
-     * @return is the action phase container box
-     */
-    private HBox createActionPhaseBox() {
-        Text actionPhase = new Text();
-        String text = "";
-        if (clientState.getHeaders().equals(Headers.action)) {
-            if (clientState.isMoveStudents()) {
-                text += moveStudentsText;
-            } else if (clientState.isMoveMotherNature()) {
-                text += moveMotherNatureText;
-            } else if (clientState.isSelectCloud()) {
-                text += selectCloudText;
-            }
-            if (clientState.isSelectCharacter()) {
-                text += chooseCharacterText;
-            }
-        } else {
-            text += selectAssistantText;
-        }
-        actionPhase.setText(text);
-        HBox actionPhaseBox = new HBox(actionPhase);
-        actionPhaseBox.setAlignment(Pos.CENTER);
-        return actionPhaseBox;
-    }
-
-    /**
-     * @return is the current player container box
-     */
-    private HBox createCurrentPlayerBox() {
-        Text currentPlayer = new Text();
-        String playerText;
-        if (modelCache.getCurrentPlayerUsername().equals(MY_USERNAME)) {
-            playerText = "It's your turn.";
-        } else {
-            playerText = "It's " + modelCache.getCurrentPlayerUsername() + "'s turn.";
-        }
-        currentPlayer.setText(playerText);
-        HBox currentPlayerBox = new HBox(currentPlayer);
-        currentPlayerBox.setAlignment(Pos.CENTER);
-        return currentPlayerBox;
-    }
-
-    /**
-     * @return is the bank container box
-     */
-    private HBox createBankComponent() {
-        Text title = new Text("Coin Reserve:");
-        ImageView coin = new ImageView("moneta.png");
-        coin.setFitWidth(coinWidth);
-        coin.setFitHeight(coinHeight);
-        Text num = new Text("" + modelCache.getCoinReserve() + "");
-        num.setStyle(headerFont);
-        HBox coins = new HBox(num, coin);
-        coins.setSpacing(mediumSpacing);
-        coins.setAlignment(Pos.CENTER);
-        HBox ans = new HBox(title, coins);
-        ans.setAlignment(Pos.CENTER);
-        ans.setSpacing(smallSpacing);
-        return ans;
     }
 
     /**
@@ -901,146 +672,6 @@ public class ClientGui extends Application {
     }
 
     /**
-     * @param coins is the player's number of coins
-     * @return is the coin and header container
-     */
-    private VBox createCoinComponent(int coins) {
-        Text coinTitle = new Text(coinHeaderText);
-        Text coinValue = new Text(String.valueOf(coins));
-        coinTitle.setStyle(bodyFont);
-        coinTitle.setStyle(borderInsets);
-        coinValue.setStyle(bodyFont);
-        VBox coinBox = new VBox(coinTitle, coinValue);
-        coinBox.setAlignment(Pos.CENTER);
-        coinBox.setSpacing(smallSpacing);
-        coinBox.setStyle(defaultComponentLayout);
-        return coinBox;
-    }
-
-    /**
-     * @param lastPlayedAssistants is the content
-     * @return is the assistant component
-     */
-    private VBox createComponentWithAssistant(List<Assistant> lastPlayedAssistants) {
-        Text assistantTitle = new Text(assistantHeaderText);
-        HBox assistant;
-        StackPane assistantStack = new StackPane();
-        if (lastPlayedAssistants.size() > 0) {
-            assistantStack.getChildren().add(new Circle(playerRadius, new ImagePattern(new Image(lastPlayedAssistants.get(lastPlayedAssistants.size() - 1).getName().getAssistant()))));
-        } else {
-            assistantStack.getChildren().add(new Circle(playerRadius, new ImagePattern(new Image("strawberry.png"))));
-        }
-        assistant = new HBox(assistantStack);
-        assistant.setAlignment(Pos.CENTER);
-        VBox assistantBox = new VBox(assistantTitle, assistant);
-        assistantBox.setAlignment(Pos.CENTER);
-        return assistantBox;
-    }
-
-    /**
-     * @param creature
-     * @param num      is the number of given creatures
-     * @return is the container of the creature's image and text number
-     */
-    private HBox creatureCounter(Creature creature, int num) {
-        ImageView creatureImage;
-        switch (creature) {
-            case RED_DRAGONS:
-                creatureImage = new ImageView(new Image("Table/red.png"));
-                break;
-            case YELLOW_GNOMES:
-                creatureImage = new ImageView(new Image("Table/yellow.png"));
-                break;
-            case BLUE_UNICORNS:
-                creatureImage = new ImageView(new Image("Table/blue.png"));
-                break;
-            case GREEN_FROGS:
-                creatureImage = new ImageView(new Image("Table/green.png"));
-                break;
-            case PINK_FAIRIES:
-                creatureImage = new ImageView(new Image("Table/pink.png"));
-                break;
-            default:
-                return null;
-        }
-        creatureImage.setFitWidth(playerContentWidth);
-        creatureImage.setFitHeight(playerContentHeight);
-        return counterText(num, creatureImage);
-    }
-
-    /**
-     * @param creature is the professor's creature
-     * @return the professor's container
-     */
-    private HBox professorsCounter(Creature creature) {
-        ImageView creatureImage;
-        switch (creature) {
-            case RED_DRAGONS:
-                creatureImage = new ImageView(new Image("Table/redProf.png"));
-                break;
-            case YELLOW_GNOMES:
-                creatureImage = new ImageView(new Image("Table/yellowProf.png"));
-                break;
-            case BLUE_UNICORNS:
-                creatureImage = new ImageView(new Image("Table/blueProf.png"));
-                break;
-            case GREEN_FROGS:
-                creatureImage = new ImageView(new Image("Table/greenProf.png"));
-                break;
-            case PINK_FAIRIES:
-                creatureImage = new ImageView(new Image("Table/pinkProf.png"));
-                break;
-            default:
-                return null;
-        }
-        creatureImage.setFitWidth(playerContentWidth);
-        creatureImage.setFitHeight(playerContentHeight);
-        HBox ans = new HBox(creatureImage);
-        ans.setSpacing(smallSpacing);
-        ans.setAlignment(Pos.CENTER);
-        return ans;
-    }
-
-    /**
-     * @param color
-     * @param num   is the number of given towers
-     * @return is the tower's container and text number
-     */
-    private HBox towerCounter(it.polimi.ingsw.server.model.enums.Color color, int num) {
-        ImageView towerImage;
-        switch (color) {
-            case BLACK:
-                towerImage = new ImageView(new Image("Table/black.png"));
-                break;
-            case GREY:
-                towerImage = new ImageView(new Image("Table/grey.png"));
-                break;
-            case WHITE:
-                towerImage = new ImageView(new Image("Table/white.png"));
-                break;
-            default:
-                return null;
-        }
-        towerImage.setFitWidth(tableTowerWidth);
-        towerImage.setFitHeight(tableTowerHeight);
-        return counterText(num, towerImage);
-    }
-
-    /**
-     * @param num   is the text number to be shown
-     * @param image is the image to be shown
-     * @return is the box of the text and the image
-     */
-    private HBox counterText(int num, ImageView image) {
-        Text numText = new Text("" + num + "");
-        numText.setStyle(bodyFont);
-        HBox ans = new HBox(image, numText);
-        ans.setSpacing(smallSpacing);
-        ans.setAlignment(Pos.CENTER);
-        return ans;
-    }
-
-    /**
      * @param name is the header of the player's component
      * @param p    is the given player
      * @return is the creature and header container
@@ -1054,7 +685,10 @@ public class ClientGui extends Application {
         if (name.equals(diningRoomHeaderText)) {
             if (p.getUsername().equals(MY_USERNAME)) {
                 ans.setOnMouseMoved(e -> {
-                    ans.setStyle(borderSelected);
+                    if (guiPhases == GUIPhases.SELECT_DESTINATION) {
+                        ans.setStyle(borderSelected);
+                    }
+
                 });
                 ans.setOnMouseClicked(e -> {
                     if (guiPhases == GUIPhases.SELECT_DESTINATION) {
@@ -1074,57 +708,6 @@ public class ClientGui extends Application {
     }
 
     /**
-     * @return is the correct creature container
-     */
-    private HBox createCreatures(String name, Player p) {
-        HBox ans = new HBox();
-        List<HBox> creatureCounters = new ArrayList<>();
-        switch (name) {
-            case entranceHeaderText:
-                for (Creature c : Creature.values()) {
-                    creatureCounters.add(creatureCounter(c, p.getEntrance().getNumberOfStudentsByCreature(c)));
-                }
-                break;
-            case diningRoomHeaderText:
-                for (Creature c : Creature.values()) {
-                    creatureCounters.add(creatureCounter(c, p.getDiningRoom().getNumberOfStudentsByCreature(c)));
-                }
-                break;
-            case professorsHeaderText:
-                for (Creature c : Creature.values()) {
-                    if (p.hasProfessor(c)) {
-                        creatureCounters.add(professorsCounter(c));
-                    }
-                }
-                break;
-
-        }
-        ans.getChildren().addAll(creatureCounters);
-
-        ans.setAlignment(Pos.CENTER);
-        ans.setSpacing(smallSpacing);
-        return ans;
-    }
-
-    /**
-     * @param p is the given player
-     * @return is the tower and header container
-     */
-    private VBox createTowerComponent(Player p) {
-        HBox towers = towerCounter(p.getMyColor(), p.getTowers());
-        if (towers != null) {
-            towers.setSpacing(mediumSpacing);
-            towers.setAlignment(Pos.CENTER);
-        }
-        VBox ans = new VBox(towers);
-        ans.setAlignment(Pos.CENTER);
-        ans.setSpacing(smallSpacing);
-        ans.setStyle(defaultComponentLayout);
-        return ans;
-    }
-
-
-    /**
      * @param cs is the new clientState to be set
      */
     public void updateClientState(ClientState cs) {
@@ -1139,7 +722,8 @@ public class ClientGui extends Application {
      */
     private void islandButton(Pane object, int i) {
         object.setOnMouseMoved(e -> {
-            if (clientState.isMoveMotherNature() || guiPhases == GUIPhases.SELECT_DESTINATION) {
+            if (clientState.isMoveMotherNature() || guiPhases == GUIPhases.SELECT_DESTINATION ||
+                    guiPhases == GUIPhases.SELECT_DESTINATION_ISLAND || guiPhases == GUIPhases.SELECT_ISLAND) {
                 object.setStyle(borderSelected);
             }
         });
@@ -1174,7 +758,7 @@ public class ClientGui extends Application {
         } else if (clientState.isMoveMotherNature()) {
             int mnPosition = clientState.getModelPayload().getMotherNature();
             createdCommand += moveMotherNatureCode + commandSeparator;
-            createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i));
+            createdCommand += String.valueOf(evaluateMnJumps(mnPosition, i, clientState));
             guiEvents.add(createdCommand);
             createdCommand = "";
         }
@@ -1182,20 +766,6 @@ public class ClientGui extends Application {
 
     }
 
-    /**
-     * @param islandIndex is the index of the island selected by the player
-     * @return is the correct number of jumps for MN to make
-     */
-    private int evaluateMnJumps(int mnPosition, int islandIndex) {
-        int jumps;
-        if (mnPosition < islandIndex) {
-            jumps = islandIndex - mnPosition;
-        } else {
-            jumps = clientState.getModelPayload().getIslands().size() - mnPosition;
-            jumps += islandIndex;
-        }
-        return jumps;
-    }
 
     /**
      * Creates a button like behaviour for the given cloud
