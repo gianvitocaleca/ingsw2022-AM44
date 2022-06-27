@@ -1,18 +1,18 @@
 package it.polimi.ingsw.evaluatorsTest;
 
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.server.model.gameboard.MotherNature;
-import it.polimi.ingsw.server.model.gameboard.Table;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
-import it.polimi.ingsw.server.model.students.Student;
-import it.polimi.ingsw.server.model.students.StudentBucket;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.gameboard.MotherNature;
+import it.polimi.ingsw.model.gameboard.Table;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.Professor;
+import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.gameboardTests;
 
-import it.polimi.ingsw.server.model.gameboard.MotherNature;
+import it.polimi.ingsw.model.gameboard.MotherNature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

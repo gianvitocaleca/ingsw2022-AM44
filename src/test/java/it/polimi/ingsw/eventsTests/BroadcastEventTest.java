@@ -1,7 +1,7 @@
 package it.polimi.ingsw.eventsTests;
 
-import it.polimi.ingsw.server.controller.events.BroadcastEvent;
-import it.polimi.ingsw.server.networkMessages.Headers;
+import it.polimi.ingsw.controller.events.BroadcastEvent;
+import it.polimi.ingsw.network.server.networkMessages.Headers;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

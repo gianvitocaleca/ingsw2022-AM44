@@ -1,6 +1,6 @@
 package it.polimi.ingsw.eventsTests;
 
-import it.polimi.ingsw.server.controller.events.MessageReceivedEvent;
+import it.polimi.ingsw.controller.events.MessageReceivedEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

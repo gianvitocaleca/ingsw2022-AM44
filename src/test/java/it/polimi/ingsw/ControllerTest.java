@@ -1,25 +1,25 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.server.enums.ServerPhases;
-import it.polimi.ingsw.server.model.exceptions.PausedException;
-import it.polimi.ingsw.server.states.NetworkState;
-import it.polimi.ingsw.server.SocketID;
-import it.polimi.ingsw.server.controller.Controller;
-import it.polimi.ingsw.server.controller.GameStatus;
-import it.polimi.ingsw.server.controller.enums.GamePhases;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.controller.events.*;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.Cloud;
-import it.polimi.ingsw.server.model.studentcontainers.Entrance;
-import it.polimi.ingsw.server.model.students.Student;
-import it.polimi.ingsw.server.handlers.MessageHandler;
+import it.polimi.ingsw.controller.events.*;
+import it.polimi.ingsw.network.server.enums.ServerPhases;
+import it.polimi.ingsw.model.exceptions.PausedException;
+import it.polimi.ingsw.network.server.states.NetworkState;
+import it.polimi.ingsw.network.server.SocketID;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.GameStatus;
+import it.polimi.ingsw.controller.enums.GamePhases;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.Cloud;
+import it.polimi.ingsw.model.studentcontainers.Entrance;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.network.server.handlers.MessageHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,11 +54,11 @@ public class ControllerTest {
         state.addSocket(socketID1);
         state.addSocket(socketID2);
         state.addSocket(socketID3);
-        state.setUsername(1,player1);
-        state.setUsername(2,player2);
-        state.setUsername(3,player3);
+        state.setUsername(1, player1);
+        state.setUsername(2, player2);
+        state.setUsername(3, player3);
         gm = new GameModel(true,
-                new ArrayList<>(Arrays.asList(player1, player2,player3)),
+                new ArrayList<>(Arrays.asList(player1, player2, player3)),
                 3,
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));

@@ -1,9 +1,9 @@
 package it.polimi.ingsw.studentsTests;
 
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.server.model.students.Student;
-import it.polimi.ingsw.server.model.students.StudentBucket;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;

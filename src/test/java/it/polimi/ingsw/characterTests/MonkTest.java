@@ -1,18 +1,18 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.characters.MoverCharacter;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
-import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.model.characters.MoverCharacter;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +43,7 @@ public class MonkTest {
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         gm.getCharacters().remove(characterToPlayIndex);
-        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.MONK,gm,MONK_CAPACITY));
+        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.MONK, gm, MONK_CAPACITY));
 
         List<Player> players = gm.getPlayers();
         Player currPlayer = players.get(gm.getCurrentPlayerIndex());
@@ -67,7 +67,7 @@ public class MonkTest {
         List<Island> oldIslands = gm.getTable().getIslands();
 
         //necessary students and creatures from the character and the island
-        List<Student> studentsInMonk = ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents();
+        List<Student> studentsInMonk = ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents();
         List<Creature> oldMonkCreatures = new ArrayList<>();
         for (Student s : studentsInMonk) {
             oldMonkCreatures.add(s.getCreature());
@@ -91,14 +91,14 @@ public class MonkTest {
         //play character effect
         gm.effect(monkParameters);
         //the number of students should be the same as before
-        assertEquals(MONK_CAPACITY, ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
+        assertEquals(MONK_CAPACITY, ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
         //the number of students should increase by one
         assertEquals(oldIslandCreatures.size() + studentToRemoveFromMonk.size(),
                 gm.getTable().getIslands().get(islandDestinationIndex).getStudents().size());
 
         //get the new creatures in the character and the dining room
         List<Creature> newMonkCreatures = new ArrayList<>();
-        for (Student s : ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents()) {
+        for (Student s : ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents()) {
             newMonkCreatures.add(s.getCreature());
         }
         List<Creature> newIslandCreatures = new ArrayList<>();

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.enumTests;
 
-import it.polimi.ingsw.server.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Creature;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
