@@ -36,6 +36,7 @@ import static it.polimi.ingsw.Commands.*;
 import static it.polimi.ingsw.TextAssets.*;
 import static it.polimi.ingsw.client.GUI.GuiAssets.*;
 import static it.polimi.ingsw.client.GUI.GuiCss.*;
+import static it.polimi.ingsw.client.GUI.GuiAlerts.*;
 
 public class ClientGui extends Application {
     private static String address;
@@ -99,7 +100,7 @@ public class ClientGui extends Application {
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> {
             e.consume();
-            quitStage();
+            quitStage(stage);
         });
     }
 
@@ -288,34 +289,6 @@ public class ClientGui extends Application {
         box.setAlignment(Pos.CENTER);
 
         root.setCenter(box);
-    }
-
-    /**
-     * Alert to show errors to the player
-     *
-     * @param string
-     */
-    public void errorAlert(String string) {
-        Alert a = new Alert(Alert.AlertType.ERROR,
-                string,
-                ButtonType.OK);
-        a.setTitle(gameTitle);
-        a.setHeaderText("Error!");
-        a.showAndWait();
-    }
-
-    /**
-     * Alert to show the winner to the player
-     *
-     * @param string
-     */
-    public void winnerAlert(String string) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-                string,
-                ButtonType.OK);
-        a.setTitle(gameTitle);
-        a.setHeaderText("Winner");
-        a.showAndWait();
     }
 
     /**
@@ -795,7 +768,7 @@ public class ClientGui extends Application {
     private void setTop() {
         Button quit = new Button("Quit Game");
         quit.setStyle(headerFont);
-        quit.setOnAction(e -> quitStage());
+        quit.setOnAction(e -> quitStage(stage));
 
         HBox currentPhaseBox = createCurrentPhaseBox();
 
@@ -1150,28 +1123,6 @@ public class ClientGui extends Application {
         return ans;
     }
 
-    /**
-     * Closes the stage, sends the quit message and stops the execution
-     */
-    public void quitStage() {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to quit?",
-                ButtonType.YES,
-                ButtonType.NO);
-        a.setTitle(gameTitle);
-        a.setHeaderText("The game is still in progress...");
-        ImageView logo = new ImageView(new Image("logo.png"));
-        logo.setFitWidth(100);
-        logo.setFitHeight(141);
-        a.setGraphic(logo);
-        Optional<ButtonType> confirm = a.showAndWait();
-        if (confirm.isPresent() && confirm.get() == ButtonType.YES) {
-            //send quit message
-            //close socket thread
-            stage.close();
-            System.exit(noErrorCode);
-        }
-    }
 
     /**
      * @param cs is the new clientState to be set
@@ -1280,33 +1231,10 @@ public class ClientGui extends Application {
         }
     }
 
-    /**
-     * Creates the alert for the characters that need to select creatures and destination
-     */
-    public void characterNeedsSourceCreaturesAndDestination() {
-        String string = "Select a creature and then an island";
-        guiPhases = GUIPhases.SELECT_CREATURE_FOR_CHARACTER;
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-                string,
-                ButtonType.OK);
-        a.setTitle(gameTitle);
-        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
-        a.showAndWait();
+    public void setGuiPhases(GUIPhases guiPhases) {
+        this.guiPhases = guiPhases;
     }
 
-    /**
-     * Shows the alert to the player to inform the character behaviour
-     */
-    public void characterNeedsIslandIndex() {
-        String string = "Select an island";
-        guiPhases = GUIPhases.SELECT_ISLAND;
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-                string,
-                ButtonType.OK);
-        a.setTitle(gameTitle);
-        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
-        a.showAndWait();
-    }
 
     /**
      * Shows the alert to the player to inform the character behaviour.
@@ -1341,36 +1269,8 @@ public class ClientGui extends Application {
         root.setBottom(postmanSelection);
     }
 
-    /**
-     * Shows the alert to the player to inform the character behaviour
-     */
-    public void characterNeedsSourceCreature() {
-        String string = "Select a source creature";
-        guiPhases = GUIPhases.SELECT_SOURCE_CREATURE;
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-                string,
-                ButtonType.OK);
-        a.setTitle(gameTitle);
-        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
-        a.showAndWait();
-    }
-
-    /**
-     * Shows the alert to the player to inform the character behaviour.
-     * Creates the swap button.
-     */
-    public void characterNeedsSwapCreatures() {
-        String string = "Select at most " + clientState.getCurrentPlayedCharacter().getMaxMoves()
-                + " creatures from the source";
-        guiPhases = GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP;
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-                string,
-                ButtonType.OK);
-        createdCommand += selectCreatureText + commandSeparator;
-        a.setHeaderText("Use the effect of : " + clientState.getCurrentPlayedCharacter());
-        a.setTitle(gameTitle);
-        a.showAndWait();
-        createSwapButton(true);
+    public void addCreatedCommand(String string) {
+        createdCommand += string;
     }
 
     /**
@@ -1378,14 +1278,15 @@ public class ClientGui extends Application {
      *
      * @param isFirstSelection distinguishes between first and second selection phase
      */
-    private void createSwapButton(boolean isFirstSelection) {
+    public void createSwapButton(boolean isFirstSelection) {
         Button button = new Button();
         button.setText("Confirm the selected creatures");
         button.setOnAction(e -> {
             if (isFirstSelection) {
                 createdCommand += commandSeparator + selectDestinationText + commandSeparator;
                 creaturesToSwap = 1;
-                createAlertForSwapCommand();
+                createAlertForSwapCommand(clientState);
+                createSwapButton(false);
             } else {
                 guiEvents.add(createdCommand);
                 createdCommand = "";
@@ -1399,19 +1300,6 @@ public class ClientGui extends Application {
         root.setBottom(postmanSelection);
     }
 
-    /**
-     * Creates the second alert for the swap character
-     */
-    private void createAlertForSwapCommand() {
-        String string = "Select creatures from destination";
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-                string,
-                ButtonType.OK);
-        createSwapButton(false);
-        a.setHeaderText("Use the effect of : " + clientState.getCurrentPlayedCharacter());
-        a.setTitle(gameTitle);
-        a.showAndWait();
-    }
 }
 
 

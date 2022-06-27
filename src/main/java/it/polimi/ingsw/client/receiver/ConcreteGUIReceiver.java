@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.receiver;
 
 import it.polimi.ingsw.client.GUI.ClientGui;
 import it.polimi.ingsw.client.ClientState;
+import it.polimi.ingsw.client.GUI.GUIPhases;
 import it.polimi.ingsw.pingHandler.PingState;
 import it.polimi.ingsw.server.model.enums.Name;
 import it.polimi.ingsw.server.networkMessages.payloads.CharacterPlayedPayload;
@@ -11,6 +12,10 @@ import it.polimi.ingsw.server.networkMessages.payloads.StringPayload;
 import javafx.application.Platform;
 
 import java.util.Scanner;
+
+import static it.polimi.ingsw.Commands.commandSeparator;
+import static it.polimi.ingsw.Commands.selectCreatureText;
+import static it.polimi.ingsw.client.GUI.GuiAlerts.*;
 
 public class ConcreteGUIReceiver extends AbstractReceiver {
 
@@ -46,11 +51,11 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
                 Platform.runLater(() -> clientGui.wizard());
                 break;
             case errorMessage:
-                Platform.runLater(() -> clientGui.errorAlert(payload.getString()));
+                Platform.runLater(() -> errorAlert(payload.getString()));
                 Platform.runLater(() -> clientGui.setMoveStudents());
                 break;
             case winnerPlayer:
-                Platform.runLater(() -> clientGui.winnerAlert(payload.getString()));
+                Platform.runLater(() -> winnerAlert(payload.getString()));
                 break;
         }
     }
@@ -91,15 +96,21 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
         Name character = cpp.getCharactersName();
         cs.setCurrentPlayedCharacter(character);
         if (character.isNeedsSourceCreature() && character.isNeedsDestination()) {
-            Platform.runLater(() -> clientGui.characterNeedsSourceCreaturesAndDestination());
+            clientGui.setGuiPhases(GUIPhases.SELECT_CREATURE_FOR_CHARACTER);
+            Platform.runLater(() -> characterNeedsSourceCreaturesAndDestination(cs));
         } else if (character.isNeedsSourceCreature() && character.isNeedsDestinationCreature()) {
-            Platform.runLater(() -> clientGui.characterNeedsSwapCreatures());
+            clientGui.setGuiPhases(GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP);
+            clientGui.addCreatedCommand(selectCreatureText + commandSeparator);
+            Platform.runLater(() -> clientGui.createSwapButton(true));
+            Platform.runLater(() -> characterNeedsSwapCreatures(cs));
         } else if (character.isNeedsIslandIndex()) {
-            Platform.runLater(() -> clientGui.characterNeedsIslandIndex());
+            clientGui.setGuiPhases(GUIPhases.SELECT_ISLAND);
+            Platform.runLater(() -> characterNeedsIslandIndex(cs));
         } else if (character.isNeedsMnMovements()) {
             Platform.runLater(() -> clientGui.characterNeedsMMNMovements());
         } else if (character.isNeedsSourceCreature()) {
-            Platform.runLater(() -> clientGui.characterNeedsSourceCreature());
+            clientGui.setGuiPhases(GUIPhases.SELECT_SOURCE_CREATURE);
+            Platform.runLater(() -> characterNeedsSourceCreature(cs));
         }
     }
 
