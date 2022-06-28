@@ -801,6 +801,10 @@ public class ClientGui extends Application {
         }
     }
 
+    /**
+     * Sets the given gui phase
+     * @param guiPhases is the given phase
+     */
     public void setGuiPhases(GUIPhases guiPhases) {
         this.guiPhases = guiPhases;
     }
@@ -839,6 +843,10 @@ public class ClientGui extends Application {
         root.setBottom(postmanSelection);
     }
 
+    /**
+     *
+     * @param string to be added to the current command string
+     */
     public void addCreatedCommand(String string) {
         createdCommand += string;
     }

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.view.GUI;
 
+/**
+ * Set of css styles for the Gui
+ */
 public class GuiCss {
     public static String defaultComponentLayout = "-fx-border-color: black;\n -fx-border-insets: 5;\n -fx-border-width: 3;\n";
     public static String bodyFont = "-fx-font-size: 20;";

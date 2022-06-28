@@ -1,5 +1,8 @@
 package it.polimi.ingsw.view.GUI;
 
+/**
+ * Set of phases to make the Gui behave dynamically
+ */
 public enum GUIPhases {
     SELECT_CREATURE,
     SELECT_DESTINATION,

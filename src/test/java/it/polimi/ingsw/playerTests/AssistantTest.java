@@ -19,6 +19,9 @@ class AssistantTest {
     private Assistants name;
     GameModel gm;
 
+    /**
+     * Creates a random assistant
+     */
     @BeforeEach
     public void InitializeAssistant() {
         name = Assistants.values()[new Random().nextInt(Assistants.values().length)];

@@ -6,8 +6,10 @@ import javafx.scene.text.FontWeight;
 
 import static it.polimi.ingsw.utils.Commands.*;
 
+/**
+ * Set of strings and values for the Gui
+ */
 public class GuiAssets {
-
     public static final String selectCreatureCode = selectCreatureText + commandSeparator;
     public static String gameTitle = "Eryantis";
     public static Color backgroundColor = Color.rgb(123, 185, 230);
