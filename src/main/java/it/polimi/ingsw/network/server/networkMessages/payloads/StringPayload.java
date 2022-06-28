@@ -13,6 +13,10 @@ public class StringPayload implements Payload {
         this.string = string;
     }
 
+    /**
+     *
+     * @return is the actual message
+     */
     public String getString() {
         return string;
     }
