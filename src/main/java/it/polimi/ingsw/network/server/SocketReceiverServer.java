@@ -30,6 +30,10 @@ public class SocketReceiverServer {
     private final int port;
     private ServerSocket serverSocket;
 
+    /**
+     * Used to handle all the new socket connections
+     * @param port is the port for the server to bind to
+     */
     public SocketReceiverServer(int port) {
         this.port = port;
         networkState = new NetworkState(READY);
@@ -41,6 +45,10 @@ public class SocketReceiverServer {
         this.gameStatus = new GameStatus(GamePhases.PLANNING, false);
     }
 
+    /**
+     * Creates the game thread and starts to listen for connections
+     * @throws IOException
+     */
     public void startServer() throws IOException {
         try {
             serverSocket = new ServerSocket(port);
@@ -58,6 +66,10 @@ public class SocketReceiverServer {
         serverSocket.close();
     }
 
+    /**
+     * Used to accept connection, it needs to always accept the connection.
+     * @throws IOException
+     */
     private void acceptConnections() throws IOException {
         SocketID socketId;
         while (true) {
@@ -76,6 +88,10 @@ public class SocketReceiverServer {
 
     }
 
+    /**
+     * Used to assign the client to the correct handler
+     * @param socketId
+     */
     private void clientHandler(SocketID socketId) {
         boolean isKicked = false;
         while (!isKicked || socketId.isConnected()) {
