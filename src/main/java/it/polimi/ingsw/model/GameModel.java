@@ -32,6 +32,7 @@ import it.polimi.ingsw.model.students.StudentBucket;
 import it.polimi.ingsw.network.server.handlers.MessageHandler;
 
 import javax.swing.event.EventListenerList;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class GameModel implements Playable {
     private final boolean advancedRules;
     private boolean lastRound = false;
     private final EventListenerList listeners;
+    private SecureRandom rand = new SecureRandom();
 
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         this.listeners = new EventListenerList();
@@ -492,7 +494,7 @@ public class GameModel implements Playable {
         List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
         for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
-            characterList.add(ccc.createCharacter(names.remove(new Random().nextInt(names.size())), this));
+            characterList.add(ccc.createCharacter(names.remove(rand.nextInt(names.size())), this));
         }
         return characterList;
     }
