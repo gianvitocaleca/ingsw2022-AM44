@@ -10,10 +10,18 @@ public class MessageSenderServer {
 
     private NetworkState networkState;
 
+    /**
+     * Used to send a message to a socket
+     * @param networkState is the current status of the network
+     */
     public MessageSenderServer(NetworkState networkState) {
         this.networkState = networkState;
     }
 
+    /**
+     * Used to send a message to all the players
+     * @param message is the message to be sent
+     */
     public void sendBroadcastMessage(String message) {
         PrintWriter out;
         for (Socket s : networkState.getActiveSockets()) {
@@ -26,6 +34,11 @@ public class MessageSenderServer {
         }
     }
 
+    /**
+     * Used to send a message to a specific player
+     * @param message is the message to be sent
+     * @param s is the player's socket
+     */
     public void sendMessage(String message, Socket s) {
         PrintWriter out;
         try {

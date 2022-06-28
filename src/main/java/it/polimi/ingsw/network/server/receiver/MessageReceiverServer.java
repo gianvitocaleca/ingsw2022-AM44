@@ -32,6 +32,13 @@ public class MessageReceiverServer extends Thread {
     private final int pingTime = 1000;
     private final int maxNoAnswers = 4;
 
+    /**
+     * Used to receive the messages and create the events to handle
+     * @param socketId is the socket of the player that's sending the messages
+     * @param messageHandler is the listener for the events
+     * @param gameStatus is the current game state
+     * @param networkState is the current network state
+     */
     public MessageReceiverServer(SocketID socketId, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
         this.socketId = socketId;
         listeners.add(MessageHandler.class, messageHandler);
@@ -47,7 +54,9 @@ public class MessageReceiverServer extends Thread {
         }
     }
 
-
+    /**
+     * Used to handle the ping mechanism and to create the events for the listener
+     */
     @Override
     public void run() {
         serverPingHandler.start();
@@ -76,6 +85,10 @@ public class MessageReceiverServer extends Thread {
 
     }
 
+    /**
+     *
+     * @return whether the player is the current
+     */
     private boolean isCurrent() {
         return socketId.getPlayerInfo().getUsername().equals(gameStatus.getCurrentPlayerUsername());
     }
