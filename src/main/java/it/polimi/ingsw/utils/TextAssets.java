@@ -33,4 +33,10 @@ public class TextAssets {
     public static final String scale = "scale";
     public static final String shortScale = "sc";
     public static final String defaultScale = "100";
+    public static final String validAddress = "Please provide a valid address!";
+    public static final String gamePausedText = "Game paused !";
+    public static final String cliMenu = ":=:";
+    public static final String exampleText = "For example ";
+    public static final String confirmText = "Confirm";
+    public static final String useEffectText = "Use effect of : ";
 }

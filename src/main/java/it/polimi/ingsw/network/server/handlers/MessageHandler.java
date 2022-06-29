@@ -240,6 +240,8 @@ public class MessageHandler implements EventListener {
                 }
 
                 break;
+            default:
+                break;
         }
     }
 

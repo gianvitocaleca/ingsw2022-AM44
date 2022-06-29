@@ -15,6 +15,8 @@ import it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload;
 import it.polimi.ingsw.network.server.networkMessages.payloads.StringPayload;
 
 import static it.polimi.ingsw.utils.Commands.*;
+import static it.polimi.ingsw.utils.TextAssets.cliMenu;
+import static it.polimi.ingsw.utils.TextAssets.exampleText;
 
 import java.util.List;
 import java.util.Scanner;
@@ -80,30 +82,30 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
      */
     @Override
     void action() {
-        System.out.println(":=: Allowed actions in this turn :=:");
+        System.out.println(cliMenu+" Allowed actions in this turn "+cliMenu);
         if (cs.isMoveStudents()) {
-            System.out.println(":=: Move students <" + moveStudentsCode + "> :=:");
+            System.out.println(cliMenu+" Move students <" + moveStudentsCode + "> "+cliMenu);
             System.out.println("Specify the student creature <" +
                     redCreatureText + "," + greenCreatureText + "," + blueCreatureText + "," + yellowCreatureText + "," + pinkCreatureText + ">");
             System.out.println("Specify the destination <0," + cs.getModelPayload().getIslands().size() + "> (0 is your Dinig Room, the others are the islands)");
             System.out.println("For example " + moveStudentsCode + commandSeparator + redCreatureText + commandSeparator + "2");
         }
         if (cs.isMoveMotherNature()) {
-            System.out.println(":=: Move mother nature <" + moveMotherNatureCode + "> :=:");
+            System.out.println(cliMenu+" Move mother nature <" + moveMotherNatureCode + "> "+cliMenu);
             System.out.println("Specify the number of jumps you want to make");
-            System.out.println("For example " + moveMotherNatureCode + commandSeparator + "3");
+            System.out.println(exampleText + moveMotherNatureCode + commandSeparator + "3");
         }
         if (cs.isSelectCloud()) {
-            System.out.println(":=: Select cloud <" + selectCloudCode + "> :=:");
+            System.out.println(cliMenu+" Select cloud <" + selectCloudCode + "> "+cliMenu);
             System.out.println("Choose a cloud from which you want to take the new students to put in your entrance");
             System.out.println("<0," + (cs.getModelPayload().getClouds().size() - 1) + "> clouds available");
-            System.out.println("For example " + selectCloudCode + commandSeparator + "1");
+            System.out.println(exampleText+ selectCloudCode + commandSeparator + "1");
         }
         if (cs.isSelectCharacter()) {
-            System.out.println(":=: Play character <" + playCharacterCode + "> :=:");
+            System.out.println(cliMenu+" Play character <" + playCharacterCode + "> "+cliMenu);
             System.out.println("Choose a character to play");
             cs.getModelPayload().getCharacters().stream().forEach(c -> System.out.println(c.getIndex() + ":" + c.getName() + ":" + c.getCost()));
-            System.out.println("\nFor example " + playCharacterCode + commandSeparator + "2");
+            System.out.println(exampleText + playCharacterCode + commandSeparator + "2");
         }
     }
 

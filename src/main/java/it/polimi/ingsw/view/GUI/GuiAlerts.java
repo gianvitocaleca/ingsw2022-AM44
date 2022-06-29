@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.util.Optional;
 
+import static it.polimi.ingsw.utils.TextAssets.useEffectText;
 import static it.polimi.ingsw.view.GUI.GuiAssets.gameTitle;
 import static it.polimi.ingsw.view.GUI.GuiAssets.noErrorCode;
 
@@ -70,12 +71,11 @@ public class GuiAlerts {
      */
     public static void characterNeedsSourceCreaturesAndDestination(ClientState clientState) {
         String string = "Select a creature and then an island";
-        //guiPhases = GUIPhases.SELECT_CREATURE_FOR_CHARACTER;
         Alert a = new Alert(Alert.AlertType.INFORMATION,
                 string,
                 ButtonType.OK);
         a.setTitle(gameTitle);
-        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.setHeaderText(useEffectText+ clientState.getCurrentPlayedCharacter());
         a.showAndWait();
     }
 
@@ -84,12 +84,11 @@ public class GuiAlerts {
      */
     public static void characterNeedsIslandIndex(ClientState clientState) {
         String string = "Select an island";
-        //guiPhases = GUIPhases.SELECT_ISLAND;
         Alert a = new Alert(Alert.AlertType.INFORMATION,
                 string,
                 ButtonType.OK);
         a.setTitle(gameTitle);
-        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.setHeaderText(useEffectText + clientState.getCurrentPlayedCharacter());
         a.showAndWait();
     }
 
@@ -98,12 +97,11 @@ public class GuiAlerts {
      */
     public static void characterNeedsSourceCreature(ClientState clientState) {
         String string = "Select a source creature";
-        //guiPhases = GUIPhases.SELECT_SOURCE_CREATURE;
         Alert a = new Alert(Alert.AlertType.INFORMATION,
                 string,
                 ButtonType.OK);
         a.setTitle(gameTitle);
-        a.setHeaderText("Use Effect of : " + clientState.getCurrentPlayedCharacter());
+        a.setHeaderText(useEffectText + clientState.getCurrentPlayedCharacter());
         a.showAndWait();
     }
 
@@ -114,15 +112,12 @@ public class GuiAlerts {
     public static void characterNeedsSwapCreatures(ClientState clientState) {
         String string = "Select at most " + clientState.getCurrentPlayedCharacter().getMaxMoves()
                 + " creatures from the source";
-        //guiPhases = GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP;
         Alert a = new Alert(Alert.AlertType.INFORMATION,
                 string,
                 ButtonType.OK);
-        //createdCommand += selectCreatureText + commandSeparator;
         a.setHeaderText("Use the effect of : " + clientState.getCurrentPlayedCharacter());
         a.setTitle(gameTitle);
         a.showAndWait();
-        //createSwapButton(true);
     }
 
     /**
@@ -133,7 +128,6 @@ public class GuiAlerts {
         Alert a = new Alert(Alert.AlertType.INFORMATION,
                 string,
                 ButtonType.OK);
-        //createSwapButton(false);
         a.setHeaderText("Use the effect of : " + clientState.getCurrentPlayedCharacter());
         a.setTitle(gameTitle);
         a.showAndWait();

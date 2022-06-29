@@ -107,6 +107,8 @@ public abstract class AbstractSender {
                             return createMessage(result, false, false, true);
                         }
                         break;
+                    default:
+                        break;
                 }
             }
             return badGuysHandler();
