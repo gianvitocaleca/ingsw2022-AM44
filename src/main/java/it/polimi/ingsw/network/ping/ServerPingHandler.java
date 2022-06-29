@@ -11,14 +11,30 @@ public class ServerPingHandler extends PingHandler implements Runnable {
 
     private EventListenerList listeners = new EventListenerList();
 
+    /**
+     * Handles the ping message for the server
+     * @param ps is the connection status of the player
+     * @param ns is the current network state
+     * @param socketID is the player's socket ID
+     * @param time is the time interval
+     * @param maxNoAnswers is the max number of no answers the player can have
+     */
     public ServerPingHandler(PingState ps, NetworkState ns, SocketID socketID, int time, int maxNoAnswers) {
         super(ps, ns, socketID, time, maxNoAnswers);
     }
 
+    /**
+     * Used to add the message handler
+     * @param messageHandler handles the messages
+     */
     public void addListener(MessageHandler messageHandler) {
         listeners.add(MessageHandler.class, messageHandler);
     }
 
+    /**
+     * Used to check if the player is connected
+     * @return whether the player has left the game
+     */
     public boolean checkConnectionStatus() {
         if (!ps.isReceived()) {
             noAnswers++;
@@ -37,6 +53,10 @@ public class ServerPingHandler extends PingHandler implements Runnable {
         return false;
     }
 
+    /**
+     * Used to send a message
+     * @param socketID is the socket of the disconnected player
+     */
     private void notifyDisconnection(SocketID socketID) {
         DisconnectionEvent evt = new DisconnectionEvent(this, socketID);
         for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {

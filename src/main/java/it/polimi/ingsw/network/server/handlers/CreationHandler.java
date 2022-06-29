@@ -16,6 +16,13 @@ public class CreationHandler extends Thread {
     private CreationState cs;
     private SocketID socketID;
 
+    /**
+     * It handles the creation phase for a player
+     * @param networkState is the current network state
+     * @param messageHandler handles the messages
+     * @param cs is the creation state
+     * @param socketID is the player's socket ID
+     */
     public CreationHandler(NetworkState networkState, MessageHandler messageHandler, CreationState cs, SocketID socketID) {
         this.networkState = networkState;
         listeners.add(MessageHandler.class, messageHandler);
@@ -23,6 +30,9 @@ public class CreationHandler extends Thread {
         this.socketID = socketID;
     }
 
+    /**
+     * Starts to handle the player
+     */
     @Override
     public void run() {
         numberOfPlayers();
@@ -31,6 +41,9 @@ public class CreationHandler extends Thread {
         socketID.setNeedsReplacement(true);
     }
 
+    /**
+     * Sets the number of players for the game
+     */
     private void numberOfPlayers() {
         sendMessage(Headers.creationRequirementMessage_NumberOfPlayers, "Select the number of players [2 or 3]:");
         while (true) {
@@ -48,6 +61,9 @@ public class CreationHandler extends Thread {
         }
     }
 
+    /**
+     * Sets the type of rules for the game
+     */
     private void rulesType() {
         sendMessage(Headers.creationRequirementMessage_TypeOfRules, "Choose the rules type [0 standard|1 advanced]:");
         while (true) {
@@ -65,6 +81,11 @@ public class CreationHandler extends Thread {
         }
     }
 
+    /**
+     * Used to send a message
+     * @param header is the message header
+     * @param string is the content of the message
+     */
     public void sendMessage(Headers header, String string) {
         StringEvent evt = new StringEvent(this, string, header, socketID.getSocket());
         for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {

@@ -14,7 +14,7 @@ public class Table {
     public static final int TOTAL_COINS_ADVANCED_RULES = 20;
     public static final int MAX_GENERATED_STUDENTS = 130;
     public static final int MIN_NUMBER_OF_ISLANDS = 3;
-    final int NUMBER_OF_ISLANDS = 12;
+    final int numberOfIslands = 12;
     private List<Island> islands = new ArrayList<>();
     private List<Cloud> clouds = new ArrayList<>();
     private MotherNature motherNature;
@@ -42,7 +42,7 @@ public class Table {
         deactivators = 0;
         bucket = new StudentBucket();
 
-        for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
+        for (int i = 0; i < numberOfIslands; i++) {
             List<Student> students = new ArrayList<>();
             try {
                 students.add(bucket.generateStudent());
@@ -159,6 +159,8 @@ public class Table {
                 }
                 aggregator(getNextIslandPosition());
                 break;
+            default:
+                break;
         }
 
         if (islands.size() == MIN_NUMBER_OF_ISLANDS) throw new GroupsOfIslandsException();
@@ -187,8 +189,7 @@ public class Table {
 
     public Island getCurrentIsland() {
         Island i = islands.get(getMnPosition());
-        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
-        return temp;
+        return new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
     }
 
     public void setCurrentIsland(Island island) {
@@ -199,8 +200,7 @@ public class Table {
 
     public Island getNextIsland() {
         Island i = islands.get(getNextIslandPosition());
-        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
-        return temp;
+        return new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
     }
 
     private int getPrevIslandPosition() {
@@ -264,8 +264,7 @@ public class Table {
 
     public Island getPrevIsland() {
         Island i = islands.get(getPrevIslandPosition());
-        Island temp = new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
-        return temp;
+        return new Island(i.getStudents(), i.getNumberOfTowers(), i.getColorOfTowers(), i.getCapacity(), i.getNumberOfNoEntries());
     }
 
     public void setPrevIsland(Island island) {

@@ -17,19 +17,28 @@ public class GameHandler implements Runnable {
     private GameStatus gameStatus;
     private MessageHandler messageHandler;
 
+    /**
+     * It handles the actual game mechanics
+     * @param networkState is the current network state
+     * @param gameStatus is the current game state
+     * @param messageHandler handles the messages
+     */
     public GameHandler(NetworkState networkState, GameStatus gameStatus, MessageHandler messageHandler) {
         this.networkState = networkState;
         this.gameStatus = gameStatus;
         this.messageHandler = messageHandler;
     }
 
+    /**
+     * Starts the game controller with the necessary info
+     */
     public void run() {
         networkState.getLoginPhaseEnded();
 
         List<PlayerInfo> playerInfos = networkState.getConnectedPlayerInfo();
-        List<String> usernames = playerInfos.stream().map(s -> s.getUsername()).toList();
-        List<Color> color = playerInfos.stream().map(s -> s.getColor()).toList();
-        List<Wizard> wizards = playerInfos.stream().map(s -> s.getWizard()).toList();
+        List<String> usernames = playerInfos.stream().map(PlayerInfo::getUsername).toList();
+        List<Color> color = playerInfos.stream().map(PlayerInfo::getColor).toList();
+        List<Wizard> wizards = playerInfos.stream().map(PlayerInfo::getWizard).toList();
 
         GameModel model = new GameModel(networkState.isAdvancedRules(), usernames, networkState.getNumberOfPlayers(),
                 color, wizards);

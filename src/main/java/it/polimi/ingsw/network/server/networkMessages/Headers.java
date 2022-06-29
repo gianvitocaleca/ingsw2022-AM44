@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.server.networkMessages;
 
+/**
+ * Used to describe the type of payloads that are exchanged on the network
+ */
 public enum Headers {
 
     creationRequirementMessage,

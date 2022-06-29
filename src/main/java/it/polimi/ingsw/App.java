@@ -47,18 +47,18 @@ public class App {
     private static String getAddress() {
         List<String> providedAddress = Arrays.stream(cp.getAddress().split("\\.")).toList();
         if (providedAddress.size() != 4) {
-            System.out.println("Please provide a valid address!");
+            System.out.println(validAddress);
             printFlags();
         }
         for (String s : providedAddress) {
             try {
                 int addressNumber = Integer.parseInt(s);
                 if (addressNumber < 0 || addressNumber > 255) {
-                    System.out.println("Please provide a valid address!");
+                    System.out.println(validAddress);
                     printFlags();
                 }
             } catch (NumberFormatException ignore) {
-                System.out.println("Please provide a valid address!");
+                System.out.println(validAddress);
                 printFlags();
             }
         }

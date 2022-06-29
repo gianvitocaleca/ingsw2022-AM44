@@ -57,6 +57,8 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
             case winnerPlayer:
                 Platform.runLater(() -> winnerAlert(payload.getString()));
                 break;
+            default:
+                break;
         }
     }
 

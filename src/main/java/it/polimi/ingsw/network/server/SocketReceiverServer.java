@@ -25,7 +25,7 @@ public class SocketReceiverServer {
     private static MessageHandler messageHandler;
     private static LoginState loginState;
     private static CreationState creationState;
-    private static int id = 100;
+    private int id = 100;
     private final GameStatus gameStatus;
     private final int port;
     private ServerSocket serverSocket;

@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.Listeners.PlanningPhaseListener;
 import it.polimi.ingsw.controller.Listeners.ReconnectionListener;
 
 import static it.polimi.ingsw.controller.enums.GamePhases.*;
+import static it.polimi.ingsw.utils.TextAssets.gamePausedText;
 
 import it.polimi.ingsw.controller.enums.GamePhases;
 import it.polimi.ingsw.controller.events.*;
@@ -210,7 +211,7 @@ public class Controller {
                     updateCurrentPlayer();
                     sendPhaseMessage(currentGameStatus.getPhase().getHeader());
                 } catch (PausedException e) {
-                    System.out.println("Game paused");
+                    System.out.println(gamePausedText);
                 }
             }
         } catch (AssistantAlreadyPlayedException a) {
@@ -222,7 +223,7 @@ public class Controller {
                 updateCurrentPlayer();
                 sendPhaseMessage(currentGameStatus.getPhase().getHeader());
             } catch (PausedException e) {
-                System.out.println("Game paused");
+                System.out.println(gamePausedText);
             }
 
         } catch (GameEndedException e) {
@@ -316,7 +317,7 @@ public class Controller {
                             updateCurrentPlayer();
                             sendPhaseMessage(currentGameStatus.getPhase().getHeader());
                         } catch (PausedException e) {
-                            System.out.println("Game paused");
+                            System.out.println(gamePausedText);
                         }
 
                     }
@@ -326,7 +327,7 @@ public class Controller {
                         updateCurrentPlayer();
                         sendPhaseMessage(currentGameStatus.getPhase().getHeader());
                     } catch (PausedException e) {
-                        System.out.println("Game paused");
+                        System.out.println(gamePausedText);
                     }
 
                 }

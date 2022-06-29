@@ -111,7 +111,8 @@ public class GuiComponents {
                     }
                 }
                 break;
-
+            default:
+                break;
         }
         ans.getChildren().addAll(creatureCounters);
 

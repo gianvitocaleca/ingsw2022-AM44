@@ -209,7 +209,7 @@ public class ClientGui extends Application {
         ChoiceBox<String> prompt = new ChoiceBox<>();
         prompt.getItems().addAll(whiteColorText, blackColorText, greyColorText);
         Button button = new Button();
-        button.setText("Confirm");
+        button.setText(confirmText);
         button.setOnAction(e -> {
             switch (prompt.getValue()) {
                 case whiteColorText:
@@ -220,6 +220,8 @@ public class ClientGui extends Application {
                     break;
                 case greyColorText:
                     guiEvents.add(greyColorCode);
+                    break;
+                default:
                     break;
             }
         });
@@ -235,7 +237,7 @@ public class ClientGui extends Application {
         ChoiceBox<String> prompt = new ChoiceBox<>();
         prompt.getItems().addAll(firstWizardText, secondWizardText, thirdWizardText, fourthWizardText);
         Button button = new Button();
-        button.setText("Confirm");
+        button.setText(confirmText);
         button.setOnAction(e -> {
             switch (prompt.getValue()) {
                 case firstWizardText:
@@ -249,6 +251,8 @@ public class ClientGui extends Application {
                     break;
                 case fourthWizardText:
                     guiEvents.add(fourthWizardCode);
+                    break;
+                default:
                     break;
             }
         });
@@ -579,14 +583,13 @@ public class ClientGui extends Application {
                     createdCommand += creatureCode(c);
                     guiEvents.add(createdCommand);
                     createdCommand = "";
-                } else if (guiPhases == GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP) {
-                    if (creaturesToSwap <= clientState.getCurrentPlayedCharacter().getMaxMoves()) {
-                        createdCommand += creatureCode(c);
-                        if (creaturesToSwap % clientState.getCurrentPlayedCharacter().getMaxMoves() != 0) {
-                            createdCommand += creatureSeparator;
-                        }
-                        creaturesToSwap++;
+                } else if (guiPhases == GUIPhases.SELECT_SOURCE_CREATURE_TO_SWAP &&
+                        creaturesToSwap <= clientState.getCurrentPlayedCharacter().getMaxMoves()) {
+                    createdCommand += creatureCode(c);
+                    if (creaturesToSwap % clientState.getCurrentPlayedCharacter().getMaxMoves() != 0) {
+                        createdCommand += creatureSeparator;
                     }
+                    creaturesToSwap++;
                 }
 
             });
@@ -682,27 +685,25 @@ public class ClientGui extends Application {
         ans.setAlignment(Pos.CENTER);
         ans.setSpacing(smallSpacing);
         ans.setStyle(defaultComponentLayout);
-        if (name.equals(diningRoomHeaderText)) {
-            if (p.getUsername().equals(MY_USERNAME)) {
-                ans.setOnMouseMoved(e -> {
-                    if (guiPhases == GUIPhases.SELECT_DESTINATION) {
-                        ans.setStyle(borderSelected);
-                    }
+        if (name.equals(diningRoomHeaderText) && p.getUsername().equals(MY_USERNAME)) {
+            ans.setOnMouseMoved(e -> {
+                if (guiPhases == GUIPhases.SELECT_DESTINATION) {
+                    ans.setStyle(borderSelected);
+                }
 
-                });
-                ans.setOnMouseClicked(e -> {
-                    if (guiPhases == GUIPhases.SELECT_DESTINATION) {
-                        createdCommand += commandSeparator;
-                        createdCommand += String.valueOf(0);
-                        guiEvents.add(createdCommand);
-                        createdCommand = "";
-                        guiPhases = GUIPhases.END;
-                    }
-                });
-                ans.setOnMouseExited(e -> {
-                    ans.setStyle(defaultComponentLayout);
-                });
-            }
+            });
+            ans.setOnMouseClicked(e -> {
+                if (guiPhases == GUIPhases.SELECT_DESTINATION) {
+                    createdCommand += commandSeparator;
+                    createdCommand += String.valueOf(0);
+                    guiEvents.add(createdCommand);
+                    createdCommand = "";
+                    guiPhases = GUIPhases.END;
+                }
+            });
+            ans.setOnMouseExited(e -> {
+                ans.setStyle(defaultComponentLayout);
+            });
         }
         return ans;
     }
@@ -821,7 +822,7 @@ public class ClientGui extends Application {
         ChoiceBox<String> prompt = new ChoiceBox<>();
         prompt.getItems().addAll(firstPostmanCode, secondPostmanCode, thirdPostmanCode);
         Button button = new Button();
-        button.setText("Confirm");
+        button.setText(confirmText);
         button.setOnAction(e -> {
             switch (prompt.getValue()) {
                 case firstPostmanCode:
@@ -832,6 +833,8 @@ public class ClientGui extends Application {
                     break;
                 case thirdPostmanCode:
                     createdCommand += thirdPostmanCode;
+                    break;
+                default:
                     break;
             }
             guiEvents.add(createdCommand);
