@@ -24,7 +24,6 @@ public class LoginHandler extends Thread implements EventListener {
     private LoginState loginState;
 
     private EventListenerList listeners = new EventListenerList();
-    private CreationState cs;
 
     private String title =
             "                                                                       \n" +
@@ -39,12 +38,11 @@ public class LoginHandler extends Thread implements EventListener {
                     "                        ,V                                             \n" +
                     "                     OOb\"                                              \n\n\n";
 
-    public LoginHandler(NetworkState networkState, SocketID socketId, MessageHandler listener, LoginState loginState, CreationState cs) {
+    public LoginHandler(NetworkState networkState, SocketID socketId, MessageHandler listener, LoginState loginState) {
         this.networkState = networkState;
         this.socketId = socketId;
         this.listeners.add(MessageHandler.class, listener);
         this.loginState = loginState;
-        this.cs = cs;
         if (!OS.isWindows()) {
             title = CliColors.FG_TITLE.getCode() + title + CliColors.RST.getCode();
         }

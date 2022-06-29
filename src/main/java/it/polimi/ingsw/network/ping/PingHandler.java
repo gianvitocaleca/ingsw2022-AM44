@@ -14,7 +14,6 @@ import java.net.Socket;
 public abstract class PingHandler extends Thread {
     protected PingState ps;
     protected NetworkState ns;
-    protected Socket socket;
     protected SocketID socketID;
     protected PrintWriter out;
     protected Gson gson;
@@ -24,7 +23,6 @@ public abstract class PingHandler extends Thread {
 
     public PingHandler(PingState ps, Socket socket, int time, int maxNoAnswers) {
         this.ps = ps;
-        this.socket = socket;
         try {
             out = new PrintWriter(socket.getOutputStream());
         } catch (IOException ex) {

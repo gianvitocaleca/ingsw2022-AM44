@@ -337,7 +337,7 @@ public class GameModelTest {
         Player currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex());
         assertEquals(0, currentPlayer.getMyCoins());
         firstCharacter = gm.getCharacters().get(0);
-        assertTrue(firstCharacter.hasCoin());
+        assertTrue(firstCharacter.getCost()==firstCharacter.getName().getCost()+1);
         assertEquals(18, gm.getTable().getCoinReserve());
     }
 

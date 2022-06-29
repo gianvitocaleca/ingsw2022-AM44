@@ -1,6 +1,11 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.events.*;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.gameboard.Table;
+import it.polimi.ingsw.model.player.Assistant;
+import it.polimi.ingsw.model.player.Professor;
+import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.network.server.enums.ServerPhases;
 import it.polimi.ingsw.model.exceptions.PausedException;
 import it.polimi.ingsw.network.server.states.NetworkState;
@@ -34,7 +39,7 @@ public class ControllerTest {
 
     GameModel gm;
     Controller controller;
-    MessageHandler view;
+    MessageHandler messageHandler;
 
     Boolean planned = false;
 
@@ -63,8 +68,8 @@ public class ControllerTest {
                 new ArrayList<>(Arrays.asList(Color.values())),
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
-        view = new MessageHandler(state);
-        controller = new Controller(gm, view, new GameStatus(GamePhases.PLANNING, false), state);
+        messageHandler = new MessageHandler(state);
+        controller = new Controller(gm, messageHandler, new GameStatus(GamePhases.PLANNING, false), state);
         controller.startController();
     }
 
@@ -78,8 +83,8 @@ public class ControllerTest {
 
         int pastPlayerIndex = gm.getCurrentPlayerIndex();
 
-        PlanningEvent evt = new PlanningEvent(view, 0);
-        view.playAssistantReceiver(evt);
+        PlanningEvent evt = new PlanningEvent(messageHandler, 0);
+        messageHandler.playAssistantReceiver(evt);
 
         int currPlayerIndex = gm.getCurrentPlayerIndex();
 
@@ -99,11 +104,11 @@ public class ControllerTest {
     @Test
     public void playAssistantAlreadyPlayedTest() {
 
-        PlanningEvent evt = new PlanningEvent(view, 0);
-        view.playAssistantReceiver(evt);
+        PlanningEvent evt = new PlanningEvent(messageHandler, 0);
+        messageHandler.playAssistantReceiver(evt);
 
         String currentPlayer = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername();
-        view.playAssistantReceiver(evt);
+        messageHandler.playAssistantReceiver(evt);
 
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getUsername(), currentPlayer);
 
@@ -119,13 +124,38 @@ public class ControllerTest {
 
         int pastPlayerIndex = gm.getCurrentPlayerIndex();
 
-        PlanningEvent evt = new PlanningEvent(view, 11);
-        view.playAssistantReceiver(evt);
+        PlanningEvent evt = new PlanningEvent(messageHandler, 11);
+        messageHandler.playAssistantReceiver(evt);
 
         int currPlayerIndex = gm.getCurrentPlayerIndex();
 
         assertTrue(pastPlayerIndex == currPlayerIndex);
         assertEquals(10, gm.getPlayers().get(pastPlayerIndex).getAssistantDeck().size());
+
+    }
+
+    /**
+     * This tests that when the last assistant for a player is played, the current round
+     * is set as the last round of the game
+     */
+    @Test
+    public void playLastAssistantTest(){
+        List<Player> players = gm.getPlayers();
+        Player curr = gm.getPlayers().get(gm.getCurrentPlayerIndex());
+        List<Assistant> assistants = curr.getAssistantDeck();
+        for(int i = 0; i<curr.getAssistantDeck().size()-1;i++){
+            assistants.remove(0);
+        }
+        curr.setAssistantDeck(assistants);
+        players.set(gm.getCurrentPlayerIndex(),curr);
+        gm.setPlayers(players);
+
+        PlanningEvent evt = new PlanningEvent(messageHandler, 0);
+        messageHandler.playAssistantReceiver(evt);
+
+        assertTrue(controller.checkIfLastRound());
+
+        assertEquals(gm.findWinner().getUsername(),curr.getUsername());
 
     }
 
@@ -138,12 +168,12 @@ public class ControllerTest {
     public void completePlanningPhaseTest() {
 
 
-        PlanningEvent evt = new PlanningEvent(view, 0);
-        view.playAssistantReceiver(evt);
-        evt = new PlanningEvent(view, 1);
-        view.playAssistantReceiver(evt);
-        evt = new PlanningEvent(view, 2);
-        view.playAssistantReceiver(evt);
+        PlanningEvent evt = new PlanningEvent(messageHandler, 0);
+        messageHandler.playAssistantReceiver(evt);
+        evt = new PlanningEvent(messageHandler, 1);
+        messageHandler.playAssistantReceiver(evt);
+        evt = new PlanningEvent(messageHandler, 2);
+        messageHandler.playAssistantReceiver(evt);
 
 
         assertEquals(controller.getCurrentPhase(), GamePhases.ACTION_STUDENTSMOVEMENT);
@@ -162,17 +192,131 @@ public class ControllerTest {
 
         completePlanningPhaseTest();
 
-        PlayCharacterEvent evt = new PlayCharacterEvent(view, 0);
-        view.playCharacterReceiver(evt);
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
 
         assertTrue(controller.isWaitingForParameters());
 
         CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 2, new ArrayList<>());
-        CharacterParametersEvent ev2 = new CharacterParametersEvent(view, parameters);
-        view.characterParametersReceiver(ev2);
+        CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
+        messageHandler.characterParametersReceiver(ev2);
 
         assertEquals(gm.getPostmanMovements(), 2);
 
+    }
+
+    /**
+     * This tests that when a wrong parameter is provided, the action will not be done
+     */
+    @Test
+    public void playCharacterWithWrongParametersTest(){
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.MAGICPOSTMAN, gm));
+
+        completePlanningPhaseTest();
+
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+
+        assertTrue(controller.isWaitingForParameters());
+
+        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 3, new ArrayList<>());
+        CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
+        messageHandler.characterParametersReceiver(ev2);
+
+        assertTrue(controller.isWaitingForParameters());
+    }
+
+    @Test
+    public void PlayCharacterAndWinTheGame() throws GameEndedException {
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.HERALD, gm));
+
+        completePlanningPhaseTest();
+
+        List<Player> players = gm.getPlayers();
+        Player curr = players.get(gm.getCurrentPlayerIndex());
+        while(curr.getMyCoins()<Name.HERALD.getCost()+1){
+            curr.addCoin();
+        }
+        curr.removeTowers(curr.getTowers()-1);
+        List<Professor> prof = curr.getProfessors();
+        prof.add(new Professor(Creature.RED_DRAGONS));
+        curr.setProfessors(prof);
+        players.set(gm.getCurrentPlayerIndex(),curr);
+        gm.setPlayers(players);
+
+        Table table = gm.getTable();
+        List<Island> islands = gm.getTable().getIslands();
+        List<Student> newStudents = new ArrayList<>();
+        newStudents.add(new Student(Creature.RED_DRAGONS));
+        newStudents.add(new Student(Creature.RED_DRAGONS));
+        islands.get(0).addStudents(newStudents);
+        table.setIslands(islands);
+        gm.setTable(table);
+
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+
+        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>());
+        CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
+        messageHandler.characterParametersReceiver(ev2);
+
+    }
+
+    /**
+     *  This tests the correct behavior of the effect method when a character that doesn't need
+     *  parameters is played
+     */
+    @Test
+    public void playCharacterThatDoesntNeedParametersTest(){
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.FARMER, gm));
+
+        completePlanningPhaseTest();
+
+        List<Player> players = gm.getPlayers();
+        Player curr = players.get(gm.getCurrentPlayerIndex());
+        while(curr.getMyCoins()<Name.FARMER.getCost()+1){
+            curr.addCoin();
+        }
+        players.set(gm.getCurrentPlayerIndex(),curr);
+        gm.setPlayers(players);
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+
+        assertFalse(controller.isWaitingForParameters());
+
+    }
+
+    /**
+     * This test verifies that the controller doesn't allow to play more than one character per turn
+     */
+    @Test
+    public void playMoreThanOneCharacterTest(){
+        playCharacterTest();
+
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+        assertFalse(controller.isWaitingForParameters());
+    }
+
+    /**
+     * This test verifies that if a player tries to send a characterParametersPayload
+     * without having played the character, the controller will not allow the action
+     */
+    @Test
+    public void sendCharacterParametersWithoutPlayingCharacter(){
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.MAGICPOSTMAN, gm));
+
+        completePlanningPhaseTest();
+
+        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 2, new ArrayList<>());
+        CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
+        messageHandler.characterParametersReceiver(ev2);
+
+        assertEquals(gm.getPostmanMovements(), 0);
     }
 
     /**
@@ -184,8 +328,8 @@ public class ControllerTest {
 
         completePlanningPhaseTest();
 
-        PlayCharacterEvent evt = new PlayCharacterEvent(view, 3);
-        view.playCharacterReceiver(evt);
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 3);
+        messageHandler.playCharacterReceiver(evt);
 
         assertFalse(controller.isWaitingForParameters());
 
@@ -206,8 +350,8 @@ public class ControllerTest {
         temp.get(gm.getCurrentPlayerIndex()).removeCoin(1);
         gm.setPlayers(temp);
 
-        PlayCharacterEvent evt = new PlayCharacterEvent(view, 0);
-        view.playCharacterReceiver(evt);
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
 
         assertFalse(controller.isWaitingForParameters());
 
@@ -241,10 +385,10 @@ public class ControllerTest {
         List<Creature> providedCreature = new ArrayList<>();
         providedCreature.add(Creature.YELLOW_GNOMES);
 
-        MoveStudentsEvent evt = new MoveStudentsEvent(view,
+        MoveStudentsEvent evt = new MoveStudentsEvent(messageHandler,
                 false, 12, providedCreature);
 
-        view.moveStudentsReceiver(evt);
+        messageHandler.moveStudentsReceiver(evt);
         if (gm.getCurrentPlayerIndex() == 0) {
             assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getProfessors().get(0).getCreature(), Creature.YELLOW_GNOMES);
             assertEquals(controller.getCurrentStatus().getNumberOfStudentsMoved(), 1);
@@ -256,27 +400,27 @@ public class ControllerTest {
 
         providedCreature.remove(0);
         providedCreature.add(Creature.RED_DRAGONS);
-        evt = new MoveStudentsEvent(view,
+        evt = new MoveStudentsEvent(messageHandler,
                 true, 0, providedCreature);
 
-        view.moveStudentsReceiver(evt);
+        messageHandler.moveStudentsReceiver(evt);
 
         assertEquals(gm.getTable().getIslands().get(0).getNumberOfStudentsByCreature(Creature.RED_DRAGONS), oldRed + 1);
         assertEquals(controller.getCurrentStatus().getNumberOfStudentsMoved(), 2);
 
         providedCreature.remove(0);
         providedCreature.add(Creature.RED_DRAGONS);
-        evt = new MoveStudentsEvent(view,
+        evt = new MoveStudentsEvent(messageHandler,
                 true, 0, providedCreature);
 
-        view.moveStudentsReceiver(evt);
+        messageHandler.moveStudentsReceiver(evt);
 
         providedCreature.remove(0);
         providedCreature.add(Creature.YELLOW_GNOMES);
-        evt = new MoveStudentsEvent(view,
+        evt = new MoveStudentsEvent(messageHandler,
                 true, 0, providedCreature);
 
-        view.moveStudentsReceiver(evt);
+        messageHandler.moveStudentsReceiver(evt);
 
         assertEquals(controller.getCurrentStatus().getNumberOfStudentsMoved(), 0);
         assertEquals(controller.getCurrentPhase(), GamePhases.ACTION_MOVEMOTHERNATURE);
@@ -311,10 +455,10 @@ public class ControllerTest {
         List<Creature> providedCreature = new ArrayList<>();
         providedCreature.add(Creature.PINK_FAIRIES);
 
-        MoveStudentsEvent evt = new MoveStudentsEvent(view,
+        MoveStudentsEvent evt = new MoveStudentsEvent(messageHandler,
                 false, 12, providedCreature);
 
-        view.moveStudentsReceiver(evt);
+        messageHandler.moveStudentsReceiver(evt);
 
         assertEquals(controller.getCurrentStatus().getNumberOfStudentsMoved(), 0);
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size(), 9);
@@ -336,8 +480,8 @@ public class ControllerTest {
         planningIfNo();
         moveStudentsTest();
         int motherNaturePosition = gm.getTable().getMnPosition();
-        IntegerEvent evt = new IntegerEvent(view, 1);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, 1);
+        messageHandler.integerEventReceiver(evt);
 
 
         assertEquals(gm.getTable().getMnPosition(), (motherNaturePosition + 1) % gm.getTable().getIslands().size());
@@ -353,8 +497,8 @@ public class ControllerTest {
         completePlanningPhaseTest();
         moveStudentsTest();
         int motherNaturePosition = gm.getTable().getMnPosition();
-        IntegerEvent evt = new IntegerEvent(view, 12);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, 12);
+        messageHandler.integerEventReceiver(evt);
 
         assertEquals(gm.getTable().getMnPosition(), motherNaturePosition);
 
@@ -368,8 +512,8 @@ public class ControllerTest {
         completePlanningPhaseTest();
         moveStudentsTest();
         int motherNaturePosition = gm.getTable().getMnPosition();
-        IntegerEvent evt = new IntegerEvent(view, -1);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, -1);
+        messageHandler.integerEventReceiver(evt);
 
         assertEquals(gm.getTable().getMnPosition(), motherNaturePosition);
 
@@ -387,8 +531,8 @@ public class ControllerTest {
         moveMotherNatureTest();
         int currPlayerIndex = gm.getCurrentPlayerIndex();
         int cloudSelected = 0;
-        IntegerEvent evt = new IntegerEvent(view, cloudSelected);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, cloudSelected);
+        messageHandler.integerEventReceiver(evt);
 
         assertEquals(gm.getTable().getClouds().get(0).getStudents().size(), 0);
         assertEquals(gm.getPlayers().get(currPlayerIndex).getEntrance().getStudents().size(), 9);
@@ -406,8 +550,8 @@ public class ControllerTest {
         moveMotherNatureTest();
         int currPlayerIndex = gm.getCurrentPlayerIndex();
         int cloudSelected = 3;
-        IntegerEvent evt = new IntegerEvent(view, cloudSelected);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, cloudSelected);
+        messageHandler.integerEventReceiver(evt);
 
         assertEquals(gm.getPlayers().get(currPlayerIndex).getEntrance().getStudents().size(), 5);
         for (Cloud c : gm.getTable().getClouds()) {
@@ -431,8 +575,8 @@ public class ControllerTest {
 
         int currPlayerIndex = gm.getCurrentPlayerIndex();
         int cloudSelected = 0;
-        IntegerEvent evt = new IntegerEvent(view, cloudSelected);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, cloudSelected);
+        messageHandler.integerEventReceiver(evt);
 
         assertEquals(gm.getPlayers().get(currPlayerIndex).getEntrance().getStudents().size(), 9);
         assertEquals(gm.getTable().getClouds().get(0).getStudents().size(), 0);
@@ -457,8 +601,8 @@ public class ControllerTest {
 
 
         int cloudSelected = 1;
-        IntegerEvent evt = new IntegerEvent(view, cloudSelected);
-        view.integerEventReceiver(evt);
+        IntegerEvent evt = new IntegerEvent(messageHandler, cloudSelected);
+        messageHandler.integerEventReceiver(evt);
 
         //moves the students and MotheNature for the third player
         gameStatus = controller.getCurrentStatus();
@@ -466,12 +610,13 @@ public class ControllerTest {
         controller.setCurrentStatus(gameStatus);
 
         cloudSelected = 2;
-        evt = new IntegerEvent(view, cloudSelected);
-        view.integerEventReceiver(evt);
+        evt = new IntegerEvent(messageHandler, cloudSelected);
+        messageHandler.integerEventReceiver(evt);
 
         assertEquals(controller.getCurrentPhase(), GamePhases.PLANNING);
         assertEquals(gm.getCurrentPlayerIndex(), 0);
 
     }
+
 
 }

@@ -16,7 +16,6 @@ public class NetworkState {
     private int numberOfPlayers;
     private boolean advancedRules;
     private int loginPhaseEnded = 0;
-    private boolean creationPhaseEnded = false;
 
     /**
      * Keeps track of the number and sockets of all the players

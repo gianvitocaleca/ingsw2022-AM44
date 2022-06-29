@@ -35,7 +35,7 @@ public class MoverCharacter extends StudentContainer implements Character {
             try {
                 this.addStudent(bucket.generateStudent());
             } catch (StudentsOutOfStockException e) {
-                throw new RuntimeException(e);
+                model.setLastRound(true);
             }
         }
         model.setBucket(bucket);
@@ -142,7 +142,7 @@ public class MoverCharacter extends StudentContainer implements Character {
                     this.addStudent(bucket.generateStudent());
                     model.setBucket(bucket);
                 } catch (StudentsOutOfStockException e) {
-                    throw new GameEndedException();
+                    model.setLastRound(true);
                 }
             } else {
                 return false;
@@ -180,11 +180,6 @@ public class MoverCharacter extends StudentContainer implements Character {
         int cost = name.getCost();
         if (updatedCost > 0) cost++;
         return cost;
-    }
-
-    @Override
-    public boolean hasCoin() {
-        return (updatedCost == 1);
     }
 
     @Override

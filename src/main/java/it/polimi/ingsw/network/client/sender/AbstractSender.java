@@ -77,7 +77,7 @@ public abstract class AbstractSender {
         if (cs.getHeaders().equals(Headers.planning)) {
             try {
                 int temp = Integer.parseInt(string);
-                return gson.toJson(new Message(cs.getHeaders(), new PlanningAnswerPayload(cs.getUsername(), temp)));
+                return gson.toJson(new Message(cs.getHeaders(), new PlanningAnswerPayload(temp)));
             } catch (NumberFormatException ignore) {
                 System.out.println("Please provide a valid selection number!");
                 return error;
@@ -299,9 +299,5 @@ public abstract class AbstractSender {
     private String badGuysHandler() {
         System.out.println(badTextMessage);
         return error;
-    }
-
-    public void closeConnection() throws IOException {
-        socket.close();
     }
 }

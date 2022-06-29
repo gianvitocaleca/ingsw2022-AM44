@@ -107,6 +107,7 @@ public class GameModel implements Playable {
         postmanMovements = numberOfSteps;
     }
 
+    @Override
     public void setLastRound(boolean lastRound) {
         this.lastRound = lastRound;
     }
@@ -208,7 +209,7 @@ public class GameModel implements Playable {
         moveStudents(clouds.get(indexOfCloud), currentPlayerEntrance, creatures);
         table.setClouds(clouds);
         players.get(currentPlayerIndex).setEntrance(currentPlayerEntrance);
-        isFarmer = false;
+        resetFarmer();
         findNextPlayer();
         postmanMovements = 0;
         ShowModelPayload payload = showModelPayloadCreator();
@@ -230,7 +231,7 @@ public class GameModel implements Playable {
         if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
         }
-        List<Assistant> playedAssistants = new ArrayList<Assistant>();
+        List<Assistant> playedAssistants = new ArrayList<>();
 
         if (!(currentPlayerIndex == 0)) {
             for (int i = currentPlayerIndex - 1; i >= 0; i--) {
@@ -249,15 +250,16 @@ public class GameModel implements Playable {
         modelUpdate.setUpdatePlayersAssistant();
         showModel(modelUpdate);
 
+        if(players.get(currentPlayerIndex).getAssistantDeck().size() == 0) {
+                setLastRound(true);
+        }
+
         findNextPlayer();
+
         if (currentPlayerIndex == 0) {
-            for (Player p : players) {
-                if (p.getAssistantDeck().size() == 0) {
-                    throw new GameEndedException();
-                }
-            }
             throw new PlanningPhaseEndedException();
         }
+
         return true;
     }
 
@@ -515,7 +517,8 @@ public class GameModel implements Playable {
         for (int i = 0; i < playersCapacity; i++) {
             try {
                 students.add(bucket.generateStudent());
-            } catch (StudentsOutOfStockException ignore) {
+            } catch (StudentsOutOfStockException e) {
+                setLastRound(true);
             }
         }
         entrance.addStudents(students);

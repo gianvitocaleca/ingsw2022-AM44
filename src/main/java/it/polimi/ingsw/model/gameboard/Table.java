@@ -46,8 +46,7 @@ public class Table {
             List<Student> students = new ArrayList<>();
             try {
                 students.add(bucket.generateStudent());
-            } catch (StudentsOutOfStockException ignored) {
-                ignored.printStackTrace();
+            } catch (StudentsOutOfStockException ignore) {
             }
             this.islands.add(new Island(students, 0, Color.BLACK, MAX_GENERATED_STUDENTS, 0));
         }

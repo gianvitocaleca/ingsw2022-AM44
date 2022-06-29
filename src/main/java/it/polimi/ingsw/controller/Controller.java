@@ -33,13 +33,12 @@ import java.util.List;
 public class Controller {
     private final int NUMBER_OF_STUDENTS_TO_MOVE;
     private final int MIN_NUMBER_OF_PLAYERS = 1;
-    private GameModel model;
-    private MessageHandler messageHandler;
+    private final GameModel model;
+    private final MessageHandler messageHandler;
     private GameStatus currentGameStatus;
     private boolean currentPlayerPlayedCharacter = false;
-    private boolean gamePaused = false;
 
-    private NetworkState networkState;
+    private final NetworkState networkState;
 
 
     public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
@@ -103,7 +102,7 @@ public class Controller {
      * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
      * the winner of the game
      */
-    private boolean checkIfLastRound() {
+    public boolean checkIfLastRound() {
         if (model.checkIfLastRound()) {
             Player winner = model.findWinner();
             sendWinnerPlayerMessage(winner);
@@ -113,7 +112,7 @@ public class Controller {
     }
 
     public void updateCurrentPlayer() throws PausedException {
-        if (networkState.getNumberOfConnectedSocket() > 1) {
+        if (networkState.getNumberOfConnectedSocket() > MIN_NUMBER_OF_PLAYERS) {
             Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
             while (!networkState.isPlayerConnected(curr.getUsername())) {
                 boolean isLast = model.getCurrentPlayerIndex() == model.getNumberOfPlayers() - 1;
@@ -168,30 +167,6 @@ public class Controller {
             messageHandler.eventPerformed(new StatusEvent(this, phase), new StringPayload(currentGameStatus.getCurrentPlayerUsername()));
         }
 
-    }
-
-    private int findNextPlayer(String username) {
-        boolean found = false;
-        int newCurrentPlayer = -1;
-        for (int i = model.getCurrentPlayerIndex(); i < model.getPlayers().size(); i++) {
-            if (!(username.equals(model.getPlayers().get(i).getUsername())) &&
-                    networkState.isPlayerConnected(model.getPlayers().get(i).getUsername())) {
-                found = true;
-                newCurrentPlayer = i;
-            }
-        }
-        if (found) {
-            return newCurrentPlayer;
-        } else {
-            for (int i = 0; i < model.getCurrentPlayerIndex(); i++) {
-                if (!(username.equals(model.getPlayers().get(i).getUsername())) &&
-                        networkState.isPlayerConnected(model.getPlayers().get(i).getUsername())) {
-                    newCurrentPlayer = i;
-                    break;
-                }
-            }
-        }
-        return newCurrentPlayer;
     }
 
     private void sendErrorMessage(String string) {
@@ -381,7 +356,7 @@ public class Controller {
                     sendCharacterPlayedMessage(playedCharacterName);
                     effect();
                 }
-
+                currentPlayerPlayedCharacter = true;
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -396,7 +371,6 @@ public class Controller {
                 if (model.effect(parameters)) {
                     currentGameStatus.toggleWaitingForParameters();
                     sendPhaseMessage(Headers.action);
-                    System.out.println("Ho mandato il messaggio di fase dopo aver giocato un personaggio");
                 } else {
                     sendErrorMessage("Wrong Parameters");
                 }
@@ -424,7 +398,8 @@ public class Controller {
                 sendWinnerPlayerMessage(model.findWinner());
             }
         } catch (UnplayableEffectException e) {
-            throw new RuntimeException(e);
+            sendErrorMessage("You can't play that character");
+            sendPhaseMessage(Headers.action);
         }
 
     }

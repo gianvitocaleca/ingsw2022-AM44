@@ -30,7 +30,6 @@ public class IslandTest {
             try {
                 students.add(sb.generateStudent());
             } catch (StudentsOutOfStockException ignored) {
-                System.out.println("Studenti finiti");
                 break;
             }
         }

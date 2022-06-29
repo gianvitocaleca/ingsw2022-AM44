@@ -49,10 +49,6 @@ public class Postman implements Character {
         return cost;
     }
 
-    @Override
-    public boolean hasCoin() {
-        return (updatedCost == 1);
-    }
 
     @Override
     public void setUpdatedCost() {

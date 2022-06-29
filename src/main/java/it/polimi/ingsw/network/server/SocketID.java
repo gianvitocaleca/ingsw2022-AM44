@@ -72,14 +72,6 @@ public class SocketID {
     }
 
     /**
-     * Used to set the connection socket of the player
-     * @param socket is the given socket
-     */
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    /**
      * Used for reconnection purposes
      * @return whether the player needs to be replaced
      * @throws InterruptedException

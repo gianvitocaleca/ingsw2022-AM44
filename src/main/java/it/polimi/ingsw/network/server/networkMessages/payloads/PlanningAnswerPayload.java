@@ -2,12 +2,9 @@ package it.polimi.ingsw.network.server.networkMessages.payloads;
 
 
 public class PlanningAnswerPayload implements Payload {
-
-    private String senderUsername;
     private int indexOfAssistant;
 
-    public PlanningAnswerPayload(String senderUsername, int indexOfAssistant) {
-        this.senderUsername = senderUsername;
+    public PlanningAnswerPayload(int indexOfAssistant) {
         this.indexOfAssistant = indexOfAssistant;
     }
 
@@ -15,7 +12,4 @@ public class PlanningAnswerPayload implements Payload {
         return indexOfAssistant;
     }
 
-    public String getSenderUsername() {
-        return senderUsername;
-    }
 }

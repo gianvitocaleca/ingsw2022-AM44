@@ -121,7 +121,7 @@ public class SocketReceiverServer {
                                 networkState.addSocket(socketId);
                                 System.out.println("Starting Login for player " + id);
                                 socketId.setNeedsReplacement(false);
-                                LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState, creationState);
+                                LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState);
                                 Thread t = new Thread(login);
                                 t.start();
                                 break;

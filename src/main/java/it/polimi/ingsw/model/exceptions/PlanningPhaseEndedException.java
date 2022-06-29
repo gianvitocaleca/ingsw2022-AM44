@@ -6,7 +6,4 @@ public class PlanningPhaseEndedException extends Throwable {
         super();
     }
 
-    public PlanningPhaseEndedException(String message) {
-        super(message);
-    }
 }

@@ -49,11 +49,6 @@ public class Herbalist implements Character {
     }
 
     @Override
-    public boolean hasCoin() {
-        return (updatedCost == 1);
-    }
-
-    @Override
     public void setUpdatedCost() {
         updatedCost++;
     }

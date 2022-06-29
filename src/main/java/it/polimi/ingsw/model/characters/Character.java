@@ -18,8 +18,6 @@ public interface Character {
 
     int getCost();
 
-    boolean hasCoin();
-
     void setUpdatedCost();
 
     void unsetUpdatedCost();

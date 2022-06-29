@@ -29,7 +29,8 @@ public class MessageSenderServer {
                 out = new PrintWriter(s.getOutputStream());
                 out.println(message);
                 out.flush();
-            } catch (IOException ignore) {
+            } catch (IOException e) {
+                System.out.println("Impossible to send message, socket not connected");
             }
         }
     }
