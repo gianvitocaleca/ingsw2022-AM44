@@ -42,7 +42,7 @@ public class PostmanTest {
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException e) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException e) {
             e.printStackTrace();
         }
         gm.getCharacters().remove(0);

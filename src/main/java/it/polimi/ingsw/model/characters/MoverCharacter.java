@@ -161,13 +161,10 @@ public class MoverCharacter extends StudentContainer implements Character {
             int numberSource = sourceCreatures.stream().filter(s -> s.equals(c)).toList().size();
             int numberDestination = destinationCreatures.stream().filter(s -> s.equals(c)).toList().size();
             if (tempSource.getNumberOfStudentsByCreature(c) < numberSource) throw new UnplayableEffectException();
-            if (tempDestination.getNumberOfStudentsByCreature(c) < numberDestination)
-                throw new UnplayableEffectException();
+            if (tempDestination.getNumberOfStudentsByCreature(c) < numberDestination) throw new UnplayableEffectException();
         }
 
-        if ((b) || (tempSource.getStudents().size() < sourceCreatures.size()) || (tempDestination.getStudents().size() < destinationCreatures.size())) {
-            throw new UnplayableEffectException();
-        }
+        if ((b) || (tempSource.getStudents().size() < sourceCreatures.size()) || (tempDestination.getStudents().size() < destinationCreatures.size())) throw new UnplayableEffectException();
     }
 
     @Override

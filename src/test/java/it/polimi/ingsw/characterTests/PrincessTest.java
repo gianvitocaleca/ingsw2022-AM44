@@ -27,7 +27,6 @@ public class PrincessTest {
     private GameModel gm;
     private final int characterToPlayIndex = 0;
     private final int PRINCESS_CAPACITY = 4;
-    private final int islandDestinationIndex = 1;
 
 
     /**

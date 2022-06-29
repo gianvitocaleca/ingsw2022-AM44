@@ -253,11 +253,6 @@ public class Controller {
             } catch (PausedException e) {
                 System.out.println(gamePausedText);
             }
-
-        } catch (GameEndedException e) {
-            if (model.checkEndGame()) {
-                sendWinnerPlayerMessage(model.findWinner());
-            }
         }
     }
 
@@ -412,27 +407,16 @@ public class Controller {
                 sendPhaseMessage(Headers.action);
             }
 
-        } else {
-            sendErrorMessage("You cannot play the character right now!");
         }
-
     }
 
     public void effect() {
         try {
             model.effect(new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>()));
             sendPhaseMessage(Headers.action);
-        } catch (GameEndedException e) {
-            if (model.checkEndGame()) {
-                sendWinnerPlayerMessage(model.findWinner());
-            }
-        } catch (UnplayableEffectException e) {
-            sendErrorMessage("You can't play that character");
-            sendPhaseMessage(Headers.action);
+        } catch (GameEndedException | UnplayableEffectException ignore) {
         }
-
     }
-
     public GamePhases getCurrentPhase() {
         return currentGameStatus.getPhase();
     }

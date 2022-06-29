@@ -1,11 +1,14 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.events.*;
+import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Professor;
 import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.network.server.enums.ServerPhases;
 import it.polimi.ingsw.model.exceptions.PausedException;
 import it.polimi.ingsw.network.server.states.NetworkState;
@@ -205,6 +208,46 @@ public class ControllerTest {
 
     }
 
+    @Test
+    public void playCharacterInMMN(){
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.MAGICPOSTMAN, gm));
+
+        completePlanningPhaseTest();
+        moveStudentsTest();
+
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+
+        assertTrue(controller.isWaitingForParameters());
+
+        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 2, new ArrayList<>());
+        CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
+        messageHandler.characterParametersReceiver(ev2);
+
+        assertEquals(gm.getPostmanMovements(), 2);
+    }
+
+    @Test
+    public void playCharacterInSelectCloud(){
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.MAGICPOSTMAN, gm));
+
+        moveMotherNatureTest();
+
+
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+
+        assertTrue(controller.isWaitingForParameters());
+
+        CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 2, new ArrayList<>());
+        CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
+        messageHandler.characterParametersReceiver(ev2);
+
+        assertEquals(gm.getPostmanMovements(), 2);
+    }
+
     /**
      * This tests that when a wrong parameter is provided, the action will not be done
      */
@@ -227,8 +270,12 @@ public class ControllerTest {
         assertTrue(controller.isWaitingForParameters());
     }
 
+    /**
+     * This tests that when a player with 1 tower left uses Herald character, it will win the game
+     * when conquering one island
+     */
     @Test
-    public void PlayCharacterAndWinTheGame() throws GameEndedException {
+    public void PlayCharacterAndWinTest() throws GameEndedException {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
         gm.getCharacters().set(0, ccc.createCharacter(Name.HERALD, gm));
 
@@ -261,6 +308,8 @@ public class ControllerTest {
         CharactersParametersPayload parameters = new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>());
         CharacterParametersEvent ev2 = new CharacterParametersEvent(messageHandler, parameters);
         messageHandler.characterParametersReceiver(ev2);
+
+        assertEquals(gm.findWinner().getUsername(),curr.getUsername());
 
     }
 
@@ -428,12 +477,29 @@ public class ControllerTest {
     }
 
     /**
+     * This tests that the move students message is refused when tried to play in a non-ACTION_MOVE_STUDENTS phase
+     */
+    @Test
+    public void moveStudentsWhenYouCantTest(){
+        List<Creature> providedCreature = new ArrayList<>();
+        providedCreature.add(Creature.YELLOW_GNOMES);
+
+        MoveStudentsEvent evt = new MoveStudentsEvent(messageHandler,
+                false, 12, providedCreature);
+
+        messageHandler.moveStudentsReceiver(evt);
+        assertEquals(controller.getCurrentPhase(), GamePhases.PLANNING);
+    }
+
+    /**
      * This test verifies that the controller sends an error message when a player wants to move
      * creatures that aren't in the entrance. The controller doesn't increase the number of students moved
      * and the number of students in the entrance is the same as before.
      */
     @Test
     public void moveWrongStudentsTest() {
+        completePlanningPhaseTest();
+
         Entrance entrance = new Entrance(9);
         List<Student> studentList = new ArrayList<>();
         studentList.add(new Student(Creature.RED_DRAGONS));
@@ -485,6 +551,37 @@ public class ControllerTest {
 
 
         assertEquals(gm.getTable().getMnPosition(), (motherNaturePosition + 1) % gm.getTable().getIslands().size());
+
+    }
+
+    @Test
+    public void moveMotherNatureAndWinTest() throws GameEndedException {
+        planningIfNo();
+        moveStudentsTest();
+
+        List<Player> players = gm.getPlayers();
+        Player curr = players.get(gm.getCurrentPlayerIndex());
+        curr.removeTowers(curr.getTowers()-1);
+        List<Professor> prof = curr.getProfessors();
+        prof.add(new Professor(Creature.RED_DRAGONS));
+        curr.setProfessors(prof);
+        players.set(gm.getCurrentPlayerIndex(),curr);
+        gm.setPlayers(players);
+
+        Table table = gm.getTable();
+        List<Island> islands = gm.getTable().getIslands();
+        List<Student> newStudents = new ArrayList<>();
+        newStudents.add(new Student(Creature.RED_DRAGONS));
+        newStudents.add(new Student(Creature.RED_DRAGONS));
+        islands.get(table.getMnPosition()+1).setStudents(newStudents);
+        table.setIslands(islands);
+        gm.setTable(table);
+
+        IntegerEvent evt = new IntegerEvent(messageHandler, 1);
+        messageHandler.integerEventReceiver(evt);
+
+
+        assertEquals(gm.findWinner().getUsername(),curr.getUsername());
 
     }
 
@@ -618,5 +715,86 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests the getCurrentStatus method
+     */
+    @Test
+    public void currentStatusTest(){
+        ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
+        gm.getCharacters().set(0, ccc.createCharacter(Name.MAGICPOSTMAN, gm));
 
+        completePlanningPhaseTest();
+
+        PlayCharacterEvent evt = new PlayCharacterEvent(messageHandler, 0);
+        messageHandler.playCharacterReceiver(evt);
+
+        assertTrue(controller.isWaitingForParameters());
+
+        GameStatus status = controller.getCurrentStatus();
+
+        assertTrue(status.isWaitingForParameters());
+    }
+
+    /**
+     * This tests the getCurrentPhase method
+     */
+    @Test
+    public void currentPhaseTest(){
+
+        completePlanningPhaseTest();
+
+        GamePhases phase = controller.getCurrentPhase();
+
+        assertTrue(phase.equals(GamePhases.ACTION_STUDENTSMOVEMENT));
+    }
+
+    /**
+     * This tests that if wrong provided source creatures are given, the character throws an unplayableEffectException
+     */
+    @Test
+    public void unplayableEffectTest(){
+
+        completePlanningPhaseTest();
+
+        gm.getCharacters().remove(0);
+        gm.getCharacters().add(0, new MoverCharacter(Name.JOKER, gm, 6));
+
+        List<Player> players = gm.getPlayers();
+        Player currPlayer = players.get(gm.getCurrentPlayerIndex());
+        //give coins to the current player in order to play the character
+        for (int i = 0; i < Name.JOKER.getCost(); i++) {
+            currPlayer.addCoin();
+        }
+
+        gm.setPlayers(players);
+
+
+
+        controller.playCharacter(0);
+
+        //necessary students and creatures from the character and the entrance
+        List<Student> studentsInJoker = new ArrayList<>();
+        for(int i = 0; i<6; i++){
+            studentsInJoker.add(new Student(Creature.RED_DRAGONS));
+        }
+        StudentContainer students = (StudentContainer)gm.getCharacters().get(0);
+        students.setStudents(studentsInJoker);
+        MoverCharacter joker = (MoverCharacter) students;
+
+        gm.getCharacters().set(0,joker);
+
+        List<Creature> oldJokerCreatures = new ArrayList<>();
+        oldJokerCreatures.add(Creature.BLUE_UNICORNS);
+
+        List<Student> studentsInEntrance = gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents();
+        List<Creature> oldEntranceCreatures = new ArrayList<>();
+        oldEntranceCreatures.add(studentsInEntrance.get(0).getCreature());
+
+        //creates the parameters for the character effect
+        CharactersParametersPayload jokerParameters = new CharactersParametersPayload(oldJokerCreatures,
+                0, 0, oldEntranceCreatures);
+        //play character effect
+        controller.effect(jokerParameters);
+
+    }
 }

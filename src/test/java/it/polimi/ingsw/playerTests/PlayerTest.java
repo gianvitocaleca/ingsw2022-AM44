@@ -63,7 +63,7 @@ class PlayerTest {
 
         try {
             gm.playAssistant(0);
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException e) {
         }
         Player p1 = gm.getPlayers().get(0);
         assertEquals(p1.getLastPlayedCard().getName(), Assistants.CHEETAH);

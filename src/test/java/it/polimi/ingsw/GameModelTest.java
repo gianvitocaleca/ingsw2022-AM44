@@ -61,7 +61,7 @@ public class GameModelTest {
             gm.setCurrentPlayerIndex(i);
             try {
                 gm.playAssistant(i);
-            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
             }
         }
         gm.establishRoundOrder();
@@ -158,7 +158,7 @@ public class GameModelTest {
         if (jumps < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
             try {
                 gm.playAssistant(9);
-            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
             }
             gm.setCurrentPlayerIndex(index);
             try {
@@ -171,7 +171,7 @@ public class GameModelTest {
         } else {
             try {
                 gm.playAssistant(9);
-            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
             }
             gm.setCurrentPlayerIndex(index);
             try {
@@ -194,7 +194,7 @@ public class GameModelTest {
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
         }
         try {
             assertFalse(gm.moveMotherNature(jumps));
@@ -237,7 +237,7 @@ public class GameModelTest {
             try {
                 gm.playAssistant(0);
                 gm.setCurrentPlayerIndex(0);
-            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+            } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
             }
         }
         assertTrue(gm.checkEndGame());
@@ -295,7 +295,7 @@ public class GameModelTest {
         gm.setTable(tempTable);
         try {
             gm.playAssistant(9);
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
         }
         gm.setCurrentPlayerIndex(0);
         try {
