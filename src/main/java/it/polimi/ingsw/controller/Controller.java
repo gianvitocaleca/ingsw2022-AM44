@@ -61,6 +61,10 @@ public class Controller {
 
     }
 
+    /**
+     * This method is called by the game handler when the game has to start;
+     * @throws PausedException if the game can't start because of number of players.
+     */
     public void startController() throws PausedException {
         updateCurrentPlayer();
 
@@ -80,7 +84,11 @@ public class Controller {
                 break;
         }
     }
-
+    /**
+     * This method is used to send a message to the new player connected in order to inform him
+     * about his username, the one of the disconnected player;
+     * @param socketID contains the socket of the new player to send the message.
+     */
     public void reconnection(SocketID socketID) {
         ShowModelPayload showModelPayload = model.showModelPayloadCreator();
         showModelPayload.setUpdateAll();
@@ -100,8 +108,8 @@ public class Controller {
     }
 
     /**
-     * This method is called ad the end of the action phase to check if the game has ended in case of StudentOutOfStockException and to notify the clients about
-     * the winner of the game
+     * This method is called ad the end of the action phase to check if the game has ended in case
+     * of StudentOutOfStockException and to notify the clients about the winner of the game
      */
     public boolean checkIfLastRound() {
         if (model.checkIfLastRound()) {
@@ -112,6 +120,10 @@ public class Controller {
         return false;
     }
 
+    /**
+     * This method updates the current player in case of disconnection, turn's end and round's end.
+     * @throws PausedException
+     */
     public void updateCurrentPlayer() throws PausedException {
         if (networkState.getNumberOfConnectedSocket() > MIN_NUMBER_OF_PLAYERS) {
             Player curr = model.getPlayers().get(model.getCurrentPlayerIndex());
@@ -131,19 +143,35 @@ public class Controller {
         }
     }
 
+    /**
+     * This method is used to pause game
+     * @throws PausedException when the game has to be paused because there aren't enough players.
+     */
     public void pauseGame() throws PausedException {
         messageHandler.pauseGame();
         throw new PausedException();
     }
 
+    /**
+     * Used to check the number of players.
+     * @return true if the number of players is at least 3.
+     */
     public boolean isMoreThanTwoPlayers() {
         return model.getNumberOfPlayers() > 2;
     }
 
+    /**
+     * Used to inform players about the winner player of the game.
+     * @param winner
+     */
     private void sendWinnerPlayerMessage(Player winner) {
         messageHandler.eventPerformed(new BroadcastEvent(this, winner.getUsername(), Headers.winnerPlayer));
     }
 
+    /**
+     * Used to create an event containing information about the action allowed to the player.
+     * @param phase is used to create the event that contains information about the actions allowed.
+     */
     public void sendPhaseMessage(Headers phase) {
         if (phase.equals(Headers.action)) {
             if (currentGameStatus.getPhase().equals(ACTION_STUDENTSMOVEMENT)) {
