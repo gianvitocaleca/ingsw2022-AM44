@@ -38,72 +38,134 @@ public class MessageHandler implements EventListener {
     private CreationState creationState;
     private boolean gamePaused = false;
 
-
+    /**
+     * Used to translate and encode the messages.
+     * Creates the correct event and uses the listeners to handle it.
+     * @param state is the network state, used to send the messages
+     */
     public MessageHandler(NetworkState state) {
         gson = new Gson();
         setNetworkState(state);
     }
 
+    /**
+     *
+     * @param loginState is the current login state
+     */
     public void setLoginState(LoginState loginState) {
         this.loginState = loginState;
     }
 
+    /**
+     *
+     * @param networkState is the current network state
+     */
     public void setNetworkState(NetworkState networkState) {
         mss = new MessageSenderServer(networkState);
     }
 
-
+    /**
+     *
+     * @param creationState is the current creation state
+     */
     public void setCreationState(CreationState creationState) {
         this.creationState = creationState;
     }
 
+    /**
+     *
+     * @param listener is the planning phase listener
+     */
     public void addListener(PlanningPhaseListener listener) {
         listeners.add(PlanningPhaseListener.class, listener);
     }
 
+    /**
+     *
+     * @param listener is the reconnection listener
+     */
     public void addListener(ReconnectionListener listener) {
         listeners.add(ReconnectionListener.class, listener);
     }
 
+    /**
+     *
+     * @param listener is the action phase listener
+     */
     public void addListener(ActionPhaseListener listener) {
         listeners.add(ActionPhaseListener.class, listener);
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the status event
+     * @param payload is the provided payload
+     */
     public void eventPerformed(StatusEvent evt, Payload payload) {
         message = gson.toJson(new Message(evt.getHeader(), payload));
         mss.sendBroadcastMessage(message);
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the played character event
+     */
     public void eventPerformed(CharacterPlayedEvent evt) {
         message = gson.toJson(new Message(Headers.characterPlayed, new CharacterPlayedPayload(evt.getCharactersName())));
         mss.sendBroadcastMessage(message);
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the show model event
+     */
     public void eventPerformed(ShowModelEvent evt) {
         message = gson.toJson(new Message(Headers.showModelMessage, evt.getPayload()));
         mss.sendBroadcastMessage(message);
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the string event
+     */
     public void eventPerformed(StringEvent evt) {
         message = gson.toJson(new Message(evt.getHeader(), new StringPayload(evt.getMessage())));
         mss.sendMessage(message, evt.getSocket());
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the close connection event
+     */
     public void eventPerformed(CloseConnectionEvent evt) {
         message = gson.toJson(new Message(Headers.closeConnection, new StringPayload("")));
         mss.sendMessage(message, evt.getSocket());
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the broadcast event
+     */
     public void eventPerformed(BroadcastEvent evt) {
         message = gson.toJson(new Message(evt.getHeader(), new StringPayload(evt.getMessage())));
         mss.sendBroadcastMessage(message);
     }
 
+    /**
+     * Used to send a message on the network
+     * @param evt is the show model event
+     * @param socketID is the socket to send the message to
+     */
     public void eventPerformed(ShowModelEvent evt, SocketID socketID) {
         message = gson.toJson(new Message(Headers.showModelMessage, evt.getPayload()));
         mss.sendMessage(message, socketID.getSocket());
     }
 
+    /**
+     * Used to handle a received message
+     * @param evt is the received message event
+     * @param sourceSocket is the socket which sent the message
+     */
     public synchronized void eventPerformed(MessageReceivedEvent evt, Socket sourceSocket) {
         JsonObject jsonTree = JsonParser.parseString(evt.getMessage()).getAsJsonObject();
         JsonElement jsonHeader = jsonTree.get("header");
@@ -158,7 +220,10 @@ public class MessageHandler implements EventListener {
 
     }
 
-
+    /**
+     * Used to create the action event
+     * @param aap is the received payload
+     */
     private void createActionEvent(ActionAnswerPayload aap) {
         if (aap.isMoveStudents()) {
             List<Creature> studentCreature = new ArrayList<>();
@@ -176,6 +241,10 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * Used to set the number of players and type of rules for the game
+     * @param num is the number of players for the game
+     */
     public void creationMessageReceiver(int num) {
         if (gamePaused) return;
         if (creationState.getPhase().equals(GamePhases.CREATION_NUMBER_OF_PLAYERS)) {
@@ -185,6 +254,12 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * Used to set the username, color and wizard of the player
+     * @param socket is the source socket
+     * @param loginPayload is the payload containing the info
+     * @param gamePhases is the current phase of the login
+     */
     public void loginMessageReceiver(Socket socket, LoginPayload loginPayload, GamePhases gamePhases) {
         if (gamePaused) return;
         switch (gamePhases) {
@@ -245,6 +320,10 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * The listener performs the provided event
+     * @param evt is the planning event
+     */
     public void playAssistantReceiver(PlanningEvent evt) {
         if (gamePaused) return;
         for (PlanningPhaseListener event : listeners.getListeners(PlanningPhaseListener.class)) {
@@ -252,6 +331,10 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * The listener performs the provided event
+     * @param evt is the played character event
+     */
     public void playCharacterReceiver(PlayCharacterEvent evt) {
         if (gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
@@ -259,6 +342,10 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * The listener performs the provided event
+     * @param evt is the character parameters event
+     */
     public void characterParametersReceiver(CharacterParametersEvent evt) {
         if (gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
@@ -266,6 +353,10 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * The listener performs the provided event
+     * @param evt is the move student event
+     */
     public void moveStudentsReceiver(MoveStudentsEvent evt) {
         if (gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
@@ -273,6 +364,10 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * The listener performs the provided event
+     * @param evt is the integer event
+     */
     public void integerEventReceiver(IntegerEvent evt) {
         if (gamePaused) return;
         for (ActionPhaseListener event : listeners.getListeners(ActionPhaseListener.class)) {
@@ -294,17 +389,28 @@ public class MessageHandler implements EventListener {
         }
     }
 
+    /**
+     * Used to notify the disconnection of a player
+     * @param evt is the disconnection event
+     */
     public void eventPerformed(DisconnectionEvent evt) {
         for (ReconnectionListener event : listeners.getListeners(ReconnectionListener.class)) {
             event.eventPerformed(evt);
         }
     }
 
+    /**
+     * Used to put the game on pause
+     */
     public void pauseGame() {
         this.gamePaused = true;
         eventPerformed(new BroadcastEvent(this, "Game paused", Headers.errorMessage));
     }
 
+    /**
+     * Used to unpause the game
+     * @return whether the method was successful
+     */
     public boolean resumeGame() {
         if (gamePaused) {
             gamePaused = false;

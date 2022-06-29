@@ -22,6 +22,9 @@ public abstract class PingHandler extends Thread {
     protected int time;
     protected int maxNoAnswers;
 
+    /**
+     * Used for the client handler
+     */
     public PingHandler(PingState ps, Socket socket, int time, int maxNoAnswers) {
         this.ps = ps;
         this.socket = socket;
@@ -36,6 +39,9 @@ public abstract class PingHandler extends Thread {
         this.maxNoAnswers = maxNoAnswers;
     }
 
+    /**
+     * Used for the server handler
+     */
     public PingHandler(PingState ps, NetworkState ns, SocketID socketID, int time, int maxNoAnswers) {
         this.ps = ps;
         this.socketID = socketID;
@@ -51,7 +57,9 @@ public abstract class PingHandler extends Thread {
         this.ns = ns;
     }
 
-
+    /**
+     * Manages the state of the connection
+     */
     @Override
     public void run() {
         while (true) {
@@ -69,11 +77,18 @@ public abstract class PingHandler extends Thread {
         }
     }
 
+    /**
+     * Used to send a message
+     */
     private void sendPingMessage() {
         Message mex = new Message(Headers.ping, new StringPayload("Ping"));
         out.println(gson.toJson(mex));
         out.flush();
     }
 
+    /**
+     * Used to check if the player is connected
+     * @return whether the player has left the game
+     */
     protected abstract boolean checkConnectionStatus();
 }

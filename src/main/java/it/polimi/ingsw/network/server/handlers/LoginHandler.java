@@ -39,6 +39,14 @@ public class LoginHandler extends Thread implements EventListener {
                     "                        ,V                                             \n" +
                     "                     OOb\"                                              \n\n\n";
 
+    /**
+     * It handles the login phase for a player
+     * @param networkState is the current network state
+     * @param socketId is the player's socket ID
+     * @param listener is the message handler
+     * @param loginState is the phase state
+     * @param cs is the creation state
+     */
     public LoginHandler(NetworkState networkState, SocketID socketId, MessageHandler listener, LoginState loginState, CreationState cs) {
         this.networkState = networkState;
         this.socketId = socketId;
@@ -50,6 +58,9 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
+    /**
+     * Starts to handle the player
+     */
     @Override
     public void run() {
         sendMessage(Headers.LOGIN, "");
@@ -59,6 +70,9 @@ public class LoginHandler extends Thread implements EventListener {
         networkState.setLoginPhaseEnded();
     }
 
+    /**
+     * Sets the player's name
+     */
     private void usernameProvider() {
         String username;
         sendMessage(Headers.loginMessage_Username, title + "Provide your username :");
@@ -77,6 +91,9 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
+    /**
+     * Sets the player's color
+     */
     private void colorProvider() {
         Color color;
         String colors = whiteColorCode + " " + whiteColorText + " " + blackColorCode + " " + blackColorText + " " + greyColorCode + " " + greyColorText;
@@ -97,6 +114,9 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
+    /**
+     * Sets the player's wizard
+     */
     private void wizardProvider() {
         Wizard wizard;
         String wizards = firstWizardCode + " " + firstWizardText + " " + secondWizardCode + " " + secondWizardText +
@@ -119,6 +139,11 @@ public class LoginHandler extends Thread implements EventListener {
         }
     }
 
+    /**
+     * Used to send a message
+     * @param header is the message header
+     * @param message is the content of the message
+     */
     public void sendMessage(Headers header, String message) {
         StringEvent evt = new StringEvent(this, message, header, socketId.getSocket());
         for (MessageHandler event : listeners.getListeners(MessageHandler.class)) {
