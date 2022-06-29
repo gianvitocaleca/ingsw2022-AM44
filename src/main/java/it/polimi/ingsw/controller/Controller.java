@@ -198,6 +198,10 @@ public class Controller {
 
     }
 
+    /**
+     * Used to send an error message to the current player.
+     * @param string is the content of the message.
+     */
     private void sendErrorMessage(String string) {
         int id = 0;
         for (SocketID socketID : networkState.getSocketIDList()) {
@@ -213,6 +217,10 @@ public class Controller {
                 networkState.getSocketByID(id)));
     }
 
+    /**
+     * Used to send a message informing the current player that he has played a character.
+     * @param name
+     */
     private void sendCharacterPlayedMessage(Name name) {
         int id = 0;
         for (SocketID socketID : networkState.getSocketIDList()) {
@@ -332,6 +340,10 @@ public class Controller {
 
     }
 
+    /**
+     * Used to move students from the selected cloud to the player's entrance.
+     * @param indexOfCloud is the cloud selected by the current player
+     */
     public void selectCloud(int indexOfCloud) {
         int currentPlayerIndex = model.getCurrentPlayerIndex();
         try {
@@ -455,7 +467,13 @@ public class Controller {
         return currentGameStatus.isWaitingForParameters();
     }
 
+    /**
+     * This method is used to check if a player has already played a character in his turn.
+     * @return true if the player has already played a character.
+     */
     public boolean getCurrentPlayerPlayedCharacter() {
         return currentPlayerPlayedCharacter;
     }
+
+    public NetworkState getNetworkState(){ return networkState; }
 }
