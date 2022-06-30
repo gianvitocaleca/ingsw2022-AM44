@@ -24,3 +24,26 @@
 |:-----------------|:--------------|:---------------------|:---------------:|
 |   model (Global Package)   | 97%  | 91% | 91% |
 | controller (Global Package)  | 85% | 83% | 82% |
+
+Launching the game
+The game can be launched from a terminal. Both the Client and the Server can be launched from the same JAR.
+
+Server
+The Server can be launched using the following command
+
+java -jar AM44.jar -server -port <port>
+The parameter -port represents the port used by the server. If omitted, the port is 1337.
+
+Client - CLI
+The Client can be launched with a CLI interface using the following command
+
+java -jar AM44.jar -client <address> -port <port>
+The parameters -port represents the port of the server
+
+Client - GUI
+The Server can be launched using the following command
+
+java -jar AM44.jar -client <address> -port <port> -gui -scale <scale>
+The parameter -scale is used to better fit the game to your screen.
+
+Note: if <port> and <address> are omitted, the client the port is 1337 and IP is 127.0.0.1 
