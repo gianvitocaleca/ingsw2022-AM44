@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * This class tests the Knight character and the KnightEvaluator
+ */
 public class KnightEvaluatorTest {
     GameModel gm;
 

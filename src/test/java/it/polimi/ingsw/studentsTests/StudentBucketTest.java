@@ -13,6 +13,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This class tests the StudentBucket methods
+ */
 public class StudentBucketTest {
 
     private int maxStudentCap = 130;

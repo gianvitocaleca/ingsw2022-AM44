@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the fungaro character and the fungaro evaluator class
+ */
 public class FungaroEvaluatorTest {
     GameModel gm;
 

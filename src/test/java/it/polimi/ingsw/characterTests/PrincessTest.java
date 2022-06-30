@@ -22,6 +22,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This class tests the Princess character
+ */
 public class PrincessTest {
 
     private GameModel gm;

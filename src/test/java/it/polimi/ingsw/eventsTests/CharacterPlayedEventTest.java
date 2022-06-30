@@ -8,7 +8,13 @@ import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class tests the correct behavior of CharacterPlayedEvent
+ */
 public class CharacterPlayedEventTest {
+    /**
+     * This method tests the correct creation of a CharacterPlayedEvent
+     */
     @Test
     public void eventCreation() {
         Socket s = new Socket();

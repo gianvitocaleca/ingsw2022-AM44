@@ -40,6 +40,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the controller class
+ */
 public class ControllerTest {
 
     GameModel gm;
@@ -51,6 +54,8 @@ public class ControllerTest {
 
     /**
      * This create a new GameModel instance to use in every test
+     * @throws PausedException
+     * @throws IOException
      */
     @BeforeEach
     public void createGame() throws PausedException, IOException {
@@ -210,6 +215,9 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests the playCharachter method when the game phase is ACTION_MOVEMOTHERNATURE
+     */
     @Test
     public void playCharacterInMMN(){
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
@@ -230,6 +238,9 @@ public class ControllerTest {
         assertEquals(gm.getPostmanMovements(), 2);
     }
 
+    /**
+     * This tests the playCharachter method when the game phase is ACTION_CLOUDCHOICE
+     */
     @Test
     public void playCharacterInSelectCloud(){
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
@@ -275,6 +286,7 @@ public class ControllerTest {
     /**
      * This tests that when a player with 1 tower left uses Herald character, it will win the game
      * when conquering one island
+     * @throws GameEndedException
      */
     @Test
     public void PlayCharacterAndWinTest() throws GameEndedException {
@@ -556,6 +568,10 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests that a player can win using mother nature and finishing his towers
+     * @throws GameEndedException
+     */
     @Test
     public void moveMotherNatureAndWinTest() throws GameEndedException {
         planningIfNo();
