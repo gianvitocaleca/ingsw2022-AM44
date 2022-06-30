@@ -231,6 +231,12 @@ public class GameModel implements Playable {
         showModel(modelUpdate);
     }
 
+    public void resetAssistants(){
+        for(Player p: players){
+            p.setAssistantPlayed(false);
+        }
+    }
+
     /**
      * Used for the cloud selection command
      * @param indexOfCloud is the selected cloud
@@ -285,9 +291,11 @@ public class GameModel implements Playable {
         }
         List<Assistant> playedAssistants = new ArrayList<>();
 
-        if (!(currentPlayerIndex == 0)) {
+        if (currentPlayerIndex != 0) {
             for (int i = currentPlayerIndex - 1; i >= 0; i--) {
-                playedAssistants.add(players.get(i).getLastPlayedCard());
+                if(players.get(i).isAssistantPlayed()){
+                    playedAssistants.add(players.get(i).getLastPlayedCard());
+                }
             }
 
             for (Assistant a : playedAssistants) {
@@ -298,6 +306,7 @@ public class GameModel implements Playable {
         }
 
         players.get(currentPlayerIndex).setAssistantCard(indexOfAssistant);
+        players.get(currentPlayerIndex).setAssistantPlayed(true);
         ShowModelPayload modelUpdate = showModelPayloadCreator();
         modelUpdate.setUpdatePlayersAssistant();
         showModel(modelUpdate);
@@ -315,16 +324,32 @@ public class GameModel implements Playable {
         return true;
     }
 
+
+    private void establisher(List<Player> goodPlayers) {
+        Collections.sort(goodPlayers, (p1, p2) -> {
+                if (p1.getLastPlayedCard().getValue() < p2.getLastPlayedCard().getValue()) return -1;
+                else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
+                else return 0;
+        });
+        currentPlayerIndex = 0;
+    }
+
     /**
      * put in order players according to the assistant card played by each player.
      */
-    public void establishRoundOrder() {
-        Collections.sort(players, (p1, p2) -> {
-            if (p1.getLastPlayedCard().getValue() < p2.getLastPlayedCard().getValue()) return -1;
-            else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
-            else return 0;
-        });
-        currentPlayerIndex = 0;
+    public void establishRoundOrder(){
+        List<Player> badPlayers = new ArrayList<>();
+        List<Player> goodPlayers = new ArrayList<>();
+        for(int i = 0; i< players.size(); i++){
+            if(players.get(i).isAssistantPlayed()){
+                goodPlayers.add(players.get(i));
+            }else{
+                badPlayers.add(players.get(i));
+            }
+        }
+        establisher(goodPlayers);
+        goodPlayers.addAll(badPlayers);
+        players = goodPlayers;
     }
 
     /**

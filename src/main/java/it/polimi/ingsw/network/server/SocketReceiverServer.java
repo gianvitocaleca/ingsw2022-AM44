@@ -130,7 +130,9 @@ public class SocketReceiverServer {
                         case GAME:
                             messageHandler.eventPerformed(new CloseConnectionEvent(this, socketId.getSocket()));
                             System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
+                            socketId.setConnected(false);
                             isKicked = true;
+                            socketId.setConnected(false);
                     }
                 }
             } catch (InterruptedException e) {

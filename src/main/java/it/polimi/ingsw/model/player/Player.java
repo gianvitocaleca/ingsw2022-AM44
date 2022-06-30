@@ -23,6 +23,7 @@ public class Player {
     private int myCoins;
     private int towers;
     private Map<Creature, ArrayList<Boolean>> givenCoins = createMap();
+    private boolean assistantPlayed;
 
     /**
      * Is the player's representation
@@ -47,6 +48,15 @@ public class Player {
         professors = new ArrayList<>();
         this.entrance = entrance;
         this.diningRoom = new DiningRoom();
+        this.assistantPlayed = false;
+    }
+
+    public boolean isAssistantPlayed() {
+        return assistantPlayed;
+    }
+
+    public void setAssistantPlayed(boolean assistantPlayed) {
+        this.assistantPlayed = assistantPlayed;
     }
 
     /**
