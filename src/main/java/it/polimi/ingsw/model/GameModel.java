@@ -276,6 +276,7 @@ public class GameModel implements Playable {
         } else {
             currentPlayerIndex = 0;
         }
+        setInfluenceEvaluator(new StandardEvaluator());
     }
 
     /**
@@ -638,7 +639,9 @@ public class GameModel implements Playable {
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
         List<Character> characterList = new ArrayList<>();
         List<Name> names = new ArrayList<>(Arrays.asList(Name.values()));
-        for (int i = 0; i < NUMBER_OF_CHARACTERS; i++) {
+        //dopo toglilo!!
+        characterList.add(ccc.createCharacter(Name.KNIGHT,this));
+        for (int i = 1; i < NUMBER_OF_CHARACTERS; i++) {
             characterList.add(ccc.createCharacter(names.remove(rand.nextInt(names.size())), this));
         }
         return characterList;
