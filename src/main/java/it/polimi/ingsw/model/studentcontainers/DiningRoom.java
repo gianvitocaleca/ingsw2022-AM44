@@ -9,6 +9,9 @@ public class DiningRoom extends StudentContainer {
     private Map<Creature, ArrayList<Student>> diners;
     private static final int capacity = 9;
 
+    /**
+     * Is the player's dining room.
+     */
     public DiningRoom() {
         super(DiningRoom.capacity);
         this.diners = createMap();

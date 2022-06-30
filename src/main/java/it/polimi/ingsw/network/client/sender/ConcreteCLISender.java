@@ -13,11 +13,20 @@ public class ConcreteCLISender extends AbstractSender {
     private Scanner stdin;
     private final String error = "error";
 
+    /**
+     * Waits for commands from the player.
+     * Encodes and sends the messages on the network.
+     * @param ip the server address
+     * @param port the server port
+     */
     public ConcreteCLISender(String ip, int port) {
         super(ip, port);
     }
 
-
+    /**
+     * Starts to handle the player's commands
+     * @throws IOException
+     */
     @Override
     public void startClient() throws IOException {
         super.startClient();

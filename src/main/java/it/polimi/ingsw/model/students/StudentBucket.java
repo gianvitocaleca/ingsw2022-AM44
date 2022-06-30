@@ -10,6 +10,9 @@ public class StudentBucket {
 
     private Map<Creature, Integer> generatedStudents;
 
+    /**
+     * Creates a map to keep track of all the students.
+     */
     public StudentBucket(){
         generatedStudents = createMap();
     }
@@ -51,7 +54,10 @@ public class StudentBucket {
         return s;
     }
 
-
+    /**
+     * Used to reset the map.
+     * Mainly for test purposes.
+     */
     public void resetMap() {
         for (Creature c : Creature.values()) {
             generatedStudents.put(c, 0);
@@ -69,10 +75,18 @@ public class StudentBucket {
         return newMap;
     }
 
+    /**
+     * Used to set the map
+     * @param map is the provided map
+     */
     public void setMap(Map map){
         this.generatedStudents=map;
     }
 
+    /**
+     * Used to get the map
+     * @return is the current map
+     */
     public Map getMap(){
         Map<Creature, Integer> temp = new HashMap<>();
         for(Creature c: Creature.values()){

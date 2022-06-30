@@ -21,6 +21,14 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
 
     private static ClientGui clientGui;
 
+    /**
+     * Waits for server messages.
+     * Decodes and shows them to the player.
+     * @param socketIn the player's socket
+     * @param cs is the current player's state
+     * @param ps is the current connection state
+     * @param clientGui is the graphical interface class
+     */
     public ConcreteGUIReceiver(Scanner socketIn, ClientState cs, PingState ps, ClientGui clientGui) {
         super(socketIn, cs, ps);
         this.clientGui = clientGui;

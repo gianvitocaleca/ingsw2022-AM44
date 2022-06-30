@@ -23,11 +23,20 @@ public class Island extends StudentContainer {
         this.colorOfTowers = colorOfTowers;
     }
 
+    /**
+     * Used to add a ticket of no entry on the island.
+     * Used by the herbalist character effect.
+     * @return whether the operation was successful
+     */
     public boolean addNoEntry() {
         numberOfNoEntries += 1;
         return true;
     }
 
+    /**
+     * Used to remove a ticket of no entry on the island.
+     * Triggered by mother nature movement.
+     */
     public void removeNoEntry() {
         numberOfNoEntries -= 1;
         System.out.println("ho tolto la no entry all'isola corrente");
@@ -41,6 +50,10 @@ public class Island extends StudentContainer {
         return numberOfTowers;
     }
 
+    /**
+     *
+     * @return is the color of the towers on the island
+     */
     public Color getColorOfTowers() {
         return colorOfTowers;
     }
@@ -56,10 +69,18 @@ public class Island extends StudentContainer {
         if (numberOfTowers == 0) numberOfTowers++;
     }
 
+    /**
+     *
+     * @return is the number of no entries tickets on the island
+     */
     public int getNumberOfNoEntries() {
         return numberOfNoEntries;
     }
 
+    /**
+     * Used for test purposes.
+     * @return is the island representation
+     */
     @Override
     public String toString() {
         return "NoEntries: " + this.numberOfNoEntries + " Color: " + this.colorOfTowers +

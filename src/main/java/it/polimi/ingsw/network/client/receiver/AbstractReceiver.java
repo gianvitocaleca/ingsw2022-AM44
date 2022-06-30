@@ -19,6 +19,13 @@ public abstract class AbstractReceiver extends Thread {
     protected ClientState cs;
     private PingState ps;
 
+    /**
+     * Waits for server messages.
+     * Decodes and shows them to the player.
+     * @param socketIn is the player's socket
+     * @param cs is the current player's state
+     * @param ps is the current connection state
+     */
     public AbstractReceiver(Scanner socketIn, ClientState cs, PingState ps) {
         this.socketIn = socketIn;
         gson = new Gson();
@@ -26,6 +33,9 @@ public abstract class AbstractReceiver extends Thread {
         this.ps = ps;
     }
 
+    /**
+     * Starts to handle and decode the messages
+     */
     @Override
     public void run() {
         while (true) {
@@ -133,8 +143,16 @@ public abstract class AbstractReceiver extends Thread {
         }
     }
 
+    /**
+     * Used to reconnect a player in the game
+     * @param reconnectionPayload the payload with the reconnection info
+     */
     abstract void reconnectPlayer(ReconnectionPayload reconnectionPayload);
 
+    /**
+     * Used to set the current header in the player's state
+     * @param header the provided header
+     */
     private void setHeader(Headers header) {
         if (!header.equals(Headers.ping) && !header.equals(Headers.errorMessage) &&
                 !header.equals(Headers.showModelMessage)) {
@@ -142,6 +160,10 @@ public abstract class AbstractReceiver extends Thread {
         }
     }
 
+    /**
+     * Used to show the current game state to the player
+     * @param payload is the payload with the game model state
+     */
     private void setShowModel(ShowModelPayload payload) {
         cs.setShowModel(payload);
         if (payload.getReconnection()) {
@@ -149,14 +171,32 @@ public abstract class AbstractReceiver extends Thread {
         }
     }
 
+    /**
+     * Used by simple messages that require only a string
+     * @param header is the provided header
+     * @param payload is the string payload
+     */
     abstract void stringMessage(Headers header, StringPayload payload);
 
+    /**
+     * Used to show the current game state to the player
+     */
     abstract void printModel();
 
+    /**
+     * Used during the planning phase of the game
+     */
     abstract void planning();
 
+    /**
+     * Used during the action phase of the game
+     */
     abstract void action();
 
+    /**
+     * Used to show the necessary parameters a character needs
+     * @param cpp the payload with the info
+     */
     abstract void characterParameterSelection(CharacterPlayedPayload cpp);
 
 }

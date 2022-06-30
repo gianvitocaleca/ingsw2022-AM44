@@ -34,7 +34,12 @@ public abstract class AbstractSender {
     protected Socket socket;
     protected PrintWriter socketOut;
 
-
+    /**
+     * Waits for commands from the player.
+     * Encodes and sends the messages on the network.
+     * @param ip the server address
+     * @param port the server port
+     */
     public AbstractSender(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -168,6 +173,12 @@ public abstract class AbstractSender {
         return gson.toJson(new Message(cs.getHeaders(), new StringPayload(string)));
     }
 
+    /**
+     * Creates the message for the characters that swap creatures
+     * @param result is the player's command
+     * @param maxMoves is the number of allowed creatures to be swapped
+     * @return is the formatted message or the error
+     */
     private String createSwapMessage(List<String> result, int maxMoves) {
         if (result.get(0).equalsIgnoreCase(selectCreatureText) && result.get(2).equalsIgnoreCase(selectDestinationText)) {
             List<String> sourceCreatures = Arrays.stream(result.get(1).split(creatureSeparator)).toList();
@@ -191,6 +202,10 @@ public abstract class AbstractSender {
         return badGuysHandler();
     }
 
+    /**
+     * Used to set the username of the player
+     * @param username is the player's name
+     */
     protected void setUsername(String username) {
         if (cs.getHeaders().equals(Headers.loginMessage_Username)) {
             cs.setUsername(username.toLowerCase());
@@ -275,6 +290,11 @@ public abstract class AbstractSender {
                 isPC, false, Creature.RED_DRAGONS, providedIndex)));
     }
 
+    /**
+     * Used for the characters that need an index command
+     * @param selectedNumber is the player's command
+     * @return is the formatted message
+     */
     private String createCharIntMessage(int selectedNumber) {
         if (cs.getCurrentPlayedCharacter().equals(Name.MAGICPOSTMAN)) {
             return gson.toJson(new Message(cs.getHeaders(),
@@ -284,6 +304,11 @@ public abstract class AbstractSender {
                 new CharactersParametersPayload(new ArrayList<>(), selectedNumber, 0, new ArrayList<>())));
     }
 
+    /**
+     * Used for the characters that need a creature command
+     * @param creature is the creature selected by the player
+     * @return is the formatted message
+     */
     private String createCreatureCharMessage(Creature creature) {
         List<Creature> creatureList = new ArrayList<>();
         creatureList.add(creature);
@@ -291,6 +316,12 @@ public abstract class AbstractSender {
                 new CharactersParametersPayload(creatureList, 0, 0, new ArrayList<>())));
     }
 
+    /**
+     * Used for the monk character
+     * @param creature is the creature selected by the player
+     * @param island is the island selected by the player
+     * @return is the formatted message
+     */
     private String createMonkMessage(Creature creature, int island) {
         List<Creature> creatureList = new ArrayList<>();
         creatureList.add(creature);
@@ -298,6 +329,10 @@ public abstract class AbstractSender {
                 new CharactersParametersPayload(creatureList, island - 1, 0, new ArrayList<>())));
     }
 
+    /**
+     * Used when a player provides a wrong or illegal command
+     * @return is the error message
+     */
     private String badGuysHandler() {
         System.out.println(badTextMessage);
         return error;

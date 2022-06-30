@@ -26,6 +26,13 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
     private ShowModelPayload modelPayload;
     private final CliPrinter printer = new CliPrinter();
 
+    /**
+     * Waits for server messages.
+     * Decodes and shows them to the player.
+     * @param socketIn is the player's socket
+     * @param cs is the current player's state
+     * @param ps is the current connection state
+     */
     public ConcreteCLIReceiver(Scanner socketIn, ClientState cs, PingState ps) {
         super(socketIn, cs, ps);
     }

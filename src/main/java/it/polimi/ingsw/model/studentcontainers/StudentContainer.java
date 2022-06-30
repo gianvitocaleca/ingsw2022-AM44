@@ -25,24 +25,45 @@ public abstract class StudentContainer {
         students.addAll(newStudents);
     }
 
+    /**
+     *
+     * @param student is a single student to add to the container
+     */
     public void addStudent(Student student){
         students.add(student);
     }
 
+    /**
+     *
+     * @param students is the list of students to be set in the container
+     */
     public void setStudents(List<Student> students){
         this.students = students;
     }
 
+    /**
+     * Used to remove a student of the given creature
+     * @param creature is the type of student to remove
+     * @return is the student removed
+     */
     public Student removeStudent(Creature creature){
         Student temp = students.stream().filter(s -> s.getCreature()==creature).findFirst().orElse(null);
         students.remove(temp);
         return temp;
     }
 
+    /**
+     *
+     * @return is the max number of students allowed in the container
+     */
     public int getCapacity(){
         return capacity;
     }
 
+    /**
+     *
+     * @return is the list of students in the container
+     */
     public List<Student> getStudents(){
 
         List<Student> temp = new ArrayList<>();
@@ -53,6 +74,11 @@ public abstract class StudentContainer {
 
     }
 
+    /**
+     *
+     * @param c the type of student
+     * @return is the number of students, of the provided type, in the container
+     */
     public int getNumberOfStudentsByCreature(Creature c){
         return getStudents().stream().filter(s -> s.getCreature().equals(c)).toList().size();
     }

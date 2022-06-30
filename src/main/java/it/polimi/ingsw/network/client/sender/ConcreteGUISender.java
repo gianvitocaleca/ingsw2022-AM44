@@ -18,6 +18,14 @@ public class ConcreteGUISender extends AbstractSender {
     private String inputLine;
     private ClientGui clientGui;
 
+    /**
+     * Waits for commands from the player.
+     * Encodes and sends the messages on the network.
+     * @param ip the server address
+     * @param port the server port
+     * @param clientGui is the graphical interface class
+     * @param guiEvents is the queue that contains the commands
+     */
     public ConcreteGUISender(String ip, int port, ClientGui clientGui, Queue guiEvents) {
         super(ip, port);
         this.guiEvents = guiEvents;
@@ -25,6 +33,10 @@ public class ConcreteGUISender extends AbstractSender {
 
     }
 
+    /**
+     * Starts to handle the player's commands
+     * @throws IOException
+     */
     @Override
     public void startClient() throws IOException {
         super.startClient();
@@ -57,14 +69,6 @@ public class ConcreteGUISender extends AbstractSender {
                 break;
             }
         }
-        /*
-        while (!ps.isCloseConnection()) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }*/
         socketOut.close();
         try {
             socket.close();
