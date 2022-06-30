@@ -152,6 +152,7 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
      */
     void reconnectPlayer(ReconnectionPayload reconnectionPayload) {
         cs.setUsername(reconnectionPayload.getUsername());
+        System.out.println("Reconnected, my username is: " + reconnectionPayload.getUsername());
     }
 
     /**

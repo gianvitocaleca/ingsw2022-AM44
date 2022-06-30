@@ -19,8 +19,6 @@ public class ShowModelPayload implements Payload {
     private int motherNature;
     private int deactivators;
     private int coinReserve;
-
-
     private boolean advancedRules = false;
 
     private List<CharacterInformation> characters;

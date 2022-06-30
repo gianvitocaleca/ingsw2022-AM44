@@ -10,6 +10,7 @@ import it.polimi.ingsw.network.server.networkMessages.Headers;
 import it.polimi.ingsw.network.server.networkMessages.payloads.ReconnectionPayload;
 import it.polimi.ingsw.network.server.networkMessages.payloads.StringPayload;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.util.Scanner;
 
@@ -59,7 +60,7 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
                 Platform.runLater(() -> clientGui.wizard());
                 break;
             case errorMessage:
-                Platform.runLater(() -> errorAlert(payload.getString()));
+                Platform.runLater(() -> errorAlert(payload.getString(), Alert.AlertType.ERROR));
                 if(clientGui!=null){
                     Platform.runLater(() -> clientGui.setMoveStudents());
                 }
@@ -136,5 +137,7 @@ public class ConcreteGUIReceiver extends AbstractReceiver {
     void reconnectPlayer(ReconnectionPayload reconnectionPayload) {
         cs.setUsername(reconnectionPayload.getUsername());
         clientGui.setMY_USERNAME(reconnectionPayload.getUsername());
+        String alert = "Reconnected, my username is: " + reconnectionPayload.getUsername();
+        Platform.runLater(() -> errorAlert(alert, Alert.AlertType.INFORMATION));
     }
 }

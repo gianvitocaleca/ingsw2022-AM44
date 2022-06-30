@@ -6,6 +6,8 @@ import it.polimi.ingsw.network.server.SocketID;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Wizard;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
@@ -16,15 +18,17 @@ public class NetworkState {
     private int numberOfPlayers;
     private boolean advancedRules;
     private int loginPhaseEnded = 0;
+    private ServerSocket serverSocket;
 
     /**
      * Keeps track of the number and sockets of all the players
      * @param phase is the phase in which the server is
      */
-    public NetworkState(ServerPhases phase) {
+    public NetworkState(ServerPhases phase, ServerSocket serverSocket) {
         socketIDList = new ArrayList<>();
         this.numberOfPlayers = 1;
         this.advancedRules = false;
+        this.serverSocket = serverSocket;
         setServerPhase(phase);
     }
 
@@ -211,6 +215,13 @@ public class NetworkState {
         }
         if (serverPhase.equals(ServerPhases.GAME)) {
             serverPhase = ServerPhases.WAITING;
+        }
+        if(getNumberOfConnectedSocket()==0){
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }

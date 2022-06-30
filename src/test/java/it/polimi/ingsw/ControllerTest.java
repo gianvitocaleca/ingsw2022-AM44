@@ -31,6 +31,8 @@ import it.polimi.ingsw.network.server.handlers.MessageHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,14 +53,14 @@ public class ControllerTest {
      * This create a new GameModel instance to use in every test
      */
     @BeforeEach
-    public void createGame() throws PausedException {
+    public void createGame() throws PausedException, IOException {
         String player1 = "Paolo";
         SocketID socketID1 = new SocketID(1, new Socket());
         String player2 = "Gianvito";
         SocketID socketID2 = new SocketID(2, new Socket());
         String player3 = "Sabrina";
         SocketID socketID3 = new SocketID(3, new Socket());
-        NetworkState state = new NetworkState(ServerPhases.READY);
+        NetworkState state = new NetworkState(ServerPhases.READY,new ServerSocket());
         state.addSocket(socketID1);
         state.addSocket(socketID2);
         state.addSocket(socketID3);

@@ -19,6 +19,8 @@ import it.polimi.ingsw.network.server.states.NetworkState;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Set;
 
 public class SocketReceiverServer {
     private static NetworkState networkState;
@@ -29,6 +31,7 @@ public class SocketReceiverServer {
     private final GameStatus gameStatus;
     private final int port;
     private ServerSocket serverSocket;
+    private Thread gameHandlerThread;
 
     /**
      * Used to handle all the new socket connections
@@ -36,7 +39,13 @@ public class SocketReceiverServer {
      */
     public SocketReceiverServer(int port) {
         this.port = port;
-        networkState = new NetworkState(READY);
+        try {
+            serverSocket = new ServerSocket(port);
+            System.out.println("Socket Receiver ready");
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        networkState = new NetworkState(READY,serverSocket);
         messageHandler = new MessageHandler(networkState);
         loginState = new LoginState();
         messageHandler.setLoginState(loginState);
@@ -50,20 +59,12 @@ public class SocketReceiverServer {
      * @throws IOException
      */
     public void startServer() throws IOException {
-        try {
-            serverSocket = new ServerSocket(port);
-            System.out.println("Socket Receiver ready");
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return;
-        }
 
-        Thread gameHandlerThread = new Thread(new GameHandler(networkState, gameStatus, messageHandler));
+        gameHandlerThread = new Thread(new GameHandler(networkState, gameStatus, messageHandler));
         gameHandlerThread.start();
+        System.out.println(gameHandlerThread.getName());
 
         acceptConnections();
-
-        serverSocket.close();
     }
 
     /**
@@ -73,17 +74,24 @@ public class SocketReceiverServer {
     private void acceptConnections() throws IOException {
         SocketID socketId;
         while (true) {
-            Socket socket = serverSocket.accept();
-            //create a new object, and link it to the id
-            socketId = new SocketID(id, socket);
-            int numberofclients = networkState.getNumberOfConnectedSocket() + 1;
-            System.out.println("Client " + id + " connected, number of clients " + numberofclients);
-            Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
-            t2.start();
-            SocketID finalSocketId = socketId;
-            Thread clientHandler = new Thread(() -> clientHandler(finalSocketId));
-            clientHandler.start();
-            id++;
+            try{
+                Socket socket = serverSocket.accept();
+                //create a new object, and link it to the id
+                socketId = new SocketID(id, socket);
+                int numberofclients = networkState.getNumberOfConnectedSocket() + 1;
+                System.out.println("Client " + id + " connected, number of clients " + numberofclients);
+                Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
+                t2.start();
+                System.out.println("MessageReceiver "+t2.getName());
+                SocketID finalSocketId = socketId;
+                Thread clientHandler = new Thread(() -> clientHandler(finalSocketId));
+                clientHandler.start();
+                System.out.println("ClientHandler "+clientHandler.getName());
+                id++;
+            }catch(SocketException e){
+                gameHandlerThread.stop();
+                System.exit(0);
+            }
         }
 
     }
@@ -124,6 +132,7 @@ public class SocketReceiverServer {
                                 LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState);
                                 Thread t = new Thread(login);
                                 t.start();
+                                System.out.println("Login "+t.getName());
                                 break;
                             }
                         case CREATION:
