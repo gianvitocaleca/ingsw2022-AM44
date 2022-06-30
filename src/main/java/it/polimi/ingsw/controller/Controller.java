@@ -41,7 +41,13 @@ public class Controller {
 
     private final NetworkState networkState;
 
-
+    /**
+     * This is the constructor of the class
+     * @param model created by the GameHandler
+     * @param messageHandler created by the server
+     * @param gameStatus created by the server
+     * @param networkState created by the server
+     */
     public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
 
         this.model = model;
@@ -96,6 +102,10 @@ public class Controller {
         messageHandler.eventPerformed(new ShowModelEvent(this, showModelPayload), socketID);
     }
 
+    /**
+     * Used to resume game after a client joins,
+     * it finds the current player and then sends a phase message.
+     */
     public void resumeGame() {
         if (messageHandler.resumeGame()) {
             try {

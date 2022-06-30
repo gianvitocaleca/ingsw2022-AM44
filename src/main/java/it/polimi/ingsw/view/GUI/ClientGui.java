@@ -36,6 +36,10 @@ import static it.polimi.ingsw.view.GUI.GuiCss.*;
 import static it.polimi.ingsw.view.GUI.GuiAlerts.*;
 import static it.polimi.ingsw.view.GUI.GuiMethods.*;
 
+/**
+ * This class implements GUI graphics and create the command to insert into the queue guiEvents.
+ * Createdcommand is the command created by client's actions.
+ */
 public class ClientGui extends Application {
     private static String address;
     private static int port;

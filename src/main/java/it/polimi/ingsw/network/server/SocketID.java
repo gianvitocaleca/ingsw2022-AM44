@@ -2,6 +2,10 @@ package it.polimi.ingsw.network.server;
 
 import java.net.Socket;
 
+/**
+ * This class is used to contain information about player's connection, each socket has an associated id
+ * PlayerInfo contains player's choices during the login phase.
+ */
 public class SocketID {
     private int id;
     private Socket socket;

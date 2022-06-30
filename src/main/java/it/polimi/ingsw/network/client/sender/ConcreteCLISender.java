@@ -8,6 +8,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * This class transform the client's string into a json string, then sends it to the server.
+ */
 public class ConcreteCLISender extends AbstractSender {
     private String inputLine;
     private Scanner stdin;

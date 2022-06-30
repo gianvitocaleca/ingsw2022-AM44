@@ -13,6 +13,9 @@ import static it.polimi.ingsw.utils.TextAssets.useEffectText;
 import static it.polimi.ingsw.view.GUI.GuiAssets.gameTitle;
 import static it.polimi.ingsw.view.GUI.GuiAssets.noErrorCode;
 
+/**
+ * This class is used to crate alert caused by client's actions.
+ */
 public class GuiAlerts {
 
     /**

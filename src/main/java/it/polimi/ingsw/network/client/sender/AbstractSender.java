@@ -22,7 +22,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
-
+/**
+ * This class is used to avoid repetition of code. Cli and Gui have similar behaviour;
+ * They differ because of the implementation of play().
+ */
 public abstract class AbstractSender {
     protected String ip;
     protected int port;
