@@ -57,6 +57,14 @@ public class GameModel implements Playable {
     private final EventListenerList listeners;
     private SecureRandom rand = new SecureRandom();
 
+    /**
+     * It is the model of the game
+     * @param advancedRules whether the game has advanced rules
+     * @param usernames the list of the players
+     * @param numberOfPlayers the number of players
+     * @param colors the list of colors
+     * @param wizards the list of wizards
+     */
     public GameModel(boolean advancedRules, List<String> usernames, int numberOfPlayers, List<Color> colors, List<Wizard> wizards) {
         this.listeners = new EventListenerList();
         this.advancedRules = advancedRules;
@@ -70,6 +78,10 @@ public class GameModel implements Playable {
         playedCharacter = -1;
     }
 
+    /**
+     * Used to add a no entry signal on an island
+     * @param indexOfIsland is the given island
+     */
     @Override
     public void addNoEntry(int indexOfIsland) {
         List<Island> islands = table.getIslands();
@@ -107,6 +119,10 @@ public class GameModel implements Playable {
         postmanMovements = numberOfSteps;
     }
 
+    /**
+     *
+     * @param lastRound whether the current round will be the last
+     */
     @Override
     public void setLastRound(boolean lastRound) {
         this.lastRound = lastRound;
@@ -136,6 +152,9 @@ public class GameModel implements Playable {
         return false;
     }
 
+    /**
+     * Used to give the players the coins
+     */
     public void coinGiver() {
         boolean update = false;
         for (Creature c : Creature.values()) {
@@ -154,20 +173,37 @@ public class GameModel implements Playable {
 
     }
 
+    /**
+     * Used to set the influence evaluator.
+     * Used with advanced rules.
+     * @param evaluator the type of evaluator to use.
+     */
     @Override
     public void setInfluenceEvaluator(InfluenceEvaluator evaluator) {
         this.evaluator = evaluator;
     }
 
+    /**
+     * Used by the farmer character
+     */
     @Override
     public void setFarmer() {
         isFarmer = true;
     }
 
+    /**
+     * Used to remove the farmer effect
+     */
     public void resetFarmer() {
         isFarmer = false;
     }
 
+    /**
+     * Used by the herald effect
+     * @param indexIsland is the selected island
+     * @return whether the effect was successful
+     * @throws GameEndedException is thrown if an end game condition is met
+     */
     @Override
     public boolean setHeraldIsland(int indexIsland) throws GameEndedException {
         if (indexIsland < table.getIslands().size()) {
@@ -195,6 +231,12 @@ public class GameModel implements Playable {
         showModel(modelUpdate);
     }
 
+    /**
+     * Used for the cloud selection command
+     * @param indexOfCloud is the selected cloud
+     * @return whether the operation was successful
+     * @throws CloudAlreadySelectedException is thrown if another player has already selected the provided cloud
+     */
     public boolean moveFromSelectedCloud(int indexOfCloud) throws CloudAlreadySelectedException {
         if (indexOfCloud >= table.getClouds().size() || indexOfCloud < 0) {
             return false;
@@ -219,6 +261,9 @@ public class GameModel implements Playable {
         return true;
     }
 
+    /**
+     * Used to change the current player
+     */
     public void findNextPlayer() {
         if (currentPlayerIndex < numberOfPlayers - 1) {
             currentPlayerIndex++;
@@ -227,6 +272,13 @@ public class GameModel implements Playable {
         }
     }
 
+    /**
+     * Used during the planning phase of the turn
+     * @param indexOfAssistant is the selected assistant
+     * @return whether the operation was successful
+     * @throws AssistantAlreadyPlayedException is thrown if another player already played the given assistant
+     * @throws PlanningPhaseEndedException is thrown if the planning phase has ended
+     */
     public boolean playAssistant(int indexOfAssistant) throws AssistantAlreadyPlayedException, PlanningPhaseEndedException{
         if (indexOfAssistant < 0 || indexOfAssistant >= players.get(currentPlayerIndex).getAssistantDeck().size()) {
             return false;
@@ -337,20 +389,30 @@ public class GameModel implements Playable {
         return false;
     }
 
+    /**
+     *
+     * @return is the number of selected jumps for the postman character
+     */
     public int getPostmanMovements() {
         return postmanMovements;
     }
 
+    /**
+     *
+     * @return whether the current turn is the last
+     */
     public boolean checkIfLastRound() {
         return lastRound;
     }
 
+    /**
+     * Used to check the end game conditions
+     * @return whether the game has ended
+     */
     public boolean checkEndGame() {
         boolean gameEnded = false;
         for (Player p : players) {
-            if (p.getTowers() == 0) {
-                gameEnded = true;
-            } else if (p.getAssistantDeck().size() == 0) {
+            if (p.getTowers() == 0 || p.getAssistantDeck().isEmpty()) {
                 gameEnded = true;
             }
         }
@@ -360,28 +422,48 @@ public class GameModel implements Playable {
         return gameEnded;
     }
 
+    /**
+     * Used by the herbalist effect.
+     * @return is the number of no entries on the character card
+     */
     @Override
     public int getDeactivators() {
         return table.getDeactivators();
     }
 
+    /**
+     * Used by the herbalist effect.
+     * @param deactivators is the number of no entries to be set
+     * @return whether the operation was successful
+     */
     @Override
     public boolean setDeactivators(int deactivators) {
         table.setDeactivators(deactivators);
         return true;
     }
 
-
+    /**
+     *
+     * @return is the student bucket
+     */
     @Override
     public StudentBucket getBucket() {
         return table.getBucket();
     }
 
+    /**
+     *
+     * @param bucket is the student bucket to be set
+     */
     @Override
     public void setBucket(StudentBucket bucket) {
         table.setBucket(bucket);
     }
 
+    /**
+     *
+     * @return is a copy of the game table
+     */
     public Table getTable() {
         Table temp = new Table(numberOfPlayers, advancedRules);
         temp.setMotherNature(table.getMotherNature());
@@ -400,21 +482,26 @@ public class GameModel implements Playable {
     public Player findWinner() {
         Player ans = players.get(0);
         for (Player p : players) {
-            if (p.getTowers() < ans.getTowers()) {
-                ans = p;
-            } else if (p.getTowers() == ans.getTowers() &&
-                    p.getProfessors().size() > ans.getProfessors().size()) {
+            if (p.getTowers() < ans.getTowers() || (p.getTowers() == ans.getTowers() &&
+                    p.getProfessors().size() > ans.getProfessors().size())) {
                 ans = p;
             }
         }
         return ans;
     }
 
-
+    /**
+     *
+     * @param table is the game table to be set
+     */
     public void setTable(Table table) {
         this.table = table;
     }
 
+    /**
+     *
+     * @return is a copy list of the players
+     */
     public List<Player> getPlayers() {
         List<Player> temp = new ArrayList<>();
         for (Player p : players) {
@@ -429,31 +516,62 @@ public class GameModel implements Playable {
         return temp;
     }
 
+    /**
+     *
+     * @param players is the list of players to be set
+     */
     public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
+    /**
+     *
+     * @return is the index of the current player
+     */
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
     }
 
+    /**
+     *
+     * @param currentPlayerIndex is the index of the current player to be set
+     */
     public void setCurrentPlayerIndex(int currentPlayerIndex) {
         this.currentPlayerIndex = currentPlayerIndex;
     }
 
+    /**
+     *
+     * @return is the number of players in the game
+     */
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
 
-
+    /**
+     * Used with advanced rules.
+     * @return is the list of characters in the game
+     */
     public List<Character> getCharacters() {
         return characters;
     }
 
+    /**
+     * Used with advanced rules.
+     * @return is the character played in this turn
+     */
     public int getPlayedCharacter() {
         return playedCharacter;
     }
 
+    /**
+     * Used to create the players at the beginning of the game
+     * @param advancedRules whether the game has advanced rules
+     * @param usernames the list of player's names
+     * @param colors the list of player's colors
+     * @param wizards the list of player's wizards
+     * @return the list of created players
+     */
     private List<Player> createListOfPlayers(boolean advancedRules, List<String> usernames, List<Color> colors, List<Wizard> wizards) {
         List<Player> newPlayers = new ArrayList<>();
         if (!advancedRules) {
@@ -501,6 +619,11 @@ public class GameModel implements Playable {
         return characterList;
     }
 
+    /**
+     * Used to create the player's entrance
+     * @param numberOfPlayers is the number of players in the game
+     * @return is the created entrance
+     */
     private Entrance createEntrance(int numberOfPlayers) {
         List<Student> students = new ArrayList<>();
         StudentBucket bucket = table.getBucket();
@@ -512,6 +635,13 @@ public class GameModel implements Playable {
         return populateEntrance(students, bucket, THREE_PLAYERS_CAPACITY);
     }
 
+    /**
+     * Used to populate an empty entrance with students
+     * @param students is the list of students to put in the entrance
+     * @param bucket is the student bucket
+     * @param playersCapacity is the capacity of the student container
+     * @return is the populated entrance
+     */
     private Entrance populateEntrance(List<Student> students, StudentBucket bucket, int playersCapacity) {
         Entrance entrance = new Entrance(playersCapacity);
         for (int i = 0; i < playersCapacity; i++) {
@@ -526,19 +656,34 @@ public class GameModel implements Playable {
         return entrance;
     }
 
-
+    /**
+     *
+     * @return is the created player for a two player normal game
+     */
     private Player createTwoPlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
         return new Player(myUsername, myColor, 0, myWizard, TWO_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
 
+    /**
+     *
+     * @return is the created player for a three player normal game
+     */
     private Player createThreePlayer(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
         return new Player(myUsername, myColor, 0, myWizard, THREE_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
 
+    /**
+     *
+     * @return is the created player for a two player advanced game
+     */
     private Player createTwoPlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
         return new Player(myUsername, myColor, ADVANCED_RULES_STARTING_COINS, myWizard, TWO_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
 
+    /**
+     *
+     * @return is the created player for a three player advanced game
+     */
     private Player createThreePlayerAdvanced(Entrance myEntrance, String myUsername, Color myColor, Wizard myWizard) {
         return new Player(myUsername, myColor, ADVANCED_RULES_STARTING_COINS, myWizard, THREE_PLAYERS_NUMBER_OF_TOWERS, myEntrance);
     }
@@ -592,6 +737,11 @@ public class GameModel implements Playable {
         showModel(payload);
     }
 
+    /**
+     * Used to evaluate which player has the most students in the dining room.
+     * @param c the type of student
+     * @return is the player's name
+     */
     private String findWhoHasMoreStudents(Creature c) {
         List<Player> playerList = getPlayers();
         Collections.sort(playerList, (p1, p2) -> {
@@ -604,6 +754,12 @@ public class GameModel implements Playable {
         return playerList.get(numberOfPlayers - 1).getUsername();
     }
 
+    /**
+     *
+     * @param indexOfPlayer the index of the player
+     * @param c the type of professor
+     * @return whether the given player has the provided type of professor
+     */
     private boolean hasProfessor(int indexOfPlayer, Creature c) {
         if (!players.get(indexOfPlayer).getProfessors().isEmpty()) {
             return players.get(indexOfPlayer).getProfessors().stream().filter(p -> p.getCreature().equals(c)).findFirst().isPresent();
@@ -611,6 +767,11 @@ public class GameModel implements Playable {
         return false;
     }
 
+    /**
+     * Used to conquer the current island
+     * @param hasMoreInfluence the player with the most influence
+     * @throws GameEndedException is thrown if an end game condition is met
+     */
     public void conquerIsland(Player hasMoreInfluence) throws GameEndedException {
 
         Island currentIsland = table.getCurrentIsland();
@@ -646,7 +807,13 @@ public class GameModel implements Playable {
         }
     }
 
-
+    /**
+     * Used to play the characters effects
+     * @param answer is the payload with the selected parameters
+     * @return whether the effect was successful
+     * @throws GameEndedException is thrown if an end game condition is met
+     * @throws UnplayableEffectException is thrown if the provided parameters are illegal
+     */
     public boolean effect(CharactersParametersPayload answer) throws GameEndedException, UnplayableEffectException {
         boolean temp = false;
         try {
@@ -670,6 +837,10 @@ public class GameModel implements Playable {
         return temp;
     }
 
+    /**
+     * Used to send a message to the players
+     * @param modelUpdate is the show model payload
+     */
     public void showModel(ShowModelPayload modelUpdate) {
         ShowModelEvent modelEvent = new ShowModelEvent(this, modelUpdate);
         for (MessageHandler listener : listeners.getListeners(MessageHandler.class)) {
@@ -677,6 +848,11 @@ public class GameModel implements Playable {
         }
     }
 
+    /**
+     * Used to create the appropriate show model payload.
+     * Used for incremental updates.
+     * @return is the created payload
+     */
     public ShowModelPayload showModelPayloadCreator() {
         ShowModelPayload showModelPayload = new ShowModelPayload(getPlayers(), getTable());
         showModelPayload.setCurrentPlayerUsername(players.get(getCurrentPlayerIndex()).getUsername());
@@ -715,10 +891,18 @@ public class GameModel implements Playable {
         return showModelPayload;
     }
 
+    /**
+     *
+     * @param listener is the message handler listener
+     */
     public void addListener(MessageHandler listener) {
         listeners.add(MessageHandler.class, listener);
     }
 
+    /**
+     *
+     * @return whether the game has advanced rules
+     */
     public boolean isAdvancedRules() {
         return advancedRules;
     }
