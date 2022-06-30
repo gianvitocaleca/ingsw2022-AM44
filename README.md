@@ -22,5 +22,5 @@
 
 | Package  |Class Coverage|Method Coverage|Line Coverage|
 |:-----------------|:--------------|:---------------------|:---------------:|
-|   model    | 97%  | 91% | 91% |
-| controller   | 85% | 83% | 82% |
+|   model (Global Package)   | 97%  | 91% | 91% |
+| controller (Global Package)  | 85% | 83% | 82% |
