@@ -301,6 +301,13 @@ public class Controller {
         }
     }
 
+    /**
+     * This method is used to move students during the action phase of a player.
+     * @param source is the source with creatures;
+     * @param destination is the place where the creatures are put;
+     * @param creatures are the students to move.
+     * @return true if the action is allowed, otherwise it returns true with an error message.
+     */
     private boolean setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         if (!(model.moveStudents(source, destination, creatures))) {
             sendErrorMessage("Wrong creatures in entrance, try again");
@@ -403,6 +410,10 @@ public class Controller {
 
     }
 
+    /**
+     * This method is used to use the effect of a character
+     * @param parameters contains the choice of the player, if the character needs it.
+     */
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
             try {
@@ -424,6 +435,9 @@ public class Controller {
         }
     }
 
+    /**
+     * This method is used to use the effect of a character that doesn't need player's choice.
+     */
     public void effect() {
         try {
             model.effect(new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>()));
@@ -431,6 +445,11 @@ public class Controller {
         } catch (GameEndedException | UnplayableEffectException ignore) {
         }
     }
+
+    /**
+     * Used to know the game's phase
+     * @return the phase of the controller
+     */
     public GamePhases getCurrentPhase() {
         return currentGameStatus.getPhase();
     }
