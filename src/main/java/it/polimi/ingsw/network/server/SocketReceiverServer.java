@@ -131,6 +131,7 @@ public class SocketReceiverServer {
                             messageHandler.eventPerformed(new CloseConnectionEvent(this, socketId.getSocket()));
                             System.out.println("Client rejected , number of clients " + networkState.getNumberOfConnectedSocket());
                             isKicked = true;
+                            socketId.setConnected(false);
                     }
                 }
             } catch (InterruptedException e) {

@@ -130,6 +130,7 @@ public class Controller {
             while (!networkState.isPlayerConnected(curr.getUsername())) {
                 boolean isLast = model.getCurrentPlayerIndex() == model.getNumberOfPlayers() - 1;
                 model.findNextPlayer();
+                curr = model.getPlayers().get(model.getCurrentPlayerIndex());
                 if (isLast && currentGameStatus.getPhase().equals(PLANNING)) {
                     currentGameStatus.setPhase(ACTION_STUDENTSMOVEMENT);
                 } else if (isLast) {
@@ -348,6 +349,7 @@ public class Controller {
                 if (currentPlayerIndex == model.getNumberOfPlayers() - 1) {
                     if (!checkIfLastRound()) {
                         currentGameStatus.setPhase(PLANNING);
+                        model.resetAssistants();
                         try {
                             updateCurrentPlayer();
                             sendPhaseMessage(currentGameStatus.getPhase().getHeader());

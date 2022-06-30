@@ -23,6 +23,7 @@ public class Player {
     private int myCoins;
     private int towers;
     private Map<Creature, ArrayList<Boolean>> givenCoins = createMap();
+    private boolean assistantPlayed;
 
     public Player(String username, Color myColor, int myCoins, Wizard wizard, int towers, Entrance entrance) {
         this.username = username;
@@ -38,6 +39,15 @@ public class Player {
         professors = new ArrayList<>();
         this.entrance = entrance;
         this.diningRoom = new DiningRoom();
+        this.assistantPlayed = false;
+    }
+
+    public boolean isAssistantPlayed() {
+        return assistantPlayed;
+    }
+
+    public void setAssistantPlayed(boolean assistantPlayed) {
+        this.assistantPlayed = assistantPlayed;
     }
 
     public String getUsername() {

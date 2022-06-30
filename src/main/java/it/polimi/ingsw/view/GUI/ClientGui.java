@@ -797,8 +797,10 @@ public class ClientGui extends Application {
      * Sets the gui phase to allow for students selection
      */
     public void setMoveStudents() {
-        if (clientState.isMoveStudents()) {
-            guiPhases = GUIPhases.SELECT_CREATURE;
+        if(clientState!=null){
+            if (clientState.isMoveStudents()) {
+                guiPhases = GUIPhases.SELECT_CREATURE;
+            }
         }
     }
 
