@@ -53,8 +53,6 @@ public abstract class AbstractSender {
 
     /**
      * Starts the client handler thread
-     *
-     * @throws IOException
      */
     public void startClient() throws IOException {
         cs = new ClientState();

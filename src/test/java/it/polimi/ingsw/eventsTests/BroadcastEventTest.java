@@ -16,7 +16,7 @@ public class BroadcastEventTest {
      */
     @Test
     public void eventCreation() {
-        String message = "Stringa";
+        String message = "String";
         Headers header = Headers.action;
         BroadcastEvent evt = new BroadcastEvent(this, message, header);
         assertEquals(message, evt.getMessage());

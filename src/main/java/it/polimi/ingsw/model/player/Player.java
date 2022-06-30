@@ -239,7 +239,6 @@ public class Player {
 
     /**
      * Used for test purposes.
-     * @return
      */
     @Override
     public String toString() {

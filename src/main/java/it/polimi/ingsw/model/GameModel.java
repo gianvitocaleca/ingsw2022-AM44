@@ -333,7 +333,7 @@ public class GameModel implements Playable {
      * This method is used to establish the round order of players.
      * @param goodPlayers are the players to order.
      */
-    private void establisher(List<Player> goodPlayers) {
+    private void establish(List<Player> goodPlayers) {
         Collections.sort(goodPlayers, (p1, p2) -> {
                 if (p1.getLastPlayedCard().getValue() < p2.getLastPlayedCard().getValue()) return -1;
                 else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
@@ -355,7 +355,7 @@ public class GameModel implements Playable {
                 badPlayers.add(players.get(i));
             }
         }
-        establisher(goodPlayers);
+        establish(goodPlayers);
         goodPlayers.addAll(badPlayers);
         players = goodPlayers;
     }

@@ -62,7 +62,7 @@ public class PostmanTest {
         gm.playCharacter(0);
         gm.effect(Postman);
 
-        int oldposition = gm.getTable().getMnPosition();
+        int oldPosition = gm.getTable().getMnPosition();
         int numberOfMNJumps = 1;
 
         if (2 < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
@@ -71,14 +71,14 @@ public class PostmanTest {
             } catch (GameEndedException ignore) {
 
             }
-            assertTrue(gm.getTable().getMnPosition() == oldposition + (numberOfMNJumps + numberOfPostmanJumps));
+            assertTrue(gm.getTable().getMnPosition() == oldPosition + (numberOfMNJumps + numberOfPostmanJumps));
         } else {
             try {
                 gm.moveMotherNature(numberOfMNJumps);
             } catch (GameEndedException ignore) {
 
             }
-            assertTrue(gm.getTable().getMnPosition() == (oldposition + (numberOfMNJumps + numberOfPostmanJumps)) % (gm.getTable().getIslands().size()));
+            assertTrue(gm.getTable().getMnPosition() == (oldPosition + (numberOfMNJumps + numberOfPostmanJumps)) % (gm.getTable().getIslands().size()));
         }
 
     }

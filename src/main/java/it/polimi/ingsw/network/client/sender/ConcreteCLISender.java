@@ -71,7 +71,7 @@ public class ConcreteCLISender extends AbstractSender {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println("La connessione è chiusa: " + ps.isCloseConnection());
+            System.out.println("The connection is closed: " + ps.isCloseConnection());
         }
 
 

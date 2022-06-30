@@ -28,7 +28,7 @@ class AssistantTest {
     }
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {
@@ -64,7 +64,7 @@ class AssistantTest {
     }
 
     /**
-     * This test verfies the correct behaviour of assistantDeck and lastPlayedCard when every assistant is played.
+     * This test verifies the correct behaviour of assistantDeck and lastPlayedCard when every assistant is played.
      * assistantDeck should reduce its length by one, lastPlayedCard should increase its length by one.
      */
     @Test
@@ -105,7 +105,7 @@ class AssistantTest {
 
     /**
      * Verifies that the method allows the first player to play the AssistantCard he prefers,
-     * the others cannot play that card and in that case the methos throws an exception.
+     * the others cannot play that card and in that case the methods throws an exception.
      */
     @Test
     void playAssistantAlreadyPlayed() {

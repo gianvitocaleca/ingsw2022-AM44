@@ -42,7 +42,7 @@ public class NetworkState {
 
     /**
      * Used to check if all the players joined the game
-     * @return
+     * @return true if the login phase has ended
      */
     public boolean getLoginPhaseEnded() {
         synchronized (this) {

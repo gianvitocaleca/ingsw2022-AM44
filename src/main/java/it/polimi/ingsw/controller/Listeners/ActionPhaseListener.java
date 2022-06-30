@@ -38,7 +38,7 @@ public class ActionPhaseListener implements EventListener {
     }
 
     public void eventPerformed(MoveStudentsEvent evt) {
-        if (controller.getCurrentPhase().equals(GamePhases.ACTION_STUDENTSMOVEMENT)) {
+        if (controller.getCurrentPhase().equals(GamePhases.ACTION_STUDENTS_MOVEMENT)) {
             controller.moveStudents(evt);
         }else{
             System.out.println("No I don't think I will!");
@@ -47,9 +47,9 @@ public class ActionPhaseListener implements EventListener {
     }
 
     public void eventPerformed(IntegerEvent evt) {
-        if (controller.getCurrentPhase().equals(GamePhases.ACTION_MOVEMOTHERNATURE)) {
+        if (controller.getCurrentPhase().equals(GamePhases.ACTION_MOVE_MOTHER_NATURE)) {
             controller.moveMotherNature(evt.getValue());
-        } else if (controller.getCurrentPhase().equals(GamePhases.ACTION_CLOUDCHOICE)) {
+        } else if (controller.getCurrentPhase().equals(GamePhases.ACTION_CLOUD_CHOICE)) {
             controller.selectCloud(evt.getValue());
         }
 

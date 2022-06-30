@@ -15,7 +15,7 @@ public class MessageReceivedEventTest {
      */
     @Test
     public void eventCreation() {
-        String message = "Stringa";
+        String message = "String";
         MessageReceivedEvent evt = new MessageReceivedEvent(this, message);
         assertEquals(message, evt.getMessage());
     }

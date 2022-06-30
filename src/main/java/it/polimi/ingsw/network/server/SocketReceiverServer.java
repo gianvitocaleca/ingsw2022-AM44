@@ -56,9 +56,8 @@ public class SocketReceiverServer {
 
     /**
      * Creates the game thread and starts to listen for connections
-     * @throws IOException
      */
-    public void startServer() throws IOException {
+    public void startServer(){
 
         gameHandlerThread = new Thread(new GameHandler(networkState, gameStatus, messageHandler));
         gameHandlerThread.start();
@@ -69,17 +68,16 @@ public class SocketReceiverServer {
 
     /**
      * Used to accept connection, it needs to always accept the connection.
-     * @throws IOException
      */
-    private void acceptConnections() throws IOException {
+    private void acceptConnections(){
         SocketID socketId;
         while (true) {
             try{
                 Socket socket = serverSocket.accept();
                 //create a new object, and link it to the id
                 socketId = new SocketID(id, socket);
-                int numberofclients = networkState.getNumberOfConnectedSocket() + 1;
-                System.out.println("Client " + id + " connected, number of clients " + numberofclients);
+                int numberOfClients = networkState.getNumberOfConnectedSocket() + 1;
+                System.out.println("Client " + id + " connected, number of clients " + numberOfClients);
                 Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
                 t2.start();
                 System.out.println("MessageReceiver "+t2.getName());
@@ -88,8 +86,8 @@ public class SocketReceiverServer {
                 clientHandler.start();
                 System.out.println("ClientHandler "+clientHandler.getName());
                 id++;
-            }catch(SocketException e){
-                gameHandlerThread.stop();
+            }catch(IOException e){
+                System.out.println("No one is connected, server is closing");
                 System.exit(0);
             }
         }
@@ -98,7 +96,7 @@ public class SocketReceiverServer {
 
     /**
      * Used to assign the client to the correct handler
-     * @param socketId
+     * @param socketId is the newly connected socketID
      */
     private void clientHandler(SocketID socketId) {
         boolean isKicked = false;
