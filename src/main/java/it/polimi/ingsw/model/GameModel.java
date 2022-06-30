@@ -276,6 +276,7 @@ public class GameModel implements Playable {
         } else {
             currentPlayerIndex = 0;
         }
+        setInfluenceEvaluator(new StandardEvaluator());
     }
 
     /**
