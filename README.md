@@ -11,10 +11,16 @@
 | Basic rules      | 🟢 |
 | Complete rules   | 🟢 |
 | Socket & communication protocol          | 🟢 |
-| GUI              | 🟡 |
+| GUI              | 🟢 |
 | CLI              | 🟢 |
 | Advanced Characters   | 🟢 |
 | 4 players games  | 🔴 |
 | Multiple games   | 🔴 |
 | Persistence      | 🔴 |
-| Disconnections resilience             | 🟡 |
+| Disconnections resilience             | 🟢 |
+
+
+| Package  |Class Coverage|Method Coverage|Line Coverage|
+|:-----------------|:--------------|:---------------------|:---------------:|
+|   model    | 97%  | 91% | 91% |
+| controller   | 85% | 83% | 82% |
