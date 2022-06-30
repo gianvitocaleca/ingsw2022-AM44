@@ -1,6 +1,6 @@
 package it.polimi.ingsw.studentcontainerTests;
 
-import it.polimi.ingsw.server.model.studentcontainers.Cloud;
+import it.polimi.ingsw.model.studentcontainers.Cloud;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

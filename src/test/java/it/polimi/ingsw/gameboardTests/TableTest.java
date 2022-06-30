@@ -2,11 +2,11 @@ package it.polimi.ingsw.gameboardTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.exceptions.GroupsOfIslandsException;
-import it.polimi.ingsw.server.model.gameboard.Table;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
-import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.exceptions.GroupsOfIslandsException;
+import it.polimi.ingsw.model.gameboard.Table;
+import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;

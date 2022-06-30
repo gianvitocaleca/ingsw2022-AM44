@@ -1,7 +1,7 @@
 package it.polimi.ingsw.eventsTests;
 
-import it.polimi.ingsw.server.controller.events.CharacterPlayedEvent;
-import it.polimi.ingsw.server.model.enums.Name;
+import it.polimi.ingsw.controller.events.CharacterPlayedEvent;
+import it.polimi.ingsw.model.enums.Name;
 import org.junit.jupiter.api.Test;
 
 import java.net.Socket;

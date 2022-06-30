@@ -1,15 +1,15 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.characters.Postman;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
-import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.characters.Postman;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +42,7 @@ public class PostmanTest {
         try {
             gm.playAssistant(0);
             gm.setCurrentPlayerIndex(0);
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException e) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException e) {
             e.printStackTrace();
         }
         gm.getCharacters().remove(0);

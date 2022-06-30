@@ -1,17 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.characters.MoverCharacter;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.model.characters.MoverCharacter;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,6 @@ public class PrincessTest {
     private GameModel gm;
     private final int characterToPlayIndex = 0;
     private final int PRINCESS_CAPACITY = 4;
-    private final int islandDestinationIndex = 1;
 
 
     /**
@@ -42,7 +41,7 @@ public class PrincessTest {
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         gm.getCharacters().remove(characterToPlayIndex);
-        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.PRINCESS,gm,PRINCESS_CAPACITY));
+        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.PRINCESS, gm, PRINCESS_CAPACITY));
 
         List<Player> players = gm.getPlayers();
         Player currPlayer = players.get(gm.getCurrentPlayerIndex());
@@ -63,7 +62,7 @@ public class PrincessTest {
 
 
         //necessary students and creatures from the character and the entrance
-        List<Student> studentsInPrincess = ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents();
+        List<Student> studentsInPrincess = ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents();
         List<Creature> oldPrincessCreatures = new ArrayList<>();
         for (Student s : studentsInPrincess) {
             oldPrincessCreatures.add(s.getCreature());
@@ -87,14 +86,14 @@ public class PrincessTest {
         //play character effect
         gm.effect(princessParameters);
         //the number of students should be the same as before
-        assertEquals(PRINCESS_CAPACITY, ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
+        assertEquals(PRINCESS_CAPACITY, ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
         //the number of students should increase by one
         assertEquals(oldDiningRoomCreatures.size() + studentToRemoveFromPrincess.size(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getDiningRoom().getStudents().size());
 
         //get the new creatures in the character and the dining room
         List<Creature> newPrincessCreatures = new ArrayList<>();
-        for (Student s : ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents()) {
+        for (Student s : ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents()) {
             newPrincessCreatures.add(s.getCreature());
         }
         List<Creature> newDiningRoomCreatures = new ArrayList<>();

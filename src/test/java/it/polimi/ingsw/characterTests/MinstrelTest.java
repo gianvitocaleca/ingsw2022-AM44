@@ -1,19 +1,19 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.characters.MoverCharacter;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
-import it.polimi.ingsw.server.model.students.Student;
-import it.polimi.ingsw.server.model.students.StudentBucket;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.model.characters.MoverCharacter;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +43,7 @@ public class MinstrelTest {
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         gm.getCharacters().remove(characterToPlayIndex);
-        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.MINSTREL,gm,0));
+        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.MINSTREL, gm, 0));
 
         List<Player> players = gm.getPlayers();
         Player currPlayer = players.get(gm.getCurrentPlayerIndex());

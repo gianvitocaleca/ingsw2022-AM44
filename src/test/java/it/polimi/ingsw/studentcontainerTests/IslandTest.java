@@ -2,12 +2,12 @@ package it.polimi.ingsw.studentcontainerTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.exceptions.StudentsOutOfStockException;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
-import it.polimi.ingsw.server.model.students.Student;
-import it.polimi.ingsw.server.model.students.StudentBucket;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.exceptions.StudentsOutOfStockException;
+import it.polimi.ingsw.model.studentcontainers.Island;
+import it.polimi.ingsw.model.students.Student;
+import it.polimi.ingsw.model.students.StudentBucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,6 @@ public class IslandTest {
             try {
                 students.add(sb.generateStudent());
             } catch (StudentsOutOfStockException ignored) {
-                System.out.println("Studenti finiti");
                 break;
             }
         }

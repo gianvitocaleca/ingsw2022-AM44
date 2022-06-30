@@ -1,17 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.characters.MoverCharacter;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.studentcontainers.StudentContainer;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.model.characters.MoverCharacter;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.studentcontainers.StudentContainer;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ public class JokerTest {
                 new ArrayList<>(Arrays.asList(Wizard.GANDALF, Wizard.SABRINA, Wizard.BALJEET)));
 
         gm.getCharacters().remove(characterToPlayIndex);
-        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.JOKER,gm,JOKER_CAPACITY));
+        gm.getCharacters().add(characterToPlayIndex, new MoverCharacter(Name.JOKER, gm, JOKER_CAPACITY));
 
         List<Player> players = gm.getPlayers();
         Player currPlayer = players.get(gm.getCurrentPlayerIndex());
@@ -62,7 +62,7 @@ public class JokerTest {
         gm.playCharacter(characterToPlayIndex);
 
         //necessary students and creatures from the character and the entrance
-        List<Student> studentsInJoker = ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents();
+        List<Student> studentsInJoker = ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents();
         List<Creature> oldJokerCreatures = new ArrayList<>();
         oldJokerCreatures.add(studentsInJoker.get(0).getCreature());
 
@@ -77,13 +77,13 @@ public class JokerTest {
         //play character effect
         gm.effect(jokerParameters);
         //the number of students should be the same as before
-        assertEquals(JOKER_CAPACITY, ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
+        assertEquals(JOKER_CAPACITY, ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents().size());
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getCapacity(),
                 gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().size());
 
         assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getEntrance().getStudents().get(8).getCreature(), oldJokerCreatures.get(0));
 
-        assertEquals(((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents().get(5).getCreature(), oldEntranceCreatures.get(0));
+        assertEquals(((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents().get(5).getCreature(), oldEntranceCreatures.get(0));
 
     }
 
@@ -93,7 +93,7 @@ public class JokerTest {
         gm.playCharacter(characterToPlayIndex);
 
         //necessary students and creatures from the character and the entrance
-        List<Student> studentsInJoker = ((StudentContainer)gm.getCharacters().get(characterToPlayIndex)).getStudents();
+        List<Student> studentsInJoker = ((StudentContainer) gm.getCharacters().get(characterToPlayIndex)).getStudents();
         List<Creature> oldJokerCreatures = new ArrayList<>();
         oldJokerCreatures.add(studentsInJoker.get(0).getCreature());
         oldJokerCreatures.add(studentsInJoker.get(1).getCreature());

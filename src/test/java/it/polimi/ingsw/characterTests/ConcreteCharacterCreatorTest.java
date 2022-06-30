@@ -1,7 +1,7 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.characters.Character;
-import it.polimi.ingsw.server.model.characters.ConcreteCharacterCreator;
+import it.polimi.ingsw.model.characters.Character;
+import it.polimi.ingsw.model.characters.ConcreteCharacterCreator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

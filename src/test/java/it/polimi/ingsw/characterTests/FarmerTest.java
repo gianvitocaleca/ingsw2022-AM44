@@ -1,12 +1,12 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
-import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

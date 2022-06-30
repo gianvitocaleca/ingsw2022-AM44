@@ -2,18 +2,18 @@ package it.polimi.ingsw.playerTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Assistants;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.exceptions.AssistantAlreadyPlayedException;
-import it.polimi.ingsw.server.model.exceptions.PlanningPhaseEndedException;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.studentcontainers.DiningRoom;
-import it.polimi.ingsw.server.model.studentcontainers.Entrance;
-import it.polimi.ingsw.server.model.students.Student;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Assistants;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.exceptions.AssistantAlreadyPlayedException;
+import it.polimi.ingsw.model.exceptions.PlanningPhaseEndedException;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.studentcontainers.DiningRoom;
+import it.polimi.ingsw.model.studentcontainers.Entrance;
+import it.polimi.ingsw.model.students.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +63,7 @@ class PlayerTest {
 
         try {
             gm.playAssistant(0);
-        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException | GameEndedException ignore) {
+        } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException e) {
         }
         Player p1 = gm.getPlayers().get(0);
         assertEquals(p1.getLastPlayedCard().getName(), Assistants.CHEETAH);

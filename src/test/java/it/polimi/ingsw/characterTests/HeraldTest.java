@@ -1,17 +1,17 @@
 package it.polimi.ingsw.characterTests;
 
-import it.polimi.ingsw.server.model.exceptions.UnplayableEffectException;
-import it.polimi.ingsw.server.model.exceptions.GameEndedException;
-import it.polimi.ingsw.server.model.GameModel;
-import it.polimi.ingsw.server.networkMessages.payloads.CharactersParametersPayload;
-import it.polimi.ingsw.server.model.characters.Herald;
-import it.polimi.ingsw.server.model.enums.Color;
-import it.polimi.ingsw.server.model.enums.Creature;
-import it.polimi.ingsw.server.model.enums.Name;
-import it.polimi.ingsw.server.model.enums.Wizard;
-import it.polimi.ingsw.server.model.player.Player;
-import it.polimi.ingsw.server.model.player.Professor;
-import it.polimi.ingsw.server.model.studentcontainers.Island;
+import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
+import it.polimi.ingsw.model.exceptions.GameEndedException;
+import it.polimi.ingsw.model.GameModel;
+import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload;
+import it.polimi.ingsw.model.characters.Herald;
+import it.polimi.ingsw.model.enums.Color;
+import it.polimi.ingsw.model.enums.Creature;
+import it.polimi.ingsw.model.enums.Name;
+import it.polimi.ingsw.model.enums.Wizard;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.Professor;
+import it.polimi.ingsw.model.studentcontainers.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
