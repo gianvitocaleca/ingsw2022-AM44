@@ -353,15 +353,13 @@ public class ClientGui extends Application {
             ImageView cloudImageView = new ImageView(cloud);
             cloudImageView.setFitHeight(cloudHeight);
             cloudImageView.setFitWidth(cloudWidth);
-            StackPane cloudStack;
-            cloudStack = new StackPane(cloudImageView, cloudComponents(i));
+            StackPane cloudStack = new StackPane(cloudImageView, cloudComponents(i));
             cloudStack.relocate(
                     getCoordinatesX(centerX, cloudRadius, i, numberOfPlayers),
-                    getCoordinatesX(centerY, cloudRadius, i, numberOfPlayers));
+                    getCoordinatesY(centerY, cloudRadius, i, numberOfPlayers));
             cloudButton(cloudStack, i);
             clouds.add(cloudStack);
         }
-        System.out.println("Il numero di nuvole è: " +  clouds.size());
         return clouds;
     }
 
