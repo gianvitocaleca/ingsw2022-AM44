@@ -25,7 +25,7 @@
 |   model (Global Package)   | 97%  | 91% | 91% |
 | controller (Global Package)  | 85% | 83% | 82% |
 
-Launching the game
+##Launching the game
 The game can be launched from a terminal. Both the Client and the Server can be launched from the same JAR.
 
 Server
