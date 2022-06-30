@@ -348,6 +348,7 @@ public class ClientGui extends Application {
     private List<StackPane> cloudsGenerator() {
         Image cloud = new Image("cloud.png");
         List<StackPane> clouds = new ArrayList<>();
+        numberOfPlayers = modelCache.getPlayersList().size();
         for (int i = 0; i < numberOfPlayers; i++) {
             ImageView cloudImageView = new ImageView(cloud);
             cloudImageView.setFitHeight(cloudHeight);
@@ -360,6 +361,7 @@ public class ClientGui extends Application {
             cloudButton(cloudStack, i);
             clouds.add(cloudStack);
         }
+        System.out.println("Il numero di nuvole è: " +  clouds.size());
         return clouds;
     }
 
@@ -712,6 +714,7 @@ public class ClientGui extends Application {
      * @param cs is the new clientState to be set
      */
     public void updateClientState(ClientState cs) {
+
         clientState = cs;
     }
 
@@ -797,8 +800,10 @@ public class ClientGui extends Application {
      * Sets the gui phase to allow for students selection
      */
     public void setMoveStudents() {
-        if (clientState.isMoveStudents()) {
-            guiPhases = GUIPhases.SELECT_CREATURE;
+        if(clientState!=null){
+            if (clientState.isMoveStudents()) {
+                guiPhases = GUIPhases.SELECT_CREATURE;
+            }
         }
     }
 
