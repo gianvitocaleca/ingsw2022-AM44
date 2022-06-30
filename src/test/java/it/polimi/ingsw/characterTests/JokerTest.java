@@ -21,6 +21,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the Joker class
+ */
 public class JokerTest {
 
     private GameModel gm;

@@ -11,6 +11,7 @@ import it.polimi.ingsw.controller.events.MessageReceivedEvent;
 
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -45,13 +46,14 @@ public class MessageReceiverServer extends Thread {
         this.gameStatus = gameStatus;
         this.networkState = networkState;
         pingState = new PingState();
-        serverPingHandler = new ServerPingHandler(pingState, networkState, socketId, pingTime, maxNoAnswers);
-        serverPingHandler.addListener(messageHandler);
         try {
             in = new Scanner(socketId.getSocket().getInputStream());
         } catch (IOException e) {
             System.out.println("Server read error");
         }
+        serverPingHandler = new ServerPingHandler(pingState, networkState, socketId, pingTime, maxNoAnswers,in);
+        serverPingHandler.addListener(messageHandler);
+
     }
 
     /**
@@ -79,6 +81,8 @@ public class MessageReceiverServer extends Thread {
                 if (pingState.isCloseConnection()) {
                     break;
                 }
+            } catch (IllegalStateException e){
+                break;
             }
 
         }

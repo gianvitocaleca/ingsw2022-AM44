@@ -137,7 +137,6 @@ public abstract class AbstractReceiver extends Thread {
             case reconnection:
                 reconnectionPayload = gson.fromJson(jsonPayload, ReconnectionPayload.class);
                 reconnectPlayer(reconnectionPayload);
-                System.out.println("Mi sono riconnesso e il mio username è : " + reconnectionPayload.getUsername());
             default:
                 break;
         }

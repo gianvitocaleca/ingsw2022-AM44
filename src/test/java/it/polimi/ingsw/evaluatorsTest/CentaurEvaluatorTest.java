@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This class tests the CentaurEvaluator class
+ */
 public class CentaurEvaluatorTest {
     GameModel gm;
 

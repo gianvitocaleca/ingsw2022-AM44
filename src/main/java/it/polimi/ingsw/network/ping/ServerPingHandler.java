@@ -6,10 +6,12 @@ import it.polimi.ingsw.network.server.states.NetworkState;
 import it.polimi.ingsw.network.server.SocketID;
 
 import javax.swing.event.EventListenerList;
+import java.util.Scanner;
 
 public class ServerPingHandler extends PingHandler implements Runnable {
 
     private EventListenerList listeners = new EventListenerList();
+    private Scanner in;
 
     /**
      * Handles the ping message for the server
@@ -19,8 +21,9 @@ public class ServerPingHandler extends PingHandler implements Runnable {
      * @param time is the time interval
      * @param maxNoAnswers is the max number of no answers the player can have
      */
-    public ServerPingHandler(PingState ps, NetworkState ns, SocketID socketID, int time, int maxNoAnswers) {
+    public ServerPingHandler(PingState ps, NetworkState ns, SocketID socketID, int time, int maxNoAnswers, Scanner in) {
         super(ps, ns, socketID, time, maxNoAnswers);
+        this.in = in;
     }
 
     /**
@@ -42,6 +45,7 @@ public class ServerPingHandler extends PingHandler implements Runnable {
                 if (socketID.isConnected()) {
                     ns.disconnectPlayer(socketID.getId());
                     notifyDisconnection(socketID);
+                    in.close();
                     System.out.println("Disconnected player " + socketID.getId() + " ,number of connected players: " + ns.getNumberOfConnectedSocket());
                 }
                 return true;

@@ -6,8 +6,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class tests the correct behavior of BroadcastEvent
+ */
 public class BroadcastEventTest {
 
+    /**
+     * This method tests the correct creation of BroadcastEvent
+     */
     @Test
     public void eventCreation() {
         String message = "Stringa";

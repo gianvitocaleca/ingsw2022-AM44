@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This class tests the standard evaluator class
+ */
 public class StandardEvaluatorTest {
     GameModel gm;
 

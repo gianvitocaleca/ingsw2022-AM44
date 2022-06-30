@@ -43,8 +43,8 @@ public class GuiAlerts {
      *
      * @param string
      */
-    public static void errorAlert(String string) {
-        Alert a = new Alert(Alert.AlertType.ERROR,
+    public static void errorAlert(String string, Alert.AlertType alertType) {
+        Alert a = new Alert(alertType,
                 string,
                 ButtonType.OK);
         a.setTitle(gameTitle);

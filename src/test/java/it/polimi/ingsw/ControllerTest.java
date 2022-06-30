@@ -31,6 +31,8 @@ import it.polimi.ingsw.network.server.handlers.MessageHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +40,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the controller class
+ */
 public class ControllerTest {
 
     GameModel gm;
@@ -49,16 +54,18 @@ public class ControllerTest {
 
     /**
      * This create a new GameModel instance to use in every test
+     * @throws PausedException
+     * @throws IOException
      */
     @BeforeEach
-    public void createGame() throws PausedException {
+    public void createGame() throws PausedException, IOException {
         String player1 = "Paolo";
         SocketID socketID1 = new SocketID(1, new Socket());
         String player2 = "Gianvito";
         SocketID socketID2 = new SocketID(2, new Socket());
         String player3 = "Sabrina";
         SocketID socketID3 = new SocketID(3, new Socket());
-        NetworkState state = new NetworkState(ServerPhases.READY);
+        NetworkState state = new NetworkState(ServerPhases.READY,new ServerSocket());
         state.addSocket(socketID1);
         state.addSocket(socketID2);
         state.addSocket(socketID3);
@@ -208,6 +215,9 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests the playCharachter method when the game phase is ACTION_MOVEMOTHERNATURE
+     */
     @Test
     public void playCharacterInMMN(){
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
@@ -228,6 +238,9 @@ public class ControllerTest {
         assertEquals(gm.getPostmanMovements(), 2);
     }
 
+    /**
+     * This tests the playCharachter method when the game phase is ACTION_CLOUDCHOICE
+     */
     @Test
     public void playCharacterInSelectCloud(){
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
@@ -273,6 +286,7 @@ public class ControllerTest {
     /**
      * This tests that when a player with 1 tower left uses Herald character, it will win the game
      * when conquering one island
+     * @throws GameEndedException
      */
     @Test
     public void PlayCharacterAndWinTest() throws GameEndedException {
@@ -554,6 +568,10 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests that a player can win using mother nature and finishing his towers
+     * @throws GameEndedException
+     */
     @Test
     public void moveMotherNatureAndWinTest() throws GameEndedException {
         planningIfNo();
