@@ -464,6 +464,10 @@ public class Controller {
         return currentGameStatus.getPhase();
     }
 
+    /**
+     * Used to know the game status
+     * @return is a copy of the game status
+     */
     public GameStatus getCurrentStatus() {
         GameStatus temp = new GameStatus(currentGameStatus.getPhase(), currentGameStatus.isAdvancedRules());
         temp.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved());
@@ -474,10 +478,18 @@ public class Controller {
         return temp;
     }
 
+    /**
+     *
+     * @param providedGS is the game status to be set
+     */
     public void setCurrentStatus(GameStatus providedGS) {
         this.currentGameStatus = providedGS;
     }
 
+    /**
+     *
+     * @return whether the game is waiting for character parameters
+     */
     public boolean isWaitingForParameters() {
         return currentGameStatus.isWaitingForParameters();
     }
@@ -489,6 +501,4 @@ public class Controller {
     public boolean getCurrentPlayerPlayedCharacter() {
         return currentPlayerPlayedCharacter;
     }
-
-    public NetworkState getNetworkState(){ return networkState; }
 }
