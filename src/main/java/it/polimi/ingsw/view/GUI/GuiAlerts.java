@@ -34,8 +34,6 @@ public class GuiAlerts {
         a.setGraphic(logo);
         Optional<ButtonType> confirm = a.showAndWait();
         if (confirm.isPresent() && confirm.get() == ButtonType.YES) {
-            //send quit message
-            //close socket thread
             stage.close();
             System.exit(noErrorCode);
         }
@@ -78,7 +76,7 @@ public class GuiAlerts {
                 string,
                 ButtonType.OK);
         a.setTitle(gameTitle);
-        a.setHeaderText(useEffectText+ clientState.getCurrentPlayedCharacter());
+        a.setHeaderText(useEffectText + clientState.getCurrentPlayedCharacter());
         a.showAndWait();
     }
 

@@ -1,0 +1,3533 @@
+memberSearchIndex = [{
+    "p": "it.polimi.ingsw.network.client.receiver",
+    "c": "AbstractReceiver",
+    "l": "AbstractReceiver(Scanner, ClientState, PingState)",
+    "u": "%3Cinit%3E(java.util.Scanner,it.polimi.ingsw.view.ClientState,it.polimi.ingsw.network.ping.PingState)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "AbstractSender(String, int)",
+    "u": "%3Cinit%3E(java.lang.String,int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "action"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "ACTION_CLOUD_CHOICE"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "ACTION_MOVE_MOTHER_NATURE"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "ACTION_PLAYED_CHARACTER"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "ACTION_STUDENTS_MOVEMENT"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "ActionAnswerPayload(boolean, boolean, boolean, boolean, boolean, Creature, int)",
+    "u": "%3Cinit%3E(boolean,boolean,boolean,boolean,boolean,it.polimi.ingsw.model.enums.Creature,int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionPayload",
+    "l": "ActionPayload(boolean, boolean, boolean, boolean, String)",
+    "u": "%3Cinit%3E(boolean,boolean,boolean,boolean,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ActionPhaseListener",
+    "l": "ActionPhaseListener(Controller)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.controller.Controller)"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "addCoin()"}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "addCoins(int)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "addCreatedCommand(String)",
+    "u": "addCreatedCommand(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "addListener(ActionPhaseListener)",
+    "u": "addListener(it.polimi.ingsw.controller.Listeners.ActionPhaseListener)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "addListener(MessageHandler)",
+    "u": "addListener(it.polimi.ingsw.network.server.handlers.MessageHandler)"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "ServerPingHandler",
+    "l": "addListener(MessageHandler)",
+    "u": "addListener(it.polimi.ingsw.network.server.handlers.MessageHandler)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "addListener(PlanningPhaseListener)",
+    "u": "addListener(it.polimi.ingsw.controller.Listeners.PlanningPhaseListener)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "addListener(ReconnectionListener)",
+    "u": "addListener(it.polimi.ingsw.controller.Listeners.ReconnectionListener)"
+}, {"p": "it.polimi.ingsw.model.studentcontainers", "c": "Island", "l": "addNoEntry()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "addNoEntry(int)"
+}, {"p": "it.polimi.ingsw.model", "c": "Playable", "l": "addNoEntry(int)"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "addProfessor(Professor)",
+    "u": "addProfessor(it.polimi.ingsw.model.player.Professor)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "addSocket(SocketID)",
+    "u": "addSocket(it.polimi.ingsw.network.server.SocketID)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "DiningRoom",
+    "l": "addStudent(Student)",
+    "u": "addStudent(it.polimi.ingsw.model.students.Student)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "addStudent(Student)",
+    "u": "addStudent(it.polimi.ingsw.model.students.Student)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "DiningRoom",
+    "l": "addStudents(List<Student>)",
+    "u": "addStudents(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "addStudents(List<Student>)",
+    "u": "addStudents(java.util.List)"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "addTowers(int)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "ADVANCED_RULES_STARTING_COINS"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "advancedRulesButton"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "advancedRulesCode"
+}, {"p": "it.polimi.ingsw", "c": "App", "l": "App()", "u": "%3Cinit%3E()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Assistant",
+    "l": "Assistant(Assistants)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Assistants)"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "AssistantAlreadyPlayedException",
+    "l": "AssistantAlreadyPlayedException()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "assistantHeaderText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "assistantHeight"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "assistantWidth"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "backgroundColor"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "badTextMessage"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Wizard",
+    "l": "BALJEET"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "basicRulesButton"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "basicRulesCode"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "BehaviorCharacter(Name, Playable)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Color", "l": "BLACK"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "blackColorCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "blackColorText"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Creature",
+    "l": "BLUE_UNICORNS"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "blueCreatureText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiCss",
+    "l": "bodyFont"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiCss", "l": "borderInsets"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiCss",
+    "l": "borderSelected"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiCss", "l": "borderUnselected"}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "BothFusionTest()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "BroadcastEvent",
+    "l": "BroadcastEvent(Object, String, Headers)",
+    "u": "%3Cinit%3E(java.lang.Object,java.lang.String,it.polimi.ingsw.network.server.networkMessages.Headers)"
+}, {
+    "p": "it.polimi.ingsw.eventsTests",
+    "c": "BroadcastEventTest",
+    "l": "BroadcastEventTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "canBePlayed(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "canBePlayed(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herald",
+    "l": "canBePlayed(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "canBePlayed(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "canBePlayed(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "canBePlayed(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Thief",
+    "l": "canBePlayed(int)"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "CAT"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "CENTAUR"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "CentaurEvaluator",
+    "l": "CentaurEvaluator()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "CentaurEvaluatorTest",
+    "l": "CentaurEvaluatorTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "centerX"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "centerY"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "characterHeight"}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "CharacterInformation",
+    "l": "CharacterInformation(Name, int, int)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,int,int)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "characterNeedsIslandIndex(ClientState)",
+    "u": "characterNeedsIslandIndex(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "characterNeedsMMNMovements()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "characterNeedsSourceCreature(ClientState)",
+    "u": "characterNeedsSourceCreature(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "characterNeedsSourceCreaturesAndDestination(ClientState)",
+    "u": "characterNeedsSourceCreaturesAndDestination(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "characterNeedsSwapCreatures(ClientState)",
+    "u": "characterNeedsSwapCreatures(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CharacterParametersEvent",
+    "l": "CharacterParametersEvent(Object, CharactersParametersPayload)",
+    "u": "%3Cinit%3E(java.lang.Object,it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "characterParametersReceiver(CharacterParametersEvent)",
+    "u": "characterParametersReceiver(it.polimi.ingsw.controller.events.CharacterParametersEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "characterPlayed"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CharacterPlayedEvent",
+    "l": "CharacterPlayedEvent(Object, Name, Socket)",
+    "u": "%3Cinit%3E(java.lang.Object,it.polimi.ingsw.model.enums.Name,java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.eventsTests",
+    "c": "CharacterPlayedEventTest",
+    "l": "CharacterPlayedEventTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharacterPlayedPayload",
+    "l": "CharacterPlayedPayload(Name)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharactersParametersPayload",
+    "l": "CharactersParametersPayload(List<Creature>, int, int, List<Creature>)",
+    "u": "%3Cinit%3E(java.util.List,int,int,java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "CharactersTooltips",
+    "l": "CharactersTooltips()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "characterWidth"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "checkCoinGiver(Creature)",
+    "u": "checkCoinGiver(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "ClientPingHandler",
+    "l": "checkConnectionStatus()"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "checkConnectionStatus()"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "ServerPingHandler",
+    "l": "checkConnectionStatus()"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "checkEndGame()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "checkEndGame()"
+}, {"p": "it.polimi.ingsw.controller", "c": "Controller", "l": "checkIfLastRound()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "checkIfLastRound()"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "checkNeighborIsland()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "checkProfessor()"
+}, {"p": "it.polimi.ingsw.model", "c": "Playable", "l": "checkProfessor()"}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "FarmerTest",
+    "l": "checkProfessorFarmerTest()"
+}, {"p": "it.polimi.ingsw", "c": "GameModelTest", "l": "checkProfessorTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "GameModelTest",
+    "l": "checkProfessorWithSameStudentsInDiningRoom()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "CHEETAH"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "chooseCharacterText"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "client"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "ClientGui()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "ClientPingHandler",
+    "l": "ClientPingHandler(PingState, Socket, int, int, Scanner)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.ping.PingState,java.net.Socket,int,int,java.util.Scanner)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "ClientState()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "cliMenu"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliPrinter",
+    "l": "CliPrinter()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "closeConnection"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CloseConnectionEvent",
+    "l": "CloseConnectionEvent(Object, Socket)",
+    "u": "%3Cinit%3E(java.lang.Object,java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Cloud",
+    "l": "Cloud(int)",
+    "u": "%3Cinit%3E(int)"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "CloudAlreadySelectedException",
+    "l": "CloudAlreadySelectedException()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "cloudContentComponents"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "cloudContentRadius"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "cloudHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "cloudRadius"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "cloudWidth"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "coinGiver()"
+}, {"p": "it.polimi.ingsw.model", "c": "Playable", "l": "coinGiver()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "coinHeaderText"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "coinHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "coinWidth"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "ClientGui", "l": "color()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "CommandParser",
+    "l": "CommandParser(String[])",
+    "u": "%3Cinit%3E(java.lang.String[])"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "Commands()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "commandSeparator"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "completePlanningPhaseTest()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "componentsDisposition(List<HBox>, int, int, int, Creature, int)",
+    "u": "componentsDisposition(java.util.List,int,int,int,it.polimi.ingsw.model.enums.Creature,int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "ConcreteCharacterCreator",
+    "l": "ConcreteCharacterCreator()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.client.receiver",
+    "c": "ConcreteCLIReceiver",
+    "l": "ConcreteCLIReceiver(Scanner, ClientState, PingState)",
+    "u": "%3Cinit%3E(java.util.Scanner,it.polimi.ingsw.view.ClientState,it.polimi.ingsw.network.ping.PingState)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "ConcreteCLISender",
+    "l": "ConcreteCLISender(String, int)",
+    "u": "%3Cinit%3E(java.lang.String,int)"
+}, {
+    "p": "it.polimi.ingsw.network.client.receiver",
+    "c": "ConcreteGUIReceiver",
+    "l": "ConcreteGUIReceiver(Scanner, ClientState, PingState, ClientGui)",
+    "u": "%3Cinit%3E(java.util.Scanner,it.polimi.ingsw.view.ClientState,it.polimi.ingsw.network.ping.PingState,it.polimi.ingsw.view.GUI.ClientGui)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "ConcreteGUISender",
+    "l": "ConcreteGUISender(String, int, ClientGui, Queue)",
+    "u": "%3Cinit%3E(java.lang.String,int,it.polimi.ingsw.view.GUI.ClientGui,java.util.Queue)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "confirmText"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "conquerIsland(Player)",
+    "u": "conquerIsland(it.polimi.ingsw.model.player.Player)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "Controller(GameModel, MessageHandler, GameStatus, NetworkState)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.GameModel,it.polimi.ingsw.network.server.handlers.MessageHandler,it.polimi.ingsw.controller.GameStatus,it.polimi.ingsw.network.server.states.NetworkState)"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "ControllerTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "correctNumberOfCloudsTest()"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "costContentText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "counterText(int, ImageView)",
+    "u": "counterText(int,javafx.scene.image.ImageView)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createActionPhaseBox(ClientState)",
+    "u": "createActionPhaseBox(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "createAlertForSwapCommand(ClientState)",
+    "u": "createAlertForSwapCommand(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createBankComponent(int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "CharacterCreator",
+    "l": "createCharacter(Name, Playable)",
+    "u": "createCharacter(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "ConcreteCharacterCreator",
+    "l": "createCharacter(Name, Playable)",
+    "u": "createCharacter(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createCharacterCreature(List<Creature>)",
+    "u": "createCharacterCreature(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createCoinComponent(int)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createComponentWithAssistant(List<Assistant>)",
+    "u": "createComponentWithAssistant(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createCreatures(String, Player)",
+    "u": "createCreatures(java.lang.String,it.polimi.ingsw.model.player.Player)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createCurrentPhaseBox(ClientState)",
+    "u": "createCurrentPhaseBox(it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createCurrentPlayerBox(ShowModelPayload, String)",
+    "u": "createCurrentPlayerBox(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload,java.lang.String)"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "createGame()"}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "FarmerTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "HeraldTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "HerbalistTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "JokerTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "MinstrelTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "MonkTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "PostmanTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "PrincessTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "CentaurEvaluatorTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "FungaroEvaluatorTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "KnightEvaluatorTest",
+    "l": "createGameModel()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "StandardEvaluatorTest",
+    "l": "createGameModel()"
+}, {"p": "it.polimi.ingsw", "c": "GameModelTest", "l": "createGameModel()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createNoEntryCharacter(int)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "createSwapButton(boolean)"
+}, {"p": "it.polimi.ingsw.gameboardTests", "c": "TableTest", "l": "createTable()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "createTowerComponent(Player)",
+    "u": "createTowerComponent(it.polimi.ingsw.model.player.Player)"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "CREATION"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "CREATION_NUMBER_OF_PLAYERS"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "CREATION_RULES"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "CreationHandler",
+    "l": "CreationHandler(NetworkState, MessageHandler, CreationState, SocketID)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.states.NetworkState,it.polimi.ingsw.network.server.handlers.MessageHandler,it.polimi.ingsw.network.server.states.CreationState,it.polimi.ingsw.network.server.SocketID)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "creationMessageReceiver(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "creationRequirementMessage"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "creationRequirementMessage_NumberOfPlayers"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "creationRequirementMessage_TypeOfRules"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "CreationState()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "creatureCode(Creature)",
+    "u": "creatureCode(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "creatureCounter(Creature, int)",
+    "u": "creatureCounter(it.polimi.ingsw.model.enums.Creature,int)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "creatureHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "creatureImageSelector(Creature, boolean)",
+    "u": "creatureImageSelector(it.polimi.ingsw.model.enums.Creature,boolean)"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "creatureSeparator"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "creatureWidth"
+}, {
+    "p": "it.polimi.ingsw.network.client.receiver",
+    "c": "AbstractReceiver",
+    "l": "cs"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "cs"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "currentInfluence"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "currentIsland"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "currentPhasePrefix"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "currentPhaseTest()"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "currentStatusTest()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiCss",
+    "l": "defaultComponentLayout"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "defaultPort"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "defaultScale"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "DiningRoom",
+    "l": "DiningRoom()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "diningRoomHeaderText"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "DisconnectionEvent",
+    "l": "DisconnectionEvent(Object, SocketID)",
+    "u": "%3Cinit%3E(java.lang.Object,it.polimi.ingsw.network.server.SocketID)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "disconnectPlayer(int)"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "DOG"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Assistants",
+    "l": "EAGLE"
+}, {"p": "it.polimi.ingsw.controller", "c": "Controller", "l": "effect()"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herald",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Thief",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "effect(CharactersParametersPayload)",
+    "u": "effect(it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParametersPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Assistants",
+    "l": "ELEPHANT"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "encodeMessage(String)",
+    "u": "encodeMessage(java.lang.String)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GUIPhases", "l": "END"}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Entrance",
+    "l": "Entrance(int)",
+    "u": "%3Cinit%3E(int)"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "entranceHeaderText"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Message",
+    "l": "equals(Object)",
+    "u": "equals(java.lang.Object)"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "ERASE_SCREEN"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "error"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "errorAlert(String, Alert.AlertType)",
+    "u": "errorAlert(java.lang.String,javafx.scene.control.Alert.AlertType)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "errorMessage"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "establishRoundOrder()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "evaluateInfluence()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "evaluateInfluence()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "evaluateInfluence(GameModel)",
+    "u": "evaluateInfluence(it.polimi.ingsw.model.GameModel)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "evaluateMnJumps(int, int, ClientState)",
+    "u": "evaluateMnJumps(int,int,it.polimi.ingsw.view.ClientState)"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "evaluateProfessors(Player)",
+    "u": "evaluateProfessors(it.polimi.ingsw.model.player.Player)"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "evaluateTowers(Player)",
+    "u": "evaluateTowers(it.polimi.ingsw.model.player.Player)"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "CentaurEvaluator",
+    "l": "evaluation()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "FungaroEvaluator",
+    "l": "evaluation()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "KnightEvaluator",
+    "l": "evaluation()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "StandardEvaluator",
+    "l": "evaluation()"
+}, {
+    "p": "it.polimi.ingsw.eventsTests",
+    "c": "BroadcastEventTest",
+    "l": "eventCreation()"
+}, {
+    "p": "it.polimi.ingsw.eventsTests",
+    "c": "CharacterPlayedEventTest",
+    "l": "eventCreation()"
+}, {
+    "p": "it.polimi.ingsw.eventsTests",
+    "c": "MessageReceivedEventTest",
+    "l": "eventCreation()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(BroadcastEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.BroadcastEvent)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ActionPhaseListener",
+    "l": "eventPerformed(CharacterParametersEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.CharacterParametersEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(CharacterPlayedEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.CharacterPlayedEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(CloseConnectionEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.CloseConnectionEvent)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ReconnectionListener",
+    "l": "eventPerformed(DisconnectionEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.DisconnectionEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(DisconnectionEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.DisconnectionEvent)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ActionPhaseListener",
+    "l": "eventPerformed(IntegerEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.IntegerEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(MessageReceivedEvent, Socket)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.MessageReceivedEvent,java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ActionPhaseListener",
+    "l": "eventPerformed(MoveStudentsEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.MoveStudentsEvent)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "PlanningPhaseListener",
+    "l": "eventPerformed(PlanningEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.PlanningEvent)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ActionPhaseListener",
+    "l": "eventPerformed(PlayCharacterEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.PlayCharacterEvent)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ReconnectionListener",
+    "l": "eventPerformed(ReconnectedEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.ReconnectedEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(ShowModelEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.ShowModelEvent)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(ShowModelEvent, SocketID)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.ShowModelEvent,it.polimi.ingsw.network.server.SocketID)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(StatusEvent, Payload)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.StatusEvent,it.polimi.ingsw.network.server.networkMessages.payloads.Payload)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "eventPerformed(StringEvent)",
+    "u": "eventPerformed(it.polimi.ingsw.controller.events.StringEvent)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "exampleText"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "FARMER"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "FarmerTest",
+    "l": "FarmerTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "FG_BLACK"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "FG_BLUE"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "FG_BORDER"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "FG_CYAN"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "FG_GRAY"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "FG_GREEN"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "FG_MN"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "FG_PINK"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "FG_RED"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "FG_TITLE"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "FG_WHITE"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "FG_YELLOW"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "fillClouds()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "fillClouds()"
+}, {"p": "it.polimi.ingsw", "c": "GameModelTest", "l": "fillCloudsCorrectly()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "findNextPlayer()"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "findWinner()"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "Section",
+    "l": "FIRST"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "firstPostmanCode"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "firstWizardCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "firstWizardText"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "CommandParser",
+    "l": "flagIsPresent(String)",
+    "u": "flagIsPresent(java.lang.String)"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "fourthWizardCode"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "fourthWizardText"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "FOX"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "FUNGARO"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "FungaroEvaluator",
+    "l": "FungaroEvaluator(Creature)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "FungaroEvaluatorTest",
+    "l": "FungaroEvaluatorTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "GAME"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "GAME_ENDED"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "GameEndedException",
+    "l": "GameEndedException()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "GameHandler",
+    "l": "GameHandler(NetworkState, GameStatus, MessageHandler)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.states.NetworkState,it.polimi.ingsw.controller.GameStatus,it.polimi.ingsw.network.server.handlers.MessageHandler)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "GameModel(boolean, List<String>, int, List<Color>, List<Wizard>)",
+    "u": "%3Cinit%3E(boolean,java.util.List,int,java.util.List,java.util.List)"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "GameModelTest",
+    "l": "GameModelTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "gamePaneGenerator(ShowModelPayload)",
+    "u": "gamePaneGenerator(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "gamePausedText"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "GameStatus(GamePhases, boolean)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.controller.enums.GamePhases,boolean)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "gameTitle"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "gameTitle()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Wizard", "l": "GANDALF"}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "StudentBucket",
+    "l": "generateStudent()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getActiveSockets()"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "CommandParser",
+    "l": "getAddress()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "getAdvancedRules()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "getAssistant()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getAssistantDeck()"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "getBucket()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getBucket()"
+}, {"p": "it.polimi.ingsw.model", "c": "Playable", "l": "getBucket()"}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "getCapacity()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getCharacters()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getCharacters()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CharacterPlayedEvent",
+    "l": "getCharactersName()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharacterPlayedPayload",
+    "l": "getCharactersName()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "getClientInt()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getClouds()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getClouds()"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "getCode()"}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getCoinReserve()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getCoinReserve()"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "getCoinReserveCorrectlyTest()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "PlayerInfo",
+    "l": "getColor()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "getColor(Socket)",
+    "u": "getColor(java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "getColorOfTowers()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getConnectedPlayerInfo()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "getCoordinatesX(int, int, int, int)",
+    "u": "getCoordinatesX(int,int,int,int)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "getCoordinatesY(int, int, int, int)",
+    "u": "getCoordinatesY(int,int,int,int)"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "getCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "getCost()"
+}, {"p": "it.polimi.ingsw.model.characters", "c": "Herald", "l": "getCost()"}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "getCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "getCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "getCost()"
+}, {"p": "it.polimi.ingsw.model.characters", "c": "Thief", "l": "getCost()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "getCost()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "CharacterInformation",
+    "l": "getCost()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Professor",
+    "l": "getCreature()"
+}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "Student",
+    "l": "getCreature()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "MoveStudentsEvent",
+    "l": "getCreatureList()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "MotherNature",
+    "l": "getCurrentIsland()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getCurrentIsland()"
+}, {"p": "it.polimi.ingsw.controller", "c": "Controller", "l": "getCurrentPhase()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "getCurrentPlayedCharacter()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionPayload",
+    "l": "getCurrentPlayer()"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "getCurrentPlayer()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getCurrentPlayerCoins()"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "getCurrentPlayerIndex()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "getCurrentPlayerIndex()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "getCurrentPlayerPlayedCharacter()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "getCurrentPlayerUsername()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getCurrentPlayerUsername()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "getCurrentStatus()"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "getDeactivators()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getDeactivators()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "getDeactivators()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getDeactivators()"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "getDiningRoom()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "getDisconnection()"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "getEntrance()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getGivenCoins()"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "getHeader()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "BroadcastEvent",
+    "l": "getHeader()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "StatusEvent",
+    "l": "getHeader()"
+}, {"p": "it.polimi.ingsw.controller.events", "c": "StringEvent", "l": "getHeader()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "getHeaders()"
+}, {"p": "it.polimi.ingsw.network.server", "c": "SocketID", "l": "getId()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Creature",
+    "l": "getImage()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "getImage()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Wizard",
+    "l": "getImage()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "CharacterInformation",
+    "l": "getIndex()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "PlanningEvent",
+    "l": "getIndexOfAssistant()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "PlanningAnswerPayload",
+    "l": "getIndexOfAssistant()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "PlayCharacterEvent",
+    "l": "getIndexOfCharacter()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "MoveStudentsEvent",
+    "l": "getIndexOfIsland()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getIslands()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getIslands()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getJokerCreatures()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getLastPlayedCard()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getLastPlayedCards()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getLoginPhaseEnded()"
+}, {"p": "it.polimi.ingsw.model.students", "c": "StudentBucket", "l": "getMap()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "getMaxMoves()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "BroadcastEvent",
+    "l": "getMessage()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "MessageReceivedEvent",
+    "l": "getMessage()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "StringEvent",
+    "l": "getMessage()"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "getMnPosition()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "getModelPayload()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getMonkCreatures()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getMotherNature()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getMotherNature()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "getMovements()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Assistant",
+    "l": "getMovements()"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "getMyCoins()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getMyColor()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "getName()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "getName()"
+}, {"p": "it.polimi.ingsw.model.characters", "c": "Herald", "l": "getName()"}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "getName()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "getName()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "getName()"
+}, {"p": "it.polimi.ingsw.model.characters", "c": "Thief", "l": "getName()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Assistant",
+    "l": "getName()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "CharacterInformation",
+    "l": "getName()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getNextIsland()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getNumberOfConnectedSocket()"
+}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "StudentBucket",
+    "l": "getNumberOfGeneratedStudentsByCreature(Creature)",
+    "u": "getNumberOfGeneratedStudentsByCreature(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "getNumberOfNoEntries()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getNumberOfPlayers()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "getNumberOfPlayers()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getNumberOfPlayers()"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "DiningRoom",
+    "l": "getNumberOfStudentsByCreature(Creature)",
+    "u": "getNumberOfStudentsByCreature(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "getNumberOfStudentsByCreature(Creature)",
+    "u": "getNumberOfStudentsByCreature(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "getNumberOfStudentsMoved()"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "getNumberOfTowers()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CharacterParametersEvent",
+    "l": "getParameters()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "ShowModelEvent",
+    "l": "getPayload()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "getPhase()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "getPhase()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getPlayedCharacter()"
+}, {"p": "it.polimi.ingsw.network.server", "c": "SocketID", "l": "getPlayerInfo()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getPlayers()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "getPlayers()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getPlayersList()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getPlayerTowers(String)",
+    "u": "getPlayerTowers(java.lang.String)"
+}, {"p": "it.polimi.ingsw.utils", "c": "CommandParser", "l": "getPort()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "getPostmanMovements()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "getPrevIsland()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getPrincessCreatures()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getProfessors()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharactersParametersPayload",
+    "l": "getProvidedDestinationCreatures()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharactersParametersPayload",
+    "l": "getProvidedIslandIndex()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharactersParametersPayload",
+    "l": "getProvidedMnMovements()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "CharactersParametersPayload",
+    "l": "getProvidedSourceCreatures()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "getReconnection()"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "CommandParser",
+    "l": "getScale()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getServerPhase()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CharacterPlayedEvent",
+    "l": "getSocket()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "CloseConnectionEvent",
+    "l": "getSocket()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "StringEvent",
+    "l": "getSocket()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "getSocket()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getSocketByID(int)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "DisconnectionEvent",
+    "l": "getSocketID()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "ReconnectedEvent",
+    "l": "getSocketID()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "getSocketIDList()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "LoginPayload",
+    "l": "getString()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "StringPayload",
+    "l": "getString()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "getStudentCreatureToMove()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "getStudents()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "getStudents()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herald",
+    "l": "getStudents()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "getStudents()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "getStudents()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Thief",
+    "l": "getStudents()"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "getStudents()"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "getTable()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "getTable()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "CharactersTooltips",
+    "l": "getToolTip(Name)",
+    "u": "getToolTip(it.polimi.ingsw.model.enums.Name)"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "getTowers()"}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "ReconnectedEvent",
+    "l": "getUsername()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "getUsername()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ReconnectionPayload",
+    "l": "getUsername()"
+}, {"p": "it.polimi.ingsw.network.server", "c": "PlayerInfo", "l": "getUsername()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "getUsername()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "getUsername(Socket)",
+    "u": "getUsername(java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "IntegerEvent",
+    "l": "getValue()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "getValue()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Assistant",
+    "l": "getValue()"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "getWizard()"}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "PlayerInfo",
+    "l": "getWizard()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "getWizard(Socket)",
+    "u": "getWizard(java.net.Socket)"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Creature", "l": "GREEN_FROGS"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "greenCreatureText"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Color", "l": "GREY"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "greyColorCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "greyColorText"}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "GroupsOfIslandsException",
+    "l": "GroupsOfIslandsException()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "gson"
+}, {"p": "it.polimi.ingsw.network.ping", "c": "PingHandler", "l": "gson"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "gui"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "GuiAlerts()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "GuiAssets()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "GuiComponents()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiCss",
+    "l": "GuiCss()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "GuiMethods()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Message",
+    "l": "hashCode()"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "hasNoEntry(Island)",
+    "u": "hasNoEntry(it.polimi.ingsw.model.studentcontainers.Island)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "hasProfessor(Creature)",
+    "u": "hasProfessor(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiMethods",
+    "l": "hasTowers(Island)",
+    "u": "hasTowers(it.polimi.ingsw.model.studentcontainers.Island)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Message",
+    "l": "header()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiCss", "l": "headerFont"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "HERALD"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herald",
+    "l": "Herald(Name, Playable)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "HeraldTest",
+    "l": "HeraldTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "HERBALIST"}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "Herbalist(Name, Playable)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "HerbalistTest",
+    "l": "HerbalistTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "InfluenceEvaluator()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "influences"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "influencesPerUsername"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "IntegerEvent",
+    "l": "IntegerEvent(Object, Integer)",
+    "u": "%3Cinit%3E(java.lang.Object,java.lang.Integer)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "integerEventReceiver(IntegerEvent)",
+    "u": "integerEventReceiver(it.polimi.ingsw.controller.events.IntegerEvent)"
+}, {"p": "it.polimi.ingsw.network.client.sender", "c": "AbstractSender", "l": "ip"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "isAdvancedRules()"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "isAdvancedRules()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isAdvancedRules()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "isAdvancedRules()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "isAssistantPlayed()"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingState",
+    "l": "isCloseConnection()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "isConnected()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "isDestinationDiningRoom()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "MoveStudentsEvent",
+    "l": "isDestinationIsland()"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "CommandParser",
+    "l": "isGui()"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "Island(List<Student>, int, Color, int, int)",
+    "u": "%3Cinit%3E(java.util.List,int,it.polimi.ingsw.model.enums.Color,int,int)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "islandContentCenter"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "islandContentComponents"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "islandContentRadius"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "islandFusion(String)",
+    "u": "islandFusion(java.lang.String)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "islandHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "islandRadius"
+}, {
+    "p": "it.polimi.ingsw.studentcontainerTests",
+    "c": "IslandTest",
+    "l": "IslandTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "islandWidth"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "isMoreThanTwoPlayers()"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "isMove()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "isMoveMotherNature()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionPayload",
+    "l": "isMoveMotherNature()"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "isMoveMotherNature()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "isMoveStudents()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionPayload",
+    "l": "isMoveStudents()"
+}, {"p": "it.polimi.ingsw.view", "c": "ClientState", "l": "isMoveStudents()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "isNeedsDestination()"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "isNeedsDestinationCreature()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "isNeedsIslandIndex()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "isNeedsMnMovements()"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "isNeedsReplacement()"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "isNeedsSourceCreature()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "isPlayCharacter()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionPayload",
+    "l": "isPlayCharacter()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "isPlayerConnected(String)",
+    "u": "isPlayerConnected(java.lang.String)"
+}, {"p": "it.polimi.ingsw.network.ping", "c": "PingState", "l": "isReceived()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "isSelectCharacter()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionAnswerPayload",
+    "l": "isSelectCloud()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ActionPayload",
+    "l": "isSelectCloud()"
+}, {"p": "it.polimi.ingsw.view", "c": "ClientState", "l": "isSelectCloud()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "CommandParser",
+    "l": "isServer()"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "isSwap()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdateAll()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdateClouds()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdateCoinReserve()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdateIslands()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdateMotherNature()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdatePlayedCharacter()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdatePlayersAssistant()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdatePlayersDiningRoom()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "isUpdatePlayersEntrance()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "isWaitingForParameters()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "isWaitingForParameters()"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "OS", "l": "isWindows()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "joinButton"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "JOKER"}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "JokerTest",
+    "l": "JokerTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Wizard", "l": "KENJI"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "KNIGHT"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "KnightEvaluator",
+    "l": "KnightEvaluator()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "KnightEvaluatorTest",
+    "l": "KnightEvaluatorTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "Section", "l": "LAST"}, {
+    "p": "it.polimi.ingsw",
+    "c": "GameModelTest",
+    "l": "LastFusionEndgameTest()"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "LastFusionTest()"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "LeftFusionTest()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "LIZARD"}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "LOGIN"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "LOGIN"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "LOGIN_COLOR"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "LOGIN_USERNAME"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "LOGIN_WIZARD"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "LoginHandler",
+    "l": "LoginHandler(NetworkState, SocketID, MessageHandler, LoginState)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.states.NetworkState,it.polimi.ingsw.network.server.SocketID,it.polimi.ingsw.network.server.handlers.MessageHandler,it.polimi.ingsw.network.server.states.LoginState)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "loginMessage_Color"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "loginMessage_Username"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "loginMessage_Wizard"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "loginMessageReceiver(Socket, LoginPayload, GamePhases)",
+    "u": "loginMessageReceiver(java.net.Socket,it.polimi.ingsw.network.server.networkMessages.payloads.LoginPayload,it.polimi.ingsw.controller.enums.GamePhases)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "LoginPayload",
+    "l": "LoginPayload(String)",
+    "u": "%3Cinit%3E(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "LoginState()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "ClientGui", "l": "loginUsername()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "loopback"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiCss", "l": "lowOpacity"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "MAGICPOSTMAN"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "App",
+    "l": "main(String[])",
+    "u": "main(java.lang.String[])"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "MAX_GENERATED_STUDENTS"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "MotherNature",
+    "l": "MAX_NUMBER_OF_ISLANDS"
+}, {
+    "p": "it.polimi.ingsw.studentsTests",
+    "c": "StudentBucketTest",
+    "l": "MaxCapacityBucket()"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "maxNoAnswers"
+}, {"p": "it.polimi.ingsw.network.ping", "c": "PingHandler", "l": "maxNoAnswers"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "mediumSpacing"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Message",
+    "l": "Message(Headers, Payload)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.networkMessages.Headers,it.polimi.ingsw.network.server.networkMessages.payloads.Payload)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "MessageHandler(NetworkState)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.states.NetworkState)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "MessageReceivedEvent",
+    "l": "MessageReceivedEvent(Object, String)",
+    "u": "%3Cinit%3E(java.lang.Object,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.eventsTests",
+    "c": "MessageReceivedEventTest",
+    "l": "MessageReceivedEventTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.receiver",
+    "c": "MessageReceiverServer",
+    "l": "MessageReceiverServer(SocketID, MessageHandler, GameStatus, NetworkState)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.SocketID,it.polimi.ingsw.network.server.handlers.MessageHandler,it.polimi.ingsw.controller.GameStatus,it.polimi.ingsw.network.server.states.NetworkState)"
+}, {
+    "p": "it.polimi.ingsw.network.server.sender",
+    "c": "MessageSenderServer",
+    "l": "MessageSenderServer(NetworkState)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.states.NetworkState)"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "Section", "l": "MIDDLE"}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "MIN_NUMBER_OF_ISLANDS"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "MINSTREL"}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "MinstrelTest",
+    "l": "MinstrelTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "model"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "MONK"}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "MonkTest",
+    "l": "MonkTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "MotherNature",
+    "l": "MotherNature()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "motherNatureHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "motherNatureWidth"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "moveFromSelectedCloud(int)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "moveMotherNature(int)"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "moveMotherNature(int)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "moveMotherNature(int)"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "moveMotherNatureAndWinTest()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "moveMotherNatureCode"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "moveMotherNatureTest()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "moveMotherNatureText"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "moveNegativeMotherNatureTest()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "MoverCharacter(Name, Playable, int)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable,int)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "moveStudents(MoveStudentsEvent)",
+    "u": "moveStudents(it.polimi.ingsw.controller.events.MoveStudentsEvent)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "moveStudents(StudentContainer, StudentContainer, List<Creature>)",
+    "u": "moveStudents(it.polimi.ingsw.model.studentcontainers.StudentContainer,it.polimi.ingsw.model.studentcontainers.StudentContainer,java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "moveStudents(StudentContainer, StudentContainer, List<Creature>)",
+    "u": "moveStudents(it.polimi.ingsw.model.studentcontainers.StudentContainer,it.polimi.ingsw.model.studentcontainers.StudentContainer,java.util.List)"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "moveStudentsCode"}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "MoveStudentsEvent",
+    "l": "MoveStudentsEvent(Object, boolean, int, List<Creature>)",
+    "u": "%3Cinit%3E(java.lang.Object,boolean,int,java.util.List)"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "GameModelTest",
+    "l": "moveStudentsInDiningRoomTest()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "moveStudentsReceiver(MoveStudentsEvent)",
+    "u": "moveStudentsReceiver(it.polimi.ingsw.controller.events.MoveStudentsEvent)"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "moveStudentsTest()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "moveStudentsText"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "moveStudentsWhenYouCantTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "moveWrongMotherNatureTest()"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "moveWrongStudentsTest()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "needsParameters()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "NetworkState(ServerPhases, ServerSocket, LoginState)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.server.enums.ServerPhases,java.net.ServerSocket,it.polimi.ingsw.network.server.states.LoginState)"
+}, {"p": "it.polimi.ingsw.network.ping", "c": "PingHandler", "l": "noAnswers"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "noAssistant"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiCss", "l": "noBorder"}, {
+    "p": "it.polimi.ingsw.studentcontainerTests",
+    "c": "IslandTest",
+    "l": "noEntryTest()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "noErrorCode"}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "ns"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "NUMBER_OF_CHARACTERS"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "numberOfPlayers()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "OCTOPUS"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "OS",
+    "l": "OS()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Assistants", "l": "OSTRICH"}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "out"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "PausedException",
+    "l": "PausedException()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "pauseGame()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "pauseGame()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Message",
+    "l": "payload()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "ping"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "PingHandler(PingState, NetworkState, SocketID, int, int)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.ping.PingState,it.polimi.ingsw.network.server.states.NetworkState,it.polimi.ingsw.network.server.SocketID,int,int)"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "PingHandler(PingState, Socket, int, int)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.ping.PingState,java.net.Socket,int,int)"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingState",
+    "l": "PingState()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "pingTime"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Creature", "l": "PINK_FAIRIES"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "pinkCreatureText"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "planning"
+}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "PLANNING"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "PlanningAnswerPayload",
+    "l": "PlanningAnswerPayload(int)",
+    "u": "%3Cinit%3E(int)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "PlanningEvent",
+    "l": "PlanningEvent(Object, int)",
+    "u": "%3Cinit%3E(java.lang.Object,int)"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "PlanningPhaseEndedException",
+    "l": "PlanningPhaseEndedException()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "PlanningPhaseListener",
+    "l": "PlanningPhaseListener(Controller)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.controller.Controller)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "ConcreteCLISender",
+    "l": "play(Socket)",
+    "u": "play(java.net.Socket)"
+}, {"p": "it.polimi.ingsw.controller", "c": "Controller", "l": "playAssistant(int)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "playAssistant(int)"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "playAssistantAlreadyPlayedTest()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "playAssistantReceiver(PlanningEvent)",
+    "u": "playAssistantReceiver(it.polimi.ingsw.controller.events.PlanningEvent)"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "playAssistantTest()"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "playCharacter(int)"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "playCharacter(int)"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "PlayCharacterAndWinTest()"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "playCharacterCode"}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "PlayCharacterEvent",
+    "l": "PlayCharacterEvent(Object, int)",
+    "u": "%3Cinit%3E(java.lang.Object,int)"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "playCharacterInMMN()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "playCharacterInSelectCloud()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "playCharacterReceiver(PlayCharacterEvent)",
+    "u": "playCharacterReceiver(it.polimi.ingsw.controller.events.PlayCharacterEvent)"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "playCharacterTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "playCharacterThatDoesntNeedParametersTest()"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "playCharacterWithPoorPlayerTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "playCharacterWithWrongParametersTest()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "Player(String, Color, int, Wizard, int, Entrance)",
+    "u": "%3Cinit%3E(java.lang.String,it.polimi.ingsw.model.enums.Color,int,it.polimi.ingsw.model.enums.Wizard,int,it.polimi.ingsw.model.studentcontainers.Entrance)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "playerContentHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "playerContentWidth"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "PlayerInfo",
+    "l": "PlayerInfo()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "playerRadius"}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "players"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "playLastAssistantTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "playMoreThanOneCharacterTest()"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "playWrongAssistantTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "playWrongCharacterTest()"
+}, {"p": "it.polimi.ingsw.network.client.sender", "c": "AbstractSender", "l": "port"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "port"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "Postman(Name, Playable)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "PostmanTest",
+    "l": "postmanTest()"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "PostmanTest",
+    "l": "PostmanTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "PRINCESS"}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "PrincessTest",
+    "l": "PrincessTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliPrinter",
+    "l": "printClouds(ShowModelPayload)",
+    "u": "printClouds(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliPrinter",
+    "l": "printIslands(ShowModelPayload)",
+    "u": "printIslands(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliPrinter",
+    "l": "printPlayers(ShowModelPayload)",
+    "u": "printPlayers(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliPrinter",
+    "l": "printTable(ShowModelPayload)",
+    "u": "printTable(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Professor",
+    "l": "Professor(Creature)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "professorsCounter(Creature)",
+    "u": "professorsCounter(it.polimi.ingsw.model.enums.Creature)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "professorsHeaderText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "provideUsernameText"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "ps"
+}, {"p": "it.polimi.ingsw.network.ping", "c": "PingHandler", "l": "ps"}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "StudentBucket",
+    "l": "putBackCreature(Creature)",
+    "u": "putBackCreature(it.polimi.ingsw.model.enums.Creature)"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "quitCommandText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "quitStage(Stage)",
+    "u": "quitStage(javafx.stage.Stage)"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "READY"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "ReconnectedEvent",
+    "l": "ReconnectedEvent(Object, SocketID)",
+    "u": "%3Cinit%3E(java.lang.Object,it.polimi.ingsw.network.server.SocketID)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "reconnection"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "reconnection(SocketID)",
+    "u": "reconnection(it.polimi.ingsw.network.server.SocketID)"
+}, {
+    "p": "it.polimi.ingsw.controller.Listeners",
+    "c": "ReconnectionListener",
+    "l": "ReconnectionListener(Controller)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.controller.Controller)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ReconnectionPayload",
+    "l": "ReconnectionPayload(String)",
+    "u": "%3Cinit%3E(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "reconnectPlayer(SocketID)",
+    "u": "reconnectPlayer(it.polimi.ingsw.network.server.SocketID)"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Creature", "l": "RED_DRAGONS"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "redCreatureText"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "removeCoin()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "removeCoin(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "removeColor(Socket)",
+    "u": "removeColor(java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "removeNoEntry()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "removeProfessor(Creature)",
+    "u": "removeProfessor(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "DiningRoom",
+    "l": "removeStudent(Creature)",
+    "u": "removeStudent(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "removeStudent(Creature)",
+    "u": "removeStudent(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "removeTowers(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "removeUsername(Socket)",
+    "u": "removeUsername(java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "removeWizard(Socket)",
+    "u": "removeWizard(java.net.Socket)"
+}, {"p": "it.polimi.ingsw.network.server.states", "c": "CreationState", "l": "reset()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "resetAssistants()"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "resetFarmer()"}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "StudentBucket",
+    "l": "resetMap()"
+}, {
+    "p": "it.polimi.ingsw.studentsTests",
+    "c": "StudentBucketTest",
+    "l": "resetMapTest()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "resumeGame()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "resumeGame()"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "RightFusionTest()"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "RST"}, {
+    "p": "it.polimi.ingsw.network.client.receiver",
+    "c": "AbstractReceiver",
+    "l": "run()"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "run()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "CreationHandler",
+    "l": "run()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "GameHandler",
+    "l": "run()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "LoginHandler",
+    "l": "run()"
+}, {
+    "p": "it.polimi.ingsw.network.server.receiver",
+    "c": "MessageReceiverServer",
+    "l": "run()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Wizard", "l": "SABRINA"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "scale"
+}, {"p": "it.polimi.ingsw.network.client.sender", "c": "AbstractSender", "l": "scanner"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "secondPostmanCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "secondWizardCode"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "secondWizardText"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GUIPhases", "l": "SELECT_CREATURE"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GUIPhases",
+    "l": "SELECT_CREATURE_FOR_CHARACTER"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GUIPhases", "l": "SELECT_DESTINATION"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GUIPhases",
+    "l": "SELECT_DESTINATION_ISLAND"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GUIPhases", "l": "SELECT_ISLAND"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GUIPhases",
+    "l": "SELECT_MMN_MOVEMENTS"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GUIPhases", "l": "SELECT_SOURCE_CREATURE"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GUIPhases",
+    "l": "SELECT_SOURCE_CREATURE_TO_SWAP"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "selectAlreadySelectedCloudTest()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "selectAssistantText"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "selectCloud(int)"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "selectCloudCode"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "selectCloudTest()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "selectCloudText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "selectCreatureCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "selectCreatureText"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "selectDestinationIslandCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "selectDestinationText"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "selectIslandText"
+}, {"p": "it.polimi.ingsw", "c": "ControllerTest", "l": "selectLastCloudTest()"}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "selectWrongCloudTest()"
+}, {
+    "p": "it.polimi.ingsw.network.server.sender",
+    "c": "MessageSenderServer",
+    "l": "sendBroadcastMessage(String)",
+    "u": "sendBroadcastMessage(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "sendCharacterParametersWithoutPlayingCharacter()"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "sendErrorMessage(String)",
+    "u": "sendErrorMessage(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "CreationHandler",
+    "l": "sendMessage(Headers, String)",
+    "u": "sendMessage(it.polimi.ingsw.network.server.networkMessages.Headers,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "LoginHandler",
+    "l": "sendMessage(Headers, String)",
+    "u": "sendMessage(it.polimi.ingsw.network.server.networkMessages.Headers,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.sender",
+    "c": "MessageSenderServer",
+    "l": "sendMessage(String, Socket)",
+    "u": "sendMessage(java.lang.String,java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "sendPhaseMessage(Headers)",
+    "u": "sendPhaseMessage(it.polimi.ingsw.network.server.networkMessages.Headers)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "server"}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "Server",
+    "l": "Server()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "ServerPingHandler",
+    "l": "ServerPingHandler(PingState, NetworkState, SocketID, int, int, Scanner)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.network.ping.PingState,it.polimi.ingsw.network.server.states.NetworkState,it.polimi.ingsw.network.server.SocketID,int,int,java.util.Scanner)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "setAddress(String)",
+    "u": "setAddress(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "setAdvancedRules(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setAdvancedRules(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setAdvancedRules(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "setAdvancedRules(int)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setAssistantCard(int)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setAssistantDeck(List<Assistant>)",
+    "u": "setAssistantDeck(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setAssistantPlayed(boolean)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setBucket(StudentBucket)",
+    "u": "setBucket(it.polimi.ingsw.model.students.StudentBucket)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setBucket(StudentBucket)",
+    "u": "setBucket(it.polimi.ingsw.model.students.StudentBucket)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setBucket(StudentBucket)",
+    "u": "setBucket(it.polimi.ingsw.model.students.StudentBucket)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setCharacters(List<CharacterInformation>)",
+    "u": "setCharacters(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingState",
+    "l": "setCloseConnection(boolean)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setClouds(List<Cloud>)",
+    "u": "setClouds(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setClouds(List<Cloud>)",
+    "u": "setClouds(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setCoinReserve(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setCoinReserve(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "PlayerInfo",
+    "l": "setColor(Color)",
+    "u": "setColor(it.polimi.ingsw.model.enums.Color)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setColor(int, Color)",
+    "u": "setColor(int,it.polimi.ingsw.model.enums.Color)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "setColor(Socket, Color)",
+    "u": "setColor(java.net.Socket,it.polimi.ingsw.model.enums.Color)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "setColorOfTowers(Color)",
+    "u": "setColorOfTowers(it.polimi.ingsw.model.enums.Color)"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "setConnected(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "setCreationState(CreationState)",
+    "u": "setCreationState(it.polimi.ingsw.network.server.states.CreationState)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "MotherNature",
+    "l": "setCurrentIsland(int)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setCurrentIsland(Island)",
+    "u": "setCurrentIsland(it.polimi.ingsw.model.studentcontainers.Island)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setCurrentPlayedCharacter(Name)",
+    "u": "setCurrentPlayedCharacter(it.polimi.ingsw.model.enums.Name)"
+}, {"p": "it.polimi.ingsw.view", "c": "ClientState", "l": "setCurrentPlayer(boolean)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setCurrentPlayerIndex(int)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "setCurrentPlayerUsername(String)",
+    "u": "setCurrentPlayerUsername(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setCurrentPlayerUsername(String)",
+    "u": "setCurrentPlayerUsername(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "Controller",
+    "l": "setCurrentStatus(GameStatus)",
+    "u": "setCurrentStatus(it.polimi.ingsw.controller.GameStatus)"
+}, {"p": "it.polimi.ingsw.model.gameboard", "c": "Table", "l": "setDeactivators(int)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setDeactivators(int)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setDeactivators(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setDeactivators(int)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setDiningRoom(DiningRoom)",
+    "u": "setDiningRoom(it.polimi.ingsw.model.studentcontainers.DiningRoom)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setDisconnection(Headers)",
+    "u": "setDisconnection(it.polimi.ingsw.network.server.networkMessages.Headers)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setEntrance(Entrance)",
+    "u": "setEntrance(it.polimi.ingsw.model.studentcontainers.Entrance)"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "setFarmer()"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setFarmer()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setGivenCoins(Map<Creature, ArrayList<Boolean>>)",
+    "u": "setGivenCoins(java.util.Map)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "setGuiPhases(GUIPhases)",
+    "u": "setGuiPhases(it.polimi.ingsw.view.GUI.GUIPhases)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setHeaders(Headers)",
+    "u": "setHeaders(it.polimi.ingsw.network.server.networkMessages.Headers)"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "setHeraldIsland(int)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setHeraldIsland(int)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setIndexIsland(int, Island)",
+    "u": "setIndexIsland(int,it.polimi.ingsw.model.studentcontainers.Island)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setInfluenceEvaluator(InfluenceEvaluator)",
+    "u": "setInfluenceEvaluator(it.polimi.ingsw.model.evaluators.InfluenceEvaluator)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setInfluenceEvaluator(InfluenceEvaluator)",
+    "u": "setInfluenceEvaluator(it.polimi.ingsw.model.evaluators.InfluenceEvaluator)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setIslands(List<Island>)",
+    "u": "setIslands(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setIslands(List<Island>)",
+    "u": "setIslands(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setJokerCreatures(List<Creature>)",
+    "u": "setJokerCreatures(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setLastPlayedCards(List<Assistant>)",
+    "u": "setLastPlayedCards(java.util.List)"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "setLastRound(boolean)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setLastRound(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setLoginPhaseEnded()"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "setLoginState(LoginState)",
+    "u": "setLoginState(it.polimi.ingsw.network.server.states.LoginState)"
+}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "StudentBucket",
+    "l": "setMap(Map)",
+    "u": "setMap(java.util.Map)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setMonkCreatures(List<Creature>)",
+    "u": "setMonkCreatures(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setMotherNature(int)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setMotherNature(MotherNature)",
+    "u": "setMotherNature(it.polimi.ingsw.model.gameboard.MotherNature)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setMotherNaturePosition(int)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setMoveMotherNature(boolean)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "ClientGui", "l": "setMoveStudents()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setMoveStudents(boolean)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "setMY_USERNAME(String)",
+    "u": "setMY_USERNAME(java.lang.String)"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Player", "l": "setMyCoins(int)"}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "setNeedsReplacement(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "setNetworkState(NetworkState)",
+    "u": "setNetworkState(it.polimi.ingsw.network.server.states.NetworkState)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setNextIsland(Island)",
+    "u": "setNextIsland(it.polimi.ingsw.model.studentcontainers.Island)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "setNumberOfPlayers(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setNumberOfPlayers(int)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "setNumberOfStudentsMoved(int)"
+}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "setPhase(GamePhases)",
+    "u": "setPhase(it.polimi.ingsw.controller.enums.GamePhases)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "CreationState",
+    "l": "setPhase(GamePhases)",
+    "u": "setPhase(it.polimi.ingsw.controller.enums.GamePhases)"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "setPlayerInfo(PlayerInfo)",
+    "u": "setPlayerInfo(it.polimi.ingsw.network.server.PlayerInfo)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setPlayers(List<Player>)",
+    "u": "setPlayers(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setPlayers(List<Player>)",
+    "u": "setPlayers(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setPlayersList(List<Player>)",
+    "u": "setPlayersList(java.util.List)"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "ClientGui", "l": "setPort(int)"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setPostmanMovements(int)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setPostmanMovements(int)"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "setPrevIsland(Island)",
+    "u": "setPrevIsland(it.polimi.ingsw.model.studentcontainers.Island)"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "setPrevIslandTest()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setPrincessCreatures(List<Creature>)",
+    "u": "setPrincessCreatures(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setProfessors(List<Professor>)",
+    "u": "setProfessors(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingState",
+    "l": "setReceived(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setReconnection()"
+}, {"p": "it.polimi.ingsw.view", "c": "ClientState", "l": "setSelectCharacter(boolean)"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setSelectCloud(boolean)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setServerPhase(ServerPhases)",
+    "u": "setServerPhase(it.polimi.ingsw.network.server.enums.ServerPhases)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setShowModel(ShowModelPayload)",
+    "u": "setShowModel(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "DiningRoom",
+    "l": "setStudents(List<Student>)",
+    "u": "setStudents(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "setStudents(List<Student>)",
+    "u": "setStudents(java.util.List)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "setTable(Table)",
+    "u": "setTable(it.polimi.ingsw.model.gameboard.Table)"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "Playable",
+    "l": "setTable(Table)",
+    "u": "setTable(it.polimi.ingsw.model.gameboard.Table)"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "setTowers(int)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdateAll()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdateClouds()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdateCoinReserve()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herald",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Thief",
+    "l": "setUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdateIslands()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdateMotherNature()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdatePlayedCharacter()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdatePlayersAssistant()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdatePlayersDiningRoom()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "setUpdatePlayersEntrance()"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setUsername(int, String)",
+    "u": "setUsername(int,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "setUsername(Socket, String)",
+    "u": "setUsername(java.net.Socket,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "setUsername(String)",
+    "u": "setUsername(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "PlayerInfo",
+    "l": "setUsername(String)",
+    "u": "setUsername(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ClientState",
+    "l": "setUsername(String)",
+    "u": "setUsername(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "NetworkState",
+    "l": "setWizard(int, Wizard)",
+    "u": "setWizard(int,it.polimi.ingsw.model.enums.Wizard)"
+}, {
+    "p": "it.polimi.ingsw.network.server.states",
+    "c": "LoginState",
+    "l": "setWizard(Socket, Wizard)",
+    "u": "setWizard(java.net.Socket,it.polimi.ingsw.model.enums.Wizard)"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "PlayerInfo",
+    "l": "setWizard(Wizard)",
+    "u": "setWizard(it.polimi.ingsw.model.enums.Wizard)"
+}, {
+    "p": "it.polimi.ingsw.characterTests",
+    "c": "PostmanTest",
+    "l": "setWrongPostmanMovementsTest()"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "shortClient"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "shortGui"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "shortPort"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "shortScale"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "shortServer"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "showModel(ShowModelPayload)",
+    "u": "showModel(it.polimi.ingsw.network.server.networkMessages.payloads.ShowModelPayload)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "ShowModelEvent",
+    "l": "ShowModelEvent(Object, Payload)",
+    "u": "%3Cinit%3E(java.lang.Object,it.polimi.ingsw.network.server.networkMessages.payloads.Payload)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "showModelMessage"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "ShowModelPayload",
+    "l": "ShowModelPayload(List<Player>, Table)",
+    "u": "%3Cinit%3E(java.util.List,it.polimi.ingsw.model.gameboard.Table)"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "showModelPayloadCreator()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "smallSpacing"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "socket"
+}, {"p": "it.polimi.ingsw.network.ping", "c": "PingHandler", "l": "socketID"}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketID",
+    "l": "SocketID(int, Socket)",
+    "u": "%3Cinit%3E(int,java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "socketOut"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketReceiverServer",
+    "l": "SocketReceiverServer(int)",
+    "u": "%3Cinit%3E(int)"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "StandardEvaluator",
+    "l": "StandardEvaluator()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.evaluatorsTest",
+    "c": "StandardEvaluatorTest",
+    "l": "StandardEvaluatorTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.network.server", "c": "Server", "l": "start(int)"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "start(Stage)",
+    "u": "start(javafx.stage.Stage)"
+}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ViewSelector",
+    "l": "startCli(String, int)",
+    "u": "startCli(java.lang.String,int)"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "AbstractSender",
+    "l": "startClient()"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "ConcreteCLISender",
+    "l": "startClient()"
+}, {
+    "p": "it.polimi.ingsw.network.client.sender",
+    "c": "ConcreteGUISender",
+    "l": "startClient()"
+}, {"p": "it.polimi.ingsw.controller", "c": "Controller", "l": "startController()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ViewSelector",
+    "l": "startGui(String, int, String)",
+    "u": "startGui(java.lang.String,int,java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server",
+    "c": "SocketReceiverServer",
+    "l": "startServer()"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "StatusEvent",
+    "l": "StatusEvent(Object, Headers)",
+    "u": "%3Cinit%3E(java.lang.Object,it.polimi.ingsw.network.server.networkMessages.Headers)"
+}, {
+    "p": "it.polimi.ingsw.controller.events",
+    "c": "StringEvent",
+    "l": "StringEvent(Object, String, Headers, Socket)",
+    "u": "%3Cinit%3E(java.lang.Object,java.lang.String,it.polimi.ingsw.network.server.networkMessages.Headers,java.net.Socket)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages.payloads",
+    "c": "StringPayload",
+    "l": "StringPayload(String)",
+    "u": "%3Cinit%3E(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "Student",
+    "l": "Student(Creature)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Creature)"
+}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "StudentBucket",
+    "l": "StudentBucket()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.studentsTests",
+    "c": "StudentBucketTest",
+    "l": "StudentBucketTest()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "StudentContainer(int)",
+    "u": "%3Cinit%3E(int)"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "StudentContainer",
+    "l": "students"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "StudentsOutOfStockException",
+    "l": "StudentsOutOfStockException()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.model.evaluators",
+    "c": "InfluenceEvaluator",
+    "l": "table"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "Table(int, boolean)",
+    "u": "%3Cinit%3E(int,boolean)"
+}, {
+    "p": "it.polimi.ingsw.gameboardTests",
+    "c": "TableTest",
+    "l": "TableTest()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "tableTowerHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "tableTowerWidth"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "TextAssets()",
+    "u": "%3Cinit%3E()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "THIEF"}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Thief",
+    "l": "Thief(Name, Playable)",
+    "u": "%3Cinit%3E(it.polimi.ingsw.model.enums.Name,it.polimi.ingsw.model.Playable)"
+}, {"p": "it.polimi.ingsw.utils", "c": "Commands", "l": "thirdPostmanCode"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "thirdWizardCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "thirdWizardText"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "THREE_PLAYERS_CAPACITY"
+}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "THREE_PLAYERS_NUMBER_OF_TOWERS"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "threePlayersButton"}, {
+    "p": "it.polimi.ingsw.network.ping",
+    "c": "PingHandler",
+    "l": "time"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "titleFont"}, {
+    "p": "it.polimi.ingsw.controller",
+    "c": "GameStatus",
+    "l": "toggleWaitingForParameters()"
+}, {"p": "it.polimi.ingsw.model.player", "c": "Assistant", "l": "toString()"}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Player",
+    "l": "toString()"
+}, {
+    "p": "it.polimi.ingsw.model.player",
+    "c": "Professor",
+    "l": "toString()"
+}, {
+    "p": "it.polimi.ingsw.model.studentcontainers",
+    "c": "Island",
+    "l": "toString()"
+}, {
+    "p": "it.polimi.ingsw.model.students",
+    "c": "Student",
+    "l": "toString()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Message",
+    "l": "toString()"
+}, {
+    "p": "it.polimi.ingsw.model.gameboard",
+    "c": "Table",
+    "l": "TOTAL_COINS_ADVANCED_RULES"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiComponents",
+    "l": "towerCounter(Color, int)",
+    "u": "towerCounter(it.polimi.ingsw.model.enums.Color,int)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "towersHeaderText"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Assistants",
+    "l": "TURTLE"
+}, {"p": "it.polimi.ingsw.model", "c": "GameModel", "l": "TWO_PLAYERS_CAPACITY"}, {
+    "p": "it.polimi.ingsw.model",
+    "c": "GameModel",
+    "l": "TWO_PLAYERS_NUMBER_OF_TOWERS"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "twoPlayersButton"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "typeOfRules()"
+}, {
+    "p": "it.polimi.ingsw.model.exceptions",
+    "c": "UnplayableEffectException",
+    "l": "UnplayableEffectException()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw",
+    "c": "ControllerTest",
+    "l": "unplayableEffectTest()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "BehaviorCharacter",
+    "l": "unsetUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Character",
+    "l": "unsetUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herald",
+    "l": "unsetUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Herbalist",
+    "l": "unsetUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "MoverCharacter",
+    "l": "unsetUpdatedCost()"
+}, {
+    "p": "it.polimi.ingsw.model.characters",
+    "c": "Postman",
+    "l": "unsetUpdatedCost()"
+}, {"p": "it.polimi.ingsw.model.characters", "c": "Thief", "l": "unsetUpdatedCost()"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "ClientGui",
+    "l": "updateClientState(ClientState)",
+    "u": "updateClientState(it.polimi.ingsw.view.ClientState)"
+}, {"p": "it.polimi.ingsw.controller", "c": "Controller", "l": "updateCurrentPlayer()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "useEffectText"
+}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "usernameHeaderText"
+}, {
+    "p": "it.polimi.ingsw.network.server.handlers",
+    "c": "MessageHandler",
+    "l": "userReconnectedReceiver(ReconnectedEvent)",
+    "u": "userReconnectedReceiver(it.polimi.ingsw.controller.events.ReconnectedEvent)"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "validAddress"}, {
+    "p": "it.polimi.ingsw.controller.enums",
+    "c": "GamePhases",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Assistants",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Color",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Creature",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Name",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Wizard",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "CliColors",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "Section",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GUIPhases",
+    "l": "valueOf(String)",
+    "u": "valueOf(java.lang.String)"
+}, {"p": "it.polimi.ingsw.controller.enums", "c": "GamePhases", "l": "values()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Assistants",
+    "l": "values()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Color", "l": "values()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Creature",
+    "l": "values()"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Name", "l": "values()"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Wizard",
+    "l": "values()"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "values()"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "values()"
+}, {"p": "it.polimi.ingsw.view.CLI", "c": "CliColors", "l": "values()"}, {
+    "p": "it.polimi.ingsw.view.CLI",
+    "c": "Section",
+    "l": "values()"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GUIPhases", "l": "values()"}, {
+    "p": "it.polimi.ingsw.view",
+    "c": "ViewSelector",
+    "l": "ViewSelector()",
+    "u": "%3Cinit%3E()"
+}, {
+    "p": "it.polimi.ingsw.network.server.enums",
+    "c": "ServerPhases",
+    "l": "WAITING"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Color", "l": "WHITE"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "whiteColorCode"
+}, {"p": "it.polimi.ingsw.utils", "c": "TextAssets", "l": "whiteColorText"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "whyTextMessage"
+}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAlerts",
+    "l": "winnerAlert(String)",
+    "u": "winnerAlert(java.lang.String)"
+}, {
+    "p": "it.polimi.ingsw.network.server.networkMessages",
+    "c": "Headers",
+    "l": "winnerPlayer"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "ClientGui", "l": "wizard()"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "TextAssets",
+    "l": "wizardHeaderText"
+}, {"p": "it.polimi.ingsw.view.GUI", "c": "GuiAssets", "l": "wizardHeight"}, {
+    "p": "it.polimi.ingsw.view.GUI",
+    "c": "GuiAssets",
+    "l": "wizardWidth"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Color", "l": "WRONG"}, {
+    "p": "it.polimi.ingsw.model.enums",
+    "c": "Wizard",
+    "l": "WRONG"
+}, {"p": "it.polimi.ingsw.model.enums", "c": "Creature", "l": "YELLOW_GNOMES"}, {
+    "p": "it.polimi.ingsw.utils",
+    "c": "Commands",
+    "l": "yellowCreatureText"
+}];
+updateSearchResults();
