@@ -2,7 +2,6 @@ package it.polimi.ingsw.network.server.networkMessages.payloads;
 
 import it.polimi.ingsw.network.server.CharacterInformation;
 import it.polimi.ingsw.model.enums.Creature;
-import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.studentcontainers.Cloud;

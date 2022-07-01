@@ -11,7 +11,6 @@ import it.polimi.ingsw.controller.events.MessageReceivedEvent;
 
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 

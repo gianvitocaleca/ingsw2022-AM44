@@ -2,7 +2,6 @@ package it.polimi.ingsw.playerTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Assistants;
@@ -116,7 +115,7 @@ class AssistantTest {
                     assertTrue(gm.playAssistant(0));
                     assertEquals(gm.getPlayers().get(0).getAssistantDeck().size(), 9);
                     assertEquals(gm.getPlayers().get(0).getLastPlayedCards().size(), 1);
-                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ex) {
+                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
                 }
             } else { //o sei 1 o sei 2
                 try {
@@ -126,7 +125,7 @@ class AssistantTest {
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
                     try {
                         gm.playAssistant(1);
-                    } catch (PlanningPhaseEndedException | AssistantAlreadyPlayedException e) {
+                    } catch (PlanningPhaseEndedException | AssistantAlreadyPlayedException ignore) {
                     }
 
                 } catch (PlanningPhaseEndedException e) {

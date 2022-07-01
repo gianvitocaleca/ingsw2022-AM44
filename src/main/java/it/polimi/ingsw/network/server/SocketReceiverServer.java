@@ -19,8 +19,6 @@ import it.polimi.ingsw.network.server.states.NetworkState;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.Set;
 
 public class SocketReceiverServer {
     private static NetworkState networkState;
