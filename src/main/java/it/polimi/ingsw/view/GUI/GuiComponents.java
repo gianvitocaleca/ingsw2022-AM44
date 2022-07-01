@@ -126,26 +126,7 @@ public class GuiComponents {
      * @return is the container of the creature's image and text number
      */
     public static HBox creatureCounter(Creature creature, int num) {
-        ImageView creatureImage;
-        switch (creature) {
-            case RED_DRAGONS:
-                creatureImage = new ImageView(new Image("Table/red.png"));
-                break;
-            case YELLOW_GNOMES:
-                creatureImage = new ImageView(new Image("Table/yellow.png"));
-                break;
-            case BLUE_UNICORNS:
-                creatureImage = new ImageView(new Image("Table/blue.png"));
-                break;
-            case GREEN_FROGS:
-                creatureImage = new ImageView(new Image("Table/green.png"));
-                break;
-            case PINK_FAIRIES:
-                creatureImage = new ImageView(new Image("Table/pink.png"));
-                break;
-            default:
-                return null;
-        }
+        ImageView creatureImage = creatureImageSelector(creature, false);
         creatureImage.setFitWidth(playerContentWidth);
         creatureImage.setFitHeight(playerContentHeight);
         return counterText(num, creatureImage);
@@ -156,32 +137,35 @@ public class GuiComponents {
      * @return the professor's container
      */
     public static HBox professorsCounter(Creature creature) {
-        ImageView creatureImage;
-        switch (creature) {
-            case RED_DRAGONS:
-                creatureImage = new ImageView(new Image("Table/redProf.png"));
-                break;
-            case YELLOW_GNOMES:
-                creatureImage = new ImageView(new Image("Table/yellowProf.png"));
-                break;
-            case BLUE_UNICORNS:
-                creatureImage = new ImageView(new Image("Table/blueProf.png"));
-                break;
-            case GREEN_FROGS:
-                creatureImage = new ImageView(new Image("Table/greenProf.png"));
-                break;
-            case PINK_FAIRIES:
-                creatureImage = new ImageView(new Image("Table/pinkProf.png"));
-                break;
-            default:
-                return null;
-        }
+        ImageView creatureImage = creatureImageSelector(creature, true);
         creatureImage.setFitWidth(playerContentWidth);
         creatureImage.setFitHeight(playerContentHeight);
         HBox ans = new HBox(creatureImage);
         ans.setSpacing(smallSpacing);
         ans.setAlignment(Pos.CENTER);
         return ans;
+    }
+
+    /**
+     * @param creature    is the given creature
+     * @param isProfessor whether it's the professor image
+     * @return is the creature image
+     */
+    public static ImageView creatureImageSelector(Creature creature, boolean isProfessor) {
+        switch (creature) {
+            case RED_DRAGONS:
+                return isProfessor ? new ImageView(new Image("Table/redProf.png")) : new ImageView(new Image("Table/red.png"));
+            case YELLOW_GNOMES:
+                return isProfessor ? new ImageView(new Image("Table/yellowProf.png")) : new ImageView(new Image("Table/yellow.png"));
+            case BLUE_UNICORNS:
+                return isProfessor ? new ImageView(new Image("Table/blueProf.png")) : new ImageView(new Image("Table/blue.png"));
+            case GREEN_FROGS:
+                return isProfessor ? new ImageView(new Image("Table/greenProf.png")) : new ImageView(new Image("Table/green.png"));
+            case PINK_FAIRIES:
+                return isProfessor ? new ImageView(new Image("Table/pinkProf.png")) : new ImageView(new Image("Table/pink.png"));
+            default:
+                return null;
+        }
     }
 
     /**
