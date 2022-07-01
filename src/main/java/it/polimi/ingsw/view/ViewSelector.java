@@ -13,8 +13,8 @@ public class ViewSelector {
     /**
      * Used to start the application Gui client
      *
-     * @param address
-     * @param port
+     * @param address is the address which the client is connecting to
+     * @param port is the port used for connection
      */
     public static void startGui(String address, int port, String scale) {
         ClientGui.setAddress(address);

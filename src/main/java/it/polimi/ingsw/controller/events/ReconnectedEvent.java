@@ -4,6 +4,10 @@ import it.polimi.ingsw.network.server.SocketID;
 
 import java.util.EventObject;
 
+/**
+ * This event contains the socketID of the reconnected player. It is used to
+ * send him a message about his username.
+ */
 public class ReconnectedEvent extends EventObject {
 
     private SocketID socketID;

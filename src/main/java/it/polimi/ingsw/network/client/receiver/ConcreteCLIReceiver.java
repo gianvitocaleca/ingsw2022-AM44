@@ -1,9 +1,8 @@
 package it.polimi.ingsw.network.client.receiver;
 
-import it.polimi.ingsw.view.CLI.CliColors;
-import it.polimi.ingsw.view.CLI.CliPrinter;
+
+import it.polimi.ingsw.view.CLI.*;
 import it.polimi.ingsw.view.ClientState;
-import it.polimi.ingsw.view.CLI.OS;
 import it.polimi.ingsw.network.ping.PingState;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.player.Assistant;
@@ -94,7 +93,7 @@ public class ConcreteCLIReceiver extends AbstractReceiver {
             System.out.println(cliMenu+" Move students <" + moveStudentsCode + "> "+cliMenu);
             System.out.println("Specify the student creature <" +
                     redCreatureText + "," + greenCreatureText + "," + blueCreatureText + "," + yellowCreatureText + "," + pinkCreatureText + ">");
-            System.out.println("Specify the destination <0," + cs.getModelPayload().getIslands().size() + "> (0 is your Dinig Room, the others are the islands)");
+            System.out.println("Specify the destination <0," + cs.getModelPayload().getIslands().size() + "> (0 is your Dining Room, the others are the islands)");
             System.out.println("For example " + moveStudentsCode + commandSeparator + redCreatureText + commandSeparator + "2");
         }
         if (cs.isMoveMotherNature()) {

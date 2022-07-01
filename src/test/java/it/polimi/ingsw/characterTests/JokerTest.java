@@ -21,6 +21,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the Joker class
+ */
 public class JokerTest {
 
     private GameModel gm;
@@ -29,7 +32,7 @@ public class JokerTest {
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {

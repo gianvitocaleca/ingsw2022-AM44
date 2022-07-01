@@ -2,6 +2,9 @@ package it.polimi.ingsw.controller.events;
 
 import java.util.EventObject;
 
+/**
+ * This event contains the index of the assistant played by the player
+ */
 public class PlanningEvent extends EventObject {
 
     private int indexOfAssistant;

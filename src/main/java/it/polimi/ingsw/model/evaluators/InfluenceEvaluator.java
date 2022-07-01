@@ -12,12 +12,18 @@ import java.util.*;
 public abstract class InfluenceEvaluator {
     protected Table table;
     protected List<Player> players;
-    protected Map<Integer,String> influencesPerUsername;
+    protected Map<Integer, String> influencesPerUsername;
     protected List<Integer> influences;
     protected Island currentIsland;
     protected int currentInfluence;
     protected GameModel model;
 
+    /**
+     * Used to perform the influence evaluation on an island
+     *
+     * @param model is the game model
+     * @throws GameEndedException is thrown if an end game condition is met
+     */
     public void evaluateInfluence(GameModel model) throws GameEndedException {
         table = model.getTable();
         players = model.getPlayers();
@@ -29,31 +35,42 @@ public abstract class InfluenceEvaluator {
 
         if (evaluation()) {
             influences.sort(Comparator.reverseOrder());
-            if(!Objects.equals(influences.get(0), influences.get(1))){
-                for(Player p: players){
-                    if(p.getUsername().equals(influencesPerUsername.get(influences.get(0)))){
+            if (!Objects.equals(influences.get(0), influences.get(1))) {
+                for (Player p : players) {
+                    if (p.getUsername().equals(influencesPerUsername.get(influences.get(0)))) {
                         model.conquerIsland(p);
                     }
                 }
             }
-        }else{
+        } else {
             model.setTable(table);
         }
 
     }
 
+    /**
+     * Used by the different influence evaluator
+     *
+     * @return whether the operation was performed
+     */
     abstract boolean evaluation();
 
-    protected void evaluateProfessors(Player p){
-        if(p.getProfessors().size()>0){
-            for(Professor professor: p.getProfessors()){
+    /**
+     * @param p is the given player
+     */
+    protected void evaluateProfessors(Player p) {
+        if (p.getProfessors().size() > 0) {
+            for (Professor professor : p.getProfessors()) {
                 currentInfluence += currentIsland.getNumberOfStudentsByCreature(professor.getCreature());
             }
         }
     }
 
-    protected void evaluateTowers(Player p){
-        if(currentIsland.getNumberOfTowers()>0 && p.getMyColor().equals(currentIsland.getColorOfTowers())){
+    /**
+     * @param p is the given player
+     */
+    protected void evaluateTowers(Player p) {
+        if (currentIsland.getNumberOfTowers() > 0 && p.getMyColor().equals(currentIsland.getColorOfTowers())) {
             currentInfluence += currentIsland.getNumberOfTowers();
         }
     }

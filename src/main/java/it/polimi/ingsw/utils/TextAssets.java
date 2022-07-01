@@ -18,7 +18,7 @@ public class TextAssets {
     public static final String costContentText = "Cost";
     public static final String usernameHeaderText = "Username";
     public static final String wizardHeaderText = "Wizard";
-    public static final String whyTextMessage = "(ง •̀_•́)ง Why did you do it!";
+    public static final String whyTextMessage = "Why did you do it!";
     public static final String badTextMessage = "(╯°□°）╯$ $ $ Bad syntax!";
     public static final String client = "client";
     public static final String shortClient = "c";

@@ -8,6 +8,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * This class transform the client's string into a json string, then sends it to the server.
+ */
 public class ConcreteCLISender extends AbstractSender {
     private String inputLine;
     private Scanner stdin;
@@ -30,8 +33,7 @@ public class ConcreteCLISender extends AbstractSender {
     @Override
     public void startClient() throws IOException {
         super.startClient();
-        Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new ConcreteCLIReceiver(s, cs, ps));
+        Thread t = new Thread(new ConcreteCLIReceiver(scanner, cs, ps));
         t.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         stdin = new Scanner(System.in);
@@ -68,7 +70,7 @@ public class ConcreteCLISender extends AbstractSender {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println("La connessione è chiusa: " + ps.isCloseConnection());
+            System.out.println("The connection is closed: " + ps.isCloseConnection());
         }
 
 

@@ -13,6 +13,9 @@ import static it.polimi.ingsw.utils.TextAssets.useEffectText;
 import static it.polimi.ingsw.view.GUI.GuiAssets.gameTitle;
 import static it.polimi.ingsw.view.GUI.GuiAssets.noErrorCode;
 
+/**
+ * This class is used to crate alert caused by client's actions.
+ */
 public class GuiAlerts {
 
     /**
@@ -31,8 +34,6 @@ public class GuiAlerts {
         a.setGraphic(logo);
         Optional<ButtonType> confirm = a.showAndWait();
         if (confirm.isPresent() && confirm.get() == ButtonType.YES) {
-            //send quit message
-            //close socket thread
             stage.close();
             System.exit(noErrorCode);
         }
@@ -75,7 +76,7 @@ public class GuiAlerts {
                 string,
                 ButtonType.OK);
         a.setTitle(gameTitle);
-        a.setHeaderText(useEffectText+ clientState.getCurrentPlayedCharacter());
+        a.setHeaderText(useEffectText + clientState.getCurrentPlayedCharacter());
         a.showAndWait();
     }
 

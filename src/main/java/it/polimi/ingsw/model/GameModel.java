@@ -231,6 +231,10 @@ public class GameModel implements Playable {
         showModel(modelUpdate);
     }
 
+    /**
+     * This method is used at the beginning of a round.
+     * The boolean isAssistantPlayed inform that the player has already played an assistant card.
+     */
     public void resetAssistants(){
         for(Player p: players){
             p.setAssistantPlayed(false);
@@ -325,8 +329,11 @@ public class GameModel implements Playable {
         return true;
     }
 
-
-    private void establisher(List<Player> goodPlayers) {
+    /**
+     * This method is used to establish the round order of players.
+     * @param goodPlayers are the players to order.
+     */
+    private void establish(List<Player> goodPlayers) {
         Collections.sort(goodPlayers, (p1, p2) -> {
                 if (p1.getLastPlayedCard().getValue() < p2.getLastPlayedCard().getValue()) return -1;
                 else if (p1.getLastPlayedCard().getValue() > p2.getLastPlayedCard().getValue()) return 1;
@@ -348,7 +355,7 @@ public class GameModel implements Playable {
                 badPlayers.add(players.get(i));
             }
         }
-        establisher(goodPlayers);
+        establish(goodPlayers);
         goodPlayers.addAll(badPlayers);
         players = goodPlayers;
     }

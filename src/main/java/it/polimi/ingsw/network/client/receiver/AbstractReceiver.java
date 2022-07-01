@@ -43,7 +43,7 @@ public abstract class AbstractReceiver extends Thread {
                 socketLine = socketIn.nextLine();
                 ps.setReceived(true);
                 translateMessage(socketLine);
-            } catch (NoSuchElementException ignore) {
+            } catch (NoSuchElementException | IllegalStateException ignore) {
                 if (ps.isCloseConnection()) {
                     break;
                 }

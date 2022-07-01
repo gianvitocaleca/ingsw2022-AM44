@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the GameModel class
+ */
 public class GameModelTest {
     GameModel gm;
 

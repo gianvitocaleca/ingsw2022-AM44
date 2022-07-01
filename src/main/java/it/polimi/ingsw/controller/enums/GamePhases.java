@@ -9,9 +9,9 @@ public enum GamePhases {
     LOGIN_COLOR(Headers.loginMessage_Color),
     LOGIN_WIZARD(Headers.loginMessage_Wizard),
     PLANNING(Headers.planning),
-    ACTION_STUDENTSMOVEMENT(Headers.action),
-    ACTION_MOVEMOTHERNATURE(Headers.action),
-    ACTION_CLOUDCHOICE(Headers.action),
+    ACTION_STUDENTS_MOVEMENT(Headers.action),
+    ACTION_MOVE_MOTHER_NATURE(Headers.action),
+    ACTION_CLOUD_CHOICE(Headers.action),
     ACTION_PLAYED_CHARACTER(Headers.action);
 
     Headers header;

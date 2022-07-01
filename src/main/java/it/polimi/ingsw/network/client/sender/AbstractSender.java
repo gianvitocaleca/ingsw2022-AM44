@@ -22,7 +22,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
-
+/**
+ * This class is used to avoid repetition of code. Cli and Gui have similar behaviour;
+ * They differ because of the implementation of play().
+ */
 public abstract class AbstractSender {
     protected String ip;
     protected int port;
@@ -33,6 +36,7 @@ public abstract class AbstractSender {
     protected final int maxNoAnswers = 4;
     protected Socket socket;
     protected PrintWriter socketOut;
+    protected Scanner scanner;
 
     /**
      * Waits for commands from the player.
@@ -50,15 +54,14 @@ public abstract class AbstractSender {
 
     /**
      * Starts the client handler thread
-     *
-     * @throws IOException
      */
     public void startClient() throws IOException {
         cs = new ClientState();
         socket = new Socket(ip, port);
         System.out.println("Connection established");
         System.out.println("Client dynamic port number: " + socket.getLocalPort());
-        Thread t1 = new Thread(new ClientPingHandler(ps, socket, pingTime, maxNoAnswers));
+        scanner = new Scanner(socket.getInputStream());
+        Thread t1 = new Thread(new ClientPingHandler(ps, socket, pingTime, maxNoAnswers,scanner));
         t1.start();
     }
 

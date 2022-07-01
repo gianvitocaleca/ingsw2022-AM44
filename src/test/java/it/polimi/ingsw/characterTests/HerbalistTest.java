@@ -20,6 +20,9 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This tests the herbalist class
+ */
 public class HerbalistTest {
 
 
@@ -27,7 +30,7 @@ public class HerbalistTest {
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {

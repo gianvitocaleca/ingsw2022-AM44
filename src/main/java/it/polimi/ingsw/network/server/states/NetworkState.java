@@ -19,16 +19,18 @@ public class NetworkState {
     private boolean advancedRules;
     private int loginPhaseEnded = 0;
     private ServerSocket serverSocket;
+    private LoginState loginState;
 
     /**
      * Keeps track of the number and sockets of all the players
      * @param phase is the phase in which the server is
      */
-    public NetworkState(ServerPhases phase, ServerSocket serverSocket) {
+    public NetworkState(ServerPhases phase, ServerSocket serverSocket, LoginState loginState) {
         socketIDList = new ArrayList<>();
         this.numberOfPlayers = 1;
         this.advancedRules = false;
         this.serverSocket = serverSocket;
+        this.loginState = loginState;
         setServerPhase(phase);
     }
 
@@ -42,7 +44,7 @@ public class NetworkState {
 
     /**
      * Used to check if all the players joined the game
-     * @return
+     * @return true if the login phase has ended
      */
     public boolean getLoginPhaseEnded() {
         synchronized (this) {
@@ -211,12 +213,24 @@ public class NetworkState {
         for (SocketID s : socketIDList) {
             if (s.getId() == id) {
                 s.setConnected(false);
+                if(serverPhase.equals(ServerPhases.CREATION)){
+                    socketIDList.remove(s);
+                    serverPhase = ServerPhases.READY;
+                }else if(serverPhase.equals(ServerPhases.LOGIN)){
+                    socketIDList.remove(s);
+                    loginState.removeUsername(s.getSocket());
+                    loginState.removeColor(s.getSocket());
+                    if(loginState.removeWizard(s.getSocket())){
+                        loginPhaseEnded--;
+                    }
+                }
+                break;
             }
         }
         if (serverPhase.equals(ServerPhases.GAME)) {
             serverPhase = ServerPhases.WAITING;
         }
-        if(getNumberOfConnectedSocket()==0){
+        if(getNumberOfConnectedSocket()==0&&!serverPhase.equals(ServerPhases.READY)&&!serverPhase.equals(ServerPhases.LOGIN)){
             try {
                 serverSocket.close();
             } catch (IOException e) {

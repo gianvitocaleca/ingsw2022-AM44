@@ -18,10 +18,15 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * This class tests the postman class
+ */
 public class PostmanTest {
     private GameModel gm;
 
+    /**
+     * This method creates a GameModel class that is used in every test
+     */
     @BeforeEach
     public void createGameModel() {
         gm = new GameModel(true,
@@ -33,6 +38,8 @@ public class PostmanTest {
 
     /**
      * This tests that when the postman card is played, motherNature moves of jumps+postmanMovements positions
+     * @throws GameEndedException
+     * @throws UnplayableEffectException
      */
     @Test
     public void postmanTest() throws GameEndedException, UnplayableEffectException {
@@ -55,7 +62,7 @@ public class PostmanTest {
         gm.playCharacter(0);
         gm.effect(Postman);
 
-        int oldposition = gm.getTable().getMnPosition();
+        int oldPosition = gm.getTable().getMnPosition();
         int numberOfMNJumps = 1;
 
         if (2 < ((gm.getTable().getIslands().size() - 1) - gm.getTable().getMnPosition())) {
@@ -64,20 +71,23 @@ public class PostmanTest {
             } catch (GameEndedException ignore) {
 
             }
-            assertTrue(gm.getTable().getMnPosition() == oldposition + (numberOfMNJumps + numberOfPostmanJumps));
+            assertTrue(gm.getTable().getMnPosition() == oldPosition + (numberOfMNJumps + numberOfPostmanJumps));
         } else {
             try {
                 gm.moveMotherNature(numberOfMNJumps);
             } catch (GameEndedException ignore) {
 
             }
-            assertTrue(gm.getTable().getMnPosition() == (oldposition + (numberOfMNJumps + numberOfPostmanJumps)) % (gm.getTable().getIslands().size()));
+            assertTrue(gm.getTable().getMnPosition() == (oldPosition + (numberOfMNJumps + numberOfPostmanJumps)) % (gm.getTable().getIslands().size()));
         }
 
     }
 
     /**
-     * This tests that when a wrong value for the postmanMovements is provided, the game will not execute the moveMotherNature method
+     * This tests that when a wrong value for the postmanMovements is provided, the game will
+     * not execute the moveMotherNature method
+     * @throws GameEndedException
+     * @throws UnplayableEffectException
      */
     @Test
     public void setWrongPostmanMovementsTest() throws GameEndedException, UnplayableEffectException {

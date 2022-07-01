@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-
+/**
+ * This tests the Island class
+ */
 public class IslandTest {
     StudentBucket sb;
     Island island;

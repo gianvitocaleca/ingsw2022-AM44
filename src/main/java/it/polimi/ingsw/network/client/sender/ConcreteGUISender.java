@@ -40,8 +40,7 @@ public class ConcreteGUISender extends AbstractSender {
     @Override
     public void startClient() throws IOException {
         super.startClient();
-        Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new ConcreteGUIReceiver(s, cs, ps, clientGui));
+        Thread t = new Thread(new ConcreteGUIReceiver(scanner, cs, ps, clientGui));
         t.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         play(socket);

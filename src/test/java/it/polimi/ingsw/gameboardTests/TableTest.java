@@ -12,11 +12,16 @@ import org.junit.jupiter.api.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class tests the Table methods
+ */
 public class TableTest {
 
     Table table;
 
+    /**
+     * This method creates a Table that is used for test purposes
+     */
     @BeforeEach
     public void createTable() {
         table = new Table(2, true);
@@ -162,6 +167,9 @@ public class TableTest {
         }
     }
 
+    /**
+     * This method tests that the setPrevIsland method in table works correctly
+     */
     @Test
     public void setPrevIslandTest() {
         Island newPrevIsland = new Island(new ArrayList<>(), 1, Color.BLACK, 130, 0);

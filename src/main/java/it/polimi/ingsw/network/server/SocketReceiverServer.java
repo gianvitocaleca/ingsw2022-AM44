@@ -19,8 +19,6 @@ import it.polimi.ingsw.network.server.states.NetworkState;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.Set;
 
 public class SocketReceiverServer {
     private static NetworkState networkState;
@@ -45,9 +43,9 @@ public class SocketReceiverServer {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        networkState = new NetworkState(READY,serverSocket);
         messageHandler = new MessageHandler(networkState);
         loginState = new LoginState();
+        networkState = new NetworkState(READY,serverSocket,loginState);
         messageHandler.setLoginState(loginState);
         creationState = new CreationState();
         messageHandler.setCreationState(creationState);
@@ -56,56 +54,50 @@ public class SocketReceiverServer {
 
     /**
      * Creates the game thread and starts to listen for connections
-     * @throws IOException
      */
-    public void startServer() throws IOException {
+    public void startServer(){
 
         gameHandlerThread = new Thread(new GameHandler(networkState, gameStatus, messageHandler));
         gameHandlerThread.start();
-        System.out.println(gameHandlerThread.getName());
 
         acceptConnections();
     }
 
     /**
      * Used to accept connection, it needs to always accept the connection.
-     * @throws IOException
      */
-    private void acceptConnections() throws IOException {
+    private void acceptConnections(){
         SocketID socketId;
         while (true) {
             try{
                 Socket socket = serverSocket.accept();
                 //create a new object, and link it to the id
                 socketId = new SocketID(id, socket);
-                int numberofclients = networkState.getNumberOfConnectedSocket() + 1;
-                System.out.println("Client " + id + " connected, number of clients " + numberofclients);
+                int numberOfClients = networkState.getNumberOfConnectedSocket() + 1;
+                System.out.println("Client " + id + " connected, number of clients " + numberOfClients);
                 Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
                 t2.start();
-                System.out.println("MessageReceiver "+t2.getName());
                 SocketID finalSocketId = socketId;
                 Thread clientHandler = new Thread(() -> clientHandler(finalSocketId));
                 clientHandler.start();
-                System.out.println("ClientHandler "+clientHandler.getName());
                 id++;
-            }catch(SocketException e){
-                gameHandlerThread.stop();
-                System.exit(0);
+            }catch(IOException e){
+                System.out.println("No one is connected, server is closing");
+                break;
             }
         }
-
+        System.exit(0);
     }
 
     /**
      * Used to assign the client to the correct handler
-     * @param socketId
+     * @param socketId is the newly connected socketID
      */
     private void clientHandler(SocketID socketId) {
         boolean isKicked = false;
         while (!isKicked || socketId.isConnected()) {
             try {
                 if (socketId.isNeedsReplacement()) {
-                    System.out.println(networkState.getServerPhase());
                     switch (networkState.getServerPhase()) {
                         case READY:
                             networkState.addSocket(socketId);
@@ -132,7 +124,6 @@ public class SocketReceiverServer {
                                 LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState);
                                 Thread t = new Thread(login);
                                 t.start();
-                                System.out.println("Login "+t.getName());
                                 break;
                             }
                         case CREATION:

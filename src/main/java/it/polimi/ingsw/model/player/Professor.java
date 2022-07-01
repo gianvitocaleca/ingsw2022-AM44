@@ -23,7 +23,6 @@ public class Professor {
 
     /**
      * Used for test purposes.
-     * @return
      */
     @Override
     public String toString() {

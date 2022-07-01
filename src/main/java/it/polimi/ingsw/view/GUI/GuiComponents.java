@@ -19,14 +19,10 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.polimi.ingsw.utils.TextAssets.*;
 import static it.polimi.ingsw.view.GUI.GuiAssets.*;
-import static it.polimi.ingsw.view.GUI.GuiAssets.tableTowerHeight;
 import static it.polimi.ingsw.view.GUI.GuiCss.*;
 
 public class GuiComponents {
@@ -127,29 +123,15 @@ public class GuiComponents {
      * @return is the container of the creature's image and text number
      */
     public static HBox creatureCounter(Creature creature, int num) {
+        Optional<ImageView> temp = creatureImageSelector(creature, false);
         ImageView creatureImage;
-        switch (creature) {
-            case RED_DRAGONS:
-                creatureImage = new ImageView(new Image("Table/red.png"));
-                break;
-            case YELLOW_GNOMES:
-                creatureImage = new ImageView(new Image("Table/yellow.png"));
-                break;
-            case BLUE_UNICORNS:
-                creatureImage = new ImageView(new Image("Table/blue.png"));
-                break;
-            case GREEN_FROGS:
-                creatureImage = new ImageView(new Image("Table/green.png"));
-                break;
-            case PINK_FAIRIES:
-                creatureImage = new ImageView(new Image("Table/pink.png"));
-                break;
-            default:
-                return null;
+        if(temp.isPresent()){
+            creatureImage = temp.get();
+            creatureImage.setFitWidth(playerContentWidth);
+            creatureImage.setFitHeight(playerContentHeight);
+            return counterText(num, creatureImage);
         }
-        creatureImage.setFitWidth(playerContentWidth);
-        creatureImage.setFitHeight(playerContentHeight);
-        return counterText(num, creatureImage);
+        return new HBox();
     }
 
     /**
@@ -157,32 +139,40 @@ public class GuiComponents {
      * @return the professor's container
      */
     public static HBox professorsCounter(Creature creature) {
+        Optional<ImageView> temp = creatureImageSelector(creature, true);
         ImageView creatureImage;
+        if(temp.isPresent()){
+            creatureImage = temp.get();
+            creatureImage.setFitWidth(playerContentWidth);
+            creatureImage.setFitHeight(playerContentHeight);
+            HBox ans = new HBox(creatureImage);
+            ans.setSpacing(smallSpacing);
+            ans.setAlignment(Pos.CENTER);
+            return ans;
+        }
+        return new HBox();
+    }
+
+    /**
+     * @param creature    is the given creature
+     * @param isProfessor whether it's the professor image
+     * @return is the creature image
+     */
+    public static Optional<ImageView> creatureImageSelector(Creature creature, boolean isProfessor) {
         switch (creature) {
             case RED_DRAGONS:
-                creatureImage = new ImageView(new Image("Table/redProf.png"));
-                break;
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/redProf.png"))) : Optional.of(new ImageView(new Image("Table/red.png")));
             case YELLOW_GNOMES:
-                creatureImage = new ImageView(new Image("Table/yellowProf.png"));
-                break;
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/yellowProf.png"))) : Optional.of(new ImageView(new Image("Table/yellow.png")));
             case BLUE_UNICORNS:
-                creatureImage = new ImageView(new Image("Table/blueProf.png"));
-                break;
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/blueProf.png"))) : Optional.of(new ImageView(new Image("Table/blue.png")));
             case GREEN_FROGS:
-                creatureImage = new ImageView(new Image("Table/greenProf.png"));
-                break;
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/greenProf.png"))) : Optional.of(new ImageView(new Image("Table/green.png")));
             case PINK_FAIRIES:
-                creatureImage = new ImageView(new Image("Table/pinkProf.png"));
-                break;
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/pinkProf.png"))) : Optional.of(new ImageView(new Image("Table/pink.png")));
             default:
-                return null;
+                return Optional.empty();
         }
-        creatureImage.setFitWidth(playerContentWidth);
-        creatureImage.setFitHeight(playerContentHeight);
-        HBox ans = new HBox(creatureImage);
-        ans.setSpacing(smallSpacing);
-        ans.setAlignment(Pos.CENTER);
-        return ans;
     }
 
     /**

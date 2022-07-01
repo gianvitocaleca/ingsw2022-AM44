@@ -4,6 +4,9 @@ import it.polimi.ingsw.network.server.networkMessages.Headers;
 
 import java.util.EventObject;
 
+/**
+ * This event contains the message to send in broadcast to clients.
+ */
 public class BroadcastEvent extends EventObject {
     private Headers header;
     private String message;

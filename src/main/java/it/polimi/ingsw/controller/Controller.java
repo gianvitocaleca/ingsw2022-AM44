@@ -41,7 +41,13 @@ public class Controller {
 
     private final NetworkState networkState;
 
-
+    /**
+     * This is the constructor of the class
+     * @param model created by the GameHandler
+     * @param messageHandler created by the server
+     * @param gameStatus created by the server
+     * @param networkState created by the server
+     */
     public Controller(GameModel model, MessageHandler messageHandler, GameStatus gameStatus, NetworkState networkState) {
 
         this.model = model;
@@ -76,9 +82,9 @@ public class Controller {
             case PLANNING:
                 sendPhaseMessage(Headers.planning);
                 break;
-            case ACTION_MOVEMOTHERNATURE:
-            case ACTION_STUDENTSMOVEMENT:
-            case ACTION_CLOUDCHOICE:
+            case ACTION_MOVE_MOTHER_NATURE:
+            case ACTION_STUDENTS_MOVEMENT:
+            case ACTION_CLOUD_CHOICE:
             case ACTION_PLAYED_CHARACTER:
                 sendPhaseMessage(Headers.action);
                 break;
@@ -96,6 +102,10 @@ public class Controller {
         messageHandler.eventPerformed(new ShowModelEvent(this, showModelPayload), socketID);
     }
 
+    /**
+     * Used to resume game after a client joins,
+     * it finds the current player and then sends a phase message.
+     */
     public void resumeGame() {
         if (messageHandler.resumeGame()) {
             try {
@@ -132,7 +142,7 @@ public class Controller {
                 model.findNextPlayer();
                 curr = model.getPlayers().get(model.getCurrentPlayerIndex());
                 if (isLast && currentGameStatus.getPhase().equals(PLANNING)) {
-                    currentGameStatus.setPhase(ACTION_STUDENTSMOVEMENT);
+                    currentGameStatus.setPhase(ACTION_STUDENTS_MOVEMENT);
                 } else if (isLast) {
                     currentGameStatus.setPhase(PLANNING);
                 }
@@ -175,9 +185,9 @@ public class Controller {
      */
     public void sendPhaseMessage(Headers phase) {
         if (phase.equals(Headers.action)) {
-            if (currentGameStatus.getPhase().equals(ACTION_STUDENTSMOVEMENT)) {
+            if (currentGameStatus.getPhase().equals(ACTION_STUDENTS_MOVEMENT)) {
                 messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(true, false, false, currentGameStatus.isAdvancedRules(), currentGameStatus.getCurrentPlayerUsername()));
-            } else if (currentGameStatus.getPhase().equals(ACTION_MOVEMOTHERNATURE)) {
+            } else if (currentGameStatus.getPhase().equals(ACTION_MOVE_MOTHER_NATURE)) {
                 if (currentPlayerPlayedCharacter) {
                     messageHandler.eventPerformed(new StatusEvent(this, phase), new ActionPayload(false, true, false, false, currentGameStatus.getCurrentPlayerUsername()));
                 } else {
@@ -203,7 +213,7 @@ public class Controller {
      * Used to send an error message to the current player.
      * @param string is the content of the message.
      */
-    private void sendErrorMessage(String string) {
+    public void sendErrorMessage(String string) {
         int id = 0;
         for (SocketID socketID : networkState.getSocketIDList()) {
             if (socketID.isConnected()) {
@@ -234,7 +244,7 @@ public class Controller {
     }
 
     /**
-     * this method plays the assistant card and informs the client if an error occurs or it ends well.
+     * this method plays the assistant card and informs the client if an error occurs, or it ends well.
      *
      * @param indexOfAssistant is the assistant card the player wants to play
      */
@@ -255,7 +265,7 @@ public class Controller {
             sendErrorMessage("Already played assistant, play another one");
         } catch (PlanningPhaseEndedException p) {
             model.establishRoundOrder();
-            currentGameStatus.setPhase(ACTION_STUDENTSMOVEMENT);
+            currentGameStatus.setPhase(ACTION_STUDENTS_MOVEMENT);
             try {
                 updateCurrentPlayer();
                 sendPhaseMessage(currentGameStatus.getPhase().getHeader());
@@ -301,6 +311,13 @@ public class Controller {
         }
     }
 
+    /**
+     * This method is used to move students during the action phase of a player.
+     * @param source is the source with creatures;
+     * @param destination is the place where the creatures are put;
+     * @param creatures are the students to move.
+     * @return true if the action is allowed, otherwise it returns true with an error message.
+     */
     private boolean setDestination(StudentContainer source, StudentContainer destination, List<Creature> creatures) {
         if (!(model.moveStudents(source, destination, creatures))) {
             sendErrorMessage("Wrong creatures in entrance, try again");
@@ -308,7 +325,7 @@ public class Controller {
         } else {
             currentGameStatus.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved() + 1);
             if (currentGameStatus.getNumberOfStudentsMoved() == NUMBER_OF_STUDENTS_TO_MOVE) {
-                currentGameStatus.setPhase(ACTION_MOVEMOTHERNATURE);
+                currentGameStatus.setPhase(ACTION_MOVE_MOTHER_NATURE);
                 currentGameStatus.setNumberOfStudentsMoved(0);
             }
         }
@@ -325,7 +342,7 @@ public class Controller {
             if (!(model.moveMotherNature(jumps))) {
                 sendErrorMessage("Incorrect number of jumps provided");
             } else {
-                currentGameStatus.setPhase(ACTION_CLOUDCHOICE);
+                currentGameStatus.setPhase(ACTION_CLOUD_CHOICE);
                 sendPhaseMessage(Headers.action);
             }
         } catch (GameEndedException e) {
@@ -359,7 +376,7 @@ public class Controller {
 
                     }
                 } else {
-                    currentGameStatus.setPhase(ACTION_STUDENTSMOVEMENT);
+                    currentGameStatus.setPhase(ACTION_STUDENTS_MOVEMENT);
                     try {
                         updateCurrentPlayer();
                         sendPhaseMessage(currentGameStatus.getPhase().getHeader());
@@ -375,7 +392,7 @@ public class Controller {
     }
 
     /**
-     * this method play a character card and it toggles waitingForParameters.
+     * this method play a character card, and it toggles waitingForParameters.
      * waitingForParameters is true when the client has to specify what he wants to do with the character card he played.
      *
      * @param indexOfCharacter is the character the player wants to play.
@@ -403,6 +420,10 @@ public class Controller {
 
     }
 
+    /**
+     * This method is used to use the effect of a character
+     * @param parameters contains the choice of the player, if the character needs it.
+     */
     public void effect(CharactersParametersPayload parameters) {
         if (isWaitingForParameters()) {
             try {
@@ -417,13 +438,17 @@ public class Controller {
                     sendWinnerPlayerMessage(model.findWinner());
                 }
             } catch (UnplayableEffectException e) {
-                sendErrorMessage("You can't play that character");
+                sendErrorMessage("You provided wrong parameters, impossible to play character");
+                currentPlayerPlayedCharacter = false;
                 sendPhaseMessage(Headers.action);
             }
 
         }
     }
 
+    /**
+     * This method is used to use the effect of a character that doesn't need player's choice.
+     */
     public void effect() {
         try {
             model.effect(new CharactersParametersPayload(new ArrayList<>(), 0, 0, new ArrayList<>()));
@@ -431,10 +456,19 @@ public class Controller {
         } catch (GameEndedException | UnplayableEffectException ignore) {
         }
     }
+
+    /**
+     * Used to know the game's phase
+     * @return the phase of the controller
+     */
     public GamePhases getCurrentPhase() {
         return currentGameStatus.getPhase();
     }
 
+    /**
+     * Used to know the game status
+     * @return is a copy of the game status
+     */
     public GameStatus getCurrentStatus() {
         GameStatus temp = new GameStatus(currentGameStatus.getPhase(), currentGameStatus.isAdvancedRules());
         temp.setNumberOfStudentsMoved(currentGameStatus.getNumberOfStudentsMoved());
@@ -445,10 +479,18 @@ public class Controller {
         return temp;
     }
 
+    /**
+     *
+     * @param providedGS is the game status to be set
+     */
     public void setCurrentStatus(GameStatus providedGS) {
         this.currentGameStatus = providedGS;
     }
 
+    /**
+     *
+     * @return whether the game is waiting for character parameters
+     */
     public boolean isWaitingForParameters() {
         return currentGameStatus.isWaitingForParameters();
     }
@@ -460,6 +502,4 @@ public class Controller {
     public boolean getCurrentPlayerPlayedCharacter() {
         return currentPlayerPlayedCharacter;
     }
-
-    public NetworkState getNetworkState(){ return networkState; }
 }

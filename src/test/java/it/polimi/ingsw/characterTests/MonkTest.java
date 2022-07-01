@@ -23,6 +23,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This tests the Monk character
+ */
 public class MonkTest {
 
     private GameModel gm;
@@ -32,7 +35,7 @@ public class MonkTest {
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {

@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.enums.Name;
 import java.net.Socket;
 import java.util.EventObject;
 
+/**
+ * This event contains the name of the character played by the player.
+ */
 public class CharacterPlayedEvent extends EventObject {
 
     private Name charactersName;

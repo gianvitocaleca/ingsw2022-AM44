@@ -4,6 +4,9 @@ import it.polimi.ingsw.network.server.networkMessages.Headers;
 
 import java.util.EventObject;
 
+/**
+ * This event contains information to send the phase message.
+ */
 public class StatusEvent extends EventObject {
 
     private Headers header;

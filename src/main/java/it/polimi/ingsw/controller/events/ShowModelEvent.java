@@ -4,6 +4,9 @@ import it.polimi.ingsw.network.server.networkMessages.payloads.Payload;
 
 import java.util.EventObject;
 
+/**
+ * This event is used to update clients' ModelCache after an action.
+ */
 public class ShowModelEvent extends EventObject {
 
     private Payload payload;

@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.enums.Creature;
 import java.util.EventObject;
 import java.util.List;
 
+/**
+ * This event contains the destination of the moveStudents' phase and the student.
+ */
 public class MoveStudentsEvent extends EventObject {
     private boolean isDestinationIsland;
     private int indexOfIsland;

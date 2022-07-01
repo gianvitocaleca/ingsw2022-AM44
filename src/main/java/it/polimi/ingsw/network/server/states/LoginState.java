@@ -108,7 +108,7 @@ public class LoginState {
             while (!this.wizardMap.containsKey(socket)) {
                 try {
                     this.wizardMap.wait();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignore) {
                 }
             }
             return this.wizardMap.get(socket);
@@ -118,9 +118,13 @@ public class LoginState {
     /**
      * Used to remove the wizard matching the given socket
      * @param socket is the socket to be removed
+     * @return true if there is a match with the key
      */
-    public void removeWizard(Socket socket) {
-        this.wizardMap.remove(socket);
+    public boolean removeWizard(Socket socket) {
+        if(wizardMap.remove(socket)!=null){
+            return true;
+        }
+        return false;
     }
 
     /**

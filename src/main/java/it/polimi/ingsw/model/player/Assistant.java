@@ -39,7 +39,6 @@ public class Assistant {
 
     /**
      * Used for test purposes.
-     * @return
      */
     @Override
     public String toString() {

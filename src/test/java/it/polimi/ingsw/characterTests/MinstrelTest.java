@@ -22,8 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+/**
+ * This tests the Minstrel character
+ */
 public class MinstrelTest {
 
     private GameModel gm;
@@ -32,7 +33,7 @@ public class MinstrelTest {
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {

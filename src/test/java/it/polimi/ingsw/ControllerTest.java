@@ -3,7 +3,6 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.controller.events.*;
 import it.polimi.ingsw.model.characters.MoverCharacter;
 import it.polimi.ingsw.model.exceptions.GameEndedException;
-import it.polimi.ingsw.model.exceptions.UnplayableEffectException;
 import it.polimi.ingsw.model.gameboard.Table;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Professor;
@@ -11,6 +10,7 @@ import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.network.server.enums.ServerPhases;
 import it.polimi.ingsw.model.exceptions.PausedException;
+import it.polimi.ingsw.network.server.states.LoginState;
 import it.polimi.ingsw.network.server.states.NetworkState;
 import it.polimi.ingsw.network.server.SocketID;
 import it.polimi.ingsw.controller.Controller;
@@ -40,6 +40,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This tests the controller class
+ */
 public class ControllerTest {
 
     GameModel gm;
@@ -50,7 +53,9 @@ public class ControllerTest {
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
+     * @throws PausedException
+     * @throws IOException
      */
     @BeforeEach
     public void createGame() throws PausedException, IOException {
@@ -60,7 +65,7 @@ public class ControllerTest {
         SocketID socketID2 = new SocketID(2, new Socket());
         String player3 = "Sabrina";
         SocketID socketID3 = new SocketID(3, new Socket());
-        NetworkState state = new NetworkState(ServerPhases.READY,new ServerSocket());
+        NetworkState state = new NetworkState(ServerPhases.READY,new ServerSocket(),new LoginState());
         state.addSocket(socketID1);
         state.addSocket(socketID2);
         state.addSocket(socketID3);
@@ -181,7 +186,7 @@ public class ControllerTest {
         messageHandler.playAssistantReceiver(evt);
 
 
-        assertEquals(controller.getCurrentPhase(), GamePhases.ACTION_STUDENTSMOVEMENT);
+        assertEquals(controller.getCurrentPhase(), GamePhases.ACTION_STUDENTS_MOVEMENT);
         assertEquals(gm.getCurrentPlayerIndex(), 0);
 
 
@@ -210,6 +215,9 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests the playCharacter method when the game phase is ACTION_MOVE_MOTHER_NATURE
+     */
     @Test
     public void playCharacterInMMN(){
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
@@ -230,6 +238,9 @@ public class ControllerTest {
         assertEquals(gm.getPostmanMovements(), 2);
     }
 
+    /**
+     * This tests the playCharacter method when the game phase is ACTION_CLOUD_CHOICE
+     */
     @Test
     public void playCharacterInSelectCloud(){
         ConcreteCharacterCreator ccc = new ConcreteCharacterCreator();
@@ -275,6 +286,7 @@ public class ControllerTest {
     /**
      * This tests that when a player with 1 tower left uses Herald character, it will win the game
      * when conquering one island
+     * @throws GameEndedException
      */
     @Test
     public void PlayCharacterAndWinTest() throws GameEndedException {
@@ -474,7 +486,7 @@ public class ControllerTest {
         messageHandler.moveStudentsReceiver(evt);
 
         assertEquals(controller.getCurrentStatus().getNumberOfStudentsMoved(), 0);
-        assertEquals(controller.getCurrentPhase(), GamePhases.ACTION_MOVEMOTHERNATURE);
+        assertEquals(controller.getCurrentPhase(), GamePhases.ACTION_MOVE_MOTHER_NATURE);
 
     }
 
@@ -556,6 +568,10 @@ public class ControllerTest {
 
     }
 
+    /**
+     * This tests that a player can win using mother nature and finishing his towers
+     * @throws GameEndedException
+     */
     @Test
     public void moveMotherNatureAndWinTest() throws GameEndedException {
         planningIfNo();
@@ -669,7 +685,7 @@ public class ControllerTest {
 
         selectCloudTest();
         GameStatus gameStatus = controller.getCurrentStatus();
-        gameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+        gameStatus.setPhase(GamePhases.ACTION_CLOUD_CHOICE);
         controller.setCurrentStatus(gameStatus);
 
         int currPlayerIndex = gm.getCurrentPlayerIndex();
@@ -695,7 +711,7 @@ public class ControllerTest {
         selectCloudTest();
         //moves the students and MotherNature for the second player
         GameStatus gameStatus = controller.getCurrentStatus();
-        gameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+        gameStatus.setPhase(GamePhases.ACTION_CLOUD_CHOICE);
         controller.setCurrentStatus(gameStatus);
 
 
@@ -703,9 +719,9 @@ public class ControllerTest {
         IntegerEvent evt = new IntegerEvent(messageHandler, cloudSelected);
         messageHandler.integerEventReceiver(evt);
 
-        //moves the students and MotheNature for the third player
+        //moves the students and MotherNature for the third player
         gameStatus = controller.getCurrentStatus();
-        gameStatus.setPhase(GamePhases.ACTION_CLOUDCHOICE);
+        gameStatus.setPhase(GamePhases.ACTION_CLOUD_CHOICE);
         controller.setCurrentStatus(gameStatus);
 
         cloudSelected = 2;
@@ -747,7 +763,7 @@ public class ControllerTest {
 
         GamePhases phase = controller.getCurrentPhase();
 
-        assertTrue(phase.equals(GamePhases.ACTION_STUDENTSMOVEMENT));
+        assertTrue(phase.equals(GamePhases.ACTION_STUDENTS_MOVEMENT));
     }
 
     /**

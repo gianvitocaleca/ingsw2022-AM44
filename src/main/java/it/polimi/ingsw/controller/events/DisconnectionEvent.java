@@ -4,6 +4,9 @@ import it.polimi.ingsw.network.server.SocketID;
 
 import java.util.EventObject;
 
+/**
+ * This event contains the socketID of the disconnected player, notified by the server ping handler
+ */
 public class DisconnectionEvent extends EventObject {
 
     private SocketID socketID;

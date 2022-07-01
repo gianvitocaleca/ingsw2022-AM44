@@ -22,13 +22,16 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * This tests the herald class
+ */
 public class HeraldTest {
 
     GameModel gm;
 
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {
@@ -46,17 +49,17 @@ public class HeraldTest {
     void heraldEffectTest() throws GameEndedException, UnplayableEffectException {
         int islandIndex = new Random().nextInt(gm.getTable().getIslands().size());
         CharactersParametersPayload herald = new CharactersParametersPayload(new ArrayList<>(), islandIndex, 0, new ArrayList<>());
-        List<Professor> profes = new ArrayList<>();
+        List<Professor> professors = new ArrayList<>();
         for (Creature c : Creature.values()) {
-            profes.add(new Professor(c));
+            professors.add(new Professor(c));
         }
         List<Player> players = gm.getPlayers();
 
         for (int i = 0; i < gm.getPlayers().size(); i++) {
-            players.get(i).addProfessor(profes.get(i));
+            players.get(i).addProfessor(professors.get(i));
         }
-        players.get(0).addProfessor(profes.get(3));
-        players.get(0).addProfessor(profes.get(4));
+        players.get(0).addProfessor(professors.get(3));
+        players.get(0).addProfessor(professors.get(4));
         //set Herald Character in characters to test his effect.
         gm.getCharacters().remove(0);
         gm.getCharacters().add(0, new Herald(Name.HERALD, gm));

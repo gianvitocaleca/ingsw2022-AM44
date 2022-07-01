@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.server.handlers;
 import it.polimi.ingsw.network.server.networkMessages.Headers;
 import it.polimi.ingsw.view.CLI.CliColors;
 import it.polimi.ingsw.view.CLI.OS;
-import it.polimi.ingsw.network.server.states.CreationState;
 import it.polimi.ingsw.network.server.states.LoginState;
 import it.polimi.ingsw.network.server.states.NetworkState;
 import it.polimi.ingsw.network.server.SocketID;

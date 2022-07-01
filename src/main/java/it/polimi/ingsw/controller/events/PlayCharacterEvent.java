@@ -2,6 +2,9 @@ package it.polimi.ingsw.controller.events;
 
 import java.util.EventObject;
 
+/**
+ * This event contains the index of the character played, used to notify controller.
+ */
 public class PlayCharacterEvent extends EventObject {
 
     private int indexOfCharacter;

@@ -2,7 +2,6 @@ package it.polimi.ingsw.playerTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.polimi.ingsw.model.exceptions.GameEndedException;
 import it.polimi.ingsw.model.GameModel;
 import it.polimi.ingsw.model.enums.Color;
 import it.polimi.ingsw.model.enums.Assistants;
@@ -28,7 +27,7 @@ class AssistantTest {
     }
 
     /**
-     * This create a new GameModel instance to use in every test
+     * This creates a new GameModel instance to use in every test
      */
     @BeforeEach
     public void createGameModel() {
@@ -64,7 +63,7 @@ class AssistantTest {
     }
 
     /**
-     * This test verfies the correct behaviour of assistantDeck and lastPlayedCard when every assistant is played.
+     * This test verifies the correct behaviour of assistantDeck and lastPlayedCard when every assistant is played.
      * assistantDeck should reduce its length by one, lastPlayedCard should increase its length by one.
      */
     @Test
@@ -105,7 +104,7 @@ class AssistantTest {
 
     /**
      * Verifies that the method allows the first player to play the AssistantCard he prefers,
-     * the others cannot play that card and in that case the methos throws an exception.
+     * the others cannot play that card and in that case the methods throws an exception.
      */
     @Test
     void playAssistantAlreadyPlayed() {
@@ -116,7 +115,7 @@ class AssistantTest {
                     assertTrue(gm.playAssistant(0));
                     assertEquals(gm.getPlayers().get(0).getAssistantDeck().size(), 9);
                     assertEquals(gm.getPlayers().get(0).getLastPlayedCards().size(), 1);
-                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ex) {
+                } catch (AssistantAlreadyPlayedException | PlanningPhaseEndedException ignore) {
                 }
             } else { //o sei 1 o sei 2
                 try {
@@ -126,7 +125,7 @@ class AssistantTest {
                     assertEquals(gm.getPlayers().get(gm.getCurrentPlayerIndex()).getLastPlayedCards().size(), 0);
                     try {
                         gm.playAssistant(1);
-                    } catch (PlanningPhaseEndedException | AssistantAlreadyPlayedException e) {
+                    } catch (PlanningPhaseEndedException | AssistantAlreadyPlayedException ignore) {
                     }
 
                 } catch (PlanningPhaseEndedException e) {

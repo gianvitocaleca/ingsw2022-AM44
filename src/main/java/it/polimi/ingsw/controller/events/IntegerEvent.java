@@ -2,6 +2,9 @@ package it.polimi.ingsw.controller.events;
 
 import java.util.EventObject;
 
+/**
+ * This event contains an integer that is the number of mother nature steps, or island's index.
+ */
 public class IntegerEvent extends EventObject {
 
     Integer value;
