@@ -33,8 +33,7 @@ public class ConcreteCLISender extends AbstractSender {
     @Override
     public void startClient() throws IOException {
         super.startClient();
-        Scanner s = new Scanner(socket.getInputStream());
-        Thread t = new Thread(new ConcreteCLIReceiver(s, cs, ps));
+        Thread t = new Thread(new ConcreteCLIReceiver(scanner, cs, ps));
         t.start();
         socketOut = new PrintWriter(socket.getOutputStream());
         stdin = new Scanner(System.in);

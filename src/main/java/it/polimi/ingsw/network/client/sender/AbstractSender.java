@@ -36,6 +36,7 @@ public abstract class AbstractSender {
     protected final int maxNoAnswers = 4;
     protected Socket socket;
     protected PrintWriter socketOut;
+    protected Scanner scanner;
 
     /**
      * Waits for commands from the player.
@@ -59,7 +60,8 @@ public abstract class AbstractSender {
         socket = new Socket(ip, port);
         System.out.println("Connection established");
         System.out.println("Client dynamic port number: " + socket.getLocalPort());
-        Thread t1 = new Thread(new ClientPingHandler(ps, socket, pingTime, maxNoAnswers));
+        scanner = new Scanner(socket.getInputStream());
+        Thread t1 = new Thread(new ClientPingHandler(ps, socket, pingTime, maxNoAnswers,scanner));
         t1.start();
     }
 
