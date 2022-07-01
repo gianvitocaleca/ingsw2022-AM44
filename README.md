@@ -28,7 +28,7 @@
 
 # Launching the game
 
-The game can be launched from a terminal. Both the Client and the Server can be launched from the same JAR. Because of the large filesize of the jar, we uploaded it at the link:
+The game can be launched from a terminal. Both the Client and the Server can be launched from the same JAR. Because of the large filesize of the jar, we uploaded it at the link: https://polimi365-my.sharepoint.com/:u:/g/personal/10680314_polimi_it/EV9LUQ5_1VFEj1fjnfAwOb8BYYH4Q-e06wwa9XMwtFwRIw?e=oNP974
 
 
 ## Server
