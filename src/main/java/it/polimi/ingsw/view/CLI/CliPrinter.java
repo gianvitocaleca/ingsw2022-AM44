@@ -516,6 +516,8 @@ public class CliPrinter {
      * Creates the box of the cloud with its contents
      */
     private void createCloud(int index, String creatures) {
+        smallComponent(topLeft, bottomLeft, cloudStringLength, cloud, index, false);
+        /*
         top.append(topLeft);
         middle.append(vertical);
         bottom.append(bottomLeft);
@@ -530,7 +532,7 @@ public class CliPrinter {
         middle.append(space);
         middle.append(index);
         middle.append(space);
-
+        */
         top.append(topMiddle);
         middle.append(vertical);
         bottom.append(bottomMiddle);
@@ -572,6 +574,8 @@ public class CliPrinter {
      * Creates the box of the character with its contents
      */
     private void createCharacter(int index, Name name, int cost, ShowModelPayload modelPayload) {
+        smallComponent(topLeft, bottomLeft, characterStringLength, "", index, true);
+        /*
         top.append(topLeft);
         middle.append(vertical);
         bottom.append(bottomLeft);
@@ -584,14 +588,15 @@ public class CliPrinter {
         middle.append(space);
         middle.append(index);
         middle.append(space);
-
+        */
         for (int i = 0; i < name.toString().length() + 1; i++) {
             top.append(horizontal);
             bottom.append(horizontal);
         }
         middle.append(name);
         middle.append(space);
-
+        smallComponent(topMiddle, bottomMiddle, costStringLength, costContentText, cost, false);
+        /*
         top.append(topMiddle);
         middle.append(vertical);
         bottom.append(bottomMiddle);
@@ -606,7 +611,7 @@ public class CliPrinter {
         middle.append(space);
         middle.append(cost);
         middle.append(space);
-
+        */
         if (name.equals(Name.MONK) || name.equals(Name.PRINCESS) || name.equals(Name.JOKER)) {
             top.append(topMiddle);
             middle.append(vertical);
@@ -636,6 +641,8 @@ public class CliPrinter {
             bottom.append(bottomRight);
 
         } else if (name.equals(Name.HERBALIST)) {
+            smallComponent(topMiddle, bottomMiddle, noEntryStringLength, noEntry, modelPayload.getDeactivators(), false);
+            /*
             top.append(topMiddle);
             middle.append(vertical);
             bottom.append(bottomMiddle);
@@ -650,7 +657,7 @@ public class CliPrinter {
             middle.append(space);
             middle.append(modelPayload.getDeactivators());
             middle.append(space);
-
+            */
             top.append(topRight);
             middle.append(vertical);
             bottom.append(bottomRight);
@@ -658,6 +665,38 @@ public class CliPrinter {
             top.append(topRight);
             middle.append(vertical);
             bottom.append(bottomRight);
+        }
+
+    }
+
+    /**
+     * Used for formatting cell components
+     * @param topString is the string to be added on top
+     * @param bottomString is the string to be added on bottom
+     * @param length is the length of the component
+     * @param image is the visual information string
+     * @param value is the value to be shown
+     * @param isShort whether the component is the short one
+     */
+    private void smallComponent(String topString, String bottomString, int length, String image, int value, boolean isShort){
+        top.append(topString);
+        middle.append(vertical);
+        bottom.append(bottomString);
+
+        for (int i = 0; i < length; i++) {
+            top.append(horizontal);
+            bottom.append(horizontal);
+        }
+        if(isShort){
+            middle.append(space);
+            middle.append(value);
+            middle.append(space);
+        }else{
+            middle.append(space);
+            middle.append(image);
+            middle.append(space);
+            middle.append(value);
+            middle.append(space);
         }
 
     }
