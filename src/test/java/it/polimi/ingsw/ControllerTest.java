@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.studentcontainers.Island;
 import it.polimi.ingsw.model.studentcontainers.StudentContainer;
 import it.polimi.ingsw.network.server.enums.ServerPhases;
 import it.polimi.ingsw.model.exceptions.PausedException;
+import it.polimi.ingsw.network.server.states.LoginState;
 import it.polimi.ingsw.network.server.states.NetworkState;
 import it.polimi.ingsw.network.server.SocketID;
 import it.polimi.ingsw.controller.Controller;
@@ -64,7 +65,7 @@ public class ControllerTest {
         SocketID socketID2 = new SocketID(2, new Socket());
         String player3 = "Sabrina";
         SocketID socketID3 = new SocketID(3, new Socket());
-        NetworkState state = new NetworkState(ServerPhases.READY,new ServerSocket());
+        NetworkState state = new NetworkState(ServerPhases.READY,new ServerSocket(),new LoginState());
         state.addSocket(socketID1);
         state.addSocket(socketID2);
         state.addSocket(socketID3);

@@ -15,6 +15,7 @@ public class CreationHandler extends Thread {
     private EventListenerList listeners = new EventListenerList();
     private CreationState cs;
     private SocketID socketID;
+    private boolean shutdown = false;
 
     /**
      * It handles the creation phase for a player
@@ -36,9 +37,13 @@ public class CreationHandler extends Thread {
     @Override
     public void run() {
         numberOfPlayers();
-        rulesType();
-        networkState.setServerPhase(ServerPhases.LOGIN);
-        socketID.setNeedsReplacement(true);
+        if(!shutdown){
+            rulesType();
+        }
+        if(!shutdown){
+            networkState.setServerPhase(ServerPhases.LOGIN);
+            socketID.setNeedsReplacement(true);
+        }
     }
 
     /**
@@ -48,6 +53,7 @@ public class CreationHandler extends Thread {
         sendMessage(Headers.creationRequirementMessage_NumberOfPlayers, "Select the number of players [2 or 3]:");
         while (true) {
             int number = cs.getNumberOfPlayers();
+            if(checkShutdown()) break;
             if (number != 2 && number != 3) {
                 cs.reset();
                 sendMessage(Headers.errorMessage, "Invalid number of players, try again [2 or 3]:");
@@ -68,6 +74,7 @@ public class CreationHandler extends Thread {
         sendMessage(Headers.creationRequirementMessage_TypeOfRules, "Choose the rules type [0 standard|1 advanced]:");
         while (true) {
             int number = cs.getAdvancedRules();
+            if(checkShutdown()) break;
             if (number != 0 && number != 1) {
                 cs.reset();
                 sendMessage(Headers.errorMessage, "Invalid rules type selected, try again [0 or 1]:");
@@ -79,6 +86,13 @@ public class CreationHandler extends Thread {
                 break;
             }
         }
+    }
+
+    private boolean checkShutdown(){
+        if(!socketID.isConnected()){
+            shutdown = true;
+        }
+        return shutdown;
     }
 
     /**

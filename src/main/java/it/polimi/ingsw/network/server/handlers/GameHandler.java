@@ -48,7 +48,7 @@ public class GameHandler implements Runnable {
             controller.startController();
             System.out.println("Game is starting");
         } catch (PausedException e) {
-            System.out.println("Game Aborted because of no players");
+            System.out.println("Waiting for other players");
         }
 
     }

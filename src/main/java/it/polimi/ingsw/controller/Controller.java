@@ -213,7 +213,7 @@ public class Controller {
      * Used to send an error message to the current player.
      * @param string is the content of the message.
      */
-    private void sendErrorMessage(String string) {
+    public void sendErrorMessage(String string) {
         int id = 0;
         for (SocketID socketID : networkState.getSocketIDList()) {
             if (socketID.isConnected()) {
@@ -438,7 +438,8 @@ public class Controller {
                     sendWinnerPlayerMessage(model.findWinner());
                 }
             } catch (UnplayableEffectException e) {
-                sendErrorMessage("You can't play that character");
+                sendErrorMessage("You provided wrong parameters, impossible to play character");
+                currentPlayerPlayedCharacter = false;
                 sendPhaseMessage(Headers.action);
             }
 

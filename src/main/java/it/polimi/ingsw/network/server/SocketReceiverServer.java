@@ -43,9 +43,9 @@ public class SocketReceiverServer {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        networkState = new NetworkState(READY,serverSocket);
         messageHandler = new MessageHandler(networkState);
         loginState = new LoginState();
+        networkState = new NetworkState(READY,serverSocket,loginState);
         messageHandler.setLoginState(loginState);
         creationState = new CreationState();
         messageHandler.setCreationState(creationState);
@@ -98,7 +98,6 @@ public class SocketReceiverServer {
         while (!isKicked || socketId.isConnected()) {
             try {
                 if (socketId.isNeedsReplacement()) {
-                    System.out.println(networkState.getServerPhase());
                     switch (networkState.getServerPhase()) {
                         case READY:
                             networkState.addSocket(socketId);

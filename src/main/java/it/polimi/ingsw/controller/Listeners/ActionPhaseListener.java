@@ -28,7 +28,8 @@ public class ActionPhaseListener implements EventListener {
         if (controller.getCurrentStatus().isAdvancedRules() && !controller.getCurrentPlayerPlayedCharacter()) {
             controller.playCharacter(evt.getIndexOfCharacter());
         }else{
-            System.out.println("Current player tried to play the character more than one time per turn!");
+            System.out.println("Current player tried to play a character more than one time per turn!");
+            controller.sendErrorMessage("You can't play a character more than one time per turn!");
         }
 
     }
