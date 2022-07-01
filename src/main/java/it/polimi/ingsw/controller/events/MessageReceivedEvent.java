@@ -2,6 +2,9 @@ package it.polimi.ingsw.controller.events;
 
 import java.util.EventObject;
 
+/**
+ * this event is used to handle ping.
+ */
 public class MessageReceivedEvent extends EventObject {
     private String message;
 

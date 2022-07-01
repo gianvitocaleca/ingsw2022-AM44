@@ -4,6 +4,10 @@ import it.polimi.ingsw.network.server.networkMessages.payloads.CharactersParamet
 
 import java.util.EventObject;
 
+/**
+ * This event contains the payload of the message from client to server,
+ * that contains the player's choice.
+ */
 public class CharacterParametersEvent extends EventObject {
 
     private CharactersParametersPayload parameters;

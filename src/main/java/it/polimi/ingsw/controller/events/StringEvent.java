@@ -5,6 +5,9 @@ import it.polimi.ingsw.network.server.networkMessages.Headers;
 import java.net.Socket;
 import java.util.EventObject;
 
+/**
+ * This message contains a message to show to the clients.
+ */
 public class StringEvent extends EventObject {
 
     private Headers header;
