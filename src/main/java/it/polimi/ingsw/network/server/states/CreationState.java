@@ -26,7 +26,7 @@ public class CreationState {
             while (!set) {
                 try {
                     this.wait();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignore) {
                 }
             }
             return numberOfPlayers;
@@ -59,7 +59,7 @@ public class CreationState {
             while (!set) {
                 try {
                     this.wait();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignore) {
                 }
             }
             return advancedRules;

@@ -20,10 +20,10 @@
 | Disconnections resilience       |  🟢   |
 
 
-| Package  |Class Coverage|Method Coverage|Line Coverage|
-|:-----------------|:--------------|:---------------------|:---------------:|
-|   model (Global Package)   | 97%  | 91% | 91% |
-| controller (Global Package)  | 85% | 83% | 82% |
+| Package  |Class Coverage|Method Coverage| Line Coverage |
+|:-----------------|:--------------|:---------------------|:-------------:|
+|   model (Global Package)   | 97%  | 91% |      90%      |
+| controller (Global Package)  | 85% | 83% |      82%      |
 
 
 # Launching the game

@@ -26,7 +26,6 @@ import java.util.Map;
 
 import static it.polimi.ingsw.utils.TextAssets.*;
 import static it.polimi.ingsw.view.GUI.GuiAssets.*;
-import static it.polimi.ingsw.view.GUI.GuiAssets.tableTowerHeight;
 import static it.polimi.ingsw.view.GUI.GuiCss.*;
 
 public class GuiComponents {

@@ -1,9 +1,8 @@
 package it.polimi.ingsw.network.client.receiver;
 
-import it.polimi.ingsw.view.CLI.CliColors;
+
 import it.polimi.ingsw.view.CLI.*;
 import it.polimi.ingsw.view.ClientState;
-import it.polimi.ingsw.view.CLI.OS;
 import it.polimi.ingsw.network.ping.PingState;
 import it.polimi.ingsw.model.enums.Name;
 import it.polimi.ingsw.model.player.Assistant;

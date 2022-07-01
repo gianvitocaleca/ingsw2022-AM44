@@ -108,7 +108,7 @@ public class LoginState {
             while (!this.wizardMap.containsKey(socket)) {
                 try {
                     this.wizardMap.wait();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignore) {
                 }
             }
             return this.wizardMap.get(socket);
