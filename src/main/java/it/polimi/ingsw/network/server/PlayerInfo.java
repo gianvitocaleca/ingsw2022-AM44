@@ -8,6 +8,9 @@ public class PlayerInfo {
     private Color color;
     private Wizard wizard;
 
+    /**
+     * Used for graphical purposes
+     */
     public PlayerInfo() {
 
     }
