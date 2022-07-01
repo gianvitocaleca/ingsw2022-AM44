@@ -28,7 +28,7 @@
 
 # Launching the game
 
-The game can be launched from a terminal. Both the Client and the Server can be launched from the same JAR.
+The game can be launched from a terminal. Both the Client and the Server can be launched from the same JAR. Because of the large filesize of the jar, we uploaded it at the link:
 
 
 ## Server
