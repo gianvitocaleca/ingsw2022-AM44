@@ -61,7 +61,6 @@ public class SocketReceiverServer {
 
         gameHandlerThread = new Thread(new GameHandler(networkState, gameStatus, messageHandler));
         gameHandlerThread.start();
-        System.out.println(gameHandlerThread.getName());
 
         acceptConnections();
     }
@@ -80,18 +79,16 @@ public class SocketReceiverServer {
                 System.out.println("Client " + id + " connected, number of clients " + numberOfClients);
                 Thread t2 = new Thread(new MessageReceiverServer(socketId, messageHandler, gameStatus, networkState));
                 t2.start();
-                System.out.println("MessageReceiver "+t2.getName());
                 SocketID finalSocketId = socketId;
                 Thread clientHandler = new Thread(() -> clientHandler(finalSocketId));
                 clientHandler.start();
-                System.out.println("ClientHandler "+clientHandler.getName());
                 id++;
             }catch(IOException e){
                 System.out.println("No one is connected, server is closing");
-                System.exit(0);
+                break;
             }
         }
-
+        System.exit(0);
     }
 
     /**
@@ -130,7 +127,6 @@ public class SocketReceiverServer {
                                 LoginHandler login = new LoginHandler(networkState, socketId, messageHandler, loginState);
                                 Thread t = new Thread(login);
                                 t.start();
-                                System.out.println("Login "+t.getName());
                                 break;
                             }
                         case CREATION:
