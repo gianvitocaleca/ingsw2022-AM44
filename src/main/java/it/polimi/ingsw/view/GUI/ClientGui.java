@@ -113,7 +113,7 @@ public class ClientGui extends Application {
      */
     private Button joinButton() {
         //Background
-        root.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        root.setBackground(new Background(new BackgroundImage(new Image("sfondoCreazione.jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         Button join = new Button(joinButton);
         join.setStyle(headerFont);
         join.setOnAction(e -> {
@@ -318,13 +318,13 @@ public class ClientGui extends Application {
         for (int i = 0; i < numberOfIslands; i++) {
             switch (i % 3) {
                 case 1:
-                    island = new Image("island2.png");
+                    island = new Image("island2.jpg");
                     break;
                 case 2:
-                    island = new Image("island3.png");
+                    island = new Image("island3.jpg");
                     break;
                 default:
-                    island = new Image("island1.png");
+                    island = new Image("island1.jpg");
             }
             ImageView islandImageView = new ImageView(island);
             islandImageView.setFitWidth(islandWidth);
@@ -802,7 +802,7 @@ public class ClientGui extends Application {
      * Sets the gui phase to allow for students selection
      */
     public void setMoveStudents() {
-        if(clientState!=null){
+        if (clientState != null) {
             if (clientState.isMoveStudents()) {
                 guiPhases = GUIPhases.SELECT_CREATURE;
             }
@@ -811,6 +811,7 @@ public class ClientGui extends Application {
 
     /**
      * Sets the given gui phase
+     *
      * @param guiPhases is the given phase
      */
     public void setGuiPhases(GUIPhases guiPhases) {
@@ -854,7 +855,6 @@ public class ClientGui extends Application {
     }
 
     /**
-     *
      * @param string to be added to the current command string
      */
     public void addCreatedCommand(String string) {
