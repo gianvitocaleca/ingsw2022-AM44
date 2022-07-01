@@ -99,7 +99,7 @@ public class ClientGui extends Application {
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         primaryStage.setTitle(gameTitle);
         primaryStage.show();
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.setOnCloseRequest(e -> {
             e.consume();
             quitStage(stage);
