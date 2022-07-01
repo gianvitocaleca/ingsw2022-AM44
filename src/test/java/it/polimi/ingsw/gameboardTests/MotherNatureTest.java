@@ -13,11 +13,13 @@ class MotherNatureTest {
     final int NUMBER_OF_ISLANDS = 12;
     final int NUMBER_OF_MN_CREATIONS = 100;
 
-    MotherNature mn ;
+    MotherNature mn;
 
-
+    /**
+     * Creates a new mother nature
+     */
     @BeforeEach
-    public void createMn(){
+    public void createMn() {
         mn = new MotherNature();
     }
 
@@ -26,19 +28,19 @@ class MotherNatureTest {
      * random number generator
      */
     @Test
-    public void MotherNatureRandomValuesTest(){
+    public void MotherNatureRandomValuesTest() {
         List<Integer> values = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_ISLANDS; i++) {
             values.add(0);
         }
-        values.add(mn.getCurrentIsland(),values.get(mn.getCurrentIsland())+1);
+        values.add(mn.getCurrentIsland(), values.get(mn.getCurrentIsland()) + 1);
         for (int i = 0; i < NUMBER_OF_MN_CREATIONS; i++) {
             mn = new MotherNature();
-            values.add(mn.getCurrentIsland(),values.get(mn.getCurrentIsland())+1);
+            values.add(mn.getCurrentIsland(), values.get(mn.getCurrentIsland()) + 1);
         }
 
-        for(int x=0; x<NUMBER_OF_ISLANDS; x++){
-            assertTrue(values.get(x)!=0);
+        for (int x = 0; x < NUMBER_OF_ISLANDS; x++) {
+            assertTrue(values.get(x) != 0);
         }
     }
 
