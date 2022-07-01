@@ -517,22 +517,6 @@ public class CliPrinter {
      */
     private void createCloud(int index, String creatures) {
         smallComponent(topLeft, bottomLeft, cloudStringLength, cloud, index, false);
-        /*
-        top.append(topLeft);
-        middle.append(vertical);
-        bottom.append(bottomLeft);
-
-        for (int i = 0; i < cloudStringLength; i++) {
-            top.append(horizontal);
-            bottom.append(horizontal);
-        }
-
-        middle.append(space);
-        middle.append(cloud);
-        middle.append(space);
-        middle.append(index);
-        middle.append(space);
-        */
         top.append(topMiddle);
         middle.append(vertical);
         bottom.append(bottomMiddle);
@@ -575,20 +559,6 @@ public class CliPrinter {
      */
     private void createCharacter(int index, Name name, int cost, ShowModelPayload modelPayload) {
         smallComponent(topLeft, bottomLeft, characterStringLength, "", index, true);
-        /*
-        top.append(topLeft);
-        middle.append(vertical);
-        bottom.append(bottomLeft);
-
-        for (int i = 0; i < characterStringLength; i++) {
-            top.append(horizontal);
-            bottom.append(horizontal);
-        }
-
-        middle.append(space);
-        middle.append(index);
-        middle.append(space);
-        */
         for (int i = 0; i < name.toString().length() + 1; i++) {
             top.append(horizontal);
             bottom.append(horizontal);
@@ -596,22 +566,6 @@ public class CliPrinter {
         middle.append(name);
         middle.append(space);
         smallComponent(topMiddle, bottomMiddle, costStringLength, costContentText, cost, false);
-        /*
-        top.append(topMiddle);
-        middle.append(vertical);
-        bottom.append(bottomMiddle);
-
-        for (int i = 0; i < costStringLength; i++) {
-            top.append(horizontal);
-            bottom.append(horizontal);
-        }
-
-        middle.append(space);
-        middle.append(costContentText);
-        middle.append(space);
-        middle.append(cost);
-        middle.append(space);
-        */
         if (name.equals(Name.MONK) || name.equals(Name.PRINCESS) || name.equals(Name.JOKER)) {
             top.append(topMiddle);
             middle.append(vertical);
@@ -642,22 +596,6 @@ public class CliPrinter {
 
         } else if (name.equals(Name.HERBALIST)) {
             smallComponent(topMiddle, bottomMiddle, noEntryStringLength, noEntry, modelPayload.getDeactivators(), false);
-            /*
-            top.append(topMiddle);
-            middle.append(vertical);
-            bottom.append(bottomMiddle);
-
-            for (int i = 0; i < noEntryStringLength; i++) {
-                top.append(horizontal);
-                bottom.append(horizontal);
-            }
-
-            middle.append(space);
-            middle.append(noEntry);
-            middle.append(space);
-            middle.append(modelPayload.getDeactivators());
-            middle.append(space);
-            */
             top.append(topRight);
             middle.append(vertical);
             bottom.append(bottomRight);
