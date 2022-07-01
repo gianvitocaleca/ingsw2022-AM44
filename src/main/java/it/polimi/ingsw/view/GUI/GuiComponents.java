@@ -19,10 +19,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.polimi.ingsw.utils.TextAssets.*;
 import static it.polimi.ingsw.view.GUI.GuiAssets.*;
@@ -126,10 +123,15 @@ public class GuiComponents {
      * @return is the container of the creature's image and text number
      */
     public static HBox creatureCounter(Creature creature, int num) {
-        ImageView creatureImage = creatureImageSelector(creature, false);
-        creatureImage.setFitWidth(playerContentWidth);
-        creatureImage.setFitHeight(playerContentHeight);
-        return counterText(num, creatureImage);
+        Optional<ImageView> temp = creatureImageSelector(creature, false);
+        ImageView creatureImage;
+        if(temp.isPresent()){
+            creatureImage = temp.get();
+            creatureImage.setFitWidth(playerContentWidth);
+            creatureImage.setFitHeight(playerContentHeight);
+            return counterText(num, creatureImage);
+        }
+        return new HBox();
     }
 
     /**
@@ -137,13 +139,18 @@ public class GuiComponents {
      * @return the professor's container
      */
     public static HBox professorsCounter(Creature creature) {
-        ImageView creatureImage = creatureImageSelector(creature, true);
-        creatureImage.setFitWidth(playerContentWidth);
-        creatureImage.setFitHeight(playerContentHeight);
-        HBox ans = new HBox(creatureImage);
-        ans.setSpacing(smallSpacing);
-        ans.setAlignment(Pos.CENTER);
-        return ans;
+        Optional<ImageView> temp = creatureImageSelector(creature, true);
+        ImageView creatureImage;
+        if(temp.isPresent()){
+            creatureImage = temp.get();
+            creatureImage.setFitWidth(playerContentWidth);
+            creatureImage.setFitHeight(playerContentHeight);
+            HBox ans = new HBox(creatureImage);
+            ans.setSpacing(smallSpacing);
+            ans.setAlignment(Pos.CENTER);
+            return ans;
+        }
+        return new HBox();
     }
 
     /**
@@ -151,20 +158,20 @@ public class GuiComponents {
      * @param isProfessor whether it's the professor image
      * @return is the creature image
      */
-    public static ImageView creatureImageSelector(Creature creature, boolean isProfessor) {
+    public static Optional<ImageView> creatureImageSelector(Creature creature, boolean isProfessor) {
         switch (creature) {
             case RED_DRAGONS:
-                return isProfessor ? new ImageView(new Image("Table/redProf.png")) : new ImageView(new Image("Table/red.png"));
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/redProf.png"))) : Optional.of(new ImageView(new Image("Table/red.png")));
             case YELLOW_GNOMES:
-                return isProfessor ? new ImageView(new Image("Table/yellowProf.png")) : new ImageView(new Image("Table/yellow.png"));
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/yellowProf.png"))) : Optional.of(new ImageView(new Image("Table/yellow.png")));
             case BLUE_UNICORNS:
-                return isProfessor ? new ImageView(new Image("Table/blueProf.png")) : new ImageView(new Image("Table/blue.png"));
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/blueProf.png"))) : Optional.of(new ImageView(new Image("Table/blue.png")));
             case GREEN_FROGS:
-                return isProfessor ? new ImageView(new Image("Table/greenProf.png")) : new ImageView(new Image("Table/green.png"));
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/greenProf.png"))) : Optional.of(new ImageView(new Image("Table/green.png")));
             case PINK_FAIRIES:
-                return isProfessor ? new ImageView(new Image("Table/pinkProf.png")) : new ImageView(new Image("Table/pink.png"));
+                return isProfessor ? Optional.of(new ImageView(new Image("Table/pinkProf.png"))) : Optional.of(new ImageView(new Image("Table/pink.png")));
             default:
-                return null;
+                return Optional.empty();
         }
     }
 
